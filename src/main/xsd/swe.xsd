@@ -1,0 +1,76 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="interface">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="forms">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="form">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="script"/>
+                    <xs:element name="form_item">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="type"/>
+                            <xs:attribute type="xs:string" name="width"/>
+                            <xs:attribute type="xs:string" name="height"/>
+                            <xs:attribute type="xs:string" name="id"/>
+                            <xs:attribute type="xs:string" name="name"/>
+                            <xs:attribute type="xs:string" name="api"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="group" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="form_item" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType mixed="true">
+                              <xs:sequence>
+                                <xs:element name="script" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:simpleContent>
+                                      <xs:extension base="xs:string">
+                                        <xs:attribute type="xs:string" name="type" use="optional"/>
+                                      </xs:extension>
+                                    </xs:simpleContent>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute type="xs:string" name="type" use="optional"/>
+                              <xs:attribute type="xs:string" name="id" use="optional"/>
+                              <xs:attribute type="xs:string" name="name" use="optional"/>
+                              <xs:attribute type="xs:string" name="width" use="optional"/>
+                              <xs:attribute type="xs:string" name="api" use="optional"/>
+                              <xs:attribute type="xs:string" name="ajax_visible_parrent" use="optional"/>
+                              <xs:attribute type="xs:short" name="maxlength" use="optional"/>
+                              <xs:attribute type="xs:byte" name="required" use="optional"/>
+                              <xs:attribute type="xs:string" name="ajax_value_parrent" use="optional"/>
+                              <xs:attribute type="xs:string" name="hint" use="optional"/>
+                              <xs:attribute type="xs:string" name="ajax_list_parrent" use="optional"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute type="xs:string" name="id" use="optional"/>
+                        <xs:attribute type="xs:string" name="name" use="optional"/>
+                        <xs:attribute type="xs:string" name="parrent_api" use="optional"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute type="xs:string" name="id"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute type="xs:string" name="service"/>
+      <xs:attribute type="xs:string" name="id"/>
+      <xs:attribute type="xs:string" name="name"/>
+      <xs:attribute type="xs:string" name="header"/>
+      <xs:attribute type="xs:string" name="api"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,160 @@
+package com.technology.jef.widgets;
+
+import java.util.HashMap;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.AttributesImpl;
+
+import com.technology.jef.Tag;
+import com.technology.jef.generators.TagGenerator;
+import com.technology.jef.widgets.Widget.ViewType;
+
+/**
+* Виджет группа выключателей
+*/
+public class CheckBoxList extends List {
+
+	/**
+	   * Метод возвращает тип виджета
+	   * 
+	   * ViewType.DOUBLE - С заголовком слева
+	   * ViewType.SINGLE - Без заголовка слева  
+	   * 
+	   * @return тип виджета
+	   */
+		public ViewType getType () {
+			return ViewType.SINGLE;
+		}
+		
+		@Override
+		public String getSetItemsJS() {
+			
+			return 				("			$(\"#background_overlay_wait_${name}\").show();         \n" + 
+								"			$(\"#message_box_wait_${name}\").show();         \n" + 
+								"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");         \n" + 
+								"			params['form_api'] = \"${api}\";     \n" + 
+								"			params['parameter_name'] = \"${name}\";     \n" + 
+								"			ajax({   \n" + 
+								"					url: \"${service}\" + \"get_list\",  \n" + 
+								"					data: params,  \n" + 
+								"					type: \"post\",  \n" + 
+								"					dataType: \"json\", \n" + 
+								"					contentType: 'application/x-www-form-urlencoded' \n" + 
+								"				}, function( data ) {     \n" + 
+								"					$(\"#visible_${name}\").empty();         \n" + 
+								"					${list_item_js}         \n" + 
+								"					$(\"#visible_${name}\").removeAttr('disabled');         \n" + 
+								"					$(\"#background_overlay_wait_${name}\").hide();         \n" + 
+								"					$(\"#message_box_wait_${name}\").hide();         \n" + 
+								"					$(\"#visible_${name}\").trigger('refresh');         \n" + 
+								"					$(\"#visible_${name}\").unbind(\"focusin\");        \n" + 
+								"					$(\"#visible_${name}\").find('input').styler({});   \n" + 
+								"					$(\"#visible_${name}\").trigger('setValue');   \n" + 
+								"			});        \n");
+		}
+
+		@Override
+		public Tag assembleTag(String name, TagGenerator generator) {
+			
+			Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.ID, "fieldset_" + name);
+			}});
+
+			Tag elementInput = mainInput
+					.add(Tag.Type.LEGEND)
+					.add(Tag.Type.LABEL, new HashMap<Tag.Property, String>(){{
+						 put(Tag.Property.FOR, "visible_" + name);
+					}})
+					.add(Tag.Type.SPAN, (String) generator.getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
+						 put(Tag.Property.NAME, "span_" + name);
+						 put(Tag.Property.STYLE, !"".equals(generator.getAttribute(TagGenerator.Attribute.REQUIRED)) ? "color: rgb(170, 0, 0);" : "color: rgb(0, 0, 0);");
+					}})
+					.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+							 put(Tag.Property.CLASS, "styled");
+							put(Tag.Property.ID, "visible_" + name);
+							put(Tag.Property.NAME, "visible_" + name);
+					}});
+
+			mainInput.add(Tag.Type.LINK, "очистить", new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.ID, "link_" + name);
+				 put(Tag.Property.STYLE, "border-bottom: 1px dashed; cursor: pointer; margin: 0pt 2px 2px; text-align: left;");
+				 put(Tag.Property.CLICK, "for(i=0,arr=document.getElementsByName('visible_" + name + "');i<arr.length;i++){arr[i].checked=false;};$('#" + name + "').val('');return false;");
+			}});
+			
+
+			
+			return elementInput;
+		}
+
+		@Override
+		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
+			element.add(Tag.Type.SCRIPT, 	(" \n" + 
+					"	function fill_${name}_checks() { \n" + 
+					"		$(\"#${name}\").val(\"\"); \n" + 
+					"		$(\"#visible_${name}\").trigger('refresh'); \n" +
+					"		$(\":input[name^='visible_${name}']\").each( function(index, element){ \n" + 
+					"			if ($( this ).prop(\"checked\")){ \n" + 
+					"				$(\"#${name}\").val($(\"#${name}\").val() + ($(\"#${name}\").val()? \"|\" : \"\") + $( this ).val()); \n" + 
+					"			} \n" + 
+					"		}); \n" + 
+					"	} \n")
+					.replace("${name}", name));
+			return element;
+		}
+		
+		@Override
+		String getListItemJS() {
+			return
+					("							$.each(data.data, function(key, val) {    \n" + 
+	"								var span_name = 'span_group_${name}' + val.id;   \n" + 
+	"								$(\"<span/>\", {   \n" + 
+	"									'id' : span_name,   \n" + 
+	"									'style' : 'white-space:nowrap; padding-bottom:5px;',   \n" + 
+	"								}).appendTo(\"#visible_${name}\");   \n" + 
+	"								var visible_name = 'visible_${name}' + val.id;   \n" + 
+	"								$(\"<input/>\", {   \n" + 
+	"									'id' : visible_name,   \n" + 
+	"									'name' : 'visible_${name}',   \n" + 
+	"									'value' : val.id,   \n" + 
+	"									'type' : 'checkbox',   \n" + 
+	"									'onchange': 'fill_${name}_checks();',   \n" + 
+	"								}).appendTo(\"#\" + span_name);   \n" + 
+	"								$(\"<label/>\", {   \n" + 
+	"									html : val.name,   \n" + 
+	"									'for' : visible_name,   \n" + 
+	"									'style' : 'display: inline-block; padding:4px;',   \n" + 
+	"								}).appendTo(\"#\" + span_name);   \n" + 
+	"							}); $(\"#visible_${name}\").trigger('refresh'); \n")
+				;
+			//TODO Добавить возможность вызова привязанных событий при выборе каждого элемента 
+		}
+
+		@Override
+			public String getSetActiveJS() {
+				
+				return 
+				"		if (val.value) { \n " + 
+				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
+				"				$( element ).prop( \"disabled\", false); \n	" +
+				"			}); \n " +
+				"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+				"		} else { \n " +
+				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
+				"				$( element ).prop( \"disabled\", true); \n	" +
+				"			}); \n " +
+				"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
+				"		} \n ";
+			}
+
+			@Override
+			public String getSetInactiveJS() {
+				
+				return 
+				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
+				"				$( element ).prop( \"disabled\", true); \n	" +
+				"			}); \n " +
+				"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n ";
+						
+			}
+
+}
