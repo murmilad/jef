@@ -199,63 +199,64 @@ public class FormGenerator extends TagGenerator {
 		
 		// При нажатии клавиши Enter вызываем нажатие кноеки "Далее"
 		buttonsRow.add(Tag.Type.SCRIPT, 
-										("				$( document ).ready(function() {         \n" + 
-								"					$(\":input\").keypress(function (e) {         \n" + 
-								"					      if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {         \n" + 
-								"					          $(\"#submit_button:visible\").click();         \n" + 
-								"					          return false;         \n" + 
-								"					      } else {         \n" + 
-								"					          return true;         \n" + 
-								"					      }         \n" + 
-								"					});         \n" + 
-								"					$(\"#submit_button\").on(\"click\", function(event){        \n" + 
-								"						var field_values = [];        \n" + 
-								"						$(':input[type=\"hidden\"]').each( function(index, element){        \n" + 
-								"							field_values[index] = $( this ).attr('id') +':i:'+ $( this ).val();        \n" + 
-								"						});        \n" + 
-								"						$(\"#background_overlay_wait_form\").show();                  \n" + 
-								"			            		$(\"#message_box_wait_form\").show();                  \n" + 
-								"						$(\"[id^='visible_']\").each(function(index, item){  \n" + 
-								"							$(this).removeClass(\"error\");  \n" + 
-								"						});  \n" + 
-								" 						ajax({               \n" + 
-								"					       	url: '${service}set',               \n" + 
-								"							data: {               \n" + 
-								"								city_id: params.city_id,                       \n" + 
-								"								application_id: params.application_id,                       \n" + 
-								"								parameters: field_values.join(':p:'),               \n" + 
-								"							},              \n" + 
-								"						       type: 'post',               \n" + 
-								"						       dataType: 'json',               \n" + 
-								"				            		contentType: 'application/x-www-form-urlencoded',               \n" + 
-								"						}, function (data) {  \n" + 
-								"								var hasErrors = false;      \n" + 
-								"								$(\"#error_list\").empty();    \n" + 
-								"								if (data.errors.parametersErrors != null) {   \n" + 
-								"									$.each(data.errors.parametersErrors, function(name, errors) {           \n" + 
-								"										$.each( errors, function(index, error) {      \n" + 
-								"											$(\"#visible_\" + name).addClass(\"error\");      \n" + 
-								"											$(\"<li/>\", {html: $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");       \n" + 
-								"											hasErrors = true; \n" + 
-								"										});   \n" + 
-								"									});   \n" + 
-								"								}   \n" + 
-								"								if (data.errors.formErrors != null) {   \n" + 
-								"									$.each( data.errors.formErrors, function(index, error) {      \n" + 
-								"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");       \n" + 
-								"										hasErrors = true; \n" + 
-								"									});   \n" + 
-								"								}   \n" + 
-								"								if (hasErrors) { \n" + 
-								"									$(\"#background_overlay_wait_form\").hide();       \n" + 
-								"	    							$(\"#message_box_wait_form\").hide();       \n" + 
-								"									window.scrollTo(0, 0);    \n" + 
-								"								} else { \n" + 
-								"									location.reload(); \n" + 
-								"								} \n" + 
-								"						});                 \n" + 
-								"					});                 \n" + 
-								"				});       \n")
+					("				$( document ).ready(function() {          \n" + 
+							"					$(\":input\").keypress(function (e) {          \n" + 
+							"					      if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {          \n" + 
+							"					          $(\"#submit_button:visible\").click();          \n" + 
+							"					          return false;          \n" + 
+							"					      } else {          \n" + 
+							"					          return true;          \n" + 
+							"					      }          \n" + 
+							"					});          \n" + 
+							"					$(\"#submit_button\").on(\"click\", function(event){         \n" + 
+							"						var field_values = [];         \n" + 
+							"						$(':input[type=\"hidden\"]').each( function(index, element){         \n" + 
+							"							field_values[index] = $( this ).attr('id') +':i:'+ $( this ).val();         \n" + 
+							"						});         \n" + 
+							"						$(\"#background_overlay_wait_form\").show();                   \n" + 
+							"			            		$(\"#message_box_wait_form\").show();                   \n" + 
+							"						$(\"[id^='visible_']\").each(function(index, item){   \n" + 
+							"							$(this).removeClass(\"error\");   \n" + 
+							"						});   \n" + 
+							" 						ajax({                \n" + 
+							"					       	url: '${service}set',                \n" + 
+							"							data: {                \n" + 
+							"								city_id: params.city_id,                        \n" + 
+							"								application_id: params.application_id,                        \n" + 
+							"								parameters: field_values.join(':p:'),                \n" + 
+							"							},               \n" + 
+							"						       type: 'post',                \n" + 
+							"						       dataType: 'json',                \n" + 
+							"				            		contentType: 'application/x-www-form-urlencoded',                \n" + 
+							"						}, function (data) {   \n" + 
+							"								var hasErrors = false;       \n" + 
+							"								$(\"#error_list\").empty();     \n" + 
+							"								if (data.errors.parametersErrors != null) {    \n" + 
+							"									$.each(data.errors.parametersErrors, function(name, errors) {            \n" + 
+							"										$.each( errors, function(index, error) {       \n" + 
+							"											$(\"#visible_\" + name).addClass(\"error\");       \n" + 
+							"											$(\"<li/>\", {html: $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");        \n" + 
+							"											hasErrors = true;  \n" + 
+							"										});    \n" + 
+							"									});    \n" + 
+							"								}    \n" + 
+							"								if (data.errors.formErrors != null) {    \n" + 
+							"									$.each( data.errors.formErrors, function(index, error) {       \n" + 
+							"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");        \n" + 
+							"										hasErrors = true;  \n" + 
+							"									});    \n" + 
+							"								}    \n" + 
+							"								if (hasErrors) {  \n" + 
+							"									$(\"#background_overlay_wait_form\").hide();        \n" + 
+							"	    							$(\"#message_box_wait_form\").hide();        \n" + 
+							"									window.scrollTo(0, 0);     \n" + 
+							"								} else { \n" + 
+							"									${redirect_js} \n" + 
+							"								}  \n" + 
+							"						});                  \n" + 
+							"					});                  \n" + 
+							"				});        \n")
+							.replace("${redirect_js}", !"".equals((String) getAttribute(TagGenerator.Attribute.REDIRECT))? "window.location.replace('" + (String) getAttribute(TagGenerator.Attribute.REDIRECT) + "');" : "location.reload();")
 							.replace("${service}", (String) getAttribute(TagGenerator.Attribute.SERVICE))
 		);
 		
