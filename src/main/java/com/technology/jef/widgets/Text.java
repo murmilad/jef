@@ -39,6 +39,7 @@ public class Text extends Widget {
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.TYPE, "text");
+				 put(Tag.Property.MAXLENGTH, (String) generator.getAttribute(TagGenerator.Attribute.MAXLENGTH));
 				 put(Tag.Property.AUTOCOMPLETE, "off");
 				 put(Tag.Property.PLACEHOLDER, (String) generator.getAttribute(TagGenerator.Attribute.HINT));
 				 put(Tag.Property.STYLE, "width: 99%;");
