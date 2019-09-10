@@ -60,7 +60,7 @@ public class AutoCompleteEditable extends Widget {
 			}
 			valueJS = valueJS.concat("];");
 
-			 parrent.add(Tag.Type.SCRIPT, 
+			parrent.add(Tag.Type.SCRIPT, 
 														("                      \n" + 
 	"		var ${name}_autocomplete_result;    \n" + 
 	"		var ${name}_autocomplete_typing;    \n" + 
@@ -174,7 +174,10 @@ public class AutoCompleteEditable extends Widget {
 			);
 
 			
-			return parrent.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+			Tag span = parrent.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.CLASS, "combobox");
+			}});
+			Tag input = span.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.TYPE, "search");
@@ -195,6 +198,14 @@ public class AutoCompleteEditable extends Widget {
 //					.replace("${children_list}", String.join(",", ((String[])generator.getAttribute(TagGenerator.Attribute.AJAX_VALUE_CHILD))))
 //					.replace("${name}", name));
 			}});
+			span.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.TABINDEX, "-1");
+				 put(Tag.Property.ID, "downarrow__" + name);
+				 put(Tag.Property.CLASS, "downarrow");
+				 put(Tag.Property.CLICK, "if ($(\"[data-field='${name}']:visible\").length === 0) {$('#visible_${name}').focus();} ".replace("${name}", name));
+			}});
+			
+			return input;
 		}
 
 		/**
