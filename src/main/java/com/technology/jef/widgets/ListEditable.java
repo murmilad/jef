@@ -2,12 +2,8 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.AttributesImpl;
-
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
-import com.technology.jef.widgets.Widget.ViewType;
 
 /**
 * Виджет Выпадающий список с возможностью выбрать значение "Иное"

@@ -3,8 +3,6 @@ package com.technology.jef.server.dto;
 import java.util.List;
 import java.util.Map;
 
-import com.technology.jef.server.form.FormData;
-
 
 public class ResultDto  extends StatusDto {
 

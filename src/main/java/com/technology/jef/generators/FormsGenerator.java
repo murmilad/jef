@@ -1,14 +1,6 @@
 package com.technology.jef.generators;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.codec.binary.Base64;
-
 import com.technology.jef.Tag;
-import com.technology.jef.generators.TagGenerator.Handler;
-import com.technology.jef.widgets.Widget;
 
 /**
 * Класс сборщика DOM модели уровня списка форм

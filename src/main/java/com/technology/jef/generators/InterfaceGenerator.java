@@ -3,7 +3,6 @@ package com.technology.jef.generators;
 import java.util.HashMap;
 
 import com.technology.jef.Tag;
-import com.technology.jef.generators.TagGenerator.Handler;
 
 /**
 * Класс сборщика DOM модели уровня интерфейса

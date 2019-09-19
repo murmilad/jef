@@ -2,7 +2,6 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.technology.jef.Tag;

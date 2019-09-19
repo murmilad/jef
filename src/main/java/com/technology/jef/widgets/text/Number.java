@@ -1,12 +1,5 @@
 package com.technology.jef.widgets.text;
 
-import java.util.HashMap;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.AttributesImpl;
-
-import com.technology.jef.Tag;
-import com.technology.jef.generators.TagGenerator;
 import com.technology.jef.widgets.Text;
 
 /**

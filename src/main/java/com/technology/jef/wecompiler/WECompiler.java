@@ -13,7 +13,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.technology.jef.DOMGenerator;
-import com.technology.jef.generators.TagGenerator;
 
 
 /**

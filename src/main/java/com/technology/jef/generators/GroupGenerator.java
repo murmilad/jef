@@ -2,7 +2,6 @@ package com.technology.jef.generators;
 
 import java.util.HashMap;
 
-import org.apache.commons.codec.binary.Base64;
 import org.xml.sax.Attributes;
 
 import com.technology.jef.Tag;

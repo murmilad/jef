@@ -31,4 +31,13 @@ public interface WebServiceConstant {
 	public static final int AUTHORIZATION_REQUIRED = 2;
 	public static final int SYSTEM_ERROR = 3;
 	public static final int REDIRECT_REQUIRED = 4;
+
+	//Form constants
+	
+	public static final String FORM_API  = "form_api";
+	public static final String APPLICATION_ID = "application_id";
+	public static final String CITY_ID = "city_id";
+	public static final String PARAMETER_NAME = "parameter_name";
+	public static final String PARAMETERS = "parameters";
+
 }

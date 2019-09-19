@@ -2,7 +2,6 @@ package com.technology.jef.server.form;
 
 import static com.technology.jef.server.serialize.SerializeConstant.*;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -190,8 +189,9 @@ public abstract class Form {
 
 		abstract public void saveForm(Integer applicationId, Integer operatorId, String iPAddress, String groupPrefix, Map<String, String> parameters)  throws ServiceException;
 		
-		protected Map<String, String> mapDaoParameters(Map<String, String> parameters) {
-			Map<String,String> daoParameters = new HashMap<String,String>();
+		protected RecordDto mapDaoParameters(Map<String, String> parameters) {
+
+			RecordDto daoParameters = new RecordDto();
 			
 			Map<String,String> parametersMap = getParametersMap();
 			for (String name : parametersMap.keySet()) {
