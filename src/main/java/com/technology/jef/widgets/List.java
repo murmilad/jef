@@ -5,6 +5,8 @@ import java.util.HashMap;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
+import static com.technology.jef.server.serialize.SerializeConstant.*;
+
 /**
 * Виджет Выпадающий список
 */
@@ -108,7 +110,7 @@ public class List extends Widget {
 					("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){           \n" + 
 			"						var valueJS = ${value_js}; \n" + 
 			"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
-			"						if (valueJS.match(/${force_ajax}:p:(none)?(:i:|$)/)){ return };           \n" + 
+			"						if (valueJS.match(/${force_ajax}${parameter_separator}(none)?(${value_separator}|$)/)){ return };           \n" + 
 			"						$(\"#visible_${child_name}\").unbind(\"focusin\");          \n" + 
 			"						$(\"#visible_${child_name}\").focusin( function() {          \n" + 
 			"							var value = $(\"#visible_${child_name}\").val(); \n" + 
@@ -191,6 +193,8 @@ public class List extends Widget {
 			"							});          \n" + 
 			"						});          \n" + 
 			"					}           \n")
+			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 			.replace("${force_ajax}", !"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)) ? ("(?!" + (String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX) + ")") : "")
 			.replace("${value_js}", valueJS)
 			.replace("${list_item_js}", getListItemJS().replace("${name}", name))

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
+import static com.technology.jef.server.serialize.SerializeConstant.*;
+
 /**
 * Виджет список выподающий на основе введенного текста
 */
@@ -147,12 +149,12 @@ public class AutoCompleteEditable extends Widget {
 	"							return false;                      \n" + 
 	"						}                      \n" + 
 	"						// динам параметры для формирования GET к ajax - сам запрос                      \n" + 
-	"						params['parameters']='${name_api}:p:' + $('#visible_${name_api}'+group_postfix).val();                 \n" + 
+	"						params['parameters']='${name_api}${parameter_separator}' + $('#visible_${name_api}'+group_postfix).val();                 \n" + 
 	"						// модифицируем params чтобы передать реальные значения параметров - parent                     \n" + 
 	"						${value_js}          \n" + 
 	"						for (var i=2; i<parent.length+2; i++){                     \n" + 
-	"							params['parameters']+=(i==2 ? ':i:' : '') + parent[i-2] + ':p:' +$('#'+parent[i-2]+group_postfix).val() +                 \n" + 
-	"								(i<parent.length+1 ? ':i:' : '');                     \n" + 
+	"							params['parameters']+=(i==2 ? '${value_separator}' : '') + parent[i-2] + '${parameter_separator}' +$('#'+parent[i-2]+group_postfix).val() +                 \n" + 
+	"								(i<parent.length+1 ? '${value_separator}' : '');                     \n" + 
 	"						}    \n" + 
 	"						if (!${name}_autocomplete_result) {    \n" + 
 	"							$('#background_overlay_wait_${name}').show();                      \n" + 
@@ -161,6 +163,8 @@ public class AutoCompleteEditable extends Widget {
 	"					},                      \n" + 
 	"			});                      \n" + 
 	"		});          \n")
+						.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+						.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 						.replace("${value_js}", valueJS)
 						.replace("${name}", name)
 						.replace("${group_prefix}", prefix)

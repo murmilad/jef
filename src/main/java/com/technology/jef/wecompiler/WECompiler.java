@@ -54,14 +54,21 @@ public class WECompiler {
 		}
 
 		try {
-			compile(new File(args[0]));
+			if (args.length == 2) {
+				compile(args[0], args[1]);
+				
+			} else if (args.length == 1) {
+				compile(args[0], "src/html/");
+			}
 		} catch (Exception e) {
 			showError(e.getMessage());
 		}
 	}
 
-	private static void compile(File srcFile) throws Exception {
-		if (srcFile.isFile()) {
+	private static void compile(String srcFilePath, String destFilePath) {
+		File srcFile = new File(srcFilePath);
+
+		if ( srcFile.isFile()) {
 			// Передали 1 файл
 			String srcFileName = srcFile.getAbsolutePath();
 
@@ -77,7 +84,6 @@ public class WECompiler {
 	                // Метод вызывается когда SAXParser "натыкается" на интерфейс
 	                @Override
 	                public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-                		System.out.println(localName +"," + qName + "," + attributes.getValue("id"));
 
         				// Нашли тег интерфейса
 	                	if (qName.equals("interface")) {
@@ -87,7 +93,7 @@ public class WECompiler {
 
 							try {
 		        				PrintWriter outHTML;
-								outHTML = new PrintWriter(srcFileName.replaceFirst("[/\\\\]src[/\\\\].+$", "/src/html/" + attributes.getValue("id")) + ".html");
+								outHTML = new PrintWriter(destFilePath + "/" +  attributes.getValue("id") + ".html");
 		        				outHTML.println(generator.getHtml());
 		        				outHTML.close();
 							} catch (FileNotFoundException e) {
@@ -95,7 +101,7 @@ public class WECompiler {
 							}
 
 							try {
-		        				PrintWriter outJS = new PrintWriter(srcFileName.replaceFirst("[/\\\\]src[/\\\\].+$", "/src/html/" + attributes.getValue("id")) + ".js");
+		        				PrintWriter outJS = new PrintWriter(destFilePath + "/" +  attributes.getValue("id") + ".js");
 		        				outJS.println(generator.getJs());
 		        				outJS.close();
 							} catch (FileNotFoundException e) {
@@ -123,7 +129,7 @@ public class WECompiler {
 
 			if (files != null) {
 				for (File file : files) {
-					compile(file);
+					compile(file.getPath(), destFilePath);
 				}
 			}
 		}

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import com.technology.jef.server.dto.FormDto;
 import com.technology.jef.server.dto.ListItemDto;
+import com.technology.jef.server.dto.OptionDto;
 import com.technology.jef.server.dto.ResultDto;
 import com.technology.jef.server.exceptions.ServiceException;
 import com.technology.jef.server.form.parameters.FormParameters;
@@ -272,7 +273,11 @@ public class Service<F extends FormFactory> {
 		
 		Form form = factory.getForm(formApi);
 		
-		return ListItemDto.asList(form.getList(applicationId, operatorId, cityId, parameterName));
+		List<OptionDto> list = form.getList(applicationId, operatorId, cityId, parameterName);
+		if (list == null) {
+			 throw new ServiceException(form.getClass() + " getList(applicationId, operatorId, cityId, parameterName) function is not definded for parameter: '" + parameterName + "'");
+		}
+		return ListItemDto.asList(list);
 	}
 
 	/**
@@ -295,6 +300,11 @@ public class Service<F extends FormFactory> {
 		
 		
 		Form form = factory.getForm(formApi);
+
+		List<OptionDto> list = form.getList(applicationId, operatorId, cityId, parameterName);
+		if (list == null) {
+			 throw new ServiceException(form.getClass() + " getList(applicationId, operatorId, cityId, parameterName, parameters) function is not definded for parameter: '" + parameterName + "'");
+		}
 		
 		return ListItemDto.asList(form.getList(applicationId, operatorId, cityId, parameterName, parameters));
 	}
@@ -320,8 +330,12 @@ public class Service<F extends FormFactory> {
 		
 		
 		Form form = factory.getForm(formApi);
-		
-		return form.getValue(applicationId, operatorId, cityId, parameterName, parameters);
+		String valueData = form.getValue(applicationId, operatorId, cityId, parameterName, parameters);
+		if (valueData == null) {
+			 throw new ServiceException(form.getClass() + " getValue(applicationId, operatorId, cityId, parameterName, parameters) function is not definded for parameter: '" + parameterName + "'");
+		}
+
+		return valueData;
 	}
 
 	/**
@@ -344,8 +358,13 @@ public class Service<F extends FormFactory> {
 		
 		
 		Form form = factory.getForm(formApi);
-		
-		return form.isVisible(applicationId, operatorId, cityId, parameterName, parameters);
+		Boolean isVisible = form.isVisible(applicationId, operatorId, cityId, parameterName, parameters);
+
+		if (isVisible == null) {
+			 throw new ServiceException(form.getClass() + " isVisible(applicationId, operatorId, cityId, parameterName, parameters) function is not definded for parameter: '" + parameterName + "'");
+		}
+
+		return isVisible;
 	}
 
 	/**
@@ -368,8 +387,12 @@ public class Service<F extends FormFactory> {
 		
 		
 		Form form = factory.getForm(formApi);
+		Boolean isActive = form.isActive(applicationId, operatorId, cityId, parameterName, parameters);
+		if (isActive == null) {
+			 throw new ServiceException(form.getClass() + " isActive(applicationId, operatorId, cityId, parameterName, parameters) function is not definded for parameter: '" + parameterName + "'");
+		}
 		
-		return form.isActive(applicationId, operatorId, cityId, parameterName, parameters);
+		return isActive;
 	}
 
 	/**

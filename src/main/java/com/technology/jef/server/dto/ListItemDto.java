@@ -17,7 +17,7 @@ public class ListItemDto {
 	}
 	
 	public ListItemDto(OptionDto item){
-		this((String)item.getValue(), item.getName());
+		this(item.getValue().toString(), item.getName());
 	}
 
 	public String getId() {

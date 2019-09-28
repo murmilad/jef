@@ -7,6 +7,8 @@ import org.xml.sax.helpers.AttributesImpl;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
+import static com.technology.jef.server.serialize.SerializeConstant.*;
+
 /**
 * Абстрактный класс для виджетов
 */
@@ -27,6 +29,7 @@ public abstract class Widget {
 	   */
 		public static enum Type {
 			TEXT,
+			ANYTEXT,
 			TEXTAREA,
 			NUMBER,
 			DATE,
@@ -293,13 +296,15 @@ public abstract class Widget {
 				String valueJS = getValueJS((String[])currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_VISIBLE_PARRENT), prefix);
 //TODO Нужно убрать блок	ignoreEmptyJS создав евент выключения видимости поля но учесть при этом отчистку списочных полей	
 				String ignoreEmptyJS =
-						("			if (valueJS.match(/${force_ajax}:p:(none)?(:i:|$)/)) {\n" + 
+						("			if (valueJS.match(/${force_ajax}${parameter_separator}(none)?(${value_separator}|$)/)) {\n" + 
 								"				$('#tr_${child_name}').css(\"display\", 'none');\n" + 
 								"				$('#visible_${child_name}').val('').change();\n" + 
 								"				$('#${child_name}').attr('invisible', true);\n" + 
 								"				$('#tr_${child_name}').trigger('refresh');\n" + 
 								"				return;" + 
 								"			}")
+								.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+								.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 								.replace("${value_js}", valueJS)
 								.replace("${child_name}", currentGenerator.getAttribute(TagGenerator.Attribute.ID) + prefix);
 
@@ -439,7 +444,7 @@ public abstract class Widget {
 								("					function onChange${parrent_name}_${child_name}_ct_ajax_${request_type}(${parrent_name}List){      \n" + 
 				"						var valueJS = ${value_js};    \n" + 
 				"						var isLoading = false;    \n" + 
-				"						if (valueJS.match(/${force_ajax}:p:(none)?(:i:|$)/)){ return };           \n" + 
+				"						if (valueJS.match(/${force_ajax}${parameter_separator}(none)?(${value_separator}|$)/)){ return };           \n" + 
 				"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
 				"						$(\"#visible_${child_name}\").trigger('refresh');      \n" + 
 				"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");      \n" + 
@@ -521,6 +526,8 @@ public abstract class Widget {
 				"								$(\"#visible_${child_name}\").trigger('refresh');      \n" + 
 				"						});   \n" + 
 				" }      \n")
+			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 			.replace("${force_ajax}", !"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)) ? ("(?!" + (String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX) + ")") : "")
 			.replace("${clean_value_js}", initValueJS)
 			.replace("${set_value_js}", setValueJS)
@@ -550,10 +557,11 @@ public abstract class Widget {
 			
 			for (Integer i = 0; i < parrentElements.length; i++) {
 				String parrentElementName = parrentElements[i];
-				valueJS = valueJS.concat("'${parrent_name_api_value_js}' + ':p:' + encodeURIComponent($('#${parrent_name_value_js}').val())${divider}"
+				valueJS = valueJS.concat("'${parrent_name_api_value_js}' + '${parameter_separator}' + encodeURIComponent($('#${parrent_name_value_js}').val())${divider}"
+				.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 				.replace("${parrent_name_api_value_js}", parrentElementName)
 				.replace("${parrent_name_value_js}", parrentElementName + prefix))
-				.replace("${divider}",i < parrentElements.length-1 ? "+ ':i:' +" : "");
+				.replace("${divider}",i < parrentElements.length-1 ? "+ '" + PARAMETER_NAME_VALUE_SEPARATOR + "' +" : "");
 				
 			}
 			return valueJS;

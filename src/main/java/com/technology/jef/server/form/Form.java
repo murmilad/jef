@@ -45,7 +45,10 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		abstract public List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId, String parameterName) throws ServiceException;
+		public List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId, String parameterName) throws ServiceException{
+			// TODO Auto-generated method stub
+			return null;
+		};
 
 		/**
 		 * Метод интерактивной загрузки списочных элементов параметра формы
@@ -57,7 +60,10 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		abstract public List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId,String parameterName, Map<String,String> parameters) throws ServiceException;
+		public List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId,String parameterName, Map<String,String> parameters) throws ServiceException{
+			// TODO Auto-generated method stub
+			return null;
+		};
 
 		/**
 		 * Метод интерактивной загрузки значения параметра формы
@@ -69,7 +75,10 @@ public abstract class Form {
 		 * @return значение параметра формы
 		 * @throws ServiceException
 		 */
-		abstract public String getValue(Integer applicationId, Integer operatorId, Integer cityId, String parameterName, Map<String,String> parameters) throws ServiceException;
+		 public String getValue(Integer applicationId, Integer operatorId, Integer cityId, String parameterName, Map<String,String> parameters) throws ServiceException{
+			// TODO Auto-generated method stub
+			return null;
+		};
 
 		/**
 		 * Метод интерактивной загрузки признака видимости параметра формы
@@ -81,7 +90,10 @@ public abstract class Form {
 		 * @return признак видимости True видим, False не видим
 		 * @throws ServiceException
 		 */
-		abstract public Boolean isVisible(Integer applicationId, Integer operatorId, Integer cityId, String parameterName, Map<String,String> parameters) throws ServiceException;
+		public Boolean isVisible(Integer applicationId, Integer operatorId, Integer cityId, String parameterName, Map<String,String> parameters) throws ServiceException{
+			// TODO Auto-generated method stub
+			return null;
+		};
 
 		/**
 		 * Метод интерактивной загрузки признака активности параметра формы
@@ -93,7 +105,10 @@ public abstract class Form {
 		 * @return признак активности True активен, False не активен
 		 * @throws ServiceException
 		 */
-		abstract public Boolean isActive(Integer applicationId, Integer operatorId, Integer cityId, String parameterName, Map<String,String> parameters) throws ServiceException;
+		public Boolean isActive(Integer applicationId, Integer operatorId, Integer cityId, String parameterName, Map<String,String> parameters) throws ServiceException{
+			// TODO Auto-generated method stub
+			return null;
+		};
 		
 		/**
 		 * Метод проверки параметра формы, который вызывается непосредственно перед сохранением

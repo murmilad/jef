@@ -5,6 +5,8 @@ import java.util.HashMap;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
+import static com.technology.jef.server.serialize.SerializeConstant.*;
+
 /**
 * Виджет всплывающий список
 */
@@ -93,10 +95,12 @@ public class PopUpList extends List {
 			);
 			
 			String ignoreEmptyJS = 
-					("			if ((valueJS).match(/${force_ajax}:p:(none)?(:i:|$)/)) {\n" + 
+					("			if ((valueJS).match(/${force_ajax}${parameter_separator}(none)?(${value_separator}|$)/)) {\n" + 
 							"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
 							"							return; \n" + 
 							"						} \n")
+							.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+							.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 							.replace("${child_name}", currentGenerator.getAttribute(TagGenerator.Attribute.ID) + prefix);
 
 			if (!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX))) {

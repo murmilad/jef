@@ -1,5 +1,6 @@
 package com.technology.jef.widgets;
 
+import com.technology.jef.widgets.text.AnyText;
 import com.technology.jef.widgets.text.Date;
 import com.technology.jef.widgets.text.Email;
 import com.technology.jef.widgets.text.Inn;
@@ -106,6 +107,9 @@ public class WidgetFactory {
 			break;
 		case AUTO_COMPLETE_ADDRESS:
 			widget = new AutoCompleteAddress();
+			break;
+		case ANYTEXT:
+			widget = new AnyText();
 			break;
 		}
 		
