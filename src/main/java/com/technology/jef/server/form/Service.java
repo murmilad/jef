@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.technology.jef.server.dto.FormDto;
 import com.technology.jef.server.dto.ListItemDto;
@@ -223,7 +224,7 @@ public class Service<F extends FormFactory> {
 		Map<String, List<String>> formParameterErrors = form.checkForm(applicationId, operatorId, groupPrefix, checkParametersMap);
 		
 		for (String parameterName: formParameterErrors.keySet()){
-			if ("form".equals(parameterName) || !form.getParametersMap().containsKey(parameterName)) {
+			if ("form".equals(parameterName) || !form.getFieldsMap().containsKey(parameterName)) {
 				formErrors.addAll(formParameterErrors.get(parameterName));
 			} else {
 				parameterErrors.put(parameterName, formParameterErrors.get(parameterName));
@@ -273,11 +274,7 @@ public class Service<F extends FormFactory> {
 		
 		Form form = factory.getForm(formApi);
 		
-		List<OptionDto> list = form.getList(applicationId, operatorId, cityId, parameterName);
-		if (list == null) {
-			 throw new ServiceException(form.getClass() + " getList(applicationId, operatorId, cityId, parameterName) function is not definded for parameter: '" + parameterName + "'");
-		}
-		return ListItemDto.asList(list);
+		return ListItemDto.asList(form.getList(applicationId, operatorId, cityId, parameterName));
 	}
 
 	/**
@@ -301,10 +298,6 @@ public class Service<F extends FormFactory> {
 		
 		Form form = factory.getForm(formApi);
 
-		List<OptionDto> list = form.getList(applicationId, operatorId, cityId, parameterName);
-		if (list == null) {
-			 throw new ServiceException(form.getClass() + " getList(applicationId, operatorId, cityId, parameterName, parameters) function is not definded for parameter: '" + parameterName + "'");
-		}
 		
 		return ListItemDto.asList(form.getList(applicationId, operatorId, cityId, parameterName, parameters));
 	}
@@ -330,12 +323,8 @@ public class Service<F extends FormFactory> {
 		
 		
 		Form form = factory.getForm(formApi);
-		String valueData = form.getValue(applicationId, operatorId, cityId, parameterName, parameters);
-		if (valueData == null) {
-			 throw new ServiceException(form.getClass() + " getValue(applicationId, operatorId, cityId, parameterName, parameters) function is not definded for parameter: '" + parameterName + "'");
-		}
 
-		return valueData;
+		return form.getValue(applicationId, operatorId, cityId, parameterName, parameters);
 	}
 
 	/**
@@ -358,13 +347,8 @@ public class Service<F extends FormFactory> {
 		
 		
 		Form form = factory.getForm(formApi);
-		Boolean isVisible = form.isVisible(applicationId, operatorId, cityId, parameterName, parameters);
 
-		if (isVisible == null) {
-			 throw new ServiceException(form.getClass() + " isVisible(applicationId, operatorId, cityId, parameterName, parameters) function is not definded for parameter: '" + parameterName + "'");
-		}
-
-		return isVisible;
+		return form.isVisible(applicationId, operatorId, cityId, parameterName, parameters);
 	}
 
 	/**
@@ -387,12 +371,8 @@ public class Service<F extends FormFactory> {
 		
 		
 		Form form = factory.getForm(formApi);
-		Boolean isActive = form.isActive(applicationId, operatorId, cityId, parameterName, parameters);
-		if (isActive == null) {
-			 throw new ServiceException(form.getClass() + " isActive(applicationId, operatorId, cityId, parameterName, parameters) function is not definded for parameter: '" + parameterName + "'");
-		}
 		
-		return isActive;
+		return form.isActive(applicationId, operatorId, cityId, parameterName, parameters);
 	}
 
 	/**
@@ -428,5 +408,21 @@ public class Service<F extends FormFactory> {
 		return new ResultDto(formErrors != null ? formErrors : new LinkedList<String>(), parameterErrors);
 	}
 
+	  public static void setListData(String listString, SetListHandler setListHandler, ClearListHandler clearListHandler) throws ServiceException {
+		  	clearListHandler.handle();
+			for (String id: listString.split("\\" + LIST_SEPARATOR)) {
+				if (!"".equals(id)) {
+					setListHandler.handle(id);
+				}
+			}
+	  }
+
+
+	public static String getListData(GetListHandler getListHandler) throws ServiceException {
+		
+		List<OptionDto> list = getListHandler.handle();
+
+		return String.join(LIST_SEPARATOR, list.stream().map((OptionDto item) -> item.getValue().toString()).collect(Collectors.toList()));
+	}
 
 }

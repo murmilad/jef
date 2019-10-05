@@ -76,7 +76,7 @@ public class List extends Widget {
 			public String getCleanValueJS() {
 				
 				return 		("							$(\"#visible_${child_name}\").empty();  \n" + 
-						"							$(\"<option/>\", {'value': 'none', html: '---'}).appendTo(\"#visible_${child_name}\");  \n" + 
+						"							$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");  \n" + 
 						"						  	if ($(\"#other_${child_name}\").length > 0) {  \n" + 
 						"								$(\"<option/>\", {'value': 'other', html: 'Иное', 'selected': $(\"#other_${child_name}\").value }).appendTo(\"#visible_${child_name}\");  \n" + 
 						"						  	}  \n" + 
@@ -110,12 +110,12 @@ public class List extends Widget {
 					("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){           \n" + 
 			"						var valueJS = ${value_js}; \n" + 
 			"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
-			"						if (valueJS.match(/${force_ajax}${parameter_separator}(none)?(${value_separator}|$)/)){ return };           \n" + 
+			"						if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)){ return };           \n" + 
 			"						$(\"#visible_${child_name}\").unbind(\"focusin\");          \n" + 
 			"						$(\"#visible_${child_name}\").focusin( function() {          \n" + 
 			"							var value = $(\"#visible_${child_name}\").val(); \n" + 
 			"							$(\"#visible_${child_name}\").empty();           \n" + 
-			"							$(\"<option/>\", {'value': 'none', html: 'Загрузка...'}).appendTo(\"#visible_${child_name}\");           \n" + 
+			"							$(\"<option/>\", {'value': '', html: 'Загрузка...'}).appendTo(\"#visible_${child_name}\");           \n" + 
 			"							$(\"#visible_${child_name}\").trigger('refresh');           \n" + 
 			"							$(\"#background_overlay_wait_${parrent_name}\").show();           \n" + 
 			"		            				$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
@@ -152,8 +152,8 @@ public class List extends Widget {
 			"									if (data.data && data.data.length > 0){           \n" + 
 			"										if (\"${hide_if_empty}\"){           \n" + 
 			"											${child_name}.css(\"display\", 'none');           \n" + 
-			"											$('#visible_${child_name}').val('none');           \n" + 
-			"											$('#${child_name}').val('none');           \n" + 
+			"											$('#visible_${child_name}').val('');           \n" + 
+			"											$('#${child_name}').val('');           \n" + 
 			"											$('#is_empty_${child_name}').val(1);           \n" + 
 			"										}else{           \n" + 
 			"											if ($('#${child_name}').attr('invisible') == 'false') {           \n" + 
@@ -221,7 +221,7 @@ public class List extends Widget {
 	   */
 		String getListItemJS() {
 			return
-							("		$(\"<option/>\", {'value': 'none', html: '---'}).appendTo(\"#visible_${name}\");   \n" + 
+							("		$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${name}\");   \n" + 
 	"		$.each(data.data, function(key, val) {   \n" + 
 	"			$(\"<option/>\", {'value': val.id, html: val.name, 'selected': val.value }).appendTo(\"#visible_${name}\");   \n" + 
 	"			if (val.value) {  \n" + 
@@ -286,7 +286,7 @@ public class List extends Widget {
 			public String getSetValueJS() {
 				// Добавить условие для загрузки зависимых списков (пока работает только для незаполненных ранее)
 				return  	("	if (isLoading) {  \n" + 
-							"		$(\"<option/>\", {'value': 'none', html: '---'}).appendTo(\"#visible_${child_name}\");    \n" + 
+							"		$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");    \n" + 
 							"		$(\"<option/>\", {'value': data.value, html: data.name, 'selected': true }).appendTo(\"#visible_${child_name}\");    \n" + 
 							"		$(\"#visible_${child_name}\").trigger('refresh');  \n" + 
 							"		$(\"#visible_${child_name}\").val(data.value).change(); \n" + 

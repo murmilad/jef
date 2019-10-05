@@ -33,8 +33,11 @@ public class AutoCompleteEditable extends Widget {
 		   */
 			public String getCleanValueJS() {
 				
-				return 	("	$('#visible_${child_name}').val('');  \n" + 
-						"	${child_name}_autocomplete_result = null;\n ");
+				return 		(" \n" + 
+	"	$('#visible_${child_name}').val('---');   \n" + 
+	"	$('#${child_name}').val('');   \n" + 
+	"	${child_name}_autocomplete_result = null; \n" + 
+	" ");
 			}
 
 	  /**
@@ -107,7 +110,7 @@ public class AutoCompleteEditable extends Widget {
 	"								contentType: 'application/x-www-form-urlencoded',                   \n" + 
 	"								dataType: 'json',            \n" + 
 	"							}, function (response) {        \n" + 
-	"								response.data.unshift({name: '---', id: 'none'}) \n" + 
+	"								response.data.unshift({name: '---', id: ''}) \n" + 
 	"								${name}_autocomplete_result = response;    \n" + 
 	"								$('#background_overlay_wait_${name}').hide();                      \n" + 
 	"								$('#message_box_wait_${name}').hide();                      \n" + 
@@ -149,12 +152,12 @@ public class AutoCompleteEditable extends Widget {
 	"							return false;                      \n" + 
 	"						}                      \n" + 
 	"						// динам параметры для формирования GET к ajax - сам запрос                      \n" + 
-	"						params['parameters']='${name_api}${parameter_separator}' + $('#visible_${name_api}'+group_postfix).val();                 \n" + 
+	"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}'+group_postfix).val();                 \n" + 
 	"						// модифицируем params чтобы передать реальные значения параметров - parent                     \n" + 
 	"						${value_js}          \n" + 
 	"						for (var i=2; i<parent.length+2; i++){                     \n" + 
-	"							params['parameters']+=(i==2 ? '${value_separator}' : '') + parent[i-2] + '${parameter_separator}' +$('#'+parent[i-2]+group_postfix).val() +                 \n" + 
-	"								(i<parent.length+1 ? '${value_separator}' : '');                     \n" + 
+	"							params['parameters']+=(i==2 ? '${parameter_separator}' : '') + parent[i-2] + '${value_separator}' +$('#'+parent[i-2]+group_postfix).val() +                 \n" + 
+	"								(i<parent.length+1 ? '${parameter_separator}' : '');                     \n" + 
 	"						}    \n" + 
 	"						if (!${name}_autocomplete_result) {    \n" + 
 	"							$('#background_overlay_wait_${name}').show();                      \n" + 
@@ -167,7 +170,6 @@ public class AutoCompleteEditable extends Widget {
 						.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 						.replace("${value_js}", valueJS)
 						.replace("${name}", name)
-						.replace("${group_prefix}", prefix)
 						.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))
 						.replace("${id}", name)
 						.replace("${name_api}", nameAPI)
@@ -236,9 +238,14 @@ public class AutoCompleteEditable extends Widget {
 		   */
 			public String getSetValueJS() {
 				
-				return  	" \n" + 
-				"	$('#visible_${child_name}').val(data.name).blur(); \n" + 
-				"	$('#${child_name}').val(data.value); \n"  
+				return  		("  \n" + 
+	"	if (data.value != '') { \n" + 
+	"		$('#visible_${child_name}').val(data.name).blur();  \n" + 
+	"		$('#${child_name}').val(data.value);  \n" + 
+	"	} else { \n" + 
+	"		$('#visible_${child_name}').val('---').blur();  \n" + 
+	"		$('#${child_name}').val('');  \n" + 
+	"	} \n")
 				;
 			}
 

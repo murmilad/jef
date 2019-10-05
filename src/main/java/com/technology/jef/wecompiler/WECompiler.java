@@ -54,18 +54,18 @@ public class WECompiler {
 		}
 
 		try {
-			if (args.length == 2) {
-				compile(args[0], args[1]);
+			if (args.length == 3) {
+				compile(args[0], args[1], args[2]);
 				
-			} else if (args.length == 1) {
-				compile(args[0], "src/html/");
+			} else if (args.length < 3) {
+				compile(args[0], "src/html/", "src/html/");
 			}
 		} catch (Exception e) {
 			showError(e.getMessage());
 		}
 	}
 
-	private static void compile(String srcFilePath, String destFilePath) {
+	private static void compile(String srcFilePath, String destHtmlPath, String destJsPath) {
 		File srcFile = new File(srcFilePath);
 
 		if ( srcFile.isFile()) {
@@ -93,7 +93,7 @@ public class WECompiler {
 
 							try {
 		        				PrintWriter outHTML;
-								outHTML = new PrintWriter(destFilePath + "/" +  attributes.getValue("id") + ".html");
+								outHTML = new PrintWriter(destHtmlPath + "/" +  attributes.getValue("id") + ".html");
 		        				outHTML.println(generator.getHtml());
 		        				outHTML.close();
 							} catch (FileNotFoundException e) {
@@ -101,7 +101,7 @@ public class WECompiler {
 							}
 
 							try {
-		        				PrintWriter outJS = new PrintWriter(destFilePath + "/" +  attributes.getValue("id") + ".js");
+		        				PrintWriter outJS = new PrintWriter(destJsPath + "/" +  attributes.getValue("id") + ".js");
 		        				outJS.println(generator.getJs());
 		        				outJS.close();
 							} catch (FileNotFoundException e) {
@@ -129,7 +129,7 @@ public class WECompiler {
 
 			if (files != null) {
 				for (File file : files) {
-					compile(file.getPath(), destFilePath);
+					compile(file.getPath(), destHtmlPath, destJsPath);
 				}
 			}
 		}

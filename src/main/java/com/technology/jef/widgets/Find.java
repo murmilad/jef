@@ -127,7 +127,7 @@ public class Find extends Widget {
 			
 				"						$(\"#search_result_${name}\").empty(); \n" + 
 				"						$(\"#search_result_${name}\").attr(\"disabled\",\"disabled\"); \n" + 
-				"						$(\"<option/>\", {'value': 'none', html: 'Загрузка...'}).appendTo(\"#search_result_${name}\"); \n" + 
+				"						$(\"<option/>\", {'value': '', html: 'Загрузка...'}).appendTo(\"#search_result_${name}\"); \n" + 
 				"						$(\"#search_result_${name}\").trigger('refresh'); \n" + 
 			
 				"						getJSON(\"/${service}/get_value?child=${name_api}&${value_js}&api=${api}\" \n" + 
@@ -195,7 +195,7 @@ public class Find extends Widget {
 			for (Integer i = 0; i < ajax_parrent_list.length; i++) {
 				String subList = 
 					("						if (value_array[${index}] == \"\") { \n" + 
-					"							value_array[${index}] = \"none\" \n" + 
+					"							value_array[${index}] = \"\" \n" + 
 					"						} \n" + 
 				
 					"						$(\"#visible_${result_name}${prefix}\").val(value_array[${index}]); \n" + 
@@ -207,7 +207,7 @@ public class Find extends Widget {
 				if (i+1 < ajax_parrent_list.length) {
 					subList =
 						("							if (value_array[${index}] == \"\") { \n" + 
-						"								value_array[${index}] = \"none\" \n" + 
+						"								value_array[${index}] = \"\" \n" + 
 						"							} \n" + 
 					
 						"							$(\"#visible_${child_result_name}${prefix}\").on( \"set_find_result\", function() { \n" + 

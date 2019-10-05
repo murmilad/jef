@@ -296,7 +296,7 @@ public abstract class Widget {
 				String valueJS = getValueJS((String[])currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_VISIBLE_PARRENT), prefix);
 //TODO Нужно убрать блок	ignoreEmptyJS создав евент выключения видимости поля но учесть при этом отчистку списочных полей	
 				String ignoreEmptyJS =
-						("			if (valueJS.match(/${force_ajax}${parameter_separator}(none)?(${value_separator}|$)/)) {\n" + 
+						("			if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)) {\n" + 
 								"				$('#tr_${child_name}').css(\"display\", 'none');\n" + 
 								"				$('#visible_${child_name}').val('').change();\n" + 
 								"				$('#${child_name}').attr('invisible', true);\n" + 
@@ -444,7 +444,7 @@ public abstract class Widget {
 								("					function onChange${parrent_name}_${child_name}_ct_ajax_${request_type}(${parrent_name}List){      \n" + 
 				"						var valueJS = ${value_js};    \n" + 
 				"						var isLoading = false;    \n" + 
-				"						if (valueJS.match(/${force_ajax}${parameter_separator}(none)?(${value_separator}|$)/)){ return };           \n" + 
+				"						if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)){ return };           \n" + 
 				"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
 				"						$(\"#visible_${child_name}\").trigger('refresh');      \n" + 
 				"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");      \n" + 
@@ -469,7 +469,7 @@ public abstract class Widget {
 				"								parameters: valueJS,     \n" + 
 				"								city_id: params.city_id,                \n" + 
 				"								application_id: params.application_id,                \n" + 
-				"								rnd: '${rnd}',     \n" + 
+				"								rnd: Math.floor(Math.random() * 10000),     \n" + 
 				"							},     \n" + 
 				"					            type: 'post',     \n" + 
 				"					            dataType: 'json',     \n" + 
@@ -557,13 +557,21 @@ public abstract class Widget {
 			
 			for (Integer i = 0; i < parrentElements.length; i++) {
 				String parrentElementName = parrentElements[i];
-				valueJS = valueJS.concat("'${parrent_name_api_value_js}' + '${parameter_separator}' + encodeURIComponent($('#${parrent_name_value_js}').val())${divider}"
-				.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+				valueJS = valueJS.concat("'${parrent_name_api_value_js}' + '${value_separator}' + encodeURIComponent($('#${parrent_name_value_js}').val())${divider}"
+				.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 				.replace("${parrent_name_api_value_js}", parrentElementName)
 				.replace("${parrent_name_value_js}", parrentElementName + prefix))
-				.replace("${divider}",i < parrentElements.length-1 ? "+ '" + PARAMETER_NAME_VALUE_SEPARATOR + "' +" : "");
+				.replace("${divider}",i < parrentElements.length-1 ? "+ '" + PARAMETER_SEPARATOR + "' +" : "");
 				
 			}
+			valueJS = valueJS.concat(" \n" + 
+					"	+ '${parameter_separator}' + Object.keys(params).filter(function callback(currentValue, index, array) {  \n" + 
+					"	    return currentValue != \"\"; \n" + 
+					"	}).map(function callback(currentValue, index, array) {  \n" + 
+					"	    return currentValue + \"${value_separator}\"  + params[currentValue]; \n" + 
+					"	}).join(\"${parameter_separator}\") \n"
+			).replace("${parameter_separator}", PARAMETER_SEPARATOR)
+			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR);
 			return valueJS;
 		}
 	

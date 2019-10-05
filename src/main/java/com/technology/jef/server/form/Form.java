@@ -45,10 +45,23 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		public List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId, String parameterName) throws ServiceException{
-			// TODO Auto-generated method stub
-			return null;
-		};
+		protected List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId, String parameterName)
+				throws ServiceException {
+			List<OptionDto> list = new LinkedList<OptionDto>();
+
+			Map<String,String> parameters = new HashMap<String,String>();
+			parameters.put("operator_id", String.valueOf(operatorId));
+			parameters.put("application_id", String.valueOf(applicationId));
+
+			if (getFieldsMap().containsKey(parameterName)) {
+				list = getFieldsMap().get(parameterName).getListHandler(parameterName, parameters);
+			} else {
+				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
+			}
+			
+			return list;
+		}
+
 
 		/**
 		 * Метод интерактивной загрузки списочных элементов параметра формы
@@ -60,10 +73,22 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		public List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId,String parameterName, Map<String,String> parameters) throws ServiceException{
-			// TODO Auto-generated method stub
-			return null;
-		};
+		protected  List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId, 
+				String parameterName, Map<String, String> parameters) throws ServiceException {
+
+			List<OptionDto> list = new LinkedList<OptionDto>();
+
+			parameters.put("operator_id", String.valueOf(operatorId));
+			parameters.put("application_id", String.valueOf(applicationId));
+
+			if (getFieldsMap().containsKey(parameterName)) {
+				list = getFieldsMap().get(parameterName).getListInteractiveHandler(parameterName, parameters);
+			} else {
+				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
+			}
+			
+			return list;
+		}
 
 		/**
 		 * Метод интерактивной загрузки значения параметра формы
@@ -75,10 +100,23 @@ public abstract class Form {
 		 * @return значение параметра формы
 		 * @throws ServiceException
 		 */
-		 public String getValue(Integer applicationId, Integer operatorId, Integer cityId, String parameterName, Map<String,String> parameters) throws ServiceException{
-			// TODO Auto-generated method stub
-			return null;
-		};
+		protected  String getValue(Integer applicationId, Integer operatorId, Integer cityId,
+				String parameterName, Map<String, String> parameters) throws ServiceException {
+
+			String value = "";
+			
+			parameters.put("operator_id", String.valueOf(operatorId));
+			parameters.put("application_id", String.valueOf(applicationId));
+
+			if (getFieldsMap().containsKey(parameterName)) {
+				value = getFieldsMap().get(parameterName).getValueHandler(parameterName, parameters);
+			} else {
+				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
+			}
+
+			return value;
+		}
+
 
 		/**
 		 * Метод интерактивной загрузки признака видимости параметра формы
@@ -90,10 +128,23 @@ public abstract class Form {
 		 * @return признак видимости True видим, False не видим
 		 * @throws ServiceException
 		 */
-		public Boolean isVisible(Integer applicationId, Integer operatorId, Integer cityId, String parameterName, Map<String,String> parameters) throws ServiceException{
-			// TODO Auto-generated method stub
-			return null;
-		};
+
+		protected  Boolean isVisible(Integer applicationId, Integer operatorId, Integer cityId, 
+				String parameterName, Map<String, String> parameters) throws ServiceException {
+
+			Boolean isVisible = null;
+			
+			parameters.put("operator_id", String.valueOf(operatorId));
+			parameters.put("application_id", String.valueOf(applicationId));
+			
+			if (getFieldsMap().containsKey(parameterName)) {
+				isVisible = getFieldsMap().get(parameterName).isVisibleHandler(parameterName, parameters);
+			} else {
+				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
+			}
+			
+			return isVisible;
+		}
 
 		/**
 		 * Метод интерактивной загрузки признака активности параметра формы
@@ -105,11 +156,23 @@ public abstract class Form {
 		 * @return признак активности True активен, False не активен
 		 * @throws ServiceException
 		 */
-		public Boolean isActive(Integer applicationId, Integer operatorId, Integer cityId, String parameterName, Map<String,String> parameters) throws ServiceException{
-			// TODO Auto-generated method stub
-			return null;
-		};
-		
+		protected  Boolean isActive(Integer applicationId, Integer operatorId, Integer cityId, 
+				String parameterName, Map<String, String> parameters) throws ServiceException {
+			Boolean isActive = null;
+
+			parameters.put("operator_id", String.valueOf(operatorId));
+			parameters.put("application_id", String.valueOf(applicationId));
+
+			if (getFieldsMap().containsKey(parameterName)) {
+				isActive = getFieldsMap().get(parameterName).isActiveHandler(parameterName, parameters);
+			} else {
+				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
+			}
+			
+			return isActive;
+		}
+
+
 		/**
 		 * Метод проверки параметра формы, который вызывается непосредственно перед сохранением
 		 * @param parameterName наименование параметра на форме
@@ -120,17 +183,34 @@ public abstract class Form {
 		 * @return список ошибок
 		 * @throws ServiceException
 		 */
-		public List<String> checkParameter(String parameterName, Boolean isRequired, Integer applicationId, String groupPrefix,
-				Map<String, String> parameters)  throws ServiceException {
+		protected  List<String> checkParameter(String parameterName, Boolean isRequired, Integer applicationId, String groupPrefix,
+				Map<String, String> parameters) throws ServiceException {
 
 			List<String> errors = new LinkedList<String>();
 
-			if (isRequired && "".equals(parameters.get(parameterName))) {
-				errors.add("значение обязательного параметра не введено");
-			}
+			parameters.put("application_id", String.valueOf(applicationId));
 			
+			if (getFieldsMap().containsKey(parameterName)) {
+				List<String> localErrors = getFieldsMap().get(parameterName).checkHandler(parameterName, parameters);
+				if (localErrors != null) {
+					errors = localErrors; 
+				};
+			}
+
+			if (getFieldsMap().containsKey(parameterName)) {
+				Boolean localRequired = (Boolean) getFieldsMap().get(parameterName).isRequiredHandler(parameterName, parameters);
+				if (localRequired != null) {
+					isRequired = localRequired; 
+				};
+			}
+
+			if (isRequired && "".equals(parameters.get(parameterName))) {
+				errors.add("Значение обязательного параметра не введено");
+			}
+
 			return errors;
-		};
+		}
+
 
 		
 		/**
@@ -150,34 +230,59 @@ public abstract class Form {
 	   * Карта соответствия параметров текущего контроллера
 	   * @return карта параметров <наименование в интерфейсе> - <наименование в базе данных>
 	   */
-		abstract public Map<String,String> getParametersMap(); 
+		abstract public Map<String, Field> getFieldsMap(); 
 
 		public FormData getFormData() {
 			return formData;
 		}
 
-		public void setFormData(RecordDto formData) {
+		public void setFormData(RecordDto formData) throws ServiceException {
 			
-			Map<String,String> parametersMap = getParametersMap();
+			Map<String,Field> parametersMap = getFieldsMap();
 			
 			for (String interfaceFieldName : parametersMap.keySet()) {
-				Object fieldValue = formData.get(parametersMap.get(interfaceFieldName));
+				if (parametersMap.containsKey(interfaceFieldName) && parametersMap.get(interfaceFieldName) != null) {
+					if (parametersMap.get(interfaceFieldName).getFieldName() != null) {
+						Object fieldValue = formData.get(parametersMap.get(interfaceFieldName).getFieldName());
+		
+						Pattern pattern = Pattern.compile("^(.+)_id$");
+						Matcher matcher = pattern.matcher(parametersMap.get(interfaceFieldName).getFieldName());
+		
+						if (matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
+							String value = PARAMETER_NAME_VALUE_SEPARATOR;
+							if (formData.get(matcher.group(1) + "_name") != null) {
+								value = formData.get(parametersMap.get(interfaceFieldName).getFieldName()) +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");
+							} else if (formData.get(matcher.group(1) + "_other") != null) {
+								value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
+							}
+		
+							this.formData.putValue(interfaceFieldName, value);
+						} else {
+						
+							
+//Autoload names for list field values
+//							Map<String,String> parameters = new HashMap<String,String>();
+//							parameters.put("operator_id", String.valueOf(operatorId));
+//							parameters.put("application_id", String.valueOf(applicationId));
+//
+//							try {
+//								parametersMap.get(interfaceFieldName).getListHandler(interfaceFieldName, parameters).stream()
+//								.filter(option -> String.valueOf(option.getValue()).equals(String.valueOf(fieldValue)))
+//								.forEach(option -> this.formData.putValue(interfaceFieldName, (fieldValue != null ? fieldValue.toString() : "") + PARAMETER_NAME_VALUE_SEPARATOR + option.getName()));
+//							} catch (ServiceException e) {
+//								parametersMap.get(interfaceFieldName).getListInteractiveHandler(interfaceFieldName, formData).stream()
+//								.filter(option -> String.valueOf(option.getValue()).equals(String.valueOf(fieldValue)))
+//								.forEach(option -> this.formData.putValue(interfaceFieldName, (fieldValue != null ? fieldValue.toString() : "") + PARAMETER_NAME_VALUE_SEPARATOR + option.getName()));
+//							}
+							
+//							if (!this.formData.getValues().containsKey(interfaceFieldName)) {
+								this.formData.putValue(interfaceFieldName, fieldValue != null ? fieldValue.toString() : "");	
+//							}
 
-				Pattern pattern = Pattern.compile("^(.+)_id$");
-				Matcher matcher = pattern.matcher(parametersMap.get(interfaceFieldName));
-
-				if (matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
-					String value = PARAMETER_NAME_VALUE_SEPARATOR;
-					if (formData.get(matcher.group(1) + "_name") != null) {
-						value = formData.get(parametersMap.get(interfaceFieldName)) +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");
-					} else if (formData.get(matcher.group(1) + "_other") != null) {
-						value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
+						}
 					}
-
-					this.formData.putValue(interfaceFieldName, value);
 				} else {
-				
-					this.formData.putValue(interfaceFieldName, fieldValue != null ? fieldValue.toString() : "");
+					throw new ServiceException("Undeclared parameter '" + interfaceFieldName + "' for interface: " + this.getClass());
 				}
 				
 			}
@@ -187,7 +292,7 @@ public abstract class Form {
 
 		public static String getItemOrSpace (String data, Integer index) {
 			String result = "";
-			if (!FIAS_CODE_NAME_SEPARATOR.equals(data)) {
+			if (data != null && !"".equals(data) && !FIAS_CODE_NAME_SEPARATOR.equals(data)) {
 				result = data.split("\\" + FIAS_CODE_NAME_SEPARATOR)[index];
 			}
 			return result;
@@ -208,9 +313,11 @@ public abstract class Form {
 
 			RecordDto daoParameters = new RecordDto();
 			
-			Map<String,String> parametersMap = getParametersMap();
+			Map<String,Field> parametersMap = getFieldsMap();
 			for (String name : parametersMap.keySet()) {
-				daoParameters.put(parametersMap.get(name), parameters.get(name));
+				if (parametersMap.get(name).getFieldName() != null) {
+					daoParameters.put(parametersMap.get(name).getFieldName(), parameters.get(name));
+				}
 			}
 
 			return daoParameters;

@@ -35,12 +35,12 @@ public class InterfaceGenerator extends TagGenerator {
 		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.REL, "stylesheet");
 		     put(Tag.Property.TYPE, "text/css");
-		     put(Tag.Property.HREF, "jquery.formstyler.css?v=2.0.0");
+		     put(Tag.Property.HREF, "css/jquery.formstyler.css?v=2.0.0");
 		}});
 		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.REL, "stylesheet");
 		     put(Tag.Property.TYPE, "text/css");
-		     put(Tag.Property.HREF, "styles.css?v=2.12.1");
+		     put(Tag.Property.HREF, "css/styles.css?v=2.12.1");
 		}});
 		head.add(Tag.Type.SCRIPT, ("	$.ajaxSetup({scriptCharset: \"windows-1251\" , contentType: \"application/json; charset=windows-1251\"});  \n" + 
 					"	$.fn.isBound = function(type) {  \n" + 
@@ -52,15 +52,11 @@ public class InterfaceGenerator extends TagGenerator {
 					"	};")
 			, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.TYPE, "text/javascript");
-		     put(Tag.Property.SRC, "jquery-3.2.1.min.js");
+		     put(Tag.Property.SRC, "js/jquery-3.2.1.min.js");
 		}});
 		head.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.TYPE, "text/javascript");
-		     put(Tag.Property.SRC, "jquery.autocomplete.js");
-		}});
-		head.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.TYPE, "text/javascript");
-		     put(Tag.Property.SRC, "scripts.js");
+		     put(Tag.Property.SRC, "js/jquery.autocomplete.js");
 		}});
 		
 		head.add(Tag.Type.SCRIPT, 
@@ -121,7 +117,7 @@ public class InterfaceGenerator extends TagGenerator {
 	"	} \n"),		
 			new HashMap<Tag.Property, String>(){{
 		    put(Tag.Property.TYPE, "text/javascript");
-		    put(Tag.Property.SRC, "jquery.formstyler.js?v=2.0.0");
+		    put(Tag.Property.SRC, "js/jquery.formstyler.js?v=2.0.0");
 		}});
 		
 		Tag body = dom.add(Tag.Type.BODY);
@@ -200,7 +196,7 @@ public class InterfaceGenerator extends TagGenerator {
 		// Добавляем загрузку сгенерированного JS для текущего интерфейса 
 		dom.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.TYPE, "text/javascript");
-		     put(Tag.Property.SRC, getAttribute(TagGenerator.Attribute.ID) + ".js");
+		     put(Tag.Property.SRC, "js/" + getAttribute(TagGenerator.Attribute.ID) + ".js");
 		}});
 	}
 	

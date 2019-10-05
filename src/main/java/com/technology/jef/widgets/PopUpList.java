@@ -36,7 +36,7 @@ public class PopUpList extends List {
 				return 	("							$(\"#visible_${child_name}\").empty();  \n" + 
 						"							$(\"#fake_visible_${child_name}\").val('Не выбрано');  \n" + 
 						"							$( \"#popup_${child_name}\" ).remove();  \n" + 
-						"							$(\"#${child_name}\").val('none');  \n"); 
+						"							$(\"#${child_name}\").val('');  \n"); 
 			}
 
 			
@@ -95,7 +95,7 @@ public class PopUpList extends List {
 			);
 			
 			String ignoreEmptyJS = 
-					("			if ((valueJS).match(/${force_ajax}${parameter_separator}(none)?(${value_separator}|$)/)) {\n" + 
+					("			if ((valueJS).match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)) {\n" + 
 							"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
 							"							return; \n" + 
 							"						} \n")
@@ -121,7 +121,7 @@ public class PopUpList extends List {
 					"						var previous_id = $(\"#${child_name}\").val();          \n" + 
 					"						$(\"#fake_visible_${child_name}\").attr(\"disabled\",\"disabled\");          \n" + 
 					"						$(\"#visible_${child_name}\").empty();          \n" + 
-					"						$(\"<option/>\", {'value': 'none', html: 'Загрузка...'}).appendTo(\"#visible_${child_name}\");          \n" + 
+					"						$(\"<option/>\", {'value': '', html: 'Загрузка...'}).appendTo(\"#visible_${child_name}\");          \n" + 
 					"						$(\"#fake_visible_${child_name}\").val('Загрузка...');          \n" + 
 					"						//$(\"#visible_${child_name}\").trigger('refresh');          \n" + 
 					"						$(\"#background_overlay_wait_${parrent_name}\").show();          \n" + 
@@ -159,7 +159,7 @@ public class PopUpList extends List {
 					"								$(\"#popup_${child_name}\").prepend(\"<h3>Выберите \"+$('label[for=\"visible_${child_name}\"]').html()+\"</h3>\");          \n" + 
 					"								$(\"#popup_${child_name}\").prepend(\"<div id='popup_${child_name}_close' class='popup_close'>Закрыть</div>\");          \n" + 
 					"								var i = 0;          \n" + 
-					"								$(\"<option/>\", {'value': 'none', html: '---'}).appendTo(\"#visible_${child_name}\");          \n" + 
+					"								$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");          \n" + 
 					"								$.each(data.data, function(key, val) {          \n" + 
 					"									$(\"<option/>\", {'value': val.id, html: val.name, 'selected': val.value }).appendTo(\"#visible_${child_name}\");          \n" + 
 					"									i += 1;          \n" + 
@@ -174,7 +174,7 @@ public class PopUpList extends List {
 					"									// удаляем динам окно          \n" + 
 					"									$( \"#popup_${child_name}\" ).remove();          \n" + 
 					"									$(\"#fake_visible_${child_name}\").val('Список пуст');          \n" + 
-					"									$(\"#${child_name}\").val('none');          \n" + 
+					"									$(\"#${child_name}\").val('');          \n" + 
 					"									if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {    \n" + 
 					"										$(\"#visible_${parrent_name}\").removeAttr('disabled');    \n" + 
 					"									}    \n" + 
@@ -261,7 +261,7 @@ public class PopUpList extends List {
 		public String getSetValueJS() {
 			// Добавить условие для загрузки зависимых списков (пока работает только для незаполненных ранее)
 			return  	("	if (isLoading) {  \n" + 
-						"		$(\"<option/>\", {'value': 'none', html: '---'}).appendTo(\"#visible_${child_name}\");    \n" + 
+						"		$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");    \n" + 
 						"		$(\"<option/>\", {'value': data.value, html: data.name, 'selected': true }).appendTo(\"#visible_${child_name}\");    \n" + 
 						"		$(\"#visible_${child_name}\").trigger('refresh');  \n" + 
 						"		$(\"#visible_${child_name}\").val(data.value).change(); \n" + 

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
+import static com.technology.jef.server.serialize.SerializeConstant.*;
 
 /**
 * Виджет группа выключателей
@@ -152,5 +153,32 @@ public class CheckBoxList extends List {
 				"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n ";
 						
 			}
+
+			
+
+			@Override
+			public String getSetValueJS() {
+				return  				("	if (isLoading) {   \n" + 
+	"		$(\"#visible_${child_name}\").bind('setValue', function(){     \n" + 
+	"			$('#${child_name}').val(data.value);    \n" + 
+	"			data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {   \n" + 
+	"				$('#visible_${child_name}' + currentValue).prop('checked', true);     \n" + 
+	"				$('#visible_${child_name}' + currentValue).change();    \n" + 
+	"				$('#visible_${child_name}' + currentValue).click();    \n" + 
+	"				$(\"#visible_${child_name}\" + currentValue).trigger('refresh');     \n" + 
+	"			});   \n" + 
+	"		});     \n" + 
+	"	} else {  \n" + 
+	"	$('#${child_name}').val(data.value);    \n" + 
+	"		data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {   \n" + 
+	"			$('#visible_${child_name}' + currentValue).prop('checked', true);     \n" + 
+	"			$('#visible_${child_name}' + currentValue).change();    \n" + 
+	"			$('#visible_${child_name}' + currentValue).click();    \n" + 
+	"			$(\"#visible_${child_name}\" + currentValue).trigger('refresh');     \n" + 
+	"		});   \n" + 
+	"	}  \n")
+				.replace("${list_separator}", LIST_SEPARATOR);
+			}
+
 
 }
