@@ -21,7 +21,7 @@ public class Text extends Widget {
 		@Override
 		public String getInputRegexp() {
 			
-			return "[\\\\wА-Яа-яЁё -.№:@\\\\/\\\\\\\\]+";
+			return "[\\\\w -\\.:@\\\\/\\\\\\\\]+";
 		}
 		
 	  /**

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.PrintWriter;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -12,6 +14,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.DOMGenerator;
 
 
@@ -54,21 +57,26 @@ public class WECompiler {
 		}
 
 		try {
-			if (args.length == 3) {
-				compile(args[0], args[1], args[2]);
+			if (args.length == 4) {
+				compile(args[0], args[1], args[2], args[3]);
 				
-			} else if (args.length < 3) {
-				compile(args[0], "src/html/", "src/html/");
+			} else if (args.length < 4) {
+				compile(args[0], "src/html/", "src/html/", "ru_RU");
 			}
 		} catch (Exception e) {
 			showError(e.getMessage());
 		}
 	}
 
-	private static void compile(String srcFilePath, String destHtmlPath, String destJsPath) {
+	private static void compile(String srcFilePath, String destHtmlPath, String destJsPath, String locale) {
 		File srcFile = new File(srcFilePath);
 
-		if ( srcFile.isFile()) {
+		Locale currentLocale;
+	    ResourceBundle textSource;
+
+	    CurrentLocale.getInstance().setLocale(new Locale(locale));
+
+	    if ( srcFile.isFile()) {
 			// Передали 1 файл
 			String srcFileName = srcFile.getAbsolutePath();
 
@@ -129,7 +137,7 @@ public class WECompiler {
 
 			if (files != null) {
 				for (File file : files) {
-					compile(file.getPath(), destHtmlPath, destJsPath);
+					compile(file.getPath(), destHtmlPath, destJsPath, locale);
 				}
 			}
 		}

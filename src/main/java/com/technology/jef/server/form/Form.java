@@ -244,42 +244,7 @@ public abstract class Form {
 				if (parametersMap.containsKey(interfaceFieldName) && parametersMap.get(interfaceFieldName) != null) {
 					if (parametersMap.get(interfaceFieldName).getFieldName() != null) {
 						Object fieldValue = formData.get(parametersMap.get(interfaceFieldName).getFieldName());
-		
-						Pattern pattern = Pattern.compile("^(.+)_id$");
-						Matcher matcher = pattern.matcher(parametersMap.get(interfaceFieldName).getFieldName());
-		
-						if (matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
-							String value = PARAMETER_NAME_VALUE_SEPARATOR;
-							if (formData.get(matcher.group(1) + "_name") != null) {
-								value = formData.get(parametersMap.get(interfaceFieldName).getFieldName()) +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");
-							} else if (formData.get(matcher.group(1) + "_other") != null) {
-								value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
-							}
-		
-							this.formData.putValue(interfaceFieldName, value);
-						} else {
-						
-							
-//Autoload names for list field values
-//							Map<String,String> parameters = new HashMap<String,String>();
-//							parameters.put("operator_id", String.valueOf(operatorId));
-//							parameters.put("application_id", String.valueOf(applicationId));
-//
-//							try {
-//								parametersMap.get(interfaceFieldName).getListHandler(interfaceFieldName, parameters).stream()
-//								.filter(option -> String.valueOf(option.getValue()).equals(String.valueOf(fieldValue)))
-//								.forEach(option -> this.formData.putValue(interfaceFieldName, (fieldValue != null ? fieldValue.toString() : "") + PARAMETER_NAME_VALUE_SEPARATOR + option.getName()));
-//							} catch (ServiceException e) {
-//								parametersMap.get(interfaceFieldName).getListInteractiveHandler(interfaceFieldName, formData).stream()
-//								.filter(option -> String.valueOf(option.getValue()).equals(String.valueOf(fieldValue)))
-//								.forEach(option -> this.formData.putValue(interfaceFieldName, (fieldValue != null ? fieldValue.toString() : "") + PARAMETER_NAME_VALUE_SEPARATOR + option.getName()));
-//							}
-							
-//							if (!this.formData.getValues().containsKey(interfaceFieldName)) {
-								this.formData.putValue(interfaceFieldName, fieldValue != null ? fieldValue.toString() : "");	
-//							}
-
-						}
+						this.formData.putValue(interfaceFieldName, fieldValue != null ? fieldValue.toString() : "");	
 					}
 				} else {
 					throw new ServiceException("Undeclared parameter '" + interfaceFieldName + "' for interface: " + this.getClass());

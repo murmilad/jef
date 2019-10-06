@@ -3,9 +3,11 @@ package com.technology.jef.generators;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.widgets.Widget;
 
@@ -16,6 +18,7 @@ import static com.technology.jef.server.serialize.SerializeConstant.*;
 */
 public class FormGenerator extends TagGenerator {
 
+    
 	HashMap<String, TagGenerator> connectedElements = new HashMap<String, TagGenerator>();
 	List<TagGenerator> multiplieGroups = new LinkedList<TagGenerator>();
 	HashMap<String, String> formInterfaceApiMap = new HashMap<String, String>();
@@ -43,7 +46,7 @@ public class FormGenerator extends TagGenerator {
 			 put(Tag.Property.NAME, "message_box_wait");
 			 put(Tag.Property.CLASS, "message_box_wait");
 			 put(Tag.Property.STYLE, "display: block;");
-		}}).add(Tag.Type.DIV, "Подождите...", new HashMap<Tag.Property, String>(){{
+		}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("wait"), new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.NAME, "message_overlay_wait");
 			 put(Tag.Property.CLASS, "message_overlay_wait");
 		}});
@@ -75,7 +78,7 @@ public class FormGenerator extends TagGenerator {
 		     put(Tag.Property.NAME, "error");
 		     put(Tag.Property.STYLE, "color: red; display: none;");
 		}});
-		errors.add(Tag.Type.H4, "Обнаружены ошибки:");
+		errors.add(Tag.Type.H4, CurrentLocale.getInstance().getTextSource().getString("found_errors"));
 		errors.add(Tag.Type.UL, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "error_list");
 		     put(Tag.Property.NAME, "error_list");
