@@ -1,215 +1,361 @@
 package com.technology.jef.widgets;
 
+import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_NAME_VALUE_SEPARATOR;
+import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_SEPARATOR;
+
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
 /**
-* Виджет переключатель
-*/
+ * Виджет переключатель
+ */
 public class RadioSwitch extends List {
 
-		@Override
-		public ViewType getType () {
-			return ViewType.SINGLE;
-		}
-		
-		@Override
-		public String getCleanValueJS() {
-			
-			return 			("							   \n" + 
-							"							$(\"[name='visible_${child_name}']\").each(function(index, item){ \n" + 
-							"								$(this).prop(\"checked\", false).trigger('refresh'); \n" + 
-							"							}); \n" + 
-							"							$('#${child_name}').val(''); \n");
-		}
-		
-		@Override
-		public Tag assembleTag(String name, TagGenerator generator) {
+	@Override
+	public ViewType getType() {
+		return ViewType.SINGLE;
+	}
 
-			Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "fieldset_" + name);
-			}});
+	@Override
+	public String getCleanValueJS() {
 
-			Tag elementInput = mainInput
-					.add(Tag.Type.LEGEND)
-					.add(Tag.Type.LABEL, new HashMap<Tag.Property, String>(){{
-						 put(Tag.Property.FOR, "visible_" + name);
-					}})
-					.add(Tag.Type.SPAN, (String) generator.getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
-						 put(Tag.Property.NAME, "span_" + name);
-						 put(Tag.Property.STYLE, !"".equals(generator.getAttribute(TagGenerator.Attribute.REQUIRED)) ? "color: rgb(170, 0, 0);" : "color: rgb(0, 0, 0);");
-					}})
-					.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-						 	put(Tag.Property.ID, "visible_" + name);
-							 put(Tag.Property.NAME, "visible_" + name);
-							 put(Tag.Property.STYLE, "display: table-row;");
-					}});			
+		return ("							   \n"
+				+ "							$(\"[name='visible_${child_name}']\").each(function(index, item){ \n"
+				+ "								$(this).prop(\"checked\", false).trigger('refresh'); \n"
+				+ "							}); \n" + "							$('#${child_name}').val(''); \n");
+	}
 
-			mainInput.add(Tag.Type.LINK, "очистить", new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "link_" + name);
-				 put(Tag.Property.STYLE, "border-bottom: 1px dashed; cursor: pointer; margin: 0pt 2px 2px; text-align: left;");
-				 put(Tag.Property.CLICK, "$(\"[name='visible_" + name + "']\").each(function(index, item){ $(this).prop(\"checked\", false).trigger('refresh');});$('#" + name + "').val('');return false;");
-			}});
+	@Override
+	public Tag assembleTag(String name, TagGenerator generator) {
 
-			return elementInput;
-		}
+		Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>() {
+			{
+				put(Tag.Property.ID, "fieldset_" + name);
+			}
+		});
 
+		Tag elementInput = mainInput.add(Tag.Type.LEGEND).add(Tag.Type.LABEL, new HashMap<Tag.Property, String>() {
+			{
+				put(Tag.Property.FOR, "visible_" + name);
+			}
+		}).add(Tag.Type.SPAN, (String) generator.getAttribute(TagGenerator.Attribute.NAME),
+				new HashMap<Tag.Property, String>() {
+					{
+						put(Tag.Property.NAME, "span_" + name);
+						put(Tag.Property.STYLE,
+								!"".equals(generator.getAttribute(TagGenerator.Attribute.REQUIRED))
+										? "color: rgb(170, 0, 0);"
+										: "color: rgb(0, 0, 0);");
+					}
+				}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>() {
+					{
+						put(Tag.Property.ID, "visible_" + name);
+						put(Tag.Property.NAME, "visible_" + name);
+						put(Tag.Property.STYLE, "display: table-row;");
+					}
+				});
 
-		@Override
-		String getListItemJS() {
-			return
-						("		$.each(data.data, function(key, val) {  \n" + 
-						"			var visible_name = 'visible_${name}' + val.id;  \n" + 
-						"			$(\"<input/>\", {  \n" + 
-						"				'value': val.id,   \n" + 
-						"				'checked': val.value,   \n" + 
-						"				'type': 'radio',   \n" + 
-						"				'id': visible_name,   \n" + 
-						"				'name': 'visible_${name}',   \n" + 
-						"				'onchange': 'onChangeReadOnly${name}(this);',   \n" + 
-						"				'onclick': 'onChangeReadOnly${name}(this);',   \n" + 
-						"			}).appendTo(\"#visible_${name}\");  \n" + 
-						"			$(\"<label/>\", {   \n" + 
-						"				style: 'margin:3px;',   \n" + 
-						"				html: val.name,   \n" + 
-						"				'for': visible_name,   \n" + 
-						"			}).appendTo(\"#visible_${name}\");  \n" + 
-						"		});  \n" + 
-						"		 \n"); 
+		mainInput.add(Tag.Type.LINK, CurrentLocale.getInstance().getTextSource().getString("cleanup"),
+				new HashMap<Tag.Property, String>() {
+					{
+						put(Tag.Property.ID, "link_" + name);
+						put(Tag.Property.STYLE,
+								"border-bottom: 1px dashed; cursor: pointer; margin: 0pt 2px 2px; text-align: left;");
+						put(Tag.Property.CLICK, "$(\"[name='visible_" + name
+								+ "']\").each(function(index, item){ $(this).prop(\"checked\", false).trigger('refresh');});$('#"
+								+ name + "').val('');return false;");
+					}
+				});
+
+		return elementInput;
+	}
+
+	@Override
+	String getListItemJS() {
+		return 	("		$.each(data.data, function(key, val) {   \n" + 
+	"			var visible_name = 'visible_${name}' + val.id;   \n" + 
+	"			$(\"<input/>\", {   \n" + 
+	"				'value': val.id,    \n" + 
+	"				'checked': val.value,    \n" + 
+	"				'type': 'radio',    \n" + 
+	"				'id': visible_name,    \n" + 
+	"				'name': 'visible_${name}',    \n" + 
+	"			}).appendTo(\"#visible_${name}\");   \n" + 
+	"			$(\"<label/>\", {    \n" + 
+	"				style: 'margin:3px;',    \n" + 
+	"				html: val.name,    \n" + 
+	"				'for': visible_name,    \n" + 
+	"			}).appendTo(\"#visible_${name}\");  \n" + 
+	"			$('#' + visible_name).click( function(event){ \n" + 
+	"				onChangeReadOnly${name}(event.delegateTarget); \n" + 
+	"			}); \n" + 
+	"			$('#' + visible_name).change( function(event){ \n" + 
+	"				onChangeReadOnly${name}(event.delegateTarget); \n" + 
+	"			}); \n" + 
+
+	"		});   \n" + 
+	"		$(\"#visible_${name}\").find('input').styler({});		  \n");
 //TODO Добавить возможность вызова привязанных событий при выборе каждого элемента 
+	}
+
+	@Override
+	public String getSetItemsJS() {
+
+		return ("			$(\"#background_overlay_wait_${name}\").show();         \n"
+				+ "			$(\"#message_box_wait_${name}\").show();         \n"
+				+ "			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");        \n"
+				+ "			params['form_api'] = \"${api}\";     \n"
+				+ "			params['parameter_name'] = \"${name_api}\";      \n" 
+				+ "			ajax({                                       \n"
+				+ "					url: \"${service}\" + \"get_list\",  \n" 
+				+ "					data:  params,                       \n"
+				+ "					type: \"post\",    \n" + "					dataType: \"json\",   \n"
+				+ "					contentType: 'application/x-www-form-urlencoded'   \n"
+				+ "				}, function( data ) {     \n"
+				+ "					$(\"#visible_${name}\").empty();         \n"
+				+ "					${list_item_js}         \n"
+				+ "					$(\"#visible_${name}\").removeAttr('disabled');        \n"
+				+ "					$(\"#background_overlay_wait_${name}\").hide();         \n"
+				+ "					$(\"#message_box_wait_${name}\").hide();         \n"
+				+ "					$(\"#visible_${name}\").trigger('refresh');         \n"
+				+ "					$(\"#visible_${name}\").find('input').styler({});  \n"
+				+ "					$(\"#visible_${name}\").trigger('setValue');   \n" + "			});    \n");
+	}
+
+	@Override
+	public String getSetActiveJS() {
+
+		return "		if (val.value) { \n "
+				+ "			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n "
+				+ "				$( element ).prop( \"disabled\", false); \n	" 
+				+ "			});                                           \n "
+				+ "			$(\"#tr_${child_name}\" ).css('color', 'black'); \n " 
+				+ "		} else {                                                \n "
+				+ "			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n "
+				+ "				$( element ).prop( \"disabled\", true); \n	" 
+				+ "			});                                         \n "
+				+ "			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " 
+				+ "		}                                                \n ";
+	}
+
+	@Override
+	public String getSetInactiveJS() {
+
+		return "			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n "
+				+ "				$( element ).prop( \"disabled\", true); \n	" + "			}); \n "
+				+ "			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n ";
+
+	}
+
+	@Override
+	public String getSetValueJS() {
+		return ("	if (isLoading) {                                                 \n" 
+				+ "		$(\"#visible_${child_name}\").bind('setValue', function(){    \n"
+				+ "			$(\"#visible_${child_name}\" + data.value).click();   \n"
+				+ "			$(\"#visible_${child_name}\").change();   \n"
+				+ "			$(\"#${child_name}\").val(data.value); \n" 
+				+ "			                                                        \n" 
+				+ "		});                                                         \n"
+				+ "	} else {                                                        \n" 
+				+ "		$(\"#visible_${child_name}\" + data.value).click();         \n"
+				+ "		$(\"#visible_${child_name}\").change();   \n"
+				+ "		$(\"#${child_name}\").val(data.value);   \n" 
+				+ "	}                                            \n");
+	}
+
+	@Override
+	public String getValueConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+		String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_value(this);")
+				.replace("${parrent_name}",
+						((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID))
+								.concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
+				.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))
+						.concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
+
+		// Вызываем функцию связи в событиях родительского элемента
+		for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
+			radioSwitch.setProperty(Tag.Property.CHANGE,
+					radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
+			radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
 		}
 
-		@Override
-			public String getSetItemsJS() {
-				
-				return 				("			$(\"#background_overlay_wait_${name}\").show();         \n" + 
-									"			$(\"#message_box_wait_${name}\").show();         \n" + 
-									"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");        \n" + 
-									"			params['form_api'] = \"${api}\";     \n" + 
-									"			params['parameter_name'] = \"${name}\";     \n" + 
-									"			ajax({     \n" + 
-									"					url: \"${service}\" + \"get_list\",    \n" + 
-									"					data:  params, \n" + 
-									"					type: \"post\",    \n" + 
-									"					dataType: \"json\",   \n" + 
-									"					contentType: 'application/x-www-form-urlencoded'   \n" + 
-									"				}, function( data ) {     \n" + 
-									"					$(\"#visible_${name}\").empty();         \n" + 
-									"					${list_item_js}         \n" + 
-									"					$(\"#visible_${name}\").removeAttr('disabled');        \n" + 
-									"					$(\"#background_overlay_wait_${name}\").hide();         \n" + 
-									"					$(\"#message_box_wait_${name}\").hide();         \n" + 
-									"					$(\"#visible_${name}\").trigger('refresh');         \n" + 
-									"					$(\"#visible_${name}\").unbind(\"focusin\");        \n" + 
-									"					$(\"#visible_${name}\").find('input').styler({});  \n" + 
-									"					$(\"#visible_${name}\").trigger('setValue');   \n" + 
-									"			});    \n");
-			}
-		
-			@Override
-			public String getSetActiveJS() {
-				
-				return 
-				"		if (val.value) { \n " + 
-				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
-				"				$( element ).prop( \"disabled\", false); \n	" +
-				"			}); \n " +
-				"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
-				"		} else { \n " +
-				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
-				"				$( element ).prop( \"disabled\", true); \n	" +
-				"			}); \n " +
-				"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
-				"		} \n ";
-			}
+		return super.getValueConnectJS(currentGenerator, parrentGenerator);
+	}
 
-			@Override
-			public String getSetInactiveJS() {
-				
-				return 
-				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
-				"				$( element ).prop( \"disabled\", true); \n	" +
-				"			}); \n " +
-				"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n ";
-						
-			}
+	@Override
+	public String getVisibleConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+		String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_visible(this);")
+				.replace("${parrent_name}",
+						((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID))
+								.concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
+				.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))
+						.concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
 
-			@Override
-			public String getSetValueJS() {
-				return			("	if (isLoading) {  \n" + 
-								"		$(\"#visible_${child_name}\").bind('setValue', function(){    \n" + 
-								"			$(\"#visible_${child_name}\" + data.value).click();   \n" + 
-								"			$(\"#visible_${child_name}\").change();   \n" + 
-								"			$(\"#${child_name}\").val(data.value); \n" + 
-								"			 \n" +
-								"		});    \n" + 
-								"	} else { \n" + 
-								"		$(\"#visible_${child_name}\" + data.value).click();   \n" + 
-								"		$(\"#visible_${child_name}\").change();   \n" + 
-								"		$(\"#${child_name}\").val(data.value);   \n" + 
-								"	} \n");
-				}
+		// Вызываем функцию связи в событиях родительского элемента
+		for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
+			radioSwitch.setProperty(Tag.Property.CHANGE,
+					radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
+			radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
+		}
 
-			@Override
-			public String getValueConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
-				String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_value(this);")
-						.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
-						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
+		return super.getVisibleConnectJS(currentGenerator, parrentGenerator);
+	}
 
-				// Вызываем функцию связи в событиях родительского элемента
-				for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
-					radioSwitch.setProperty(Tag.Property.CHANGE, radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
-					radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
-				}
+	@Override
+	public String getActiveConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+		String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_active(this);")
+				.replace("${parrent_name}",
+						((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID))
+								.concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
+				.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))
+						.concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
 
-				return super.getValueConnectJS(currentGenerator, parrentGenerator);
-			}
+		// Вызываем функцию связи в событиях родительского элемента
+		for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
+			radioSwitch.setProperty(Tag.Property.CHANGE,
+					radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
+			radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
+		}
 
-			@Override
-			public String getVisibleConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
-				String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_visible(this);")
-						.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
-						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
+		return super.getActiveConnectJS(currentGenerator, parrentGenerator);
+	}
 
-				// Вызываем функцию связи в событиях родительского элемента
-				for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
-					radioSwitch.setProperty(Tag.Property.CHANGE, radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
-					radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
-				}
+	@Override
+	public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+		String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
+		String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
+		String valueJS = getValueJS((String[]) currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT),
+				prefix);
+		String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
 
-				return super.getVisibleConnectJS(currentGenerator, parrentGenerator);
-			}
-			
-			@Override
-			public String getActiveConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
-				String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_active(this);")
-						.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
-						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
+		String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_list(this);")
+				.replace("${parrent_name}",
+						((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID))
+								.concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
+				.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))
+						.concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
 
-				// Вызываем функцию связи в событиях родительского элемента
-				for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
-					radioSwitch.setProperty(Tag.Property.CHANGE, radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
-					radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
-				}
+		// Вызываем функцию связи в событиях родительского элемента
+		for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
+			radioSwitch.setProperty(Tag.Property.CHANGE,
+					radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
+			radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
+		}
 
-				return super.getActiveConnectJS(currentGenerator, parrentGenerator);
-			}
-			
-			@Override
-			public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
-				String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_list(this);")
-						.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
-						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
+		super.getListConnectJS(currentGenerator, parrentGenerator);
 
-				// Вызываем функцию связи в событиях родительского элемента
-				for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
-					radioSwitch.setProperty(Tag.Property.CHANGE, radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
-					radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
-				}
+		String bodyJS = 	("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){             \n" + 
+	"						var valueJS = ${value_js};   \n" + 
+	"						$(\"#${child_name}\").trigger('cleanValue');         \n" + 
+	"						if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)){ return };             \n" + 
+	"						var value = $(\"#visible_${child_name}\").val();   \n" + 
+	"						$(\"#visible_${child_name}\").empty();             \n" + 
+	"						$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
+	"						$(\"#background_overlay_wait_${parrent_name}\").show();             \n" + 
+	"	            				$(\"#message_box_wait_${parrent_name}\").show();             \n" + 
+	"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");             \n" + 
+	"						$(\"#visible_${parrent_name}\").trigger('refresh');             \n" + 
+	"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {             \n" + 
+	"							ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;             \n" + 
+	"						}             \n" + 
+	"						++ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];            \n" + 
+	"						if (!ajax_is_child_blocked${prefix}[\"${child_name}\"]) {        \n" + 
+	"							ajax_is_child_blocked${prefix}[\"${child_name}\"] = 0;        \n" + 
+	"						}        \n" + 
+	"						++ajax_is_child_blocked${prefix}[\"${child_name}\"];        \n" + 
+	"						ajax({          \n" + 
+	"					            	url: '${service}get_list_interactive',          \n" + 
+	"							data: {          \n" + 
+	"								parameter_name:'${child_name_api}',          \n" + 
+	"								id: $(\"#id\").val(),          \n" + 
+	"								form_api: '${api}',          \n" + 
+	"								form_id:$(\"#form_id\").val(),          \n" + 
+	"								parameters: valueJS,          \n" + 
+	"								city_id: params.city_id,                  \n" + 
+	"								id: params.id,                  \n" + 
+	"								rnd: Math.floor(Math.random() * 10000),          \n" + 
+	"							},         \n" + 
+	"					            	type: 'post',          \n" + 
+	"					           	dataType: 'json',          \n" + 
+	"			            			contentType: 'application/x-www-form-urlencoded',          \n" + 
+	"						}, function (data) {    \n" + 
+	"								$(\"#visible_${child_name}\").empty();             \n" + 
+	"								${list_item_js}   \n" + 
+	"								var ${child_name} = $('#tr_${child_name}');             \n" + 
+	"								if (data.data && data.data.length > 0){             \n" + 
+	"									if (\"${hide_if_empty}\"){             \n" + 
+	"										${child_name}.css(\"display\", 'none');             \n" + 
+	"										$('#visible_${child_name}').val('');             \n" + 
+	"										$('#${child_name}').val('');             \n" + 
+	"										$('#is_empty_${child_name}').val(1);             \n" + 
+	"									}else{             \n" + 
+	"										if ($('#${child_name}').attr('invisible') == 'false') {             \n" + 
+	"											if ((document.getElementById && !document.all) || window.opera)             \n" + 
+	"												${child_name}.css(\"display\",'table-row');             \n" + 
+	"											else             \n" + 
+	"												${child_name}.css(\"display\",'inline');             \n" + 
+	"											}             \n" + 
+	"										}             \n" + 
+	"								}else{             \n" + 
+	"									if ($('#${child_name}').attr('invisible') == 'false') {             \n" + 
+	"										if ((document.getElementById && !document.all) || window.opera)             \n" + 
+	"											${child_name}.css(\"display\",'table-row');             \n" + 
+	"										else             \n" + 
+	"											${child_name}.css(\"display\",'inline');             \n" + 
+	"									}             \n" + 
+	"								}             \n" + 
+	"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];             \n" + 
+	"								$(\"#visible_${child_name}\").trigger('set_find_result');             \n" + 
+	"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {             \n" + 
+	"									if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {       \n" + 
+	"										$(\"#visible_${parrent_name}\").removeAttr('disabled');       \n" + 
+	"									}       \n" + 
+	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');             \n" + 
+	"									$(\"#background_overlay_wait_${parrent_name}\").hide();             \n" + 
+	"				      	      				$(\"#message_box_wait_${parrent_name}\").hide();             \n" + 
+	"								}             \n" + 
+	"								--ajax_is_child_blocked${prefix}[\"${child_name}\"];      \n" + 
+	"								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {      \n" + 
+	"				            				$(\"#visible_${child_name}\").trigger( 'on_child_unblocked');      \n" + 
+	"								}      \n" + 
+	"								$(\"#visible_${parrent_name}\").trigger('refresh');             \n" + 
+	"								$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
+	"								if (value) {     \n" + 
+	"									$(\"#visible_${child_name}\").val(value).change();     \n" + 
+	"								}     \n" + 
+	"								$(\"#visible_${child_name}\").trigger('setValue'); \n" +
+	"						});            \n" + 
+	"					}             \n")
+						.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+						.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+						.replace("${force_ajax}",
+								!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX))
+										? ("(?!" + (String) currentGenerator
+												.getAttribute(TagGenerator.Attribute.FORCE_AJAX) + ")")
+										: "")
+						.replace("${value_js}", valueJS)
+						.replace("${list_item_js}", getListItemJS().replace("${name}", name))
+						.replace("${handler}", handler)
+						.replace("${parrent_name}",
+								((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(
+										((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
+						.replace("${value_js}", valueJS).replace("${prefix}", prefix)
+						.replace("${api}", (String) currentGenerator.getAttribute(TagGenerator.Attribute.API))
+						.replace("${child_name}", name)
+						.replace("${child_name_api}", (String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))
+						.replace("${hide_if_empty}",
+								(String) currentGenerator.getAttribute(TagGenerator.Attribute.HIDE_IF_EMPTY))
+						.replace("${service}", (String) currentGenerator.getAttribute(TagGenerator.Attribute.SERVICE));
 
-				return super.getListConnectJS(currentGenerator, parrentGenerator);
-			}
+		return bodyJS;
 
+	}
+
+	protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
+
+		return element;
+	}
 }

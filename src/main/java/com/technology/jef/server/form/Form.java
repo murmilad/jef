@@ -25,33 +25,29 @@ public abstract class Form {
 	   * Данные формы, загруженные из БД
 	   */
 		private FormData formData = new FormData();
-		
 	
 		/**
-		 * Метод загрузки данных формы из БД
-		 * @param applicationId идентификатор анкеты
-		 * @param operatorId идентификатор пользователя интерфейса консультанта
-		 * @param cityId идентификатор города интерфейса консультанта
+		 * Метод загрузки данных формы из БД для групповых форм
+		 * @param id идентификатор анкеты
+		 * @param groupId идентификатор группы для групповых форм
 		 * @throws ServiceException
 		 */
-		abstract public void load(Integer applicationId, Integer operatorId, Integer cityId) throws ServiceException;
+		public abstract void load(Integer id, Integer groupId) throws ServiceException;
 
+	
 		/**
 		 * Метод загрузки списочных элементов параметра формы
-		 * @param applicationId идентификатор анкеты
-		 * @param operatorId идентификатор пользователя интерфейса консультанта
-		 * @param cityId идентификатор города интерфейса консультанта
+		 * @param primaryId идентификатор анкеты
 		 * @param parameterName наименование параметра формы 
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		protected List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId, String parameterName)
+		protected List<OptionDto> getList(Integer primaryId, String parameterName)
 				throws ServiceException {
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
 			Map<String,String> parameters = new HashMap<String,String>();
-			parameters.put("operator_id", String.valueOf(operatorId));
-			parameters.put("application_id", String.valueOf(applicationId));
+			parameters.put("id", String.valueOf(primaryId));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				list = getFieldsMap().get(parameterName).getListHandler(parameterName, parameters);
@@ -65,21 +61,17 @@ public abstract class Form {
 
 		/**
 		 * Метод интерактивной загрузки списочных элементов параметра формы
-		 * @param applicationId идентификатор анкеты
-		 * @param operatorId идентификатор пользователя интерфейса консультанта
-		 * @param cityId идентификатор города интерфейса консультанта
+		 * @param primaryId идентификатор анкеты
 		 * @param parameterName наименование параметра формы 
 		 * @param parameters Параметры, влияющие на состав возвращаемого списка 
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		protected  List<OptionDto> getList(Integer applicationId, Integer operatorId, Integer cityId, 
-				String parameterName, Map<String, String> parameters) throws ServiceException {
+		protected  List<OptionDto> getList(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
 
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
-			parameters.put("operator_id", String.valueOf(operatorId));
-			parameters.put("application_id", String.valueOf(applicationId));
+			parameters.put("id", String.valueOf(primaryId));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				list = getFieldsMap().get(parameterName).getListInteractiveHandler(parameterName, parameters);
@@ -92,21 +84,17 @@ public abstract class Form {
 
 		/**
 		 * Метод интерактивной загрузки значения параметра формы
-		 * @param applicationId идентификатор анкеты
-		 * @param operatorId идентификатор пользователя интерфейса консультанта
-		 * @param cityId идентификатор города интерфейса консультанта
+		 * @param primaryId идентификатор анкеты
 		 * @param parameterName наименование параметра формы 
 		 * @param parameters Параметры, влияющие значение параметра формы 
 		 * @return значение параметра формы
 		 * @throws ServiceException
 		 */
-		protected  String getValue(Integer applicationId, Integer operatorId, Integer cityId,
-				String parameterName, Map<String, String> parameters) throws ServiceException {
+		protected  String getValue(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
 
 			String value = "";
 			
-			parameters.put("operator_id", String.valueOf(operatorId));
-			parameters.put("application_id", String.valueOf(applicationId));
+			parameters.put("id", String.valueOf(primaryId));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				value = getFieldsMap().get(parameterName).getValueHandler(parameterName, parameters);
@@ -120,22 +108,18 @@ public abstract class Form {
 
 		/**
 		 * Метод интерактивной загрузки признака видимости параметра формы
-		 * @param applicationId идентификатор анкеты
-		 * @param operatorId идентификатор пользователя интерфейса консультанта
-		 * @param cityId идентификатор города интерфейса консультанта
+		 * @param primaryId идентификатор анкеты
 		 * @param parameterName наименование параметра формы 
 		 * @param parameters Параметры, влияющие признак видимости параметра формы
 		 * @return признак видимости True видим, False не видим
 		 * @throws ServiceException
 		 */
 
-		protected  Boolean isVisible(Integer applicationId, Integer operatorId, Integer cityId, 
-				String parameterName, Map<String, String> parameters) throws ServiceException {
+		protected  Boolean isVisible(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
 
 			Boolean isVisible = null;
 			
-			parameters.put("operator_id", String.valueOf(operatorId));
-			parameters.put("application_id", String.valueOf(applicationId));
+			parameters.put("id", String.valueOf(primaryId));
 			
 			if (getFieldsMap().containsKey(parameterName)) {
 				isVisible = getFieldsMap().get(parameterName).isVisibleHandler(parameterName, parameters);
@@ -148,20 +132,16 @@ public abstract class Form {
 
 		/**
 		 * Метод интерактивной загрузки признака активности параметра формы
-		 * @param applicationId идентификатор анкеты
-		 * @param operatorId идентификатор пользователя интерфейса консультанта
-		 * @param cityId идентификатор города интерфейса консультанта
+		 * @param primaryId идентификатор анкеты
 		 * @param parameterName наименование параметра формы 
 		 * @param parameters Параметры, влияющие на признак активности параметра формы 
 		 * @return признак активности True активен, False не активен
 		 * @throws ServiceException
 		 */
-		protected  Boolean isActive(Integer applicationId, Integer operatorId, Integer cityId, 
-				String parameterName, Map<String, String> parameters) throws ServiceException {
+		protected  Boolean isActive(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
 			Boolean isActive = null;
 
-			parameters.put("operator_id", String.valueOf(operatorId));
-			parameters.put("application_id", String.valueOf(applicationId));
+			parameters.put("id", String.valueOf(primaryId));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				isActive = getFieldsMap().get(parameterName).isActiveHandler(parameterName, parameters);
@@ -175,20 +155,20 @@ public abstract class Form {
 
 		/**
 		 * Метод проверки параметра формы, который вызывается непосредственно перед сохранением
+		 * @param primaryId идентификатор анкеты
+		 * @param secondaryId данные о группе (если она множимая)
 		 * @param parameterName наименование параметра на форме
 		 * @param isRequired 
-		 * @param applicationId идентификатор анкеты
-		 * @param groupPrefix данные о группе (если она множимая)
 		 * @param parameters Параметры для проверки 
 		 * @return список ошибок
 		 * @throws ServiceException
 		 */
-		protected  List<String> checkParameter(String parameterName, Boolean isRequired, Integer applicationId, String groupPrefix,
+		protected  List<String> checkParameter(Integer primaryId, Integer secondaryId, String parameterName, Boolean isRequired,
 				Map<String, String> parameters) throws ServiceException {
 
 			List<String> errors = new LinkedList<String>();
 
-			parameters.put("application_id", String.valueOf(applicationId));
+			parameters.put("id", String.valueOf(primaryId));
 			
 			if (getFieldsMap().containsKey(parameterName)) {
 				List<String> localErrors = getFieldsMap().get(parameterName).checkHandler(parameterName, parameters);
@@ -215,13 +195,13 @@ public abstract class Form {
 		
 		/**
 		 * Метод проверки всей формы, который вызывается непосредственно перед сохранением
-		 * @param applicationId идентификатор анкеты
-		 * @param groupPrefix данные о группе (если она множимая)
+		 * @param primaryId идентификатор анкеты
+		 * @param secondaryId данные о группе (если она множимая)
 		 * @param parameters Параметры для проверки 
 		 * @return список ошибок
 		 * @throws ServiceException
 		 */
-		public Map<String, List<String>> checkForm(Integer applicationId, Integer operatorId, String groupPrefix, Map<String, String> parameters)  throws ServiceException {
+		public Map<String, List<String>> checkForm(Integer primaryId, Integer secondaryId, Map<String, String> parameters)  throws ServiceException {
 			
 			return new HashMap<String, List<String>>();
 		}
@@ -244,7 +224,23 @@ public abstract class Form {
 				if (parametersMap.containsKey(interfaceFieldName) && parametersMap.get(interfaceFieldName) != null) {
 					if (parametersMap.get(interfaceFieldName).getFieldName() != null) {
 						Object fieldValue = formData.get(parametersMap.get(interfaceFieldName).getFieldName());
-						this.formData.putValue(interfaceFieldName, fieldValue != null ? fieldValue.toString() : "");	
+		
+						Pattern pattern = Pattern.compile("^(.+)_id$");
+						Matcher matcher = pattern.matcher(parametersMap.get(interfaceFieldName).getFieldName());
+		
+						if (matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
+							String value = PARAMETER_NAME_VALUE_SEPARATOR;
+							if (formData.get(matcher.group(1) + "_name") != null) {
+								value = formData.get(parametersMap.get(interfaceFieldName).getFieldName()) +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");
+							} else if (formData.get(matcher.group(1) + "_other") != null) {
+								value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
+							}
+		
+							this.formData.putValue(interfaceFieldName, value);
+						} else {
+						
+							this.formData.putValue(interfaceFieldName, fieldValue != null ? fieldValue.toString() : "");
+						}
 					}
 				} else {
 					throw new ServiceException("Undeclared parameter '" + interfaceFieldName + "' for interface: " + this.getClass());
@@ -265,14 +261,15 @@ public abstract class Form {
 
 		/**
 		 * Метод сохранения формы
-		 * @param applicationId идентификатор анкеты
-		 * @param groupPrefix данные о группе (если она множимая)
+		 * @param primaryId идентификатор анкеты
+		 * @param secondaryId данные о группе (если она множимая)
 		 * @param parameters Параметры для сохранения 
+		 * @return TODO
 
 		 * @throws ServiceException
 		 */
 
-		abstract public void saveForm(Integer applicationId, Integer operatorId, String iPAddress, String groupPrefix, Map<String, String> parameters)  throws ServiceException;
+		abstract public Integer saveForm(Integer primaryId, Integer secondaryId, String iPAddress, Map<String, String> parameters)  throws ServiceException;
 		
 		protected RecordDto mapDaoParameters(Map<String, String> parameters) {
 
@@ -291,15 +288,11 @@ public abstract class Form {
 		/**
 		 * Метод получения атрибутов параметра формы (видимость, доступность к редактированию)
 		 * @param parameterName наименование параметра на форме
-		 * @param applicationId идентификатор анкеты
-		 * @param operatorId идентификатор пользователя интерфейса консультанта
-		 * @param cityId идентификатор города интерфейса консультанта
-		 * 
+		 * @param id идентификатор анкеты
 		 * @return список атрибутов параметра
 		 * @throws ServiceException
 		 */
-		public Map<Attribute, Boolean> getAttributes(String parameterName, Integer applicationId, Integer operatorId,
-				Integer cityId) {
+		public Map<Attribute, Boolean> getAttributes(String parameterName, Integer id) {
 
 			return new HashMap<Attribute, Boolean>();
 		}
@@ -308,16 +301,25 @@ public abstract class Form {
 		/**
 		 * Общая проверка данных, связанных с формой
 		 * 
-		 * @param applicationId идентификатор анкеты
-		 * @param operatorId идентификатор пользователя интерфейса консультанта
-		 * @param cityId идентификатор города интерфейса консультанта
-		 * 
+		 * @param primaryId идентификатор анкеты
 		 * @return результаты проверки данных
 		 * @throws ServiceException
 		 */
-		public Map<String, List<String>> checkInterface(Integer applicationId, Integer operatorId, Integer cityId, Map<String,String> parameters)  throws ServiceException {
+		public Map<String, List<String>> checkInterface(Integer primaryId, Map<String,String> parameters)  throws ServiceException {
 			
 			return new HashMap<String, List<String>>();
+		}
+
+		/**
+		 * Получение списка идентификаторов если форма являетсся групповой
+		 * 
+		 * @param primaryId идентификатор анкеты
+		 * @return список идентификаторов групп
+		 * @throws ServiceException
+		 */
+		public List<String> getGroups(Integer primaryId)  throws ServiceException {
+			
+			return null;
 		}
 
 }

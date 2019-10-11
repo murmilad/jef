@@ -2,6 +2,7 @@ package com.technology.jef.generators;
 
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 
 /**
@@ -179,7 +180,7 @@ public class InterfaceGenerator extends TagGenerator {
 		}}).add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "message_error_button");
 			 put(Tag.Property.TYPE, "button");
-			 put(Tag.Property.VALUE, "Назад");
+			 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("return"));
 			 put(Tag.Property.CLASS, "interface_button");
 			 put(Tag.Property.CLICK, "location.reload();");
 		}});

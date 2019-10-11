@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.xml.sax.helpers.AttributesImpl;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -21,7 +22,7 @@ public class Text extends Widget {
 		@Override
 		public String getInputRegexp() {
 			
-			return "[\\\\w -\\.:@\\\\/\\\\\\\\]+";
+			return "[\\w\\u{0410}-\\u{042f}\\u{0430}-\\u{044f}\\u{2116} -\\.:@\\/\\\\]+";
 		}
 		
 	  /**
@@ -43,7 +44,7 @@ public class Text extends Widget {
 				 put(Tag.Property.PLACEHOLDER, (String) generator.getAttribute(TagGenerator.Attribute.HINT));
 				 put(Tag.Property.STYLE, "width: 99%;");
 				 put(Tag.Property.CHANGE, !"".equals(getInputRegexp())
-						 ? "if ($(this).val() && !($(this).val().match(\"^" + getInputRegexp() + "$\"))) { alert(\"Введенные данные \\'\" + $(this).val() + \"\\' не соответствуют формату.\"); $(this).val(\"\").change().attr( \"class\", \"error\").trigger(\"refresh\").focus(); return false;} else {$(this).attr( \"class\", \"\").trigger(\"refresh\")}" 
+						 ? "if ($(this).val() && !($(this).val().match(/^" + getInputRegexp() + "$/u))) { alert(\""+ CurrentLocale.getInstance().getTextSource().getString("data_is_incorrect") +" \\'\" + $(this).val() + \"\\'\"); $(this).val(\"\").change().attr( \"class\", \"error\").trigger(\"refresh\").focus(); return false;} else {$(this).attr( \"class\", \"\").trigger(\"refresh\")}" 
 						 : ""
 				);
 				 put(Tag.Property.MOUSEDOWN, "setTimeout(function() {$('#visible_" + name + "').focus();}, 100);");

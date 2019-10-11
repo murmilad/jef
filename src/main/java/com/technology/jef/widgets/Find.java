@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -75,7 +76,7 @@ public class Find extends Widget {
 			.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "button_" + name);
 				 put(Tag.Property.NAME, "button_" + name);
-				 put(Tag.Property.VALUE, "найти");
+				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("find"));
 				 put(Tag.Property.CLASS, "interface_button");
 				 put(Tag.Property.TYPE, "button");
 				 put(Tag.Property.STYLE, "margin-left:10px;margin-right:10px;");
@@ -127,7 +128,7 @@ public class Find extends Widget {
 			
 				"						$(\"#search_result_${name}\").empty(); \n" + 
 				"						$(\"#search_result_${name}\").attr(\"disabled\",\"disabled\"); \n" + 
-				"						$(\"<option/>\", {'value': '', html: 'Загрузка...'}).appendTo(\"#search_result_${name}\"); \n" + 
+				"						$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#search_result_${name}\"); \n" + 
 				"						$(\"#search_result_${name}\").trigger('refresh'); \n" + 
 			
 				"						getJSON(\"/${service}/get_value?child=${name_api}&${value_js}&api=${api}\" \n" + 
@@ -147,6 +148,7 @@ public class Find extends Widget {
 				"							} \n" + 
 				"						); \n" + 
 				"					} \n")
+				.replace("${loading}", valueJS)
 				.replace("${value_js}", valueJS)
 				.replace("${name}", name)
 				.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))

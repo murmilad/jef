@@ -26,7 +26,7 @@ public class SerializeConstant {
    * Разделитель между параметром и группой
    * 
    */
-  public static final String GROUP_SEPARATOR = ":g:";
+  public static final String GROUP_SEPARATOR = "_g_";
 
   /**
    * Разделитель между элементами списка, содержащегося в параметре

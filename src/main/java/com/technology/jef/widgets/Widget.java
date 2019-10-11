@@ -129,11 +129,14 @@ public abstract class Widget {
 					.replace("${setValueJS}", this.getSetValueJS().replace("${child_name}", name))
 					.replace("${name}", name)
 					.replace("${setItemsJS}",
-							this.getSetItemsJS()
-								.replace("${list_item_js}", getListItemJS())
-								.replace("${service}", (String) generator.getAttribute(TagGenerator.Attribute.SERVICE))
-								.replace("${name}", name)
-								.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))
+							((String[]) generator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT)).length == 0 // Грузим списки только если нет зависимостей
+								? this.getSetItemsJS()
+									.replace("${list_item_js}", getListItemJS())
+									.replace("${service}", (String) generator.getAttribute(TagGenerator.Attribute.SERVICE))
+									.replace("${name}", name)
+									.replace("${name_api}", name.replaceAll((String) generator.getAttribute(TagGenerator.Attribute.PREFIX),""))
+									.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))
+								: "$(\"#visible_${name}\").trigger('setValue');".replace("${name}", name)
 					)
 			);
 			
@@ -334,12 +337,12 @@ public abstract class Widget {
 							"			            	url: '${service}get_is_visible_interactive',        \n" + 
 							"						data: {        \n" + 
 							"							parameter_name:'${child_name_api}',        \n" + 
-							"							application_id: $(\"#id\").val(),        \n" + 
+							"							id: $(\"#id\").val(),        \n" + 
 							"							form_api: '${api}',        \n" + 
 							"							form_id:$(\"#form_id\").val(),      \n" + 
 							"							parameters: ${value_js},        \n" + 
 							"							city_id: params.city_id,                \n" + 
-							"							application_id: params.application_id,                \n" + 
+							"							id: params.id,                \n" + 
 							"							rnd: Math.floor(Math.random() * 10000),        \n" + 
 							"						},       \n" + 
 							"				            type: 'post',        \n" + 
@@ -463,12 +466,12 @@ public abstract class Widget {
 				"				            	url: '${service}get_${request_type}_interactive',     \n" + 
 				"							data: {     \n" + 
 				"								parameter_name:'${child_name_api}',     \n" + 
-				"								application_id: $(\"#id\").val(),     \n" + 
+				"								id: $(\"#id\").val(),     \n" + 
 				"								form_api: '${api}',     \n" + 
 				"								form_id:$(\"#form_id\").val(),     \n" + 
 				"								parameters: valueJS,     \n" + 
 				"								city_id: params.city_id,                \n" + 
-				"								application_id: params.application_id,                \n" + 
+				"								id: params.id,                \n" + 
 				"								rnd: Math.floor(Math.random() * 10000),     \n" + 
 				"							},     \n" + 
 				"					            type: 'post',     \n" + 

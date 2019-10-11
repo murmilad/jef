@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -78,10 +79,11 @@ public class List extends Widget {
 				return 		("							$(\"#visible_${child_name}\").empty();  \n" + 
 						"							$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");  \n" + 
 						"						  	if ($(\"#other_${child_name}\").length > 0) {  \n" + 
-						"								$(\"<option/>\", {'value': 'other', html: 'Иное', 'selected': $(\"#other_${child_name}\").value }).appendTo(\"#visible_${child_name}\");  \n" + 
+						"								$(\"<option/>\", {'value': 'other', html: '${other}', 'selected': $(\"#other_${child_name}\").value }).appendTo(\"#visible_${child_name}\");  \n" + 
 						"						  	}  \n" + 
 						"							$(\"#visible_${child_name}\").val('').change();  \n"
-						);
+						)
+						.replace("${other}", CurrentLocale.getInstance().getTextSource().getString("other"));
 			}
 
 	   /**
@@ -115,7 +117,7 @@ public class List extends Widget {
 			"						$(\"#visible_${child_name}\").focusin( function() {          \n" + 
 			"							var value = $(\"#visible_${child_name}\").val(); \n" + 
 			"							$(\"#visible_${child_name}\").empty();           \n" + 
-			"							$(\"<option/>\", {'value': '', html: 'Загрузка...'}).appendTo(\"#visible_${child_name}\");           \n" + 
+			"							$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#visible_${child_name}\");           \n" + 
 			"							$(\"#visible_${child_name}\").trigger('refresh');           \n" + 
 			"							$(\"#background_overlay_wait_${parrent_name}\").show();           \n" + 
 			"		            				$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
@@ -133,12 +135,12 @@ public class List extends Widget {
 			"					            	url: '${service}get_list_interactive',        \n" + 
 			"								data: {        \n" + 
 			"									parameter_name:'${child_name_api}',        \n" + 
-			"									application_id: $(\"#id\").val(),        \n" + 
+			"									id: $(\"#id\").val(),        \n" + 
 			"									form_api: '${api}',        \n" + 
 			"									form_id:$(\"#form_id\").val(),        \n" + 
 			"									parameters: valueJS,        \n" + 
 			"									city_id: params.city_id,                \n" + 
-			"									application_id: params.application_id,                \n" + 
+			"									id: params.id,                \n" + 
 			"									rnd: Math.floor(Math.random() * 10000),        \n" + 
 			"								},       \n" + 
 			"						            	type: 'post',        \n" + 
@@ -193,6 +195,7 @@ public class List extends Widget {
 			"							});          \n" + 
 			"						});          \n" + 
 			"					}           \n")
+			.replace("${loading}", CurrentLocale.getInstance().getTextSource().getString("loading"))
 			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 			.replace("${force_ajax}", !"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)) ? ("(?!" + (String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX) + ")") : "")
@@ -229,9 +232,10 @@ public class List extends Widget {
 	"			}  \n" + 
 	"		});   \n" + 
 	"		if ($(\"#other_${name}\").length > 0) {   \n" + 
-	"			$(\"<option/>\", {'value': 'other', html: 'Иное', 'selected': $(\"#other_${name}\").value }).appendTo(\"#visible_${name}\");   \n" + 
+	"			$(\"<option/>\", {'value': 'other', html: '${other}', 'selected': $(\"#other_${name}\").value }).appendTo(\"#visible_${name}\");   \n" + 
 	"		}  \n" + 
-	"		$(\"#visible_${name}\").click(); \n"); 
+	"		$(\"#visible_${name}\").click(); \n")
+							.replace("${other}", CurrentLocale.getInstance().getTextSource().getString("other")); 
 		}
 
 	  /**
@@ -250,7 +254,7 @@ public class List extends Widget {
 							"			$(\"#message_box_wait_${name}\").show();        \n" + 
 							"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");        \n" + 
 							"			params['form_api'] = \"${api}\";    \n" + 
-							"			params['parameter_name'] = \"${name}\";    \n" + 
+							"			params['parameter_name'] = \"${name_api}\";    \n" + 
 							"			ajax({    \n" + 
 							"					url: \"${service}\" + \"get_list\",   \n" + 
 							"					data:  params,   \n" + 

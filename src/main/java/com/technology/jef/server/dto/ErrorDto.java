@@ -3,6 +3,8 @@ package com.technology.jef.server.dto;
 
 import static com.technology.jef.server.WebServiceConstant.*;
 
+import com.technology.jef.CurrentLocale;
+
 
 public class ErrorDto {
 
@@ -18,7 +20,7 @@ public class ErrorDto {
 			case 0 :
 				this.error_message = errorText; break;
 			case INCORRECT_PARAMETER_ERROR_CODE : 
-				this.error_message = "Неверно введен параметр"; break;
+				this.error_message = CurrentLocale.getInstance().getTextSource().getString("incorrect_value"); break;
 		}
 		
 	}

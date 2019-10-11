@@ -16,7 +16,7 @@ public class Date extends Text {
 		@Override
 		public String getInputRegexp() {
 			
-			return "(0[1-9]|[12][0-9]|3[01])\\\\.(0[1-9]|1[012])\\\\.(19|20)[0-9]{2}";
+			return "(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012])\\.(19|20)[0-9]{2}";
 		}
 		
 }

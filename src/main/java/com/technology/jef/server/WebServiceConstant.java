@@ -19,8 +19,6 @@ public interface WebServiceConstant {
   
 	public static final String PREFIX_WEB_SERVICE_TYPE = "get";
   
-	public static final String APPLICATION_ID_PARAMETER_NAME = "applicationId";
-
 	public static final Integer GUEST_OPERATOR_ID = 1076297;
 	public static final Integer GUEST_CITY_ID = 1;
   
@@ -35,7 +33,7 @@ public interface WebServiceConstant {
 	//Form constants
 	
 	public static final String FORM_API  = "form_api";
-	public static final String APPLICATION_ID = "application_id";
+	public static final String ID = "id";
 	public static final String CITY_ID = "city_id";
 	public static final String PARAMETER_NAME = "parameter_name";
 	public static final String PARAMETERS = "parameters";

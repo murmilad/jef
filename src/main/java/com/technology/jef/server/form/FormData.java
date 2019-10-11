@@ -12,18 +12,8 @@ public class FormData {
 		INVISIBLE,
 	}
 
-	private List<String> groups = new LinkedList<String>();
 	private Map<String, String> values = new HashMap<String, String>();
 	private Map<String, Map<Attribute, Boolean>> attributes = new HashMap<String, Map<Attribute, Boolean>>();
-
-
-	public List<String> getGroups() {
-		return groups;
-	}
-
-	public void setGroups(List<String> groups) {
-		this.groups = groups;
-	}
 
 	public Map<String,String> getValues() {
 		return values;

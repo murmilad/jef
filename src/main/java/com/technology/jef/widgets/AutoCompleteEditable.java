@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -58,9 +59,8 @@ public class AutoCompleteEditable extends Widget {
 			String nameAPI = name.replace(prefix, "");
 
 			for (Integer i = 1; i <= ajax_parrent_list.length; i++) {
-				valueJS = valueJS.concat("\"${parrent_name}${prefix}\","
+				valueJS = valueJS.concat("\"${parrent_name}\","
 						.replace("${parrent_name}", ajax_parrent_list[i-1])
-						.replace("${prefix}", prefix)
 				);
 			}
 			valueJS = valueJS.concat("];");
@@ -70,15 +70,11 @@ public class AutoCompleteEditable extends Widget {
 	"		var ${name}_autocomplete_result;    \n" + 
 	"		var ${name}_autocomplete_typing;    \n" + 
 	"        $( document ).ready(function() {    \n" + 
-	"			var group_postfix='';                      \n" + 
-	"			if (match = 'visible_${name}'.match(/_group_.*/)){                      \n" + 
-	"				group_postfix = match[0]                      \n" + 
-	"			}                      \n" + 
 	"			$('#visible_${name}').on('input', function () {                      \n" + 
 	"				// ручной ввод без выбора из списка                      \n" + 
 	"				if ($(\"#visible_${name}\").val()){                      \n" + 
 	"					$(\"#visible_\"+\"${name}\").addClass('warning');                      \n" + 
-	"					$(\"#visible_\"+\"${name}\").attr('title', 'Не найдено в справочнике');                      \n" + 
+	"					$(\"#visible_\"+\"${name}\").attr('title', '${couldnt_find}');                      \n" + 
 	"				}                      \n" + 
 	"			});       \n" + 
 	"			if ($._data( $(\"#visible_${name}\")[0], \"events\" ).change) {       \n" + 
@@ -128,7 +124,7 @@ public class AutoCompleteEditable extends Widget {
 	"					params:{			// доп параметры                    \n" + 
 	"						parameter_name:'${name_api}',                      \n" + 
 	"						form_api:'${api}',                      \n" + 
-	"						application_id: params.application_id,                      \n" + 
+	"						id: params.id,                      \n" + 
 	"					},  \n" + 
 	"					autoFocus: true,  \n" + 
 	"					matchContains: true,    \n" + 
@@ -138,7 +134,7 @@ public class AutoCompleteEditable extends Widget {
 	"						 var strongRe= new RegExp(\"(\" + currentValue + \")\",\"gi\"); \n" + 
 	"						 return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"'> \" + suggestion.name.replace(strongRe, \"<strong>$1</strong>\") + \"</div>\"; \n" + 
 	"					},                 \n" + 
-	"					noSuggestionNotice: 'Не найдено в справочнике',                    \n" + 
+	"					noSuggestionNotice: '${couldnt_find}',                    \n" + 
 	"					onSelect: function (suggestion) {                      \n" + 
 	"						// ставим выбранное значение в hidden поле                      \n" + 
 	"						$('#${name}').val(suggestion.data);      \n" + 
@@ -152,11 +148,11 @@ public class AutoCompleteEditable extends Widget {
 	"							return false;                      \n" + 
 	"						}                      \n" + 
 	"						// динам параметры для формирования GET к ajax - сам запрос                      \n" + 
-	"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}'+group_postfix).val();                 \n" + 
+	"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}${prefix}').val();                 \n" + 
 	"						// модифицируем params чтобы передать реальные значения параметров - parent                     \n" + 
 	"						${value_js}          \n" + 
 	"						for (var i=2; i<parent.length+2; i++){                     \n" + 
-	"							params['parameters']+=(i==2 ? '${parameter_separator}' : '') + parent[i-2] + '${value_separator}' +$('#'+parent[i-2]+group_postfix).val() +                 \n" + 
+	"							params['parameters']+=(i==2 ? '${parameter_separator}' : '') + parent[i-2] + '${value_separator}' +$('#'+parent[i-2]+'${prefix}').val() +                 \n" + 
 	"								(i<parent.length+1 ? '${parameter_separator}' : '');                     \n" + 
 	"						}    \n" + 
 	"						if (!${name}_autocomplete_result) {    \n" + 
@@ -166,6 +162,8 @@ public class AutoCompleteEditable extends Widget {
 	"					},                      \n" + 
 	"			});                      \n" + 
 	"		});          \n")
+						.replace("${prefix}", (String) generator.getAttribute(TagGenerator.Attribute.PREFIX))
+						.replace("${couldnt_find}", CurrentLocale.getInstance().getTextSource().getString("couldnt_find"))
 						.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 						.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 						.replace("${value_js}", valueJS)

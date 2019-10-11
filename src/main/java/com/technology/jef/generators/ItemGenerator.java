@@ -2,6 +2,7 @@ package com.technology.jef.generators;
 
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.widgets.Widget;
 import com.technology.jef.widgets.WidgetFactory;
@@ -35,7 +36,7 @@ public class ItemGenerator extends TagGenerator {
 			 put(Tag.Property.ID, "message_box_wait_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
 			 put(Tag.Property.NAME, "message_box_wait");
 			 put(Tag.Property.CLASS, "message_box_wait");
-		}}).add(Tag.Type.DIV, "Подождите...", new HashMap<Tag.Property, String>(){{
+		}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("wait"), new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.NAME, "message_overlay_wait");
 			 put(Tag.Property.CLASS, "message_overlay_wait");
 		}});

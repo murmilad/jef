@@ -16,7 +16,7 @@ public class Email extends Text {
 		@Override
 		public String getInputRegexp() {
 			
-			return "([\\\\w-]+\\\\.)*[\\\\w-]+\\\\@([0-9a-zA-Z-]{1,}\\\\.){1,}[0-9a-zA-Z-]{2,6}";
+			return "([\\w-]+\\.)*[\\w-]+\\@([0-9a-zA-Z-]{1,}\\.){1,}[0-9a-zA-Z-]{2,6}";
 		}
 		
 }

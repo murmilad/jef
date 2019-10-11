@@ -1,11 +1,16 @@
 package com.technology.jef.generators;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.xml.sax.Attributes;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
+import com.technology.jef.generators.TagGenerator.Handler;
 
+import static com.technology.jef.server.serialize.SerializeConstant.*;
 /**
 * Класс сборщика DOM модели уровня группы
 */
@@ -14,6 +19,7 @@ public class GroupGenerator extends TagGenerator {
 	private Boolean isMultiplie = false;
 	private Tag multilineParrentDOM;
 	private Tag templateParrentGroup;
+	private List<String> formItems = new LinkedList<String>();
 	
 	  /**
 	   * Метод формирования DOM модели на текущем уровне
@@ -30,8 +36,8 @@ public class GroupGenerator extends TagGenerator {
 
 			// То что не должно пойти в шаблон
 			multilineParrentDOM = dom.add(Tag.Type.DIV).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-			     put(Tag.Property.ID, "place_" + getAttribute(TagGenerator.Attribute.ID));
-			     put(Tag.Property.NAME, "place_" + getAttribute(TagGenerator.Attribute.ID));
+			     put(Tag.Property.ID, "place_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+			     put(Tag.Property.NAME, "place_" + GROUP_SEPARATOR +getAttribute(TagGenerator.Attribute.API));
 			}});
 			
 			// Формируем шаблон для мультигрупп и возвращаем его для дочерних генераторов
@@ -39,9 +45,17 @@ public class GroupGenerator extends TagGenerator {
 			templateParrentGroup = new Tag(Tag.Type.DIV);
 			group = addFormGroup(templateParrentGroup, "<NUMBER>", (String) getAttribute(TagGenerator.Attribute.NAME));
 
+			addHandler(TagGenerator.Name.FORM_ITEM, new Handler() {
+
+				@Override
+				public void handle(TagGenerator currentGenerator) {
+					formItems.add((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID));
+				}
+				
+			});
 //TODO			load params with prefix
 		} else {
-			group = addFormGroup(dom, (String) getAttribute(TagGenerator.Attribute.ID), (String) getAttribute(TagGenerator.Attribute.NAME));
+			group = addFormGroup(dom, GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API), (String) getAttribute(TagGenerator.Attribute.NAME));
 		}
 		
 		return group;
@@ -97,6 +111,12 @@ public class GroupGenerator extends TagGenerator {
 			 put(Tag.Property.NAME, "div_" + name);
 			 put(Tag.Property.ID, "div_" + name);
 		}});
+		
+		tagFieldset.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+			 put(Tag.Property.TYPE, "hidden");
+			 put(Tag.Property.NAME, "group_id" + getAttribute(TagGenerator.Attribute.PREFIX));
+			 put(Tag.Property.ID, "group_id" + getAttribute(TagGenerator.Attribute.PREFIX));
+		}});
 
 		return tagFieldset;
 	}
@@ -115,7 +135,7 @@ public class GroupGenerator extends TagGenerator {
 				 put(Tag.Property.ID, "button_del_<NUMBER>");
 				 put(Tag.Property.CLASS, "interface_del_button");
 				 put(Tag.Property.TYPE, "button");
-				 put(Tag.Property.VALUE, "удалить " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll("ы$", ""));
+				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
 			}});
 			
 			dom.add(Tag.Type.SCRIPT, (""
@@ -125,7 +145,7 @@ public class GroupGenerator extends TagGenerator {
 //TODO Добавить ограничение по количеству добавляемых групп
 						+ "$( \"#place_${multiplie_group_name}\" ).trigger( \"on_add\" );\n"
 					+"});"
-					).replace("${multiplie_group_name}", (String) getAttribute(TagGenerator.Attribute.ID))
+					).replace("${multiplie_group_name}", GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API))
 			);
 
 			dom.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
@@ -138,26 +158,26 @@ public class GroupGenerator extends TagGenerator {
 			
 //TODO Добавить ограничение на видимость кнопок "добавить" для групп
 			multilineParrentDOM.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "button_add_" + getAttribute(TagGenerator.Attribute.ID));
-				 put(Tag.Property.NAME, "button_add_" + getAttribute(TagGenerator.Attribute.ID));
+				 put(Tag.Property.ID, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+				 put(Tag.Property.NAME, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.TYPE, "button");
 				 put(Tag.Property.CLASS, "interface_add_button");
 				 put(Tag.Property.STYLE, "display: inline-block");
-				 put(Tag.Property.VALUE, "добавить " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll("ы$", ""));
+				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("add") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
 			}});
 			
 
 			multilineParrentDOM.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "background_overlay_wait_" + getAttribute(TagGenerator.Attribute.ID));
+				 put(Tag.Property.ID, "background_overlay_wait_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.NAME, "background_overlay_wait");
 				 put(Tag.Property.CLASS, "background_overlay_wait");
 			}});
 
 			multilineParrentDOM.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "message_box_wait_" + getAttribute(TagGenerator.Attribute.ID));
+				 put(Tag.Property.ID, "message_box_wait_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.NAME, "message_box_wait");
 				 put(Tag.Property.CLASS, "message_box_wait");
-			}}).add(Tag.Type.DIV, "Подождите...", new HashMap<Tag.Property, String>(){{
+			}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("wait"), new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "message_overlay_wait");
 				 put(Tag.Property.CLASS, "message_overlay_wait");
 			}});
@@ -217,6 +237,8 @@ public class GroupGenerator extends TagGenerator {
 			return templateParrentGroup;
 		case SERVICE:
 			return this.getParrent().getAttribute(TagGenerator.Attribute.SERVICE);
+		case ITEMS:
+			return formItems;
 		default:
 			return super.getAttribute(attributeName);
 		}

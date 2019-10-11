@@ -9,6 +9,8 @@ import com.technology.jef.server.form.FormData;
 
 public class FormDto  extends ResultDto {
 
+	private List<FormDto> groups;
+	private Map<String,ParameterDto> parameters = new HashMap<String,ParameterDto>();
 
 	public FormDto(ErrorDto error) {
 		super(error);
@@ -18,26 +20,22 @@ public class FormDto  extends ResultDto {
 		super(status_code);
 	}
 
-	public FormDto(Integer serviceStatus, FormData formData) {
-		super(serviceStatus);
-		
-		setGroups(formData.getGroups());
-		for (String parameterName: formData.getValues().keySet()) {
-			putParameter(parameterName, new ParameterDto(formData.getValues().get(parameterName), formData.getAttributes().get(parameterName)));
-		}
+	public FormDto(Integer status_code, List<FormDto> groups) {
+		super(status_code);
+		setGroups(groups);
 	}
 
-	private List<String> groups;
-	private Map<String,ParameterDto> parameters = new HashMap<String,ParameterDto>();
-
-	public List<String> getGroups() {
+	public List<FormDto> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(List<String> groups) {
+	public void setGroups(List<FormDto> groups) {
 		this.groups = groups;
 	}
-
+	public void addGroup(FormDto groupData) {
+		this.groups.add(groupData);
+	}
+	
 	public Map<String,ParameterDto> getParameters() {
 		return parameters;
 	}

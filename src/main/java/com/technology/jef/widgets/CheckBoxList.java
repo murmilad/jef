@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 import static com.technology.jef.server.serialize.SerializeConstant.*;
@@ -9,7 +10,7 @@ import static com.technology.jef.server.serialize.SerializeConstant.*;
 /**
 * Виджет группа выключателей
 */
-public class CheckBoxList extends List {
+public class CheckBoxList extends RadioSwitch {
 
 	/**
 	   * Метод возвращает тип виджета
@@ -30,7 +31,7 @@ public class CheckBoxList extends List {
 								"			$(\"#message_box_wait_${name}\").show();         \n" + 
 								"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");         \n" + 
 								"			params['form_api'] = \"${api}\";     \n" + 
-								"			params['parameter_name'] = \"${name}\";     \n" + 
+								"			params['parameter_name'] = \"${name_api}\";     \n" + 
 								"			ajax({   \n" + 
 								"					url: \"${service}\" + \"get_list\",  \n" + 
 								"					data: params,  \n" + 
@@ -72,7 +73,7 @@ public class CheckBoxList extends List {
 							put(Tag.Property.NAME, "visible_" + name);
 					}});
 
-			mainInput.add(Tag.Type.LINK, "очистить", new HashMap<Tag.Property, String>(){{
+			mainInput.add(Tag.Type.LINK, CurrentLocale.getInstance().getTextSource().getString("cleanup"), new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "link_" + name);
 				 put(Tag.Property.STYLE, "border-bottom: 1px dashed; cursor: pointer; margin: 0pt 2px 2px; text-align: left;");
 				 put(Tag.Property.CLICK, "for(i=0,arr=document.getElementsByName('visible_" + name + "');i<arr.length;i++){arr[i].checked=false;};$('#" + name + "').val('');return false;");
@@ -102,27 +103,29 @@ public class CheckBoxList extends List {
 		@Override
 		String getListItemJS() {
 			return
-					("							$.each(data.data, function(key, val) {    \n" + 
-	"								var span_name = 'span_group_${name}' + val.id;   \n" + 
-	"								$(\"<span/>\", {   \n" + 
-	"									'id' : span_name,   \n" + 
-	"									'style' : 'white-space:nowrap; padding-bottom:5px;',   \n" + 
-	"								}).appendTo(\"#visible_${name}\");   \n" + 
-	"								var visible_name = 'visible_${name}' + val.id;   \n" + 
-	"								$(\"<input/>\", {   \n" + 
-	"									'id' : visible_name,   \n" + 
-	"									'name' : 'visible_${name}',   \n" + 
-	"									'value' : val.id,   \n" + 
-	"									'type' : 'checkbox',   \n" + 
-	"									'onchange': 'fill_${name}_checks();',   \n" + 
-	"								}).appendTo(\"#\" + span_name);   \n" + 
-	"								$(\"<label/>\", {   \n" + 
-	"									html : val.name,   \n" + 
-	"									'for' : visible_name,   \n" + 
-	"									'style' : 'display: inline-block; padding:4px;',   \n" + 
-	"								}).appendTo(\"#\" + span_name);   \n" + 
-	"							}); $(\"#visible_${name}\").trigger('refresh'); \n")
-				;
+						("							$.each(data.data, function(key, val) {     \n" + 
+	"								var span_name = 'span_group_${name}' + val.id;    \n" + 
+	"								$(\"<span/>\", {    \n" + 
+	"									'id' : span_name,    \n" + 
+	"									'style' : 'white-space:nowrap; padding-bottom:5px;',    \n" + 
+	"								}).appendTo(\"#visible_${name}\");    \n" + 
+	"								var visible_name = 'visible_${name}' + val.id;    \n" + 
+	"								$(\"<input/>\", {    \n" + 
+	"									'id' : visible_name,    \n" + 
+	"									'name' : 'visible_${name}',    \n" + 
+	"									'value' : val.id,    \n" + 
+	"									'type' : 'checkbox',    \n" + 
+	"								}).appendTo(\"#\" + span_name);    \n" + 
+	"								$(\"<label/>\", {    \n" + 
+	"									html : val.name,    \n" + 
+	"									'for' : visible_name,    \n" + 
+	"									'style' : 'display: inline-block; padding:4px;',    \n" + 
+	"								}).appendTo(\"#\" + span_name);    \n" + 
+	"							});  \n" + 
+	"							$('#' + visible_name).change( function(event){  \n" + 
+	"								fill_${name}_checks(); \n" + 
+	"							});  \n" + 
+	"							$(\"#visible_${name}\").find('input').styler({});            \n");
 			//TODO Добавить возможность вызова привязанных событий при выборе каждого элемента 
 		}
 

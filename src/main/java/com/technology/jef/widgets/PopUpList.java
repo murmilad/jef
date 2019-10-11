@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -111,138 +112,145 @@ public class PopUpList extends List {
 
 			String bodyJS = super.getListConnectJS(currentGenerator, parrentGenerator);
 			bodyJS += 
-							("					\n" + 
-					"					// реагирование на получение фокуса          \n" + 
-					"					function onPopWindowvisible_${child_name}(){          \n" + 
-					"						var valueJS = ${value_js};        \n" + 
-					"						${ignore_empty_js}          \n" + 
-					"						// сохраняем предыдущее значение          \n" + 
-					"						var previous_text = $(\"#fake_visible_${child_name}\").val();          \n" + 
-					"						var previous_id = $(\"#${child_name}\").val();          \n" + 
-					"						$(\"#fake_visible_${child_name}\").attr(\"disabled\",\"disabled\");          \n" + 
-					"						$(\"#visible_${child_name}\").empty();          \n" + 
-					"						$(\"<option/>\", {'value': '', html: 'Загрузка...'}).appendTo(\"#visible_${child_name}\");          \n" + 
-					"						$(\"#fake_visible_${child_name}\").val('Загрузка...');          \n" + 
-					"						//$(\"#visible_${child_name}\").trigger('refresh');          \n" + 
-					"						$(\"#background_overlay_wait_${parrent_name}\").show();          \n" + 
-					"				            	$(\"#message_box_wait_${parrent_name}\").show();          \n" + 
-					"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");          \n" + 
-					"						$(\"#visible_${parrent_name}\").trigger('refresh');          \n" + 
-					"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {          \n" + 
-					"							ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;          \n" + 
-					"						}          \n" + 
-					"						++ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];          \n" + 
-					"						if (!ajax_is_child_blocked${prefix}[\"${child_name}\"]) {       \n" + 
-					"							ajax_is_child_blocked${prefix}[\"${child_name}\"] = 0;       \n" + 
-					"						}       \n" + 
-					"						++ajax_is_child_blocked${prefix}[\"${child_name}\"];       \n" + 
-					"						ajax({          \n" + 
-					"				            	url: '${service}get_list_interactive',          \n" + 
-					"							data: {          \n" + 
-					"								parameter_name:'${child_name_api}',          \n" + 
-					"								application_id: $(\"#id\").val(),          \n" + 
-					"								form_api: '${api}',          \n" + 
-					"								form_id:$(\"#form_id\").val(),          \n" + 
-					"								parameters: valueJS,          \n" + 
-					"								city_id: params.city_id,                \n" + 
-					"								application_id: params.application_id,                \n" + 
-					"								rnd: Math.floor(Math.random() * 10000),          \n" + 
-					"							},         \n" + 
-					"					            type: 'post',          \n" + 
-					"					            dataType: 'json',          \n" + 
-					"				           		contentType: 'application/x-www-form-urlencoded',          \n" + 
-					"						}, function (data) {  \n" + 
-					"								$(\"#visible_${child_name}\").empty();          \n" + 
-					"								$(\"#fake_visible_${child_name}\").val('Не выбрано');          \n" + 
-					"								// создаем слой          \n" + 
-					"								$(\"#fake_visible_${child_name}\").after(\"<div id='popup_${child_name}' class='popup'><p id='column1'></p><p id='column2'></p></div>\");          \n" + 
-					"								$(\"#popup_${child_name}\").prepend(\"<h3>Выберите \"+$('label[for=\"visible_${child_name}\"]').html()+\"</h3>\");          \n" + 
-					"								$(\"#popup_${child_name}\").prepend(\"<div id='popup_${child_name}_close' class='popup_close'>Закрыть</div>\");          \n" + 
-					"								var i = 0;          \n" + 
-					"								$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");          \n" + 
-					"								$.each(data.data, function(key, val) {          \n" + 
-					"									$(\"<option/>\", {'value': val.id, html: val.name, 'selected': val.value }).appendTo(\"#visible_${child_name}\");          \n" + 
-					"									i += 1;          \n" + 
-					"									var bold = val.id==previous_id;          \n" + 
-					"									if (i % 2 == 0) {          \n" + 
-					"										$(\"#column1\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u>'+(bold?'<b>':'')+val.name+(bold?'</b>':'') + '</u></span>');     \n" + 
-					"									}else{     \n" + 
-					"										$(\"#column2\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u>'+(bold?'<b>':'')+val.name+(bold?'</b>':'') + '</u></span>');     \n" + 
-					"									}          \n" + 
-					"							  	});          \n" + 
-					"								if (i==0){          \n" + 
-					"									// удаляем динам окно          \n" + 
-					"									$( \"#popup_${child_name}\" ).remove();          \n" + 
-					"									$(\"#fake_visible_${child_name}\").val('Список пуст');          \n" + 
-					"									$(\"#${child_name}\").val('');          \n" + 
-					"									if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {    \n" + 
-					"										$(\"#visible_${parrent_name}\").removeAttr('disabled');    \n" + 
-					"									}    \n" + 
-					"									$(\"#fake_visible_${child_name}\").removeAttr('disabled');          \n" + 
-					"									--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];          \n" + 
-					"									$(\"#visible_${child_name}\").trigger('set_find_result');          \n" + 
-					"									if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {          \n" + 
-					"										if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {   \n" + 
-					"											$(\"#visible_${parrent_name}\").removeAttr('disabled');   \n" + 
-					"										}   \n" + 
-					"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');          \n" + 
-					"										$(\"#background_overlay_wait_${parrent_name}\").hide();          \n" + 
-					"			            						$(\"#message_box_wait_${parrent_name}\").hide();          \n" + 
-					"									}          \n" + 
-					"									$(\"#visible_${parrent_name}\").trigger('refresh');          \n" + 
-					"									//$(\"#visible_${child_name}\").trigger('refresh');          \n" + 
-					"									return;          \n" + 
-					"								}          \n" + 
-					"								$(\"#fake_visible_${child_name}\").removeAttr('disabled');          \n" + 
-					"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];          \n" + 
-					"								$(\"#visible_${child_name}\").trigger('set_find_result');          \n" + 
-					"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {          \n" + 
-					"									if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {  \n" + 
-					"										$(\"#visible_${parrent_name}\").removeAttr('disabled');  \n" + 
-					"									}  \n" + 
-					"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');          \n" + 
-					"									$(\"#background_overlay_wait_${parrent_name}\").hide();          \n" + 
-					"		            						$(\"#message_box_wait_${parrent_name}\").hide();          \n" + 
-					"								}          \n" + 
-					"								--ajax_is_child_blocked${prefix}[\"${child_name}\"]; \n" + 
-					"								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) { \n" + 
-					"            								$(\"#visible_${child_name}\").trigger( 'on_child_unblocked'); \n" + 
-					"								} \n" + 
-					"								$(\"#visible_${parrent_name}\").trigger('refresh');          \n" + 
-					"								//$(\"#visible_${child_name}\").trigger('refresh');          \n" + 
-					"								// показываем фон          \n" + 
-					"								$(\".overlay\").show();          \n" + 
-					"								// вешаем обработчик динамически на click на каждый элемент списка popuplist_header          \n" + 
-					"								$(document).one(\"click\", \".popuplist_header\", function() {          \n" + 
-					"									 // из id извлекаем значение и выводим          \n" + 
-					"									 var id_value = $(this).attr('id');          \n" + 
-					"									 var arr = id_value.split('_');          \n" + 
-					"									 $(\"#fake_visible_${child_name}\").val($(this).find(\"u\").text());          \n" + 
-					"									 $(\"#visible_${child_name}\").val(arr[1]);          \n" + 
-					"									 $(\"#${child_name}\").val(arr[1]);          \n" + 
-					"									 // закрываем фон          \n" + 
-					"									 $(\".overlay\").hide();          \n" + 
-					"									 // удаляем динам окно          \n" + 
-					"									 $(\"#popup_${child_name}\" ).remove();          \n" + 
-					"									 // посылаем событие на обновление          \n" + 
-					"									 $(\"#visible_${child_name}\").change();          \n" + 
-					"									 $(\"#visible_${child_name}\").trigger('refresh');          \n" + 
-					"								});          \n" + 
-					"								// вешаем обработчик динамически на click на закрыть          \n" + 
-					"								$(document).one(\"click\", \".popup_close\", function() {          \n" + 
-					"									// закрываем фон          \n" + 
-					"									$(\".overlay\").hide();          \n" + 
-					"									// удаляем динам окно          \n" + 
-					"									$(\"#popup_${child_name}\").remove();          \n" + 
-					"									// восстанавливаем предыдущий выбор          \n" + 
-					"									$(\"#fake_visible_${child_name}\").val(previous_text);          \n" + 
-					"									$(\"#${child_name}\").val(previous_id);          \n" + 
-					"									$(\"#visible_${child_name}\").val(previous_id);          \n" + 
-					"									// посылаем событие на обновление          \n" + 
-					"									//$(\"#visible_${child_name}\").change();          \n" + 
-					"								});          \n" + 
-					"						});          \n" + 
-					"					}          \n")
+								("					 \n" + 
+	"					// реагирование на получение фокуса           \n" + 
+	"					function onPopWindowvisible_${child_name}(){           \n" + 
+	"						var valueJS = ${value_js};         \n" + 
+	"						${ignore_empty_js}           \n" + 
+	"						// сохраняем предыдущее значение           \n" + 
+	"						var previous_text = $(\"#fake_visible_${child_name}\").val();           \n" + 
+	"						var previous_id = $(\"#${child_name}\").val();           \n" + 
+	"						$(\"#fake_visible_${child_name}\").attr(\"disabled\",\"disabled\");           \n" + 
+	"						$(\"#visible_${child_name}\").empty();           \n" + 
+	"						$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#visible_${child_name}\");           \n" + 
+	"						$(\"#fake_visible_${child_name}\").val('${loading}');           \n" + 
+	"						//$(\"#visible_${child_name}\").trigger('refresh');           \n" + 
+	"						$(\"#background_overlay_wait_${parrent_name}\").show();           \n" + 
+	"				            	$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
+	"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");           \n" + 
+	"						$(\"#visible_${parrent_name}\").trigger('refresh');           \n" + 
+	"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {           \n" + 
+	"							ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;           \n" + 
+	"						}           \n" + 
+	"						++ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];           \n" + 
+	"						if (!ajax_is_child_blocked${prefix}[\"${child_name}\"]) {        \n" + 
+	"							ajax_is_child_blocked${prefix}[\"${child_name}\"] = 0;        \n" + 
+	"						}        \n" + 
+	"						++ajax_is_child_blocked${prefix}[\"${child_name}\"];        \n" + 
+	"						ajax({           \n" + 
+	"				            	url: '${service}get_list_interactive',           \n" + 
+	"							data: {           \n" + 
+	"								parameter_name:'${child_name_api}',           \n" + 
+	"								id: $(\"#id\").val(),           \n" + 
+	"								form_api: '${api}',           \n" + 
+	"								form_id:$(\"#form_id\").val(),           \n" + 
+	"								parameters: valueJS,           \n" + 
+	"								city_id: params.city_id,                 \n" + 
+	"								id: params.id,                 \n" + 
+	"								rnd: Math.floor(Math.random() * 10000),           \n" + 
+	"							},          \n" + 
+	"					            type: 'post',           \n" + 
+	"					            dataType: 'json',           \n" + 
+	"				           		contentType: 'application/x-www-form-urlencoded',           \n" + 
+	"						}, function (data) {   \n" + 
+	"								$(\"#visible_${child_name}\").empty();           \n" + 
+	"								$(\"#fake_visible_${child_name}\").val('${not_selected}');           \n" + 
+	"								// создаем слой           \n" + 
+	"								$(\"#fake_visible_${child_name}\").after(\"<div id='popup_${child_name}' class='popup'><p id='column1'></p><p id='column2'></p></div>\");           \n" + 
+	"								$(\"#popup_${child_name}\").prepend(\"<h3>${select} \"+$('label[for=\"visible_${child_name}\"]').html()+\"</h3>\");           \n" + 
+	"								$(\"#popup_${child_name}\").prepend(\"<div id='popup_${child_name}_close' class='popup_close'>${close}</div>\");           \n" + 
+	"								var i = 0;           \n" + 
+	"								$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");           \n" + 
+	"								$.each(data.data, function(key, val) {           \n" + 
+	"									$(\"<option/>\", {'value': val.id, html: val.name, 'selected': val.value }).appendTo(\"#visible_${child_name}\");           \n" + 
+	"									i += 1;           \n" + 
+	"									var bold = val.id==previous_id;   \n" + 
+	"									var values = val.name.split(\"${value_separator}\"); \n" + 
+	"									if (i % 2 == 0) {           \n" + 
+	"										$(\"#column1\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u>'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</span>');      \n" + 
+	"									}else{      \n" + 
+	"										$(\"#column2\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u>'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</span>');      \n" + 
+	"									}           \n" + 
+	"							  	});           \n" + 
+	"								if (i==0){           \n" + 
+	"									// удаляем динам окно           \n" + 
+	"									$( \"#popup_${child_name}\" ).remove();           \n" + 
+	"									$(\"#fake_visible_${child_name}\").val('${list_empty}');           \n" + 
+	"									$(\"#${child_name}\").val('');           \n" + 
+	"									if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {     \n" + 
+	"										$(\"#visible_${parrent_name}\").removeAttr('disabled');     \n" + 
+	"									}     \n" + 
+	"									$(\"#fake_visible_${child_name}\").removeAttr('disabled');           \n" + 
+	"									--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];           \n" + 
+	"									$(\"#visible_${child_name}\").trigger('set_find_result');           \n" + 
+	"									if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {           \n" + 
+	"										if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {    \n" + 
+	"											$(\"#visible_${parrent_name}\").removeAttr('disabled');    \n" + 
+	"										}    \n" + 
+	"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');           \n" + 
+	"										$(\"#background_overlay_wait_${parrent_name}\").hide();           \n" + 
+	"			            						$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
+	"									}           \n" + 
+	"									$(\"#visible_${parrent_name}\").trigger('refresh');           \n" + 
+	"									//$(\"#visible_${child_name}\").trigger('refresh');           \n" + 
+	"									return;           \n" + 
+	"								}           \n" + 
+	"								$(\"#fake_visible_${child_name}\").removeAttr('disabled');           \n" + 
+	"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];           \n" + 
+	"								$(\"#visible_${child_name}\").trigger('set_find_result');           \n" + 
+	"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {           \n" + 
+	"									if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {   \n" + 
+	"										$(\"#visible_${parrent_name}\").removeAttr('disabled');   \n" + 
+	"									}   \n" + 
+	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');           \n" + 
+	"									$(\"#background_overlay_wait_${parrent_name}\").hide();           \n" + 
+	"		            						$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
+	"								}           \n" + 
+	"								--ajax_is_child_blocked${prefix}[\"${child_name}\"];  \n" + 
+	"								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {  \n" + 
+	"            								$(\"#visible_${child_name}\").trigger( 'on_child_unblocked');  \n" + 
+	"								}  \n" + 
+	"								$(\"#visible_${parrent_name}\").trigger('refresh');           \n" + 
+	"								//$(\"#visible_${child_name}\").trigger('refresh');           \n" + 
+	"								// показываем фон           \n" + 
+	"								$(\".overlay\").show();           \n" + 
+	"								// вешаем обработчик динамически на click на каждый элемент списка popuplist_header           \n" + 
+	"								$(document).one(\"click\", \".popuplist_header\", function() {           \n" + 
+	"									 // из id извлекаем значение и выводим           \n" + 
+	"									 var id_value = $(this).attr('id');           \n" + 
+	"									 var arr = id_value.split('_');           \n" + 
+	"									 $(\"#fake_visible_${child_name}\").val($(this).find(\"u\").text());           \n" + 
+	"									 $(\"#visible_${child_name}\").val(arr[1]);           \n" + 
+	"									 $(\"#${child_name}\").val(arr[1]);           \n" + 
+	"									 // закрываем фон           \n" + 
+	"									 $(\".overlay\").hide();           \n" + 
+	"									 // удаляем динам окно           \n" + 
+	"									 $(\"#popup_${child_name}\" ).remove();           \n" + 
+	"									 // посылаем событие на обновление           \n" + 
+	"									 $(\"#visible_${child_name}\").change();           \n" + 
+	"									 $(\"#visible_${child_name}\").trigger('refresh');           \n" + 
+	"								});           \n" + 
+	"								// вешаем обработчик динамически на click на закрыть           \n" + 
+	"								$(document).one(\"click\", \".popup_close\", function() {           \n" + 
+	"									// закрываем фон           \n" + 
+	"									$(\".overlay\").hide();           \n" + 
+	"									// удаляем динам окно           \n" + 
+	"									$(\"#popup_${child_name}\").remove();           \n" + 
+	"									// восстанавливаем предыдущий выбор           \n" + 
+	"									$(\"#fake_visible_${child_name}\").val(previous_text);           \n" + 
+	"									$(\"#${child_name}\").val(previous_id);           \n" + 
+	"									$(\"#visible_${child_name}\").val(previous_id);           \n" + 
+	"									// посылаем событие на обновление           \n" + 
+	"									//$(\"#visible_${child_name}\").change();           \n" + 
+	"								});           \n" + 
+	"						});           \n" + 
+	"					}           \n")
+			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+			.replace("${select}", CurrentLocale.getInstance().getTextSource().getString("select"))
+			.replace("${close}", CurrentLocale.getInstance().getTextSource().getString("close"))
+			.replace("${list_empty}", CurrentLocale.getInstance().getTextSource().getString("list_empty"))
+			.replace("${loading}", CurrentLocale.getInstance().getTextSource().getString("loading"))
+			.replace("${not_selected}", CurrentLocale.getInstance().getTextSource().getString("not_selected"))
 			.replace("${handler}", handler)
 			.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 			.replace("${ignore_empty_js}", ignoreEmptyJS)

@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -52,7 +53,7 @@ public class DaData extends Widget {
 	"									dadata_key = responce.dadata_key;   \n" + 
 	"									dadata_url = responce.dadata_url;   \n" + 
 	"									if (!dadata_key || !dadata_url){    \n" + 
-	"			  							$('#visible_${name}').attr(\"placeholder\", \"Сервис DaData не настроен, используйте поля ниже\");    \n" + 
+	"			  							$('#visible_${name}').attr(\"placeholder\", \"${dadata_is_not_configured}\");    \n" + 
 	"										$('#visible_${name}').attr(\"disabled\", \"disabled\");    \n" + 
 	"  							          	} else {    \n" + 
 	"  							          	 var token = 'Token ' + dadata_key;   \n" + 
@@ -98,14 +99,14 @@ public class DaData extends Widget {
 	"																$(\"#visible_${name}_apartment${group_prefix}\").val(suggestion.data.flat);    \n" + 
 	"																$(\"#${name}_apartment${group_prefix}\").val(suggestion.data.flat);    \n" + 
 	"																// dadata не передает строение и корпус в отдельных полях, разносим вручную    \n" + 
-	"																if (suggestion.data.block_type && suggestion.data.block_type==='стр'){ // передано как строение    \n" + 
+	"																if (suggestion.data.block_type && suggestion.data.block_type==='${building}'){ // передано как строение    \n" + 
 	"										                                        $(\"#visible_${name}_section${group_prefix}\").val('');    \n" + 
 	"																    $(\"#${name}_section${group_prefix}\").val('');    \n" + 
 	"							    										$(\"#visible_${name}_building${group_prefix}\").val(suggestion.data.block);    \n" + 
 	"								    									$(\"#${name}_building${group_prefix}\").val(suggestion.data.block);    \n" + 
 	"																}else{ // передано как корпус    \n" + 
 	"																	if (suggestion.data.block_type){    \n" + 
-	"																		var pos = suggestion.data.block.indexOf('стр');    \n" + 
+	"																		var pos = suggestion.data.block.indexOf('${building}');    \n" + 
 	"																		if (pos>-1){ // НО в корпусе может содержаться строение (!)    \n" + 
 	"																			var building=''; var section='';    \n" + 
 	"																			section =  suggestion.data.block.substr(0,pos-1);    \n" + 
@@ -129,19 +130,19 @@ public class DaData extends Widget {
 	"																}    \n" + 
 	"																// dadata вносит строение корпус в номер дома если номер дома отсутствует, поэтому разносим сами    \n" + 
 	"																switch(suggestion.data.house_type) {    \n" + 
-	"																	case 'д':    \n" + 
-	"																	case 'влд':    \n" + 
+	"																	case '${house}':    \n" + 
+	"																	case '${property}':    \n" + 
 	"																	default:    \n" + 
 	"																		$(\"#visible_${name}_house${group_prefix}\").val(suggestion.data.house);    \n" + 
 	"																		$(\"#${name}_house${group_prefix}\").val((suggestion.data.house_fias_id||'')+'|'+(suggestion.data.house||''));    \n" + 
 	"																		break;    \n" + 
-	"																	case 'к':    \n" + 
+	"																	case '${corpus}':    \n" + 
 	"																		$(\"#visible_${name}_house${group_prefix}\").val('');    \n" + 
 	"																		$(\"#${name}_house${group_prefix}\").val((suggestion.data.house_fias_id||'')+'|');    \n" + 
 	"																		$(\"#visible_${name}_section${group_prefix}\").val(suggestion.data.house);    \n" + 
 	"																		$(\"#${name}_section${group_prefix}\").val(suggestion.data.house);    \n" + 
 	"																		break;    \n" + 
-	"																	case 'стр':    \n" + 
+	"																	case '${building}':    \n" + 
 	"																		$(\"#visible_${name}_house${group_prefix}\").val('');    \n" + 
 	"																		$(\"#${name}_house${group_prefix}\").val((suggestion.data.house_fias_id||'')+'|');    \n" + 
 	"																		$(\"#visible_${name}_building${group_prefix}\").val(suggestion.data.house);    \n" + 
@@ -151,28 +152,28 @@ public class DaData extends Widget {
 	"							                                    // проверка что поля адреса не из справочника (нет code)    \n" + 
 	"																if (suggestion.data.city_with_type && !suggestion.data.city_fias_id){    \n" + 
 	"																	$(\"#visible_${name}_city_code${group_prefix}\").addClass('warning');    \n" + 
-	"																	$(\"#visible_${name}_city_code${group_prefix}\").attr('title', 'Населенный пункт не найден в справочнике');    \n" + 
+	"																	$(\"#visible_${name}_city_code${group_prefix}\").attr('title', '${cant_find_city}');    \n" + 
 	"																}else{    \n" + 
 	"																   $(\"#visible_${name}_city_code${group_prefix}\").removeClass('warning');    \n" + 
 	"																   $(\"#visible_${name}_city_code${group_prefix}\").attr('title', '');    \n" + 
 	"																}    \n" + 
 	"																if (suggestion.data.settlement_with_type && !suggestion.data.settlement_fias_id){    \n" + 
 	"																	$(\"#visible_${name}_settlement_code${group_prefix}\").addClass('warning');    \n" + 
-	"																	$(\"#visible_${name}_settlement_code${group_prefix}\").attr('title', 'Подчиненный населенный пункт не найден в справочнике');    \n" + 
+	"																	$(\"#visible_${name}_settlement_code${group_prefix}\").attr('title', '${cant_find_village}');    \n" + 
 	"																}else{    \n" + 
 	"																   $(\"#visible_${name}_settlement_code${group_prefix}\").removeClass('warning');    \n" + 
 	"																   $(\"#visible_${name}_settlement_code${group_prefix}\").attr('title', '');    \n" + 
 	"																}    \n" + 
 	"																if (suggestion.data.street_with_type && !suggestion.data.street_fias_id){    \n" + 
 	"																	$(\"#visible_${name}_street_code${group_prefix}\").addClass('warning');    \n" + 
-	"																	$(\"#visible_${name}_street_code${group_prefix}\").attr('title', 'Улица не найдена в справочнике');    \n" + 
+	"																	$(\"#visible_${name}_street_code${group_prefix}\").attr('title', '${cant_find_village}');    \n" + 
 	"																}else{    \n" + 
 	"																   $(\"#visible_${name}_street_code${group_prefix}\").removeClass('warning');    \n" + 
 	"																   $(\"#visible_${name}_street_code${group_prefix}\").attr('title', '');    \n" + 
 	"																}    \n" + 
 	"																if (suggestion.data.house && !suggestion.data.house_fias_id){    \n" + 
 	"																	$(\"#visible_${name}_house${group_prefix}\").addClass('warning');    \n" + 
-	"																	$(\"#visible_${name}_house${group_prefix}\").attr('title', 'Дом не найден в справочнике');    \n" + 
+	"																	$(\"#visible_${name}_house${group_prefix}\").attr('title', '${cant_find_village}');    \n" + 
 	"																}else{    \n" + 
 	"																   $(\"#visible_${name}_house${group_prefix}\").removeClass('warning');    \n" + 
 	"																   $(\"#visible_${name}_house${group_prefix}\").attr('title', '');    \n" + 
@@ -202,22 +203,33 @@ public class DaData extends Widget {
 	"													});    \n" + 
 	"                        						    },    \n" + 
 	"				            		                error: function(jqxhr, status, exception) {    \n" + 
-	"                        						        $('#visible_${name}').attr(\"placeholder\", \"Сервис DaData недоступен, используйте поля ниже\");    \n" + 
+	"                        						        $('#visible_${name}').attr(\"placeholder\", \"${dadata_is_not_respond}\");    \n" + 
 	"									              $('#visible_${name}').attr(\"disabled\", \"disabled\");   \n" + 
 	"										    }   \n" + 
 	"						                        });   \n" + 
 	"									    }   \n" + 
 	"									} else {   \n" + 
-	"		               		                     $('#visible_${name}').attr(\"placeholder\", \"Сервис DaData недоступен, используйте поля ниже\");    \n" + 
+	"		               		                     $('#visible_${name}').attr(\"placeholder\", \"${dadata_is_not_respond}\");    \n" + 
 	"								         $('#visible_${name}').attr(\"disabled\", \"disabled\");    \n" + 
 	"									}   \n" + 
 	"		            		     },    \n" + 
 	"		            		     error: function(jqxhr, status, exception) {    \n" + 
-	"            		                    $('#visible_${name}').attr(\"placeholder\", \"Сервис DaData недоступен, используйте поля ниже\");    \n" + 
+	"            		                    $('#visible_${name}').attr(\"placeholder\", \"${dadata_is_not_respond}\");    \n" + 
 	"						         $('#visible_${name}').attr(\"disabled\", \"disabled\");    \n" + 
 	"							}   \n" + 
 	"		                    });    \n" + 
 	"				});")
+					 
+				.replace("${cant_find_street}", CurrentLocale.getInstance().getTextSource().getString("cant_find_street"))
+				.replace("${cant_find_house}", CurrentLocale.getInstance().getTextSource().getString("cant_find_house"))
+				.replace("${cant_find_village}", CurrentLocale.getInstance().getTextSource().getString("cant_find_village"))
+				.replace("${cant_find_city}", CurrentLocale.getInstance().getTextSource().getString("cant_find_city"))
+				.replace("${house}", CurrentLocale.getInstance().getTextSource().getString("house"))
+				.replace("${property}", CurrentLocale.getInstance().getTextSource().getString("property"))
+				.replace("${corpus}", CurrentLocale.getInstance().getTextSource().getString("corpus"))
+				.replace("${building}", CurrentLocale.getInstance().getTextSource().getString("building"))
+				.replace("${dadata_is_not_configured}", CurrentLocale.getInstance().getTextSource().getString("dadata_is_not_configured"))
+				.replace("${dadata_is_not_respond}", CurrentLocale.getInstance().getTextSource().getString("dadata_is_not_respond"))
 				.replace("${name}", nameAPI)
 				.replace("${group_prefix}", prefix)
 			);

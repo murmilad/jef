@@ -16,7 +16,7 @@ public class Money extends Text {
 		@Override
 		public String getInputRegexp() {
 			
-			return "[0-9]+(\\\\.[0-9]{1,5})?";
+			return "[0-9]+(\\.[0-9]{1,5})?";
 		}
 		
 }

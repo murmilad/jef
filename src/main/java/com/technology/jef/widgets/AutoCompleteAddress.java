@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -77,7 +78,7 @@ public class AutoCompleteAddress extends Widget {
 								"				// ручной ввод без выбора из списка                \n" + 
 								"				if ($(\"#visible_${name}\").val()){                \n" + 
 								"					$(\"#visible_\"+\"${name}\").addClass('warning');                \n" + 
-								"					$(\"#visible_\"+\"${name}\").attr('title', 'Не найдено в справочнике');                \n" + 
+								"					$(\"#visible_\"+\"${name}\").attr('title', '${couldnt_find}');                \n" + 
 								"					if (\"visible_${name}\".indexOf('house')!==-1){ // номер дома без fias_code - получаем общегородской индекс                \n" + 
 								"						ajax({                \n" + 
 								"			      	      	url: '${service}get_list_interactive',                 \n" + 
@@ -87,7 +88,7 @@ public class AutoCompleteAddress extends Widget {
 								"								form_id:$(\"#form_id\").val(),                 \n" + 
 								"								parameters: '${group_prefix}'+'region_code' + '${value_separator}' + $('#${group_prefix}'+'region_code'+group_postfix).val() + '${parameter_separator}' +  '${group_prefix}'+'district_code' + '${value_separator}' + $('#${group_prefix}'+'district_code'+group_postfix).val() + '${parameter_separator}' + '${group_prefix}'+'city_code' + '${value_separator}' + $('#${group_prefix}'+'city_code'+group_postfix).val() + '${parameter_separator}' +  '${group_prefix}'+'settlement_code' + '${value_separator}' + $('#${group_prefix}'+'settlement_code'+group_postfix).val() + '${parameter_separator}' +  '${group_prefix}'+'street_code' + '${value_separator}' + $('#${group_prefix}'+'street_code'+group_postfix).val() + '${parameter_separator}',             \n" + 
 								"								city_id: params.city_id,                 \n" + 
-								"								application_id: params.application_id,                 \n" + 
+								"								id: params.id,                 \n" + 
 								"								rnd: Math.floor(Math.random() * 10000),                 \n" + 
 								"							},                \n" + 
 								"							type: \"POST\",                \n" + 
@@ -127,7 +128,7 @@ public class AutoCompleteAddress extends Widget {
 								"								done({                \n" + 
 								"									suggestions: $.map(response.data, function(dataItem) {                \n" + 
 								"										if (\"visible_${name}\".indexOf('house')!==-1){                \n" + 
-								"											return { value: dataItem.name + (dataItem.block ? ' корп '+dataItem.block : '') + (dataItem.building ? ' стр '+dataItem.building : ''),                \n" + 
+								"											return { value: dataItem.name + (dataItem.block ? ' ${sector} '+dataItem.block : '') + (dataItem.building ? ' ${building} '+dataItem.building : ''),                \n" + 
 								"											        data: dataItem.id,                \n" + 
 								"													 post_index: dataItem.post_index,                \n" + 
 								"													 name: dataItem.name,                \n" + 
@@ -145,14 +146,14 @@ public class AutoCompleteAddress extends Widget {
 								"						parameter_name:'${name_api}',                \n" + 
 								"						form_api:'${api}',                \n" + 
 								"						city_id: params.city_id,                 \n" + 
-								"						application_id: params.application_id,                 \n" + 
+								"						id: params.id,                 \n" + 
 								"						id:'${id}',                \n" + 
 								"						form_id:$(\"#form_id\").val(),        \n" + 
 								"					},              \n" + 
 								"					paramName:'value_1',// основной параметр для поиска              \n" + 
 								"					minChars:0,              \n" + 
 								"					showNoSuggestionNotice: true,              \n" + 
-								"					noSuggestionNotice: 'Не найдено в справочнике',              \n" + 
+								"					noSuggestionNotice: '${couldnt_find}',              \n" + 
 								"					preventBadQueries: false,                \n" + 
 								"					forceFixPosition: true,                \n" + 
 								"					deferRequestBy: 1000,                \n" + 
@@ -215,6 +216,9 @@ public class AutoCompleteAddress extends Widget {
 								"					},                \n" + 
 								"			});                \n" + 
 								"		});    \n")
+						.replace("${couldnt_find}", CurrentLocale.getInstance().getTextSource().getString("couldnt_find"))
+						.replace("${sector}", CurrentLocale.getInstance().getTextSource().getString("sector"))
+						.replace("${building}", CurrentLocale.getInstance().getTextSource().getString("building"))
 						.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 						.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 						.replace("${value_js}", valueJS)
