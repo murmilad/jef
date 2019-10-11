@@ -38,4 +38,8 @@ public interface WebServiceConstant {
 	public static final String PARAMETER_NAME = "parameter_name";
 	public static final String PARAMETERS = "parameters";
 
+	//Group actions
+	public static final String ACTION_DELETE = "delete";
+	public static final String ACTION_UPDATE = "update";
+	
 }

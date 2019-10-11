@@ -10,6 +10,7 @@ import com.technology.jef.Tag;
 import com.technology.jef.widgets.Widget;
 
 import static com.technology.jef.server.serialize.SerializeConstant.*;
+import static com.technology.jef.server.WebServiceConstant.*;
 
 /**
 * Класс сборщика DOM модели уровня формы (страницы)
@@ -405,6 +406,17 @@ public class FormGenerator extends TagGenerator {
 	"						}     \n" + 
 	"						eval(template_script);							   \n" + 
 	"						$( \"#place_${multiplie_group_name}\" ).trigger( \"add\" );   \n" + 
+	"						$(\"<input/>\", {    \n" + 
+	"							'type': 'hidden',     \n" + 
+	"							'id': 'group_id' + groupPrefix,     \n" + 
+	"							'name': 'group_id' + groupPrefix,     \n" + 
+	"						}).appendTo( \"#place_${multiplie_group_name}\" ); \n" + 
+	"						$(\"<input/>\", {    \n" + 
+	"							'value': '${action}',     \n" + 
+	"							'type': 'hidden',     \n" + 
+	"							'id': 'action' + groupPrefix,     \n" + 
+	"							'name': 'action' + groupPrefix,     \n" + 
+	"						}).appendTo( \"#place_${multiplie_group_name}\" ); \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").hide();    \n" + 
 	"    	      					$(\"#message_box_wait_${multiplie_group_name}\").hide();    \n" + 
 	"						number_${multiplie_group_name}++;     \n" + 
@@ -414,6 +426,7 @@ public class FormGenerator extends TagGenerator {
 					.replace("${multiplie_group_name}", GROUP_SEPARATOR + (String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))
 					.replace("${encoded_tag}", new String(encodedHTML))
 					.replace("${encoded_script}", new String(encodedJS))
+					.replace("${action}", ACTION_UPDATE)
 				);
 		}
 

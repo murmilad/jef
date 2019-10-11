@@ -270,7 +270,18 @@ public abstract class Form {
 		 */
 
 		abstract public Integer saveForm(Integer primaryId, Integer secondaryId, String iPAddress, Map<String, String> parameters)  throws ServiceException;
-		
+
+		/**
+		 * Удаление групповой формы
+		 * @param primaryId идентификатор анкеты
+		 * @param secondaryId данные о группе (если она множимая)
+		 * @return TODO
+
+		 * @throws ServiceException
+		 */
+
+		public void deleteForm(Integer primaryId, Integer secondaryId, String iPAddress)  throws ServiceException {};
+
 		protected RecordDto mapDaoParameters(Map<String, String> parameters) {
 
 			RecordDto daoParameters = new RecordDto();

@@ -2,6 +2,7 @@ package com.technology.jef.server.form;
 
 import static com.technology.jef.server.WebServiceConstant.SERVICE_STATUS_OK;
 import static com.technology.jef.server.serialize.SerializeConstant.*;
+import static com.technology.jef.server.WebServiceConstant.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -196,7 +197,12 @@ public class Service<F extends FormFactory> {
 						for (String groupPrefix : formParameters.getParameters().keySet()) {
 							Integer currentPrimaryId = newRecordId.get(0);
 							String secondaryId = sourceParametersMap.get("group_id" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
-							newRecordId.set(0,  saveFormData(currentPrimaryId, secondaryId == null | "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), iPaddress, formParameters.getCurrentApi(), formParameters.getInputParameters(groupPrefix)));
+							String action = sourceParametersMap.get("action" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
+							if (ACTION_DELETE.equals(action)) {
+								deleteFormData(currentPrimaryId, secondaryId == null | "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), iPaddress, formParameters.getCurrentApi());
+							} else {
+								newRecordId.set(0,  saveFormData(currentPrimaryId, secondaryId == null | "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), iPaddress, formParameters.getCurrentApi(), formParameters.getInputParameters(groupPrefix)));
+							}
 						}
 				});
 			}
@@ -273,7 +279,7 @@ public class Service<F extends FormFactory> {
 	 * @param primaryId идентификатор анкеты
 	 * @param formApi идентификатор контроллера интерфейса консультанта
 	 * @param saveParametersMap 
-	 * @return TODO
+	 * @return идентификатор базовой сущности
 	 * 
 	 * @throws ServiceException
 	 */
@@ -284,6 +290,23 @@ public class Service<F extends FormFactory> {
 		Form form = factory.getForm(formApi);
 		
 		return form.saveForm(primaryId, secondaryId, iPAddress, saveParametersMap);
+	}
+
+	/**
+	 * Удаление групповой формы
+	 * 
+	 * @param primaryId идентификатор анкеты
+	 * @param formApi идентификатор контроллера интерфейса консультанта
+	 * 
+	 * @throws ServiceException
+	 */
+
+	public void deleteFormData(Integer primaryId, Integer secondaryId, String iPAddress, String formApi)
+			throws ServiceException {
+		
+		Form form = factory.getForm(formApi);
+		
+		form.deleteForm(primaryId, secondaryId, iPAddress);
 	}
 
 

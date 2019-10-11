@@ -8,9 +8,9 @@ import org.xml.sax.Attributes;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
-import com.technology.jef.generators.TagGenerator.Handler;
 
 import static com.technology.jef.server.serialize.SerializeConstant.*;
+import static com.technology.jef.server.WebServiceConstant.*;
 /**
 * Класс сборщика DOM модели уровня группы
 */
@@ -112,11 +112,6 @@ public class GroupGenerator extends TagGenerator {
 			 put(Tag.Property.ID, "div_" + name);
 		}});
 		
-		tagFieldset.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.TYPE, "hidden");
-			 put(Tag.Property.NAME, "group_id" + getAttribute(TagGenerator.Attribute.PREFIX));
-			 put(Tag.Property.ID, "group_id" + getAttribute(TagGenerator.Attribute.PREFIX));
-		}});
 
 		return tagFieldset;
 	}
@@ -138,14 +133,29 @@ public class GroupGenerator extends TagGenerator {
 				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
 			}});
 			
-			dom.add(Tag.Type.SCRIPT, (""
-					+ "$(\"#button_del_<NUMBER>\").click(function(){ \n"
-						+ "$(\"#fildset_<NUMBER>\").remove(); \n"
-						+ "count_${multiplie_group_name}--;\n"
-//TODO Добавить ограничение по количеству добавляемых групп
-						+ "$( \"#place_${multiplie_group_name}\" ).trigger( \"on_add\" );\n"
-					+"});"
-					).replace("${multiplie_group_name}", GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API))
+			dom.add(Tag.Type.SCRIPT, 	(" \n" + 
+	"	$(\"#button_del_<NUMBER>\").click(function(){  \n" + 
+	"		$('#action<NUMBER>').val('${action}'); \n" + 
+	"		$(\"#fildset_<NUMBER>\").remove();  \n" + 
+	"			$(\"<input/>\", {    \n" + 
+	"				'value': '${api}',     \n" + 
+	"				'type': 'hidden',     \n" + 
+	"				'id': 'api_group_id<NUMBER>',     \n" + 
+	"				'name': 'api_group_id<NUMBER>',     \n" + 
+	"			}).appendTo( \"#place_${multiplie_group_name}\" ); \n" + 
+	"			$(\"<input/>\", {    \n" + 
+	"				'value': '${parrent_api}',     \n" + 
+	"				'type': 'hidden',     \n" + 
+	"				'id': 'parrent_api_group_id<NUMBER>',     \n" + 
+	"				'name': 'parrent_api_group_id<NUMBER>',     \n" + 
+	"			}).appendTo( \"#place_${multiplie_group_name}\" ); \n" + 
+	"		count_${multiplie_group_name}--; \n" +
+	"}); \n")
+	.replace("${multiplie_group_name}", GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API))
+	.replace("${api}", (String) getAttribute(TagGenerator.Attribute.API))
+	.replace("${parrent_api}", (String) getAttribute(TagGenerator.Attribute.PARRENT_API))
+	.replace("${action}", ACTION_DELETE)
+	
 			);
 
 			dom.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
