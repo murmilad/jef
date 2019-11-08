@@ -64,4 +64,13 @@ public class FormParameters {
 	public void setCurrentApi(String currentApi) {
 		this.currentApi = currentApi;
 	}
+
+
+	public void addExtraParameters(Map<String, String> extraParametersMap) {
+		for (String formPrefix: parameters.keySet()) {
+			for (String name: extraParametersMap.keySet()) {
+				addParameter(name, extraParametersMap.get(name), false, formPrefix);
+			}
+		}
+	}
 }

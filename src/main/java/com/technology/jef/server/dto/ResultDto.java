@@ -20,6 +20,7 @@ public class ResultDto  extends StatusDto {
 	}
 
 	private FormErrorsDto errors = new FormErrorsDto();
+	private String id;
 
 	public FormErrorsDto getErrors() {
 		return errors;
@@ -48,6 +49,14 @@ public class ResultDto  extends StatusDto {
 	private void addParametersError(String string, List<String> list) {
 		getErrors().addParametersError(string, list);
 		
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 

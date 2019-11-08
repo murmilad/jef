@@ -55,15 +55,9 @@ public class AutoCompleteEditable extends Widget {
 			String[] ajax_parrent_list = (String[])generator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT);
 
 			String prefix = (String) generator.getAttribute(TagGenerator.Attribute.PREFIX);
-			String valueJS = "var parent = [";
 			String nameAPI = name.replace(prefix, "");
+			String valueJS = getValueJS(ajax_parrent_list, prefix);
 
-			for (Integer i = 1; i <= ajax_parrent_list.length; i++) {
-				valueJS = valueJS.concat("\"${parrent_name}\","
-						.replace("${parrent_name}", ajax_parrent_list[i-1])
-				);
-			}
-			valueJS = valueJS.concat("];");
 
 			parrent.add(Tag.Type.SCRIPT, 
 														("                      \n" + 
@@ -124,7 +118,6 @@ public class AutoCompleteEditable extends Widget {
 	"					params:{			// доп параметры                    \n" + 
 	"						parameter_name:'${name_api}',                      \n" + 
 	"						form_api:'${api}',                      \n" + 
-	"						id: params.id,                      \n" + 
 	"					},  \n" + 
 	"					autoFocus: true,  \n" + 
 	"					matchContains: true,    \n" + 
@@ -150,11 +143,7 @@ public class AutoCompleteEditable extends Widget {
 	"						// динам параметры для формирования GET к ajax - сам запрос                      \n" + 
 	"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}${prefix}').val();                 \n" + 
 	"						// модифицируем params чтобы передать реальные значения параметров - parent                     \n" + 
-	"						${value_js}          \n" + 
-	"						for (var i=2; i<parent.length+2; i++){                     \n" + 
-	"							params['parameters']+=(i==2 ? '${parameter_separator}' : '') + parent[i-2] + '${value_separator}' +$('#'+parent[i-2]+'${prefix}').val() +                 \n" + 
-	"								(i<parent.length+1 ? '${parameter_separator}' : '');                     \n" + 
-	"						}    \n" + 
+	"						params['parameters'] += '${parameter_separator}' + ${value_js};          \n" + 
 	"						if (!${name}_autocomplete_result) {    \n" + 
 	"							$('#background_overlay_wait_${name}').show();                      \n" + 
 	"							$('#message_box_wait_${name}').show();               \n" + 

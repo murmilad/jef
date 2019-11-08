@@ -135,12 +135,8 @@ public class List extends Widget {
 			"					            	url: '${service}get_list_interactive',        \n" + 
 			"								data: {        \n" + 
 			"									parameter_name:'${child_name_api}',        \n" + 
-			"									id: $(\"#id\").val(),        \n" + 
 			"									form_api: '${api}',        \n" + 
-			"									form_id:$(\"#form_id\").val(),        \n" + 
 			"									parameters: valueJS,        \n" + 
-			"									city_id: params.city_id,                \n" + 
-			"									id: params.id,                \n" + 
 			"									rnd: Math.floor(Math.random() * 10000),        \n" + 
 			"								},       \n" + 
 			"						            	type: 'post',        \n" + 
@@ -248,16 +244,20 @@ public class List extends Widget {
 	   * @return код JavaScript
 	   */
 		public String getSetItemsJS() {
+
+			String valueJS = getValueJS(new String[] {} , "");
 			
 			return 			("	$(\"#visible_${name}\").focusin( function() {     \n" + 
 							"			$(\"#background_overlay_wait_${name}\").show();        \n" + 
 							"			$(\"#message_box_wait_${name}\").show();        \n" + 
 							"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");        \n" + 
-							"			params['form_api'] = \"${api}\";    \n" + 
-							"			params['parameter_name'] = \"${name_api}\";    \n" + 
 							"			ajax({    \n" + 
 							"					url: \"${service}\" + \"get_list\",   \n" + 
-							"					data:  params,   \n" + 
+							"					data: { \n" + 
+							"						form_api: \"${api}\", \n" + 
+							"						parameter_name: \"${name_api}\", \n" + 
+							"						parameters: ${value_js}, \n" + 
+							"					},   \n" + 
 							"					type: \"post\",   \n" + 
 							"					dataType: \"json\",  \n" + 
 							"					contentType: 'application/x-www-form-urlencoded'  \n" + 
@@ -276,7 +276,7 @@ public class List extends Widget {
 							"					}    \n" + 
 							"					$(\"#visible_${name}\").find('input').styler({});  \n" + 
 							"			});       \n" + 
-							"	});     \n");
+							"	});     \n").replace("${value_js}", valueJS);
 		}
 
 		  /**

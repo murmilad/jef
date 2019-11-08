@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.technology.jef.CurrentLocale;
 import com.technology.jef.server.dto.OptionDto;
 import com.technology.jef.server.dto.RecordDto;
 import com.technology.jef.server.exceptions.ServiceException;
@@ -30,9 +31,10 @@ public abstract class Form {
 		 * Метод загрузки данных формы из БД для групповых форм
 		 * @param id идентификатор анкеты
 		 * @param groupId идентификатор группы для групповых форм
+		 * @param parameters 
 		 * @throws ServiceException
 		 */
-		public abstract void load(Integer id, Integer groupId) throws ServiceException;
+		public abstract void load(Integer id, Integer groupId, Map<String, String> parameters) throws ServiceException;
 
 	
 		/**
@@ -42,11 +44,10 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		protected List<OptionDto> getList(Integer primaryId, String parameterName)
+		protected List<OptionDto> getList(Integer primaryId, String parameterName, Map<String, String> parameters)
 				throws ServiceException {
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
-			Map<String,String> parameters = new HashMap<String,String>();
 			parameters.put("id", String.valueOf(primaryId));
 
 			if (getFieldsMap().containsKey(parameterName)) {
@@ -67,7 +68,7 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		protected  List<OptionDto> getList(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
+		protected  List<OptionDto> getInteractiveList(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
 
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
@@ -185,7 +186,7 @@ public abstract class Form {
 			}
 
 			if (isRequired && "".equals(parameters.get(parameterName))) {
-				errors.add("Значение обязательного параметра не введено");
+				errors.add(CurrentLocale.getInstance().getTextSource().getString("required_parameter"));
 			}
 
 			return errors;
@@ -269,7 +270,7 @@ public abstract class Form {
 		 * @throws ServiceException
 		 */
 
-		abstract public Integer saveForm(Integer primaryId, Integer secondaryId, String iPAddress, Map<String, String> parameters)  throws ServiceException;
+		abstract public Integer saveForm(Integer primaryId, Integer secondaryId, Map<String, String> parameters)  throws ServiceException;
 
 		/**
 		 * Удаление групповой формы
@@ -280,7 +281,7 @@ public abstract class Form {
 		 * @throws ServiceException
 		 */
 
-		public void deleteForm(Integer primaryId, Integer secondaryId, String iPAddress)  throws ServiceException {};
+		public void deleteForm(Integer primaryId, Integer secondaryId)  throws ServiceException {};
 
 		protected RecordDto mapDaoParameters(Map<String, String> parameters) {
 

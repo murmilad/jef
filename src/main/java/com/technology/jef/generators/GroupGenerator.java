@@ -55,7 +55,7 @@ public class GroupGenerator extends TagGenerator {
 			});
 //TODO			load params with prefix
 		} else {
-			group = addFormGroup(dom, GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API), (String) getAttribute(TagGenerator.Attribute.NAME));
+			group = addFormGroup(dom, (String) getAttribute(TagGenerator.Attribute.ID), (String) getAttribute(TagGenerator.Attribute.NAME));
 		}
 		
 		return group;
@@ -132,6 +132,7 @@ public class GroupGenerator extends TagGenerator {
 				 put(Tag.Property.TYPE, "button");
 				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
 			}});
+//TODO Добавить ограничение по количеству добавляемых групп
 			
 			dom.add(Tag.Type.SCRIPT, 	(" \n" + 
 	"	$(\"#button_del_<NUMBER>\").click(function(){  \n" + 

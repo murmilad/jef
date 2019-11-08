@@ -52,20 +52,13 @@ public class AutoCompleteAddress extends Widget {
 			String[] ajax_parrent_list = (String[])generator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT);
 
 			String prefix = (String) generator.getAttribute(TagGenerator.Attribute.PREFIX);
-			String valueJS = "var parent = [";
 			String nameAPI = name.replace(prefix, "");
+			String valueJS = getValueJS(ajax_parrent_list, prefix);
 
 			//reg, real prefixes
 			String addressPrefix = nameAPI.replaceFirst("([a-zA-Z]+_)[\\w]+", "$1");
 			addressPrefix = nameAPI.equals(addressPrefix) ? "" :addressPrefix; 
 			
-			for (Integer i = 1; i <= ajax_parrent_list.length; i++) {
-				valueJS = valueJS.concat("\"${parrent_name}${prefix}\","
-						.replace("${parrent_name}", ajax_parrent_list[i-1])
-						.replace("${prefix}", prefix)
-				);
-			}
-			valueJS = valueJS.concat("];");
 
 			 parrent.add(Tag.Type.SCRIPT, 
 								("                \n" + 
@@ -85,10 +78,7 @@ public class AutoCompleteAddress extends Widget {
 								"							data: {                 \n" + 
 								"								parameter_name: '${child_name_api}',                 \n" + 
 								"								form_api: '${api}',                 \n" + 
-								"								form_id:$(\"#form_id\").val(),                 \n" + 
-								"								parameters: '${group_prefix}'+'region_code' + '${value_separator}' + $('#${group_prefix}'+'region_code'+group_postfix).val() + '${parameter_separator}' +  '${group_prefix}'+'district_code' + '${value_separator}' + $('#${group_prefix}'+'district_code'+group_postfix).val() + '${parameter_separator}' + '${group_prefix}'+'city_code' + '${value_separator}' + $('#${group_prefix}'+'city_code'+group_postfix).val() + '${parameter_separator}' +  '${group_prefix}'+'settlement_code' + '${value_separator}' + $('#${group_prefix}'+'settlement_code'+group_postfix).val() + '${parameter_separator}' +  '${group_prefix}'+'street_code' + '${value_separator}' + $('#${group_prefix}'+'street_code'+group_postfix).val() + '${parameter_separator}',             \n" + 
-								"								city_id: params.city_id,                 \n" + 
-								"								id: params.id,                 \n" + 
+								"								parameters: ${value_js},             \n" + 
 								"								rnd: Math.floor(Math.random() * 10000),                 \n" + 
 								"							},                \n" + 
 								"							type: \"POST\",                \n" + 
@@ -145,10 +135,6 @@ public class AutoCompleteAddress extends Widget {
 								"					params:{			// доп параметры              \n" + 
 								"						parameter_name:'${name_api}',                \n" + 
 								"						form_api:'${api}',                \n" + 
-								"						city_id: params.city_id,                 \n" + 
-								"						id: params.id,                 \n" + 
-								"						id:'${id}',                \n" + 
-								"						form_id:$(\"#form_id\").val(),        \n" + 
 								"					},              \n" + 
 								"					paramName:'value_1',// основной параметр для поиска              \n" + 
 								"					minChars:0,              \n" + 
@@ -206,11 +192,7 @@ public class AutoCompleteAddress extends Widget {
 								"						// динам параметры для формирования GET к ajax - сам запрос                \n" + 
 								"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}'+group_postfix).val();            \n" + 
 								"						// модифицируем params чтобы передать реальные значения параметров - parent                \n" + 
-								"						${value_js}     \n" + 
-								"						for (var i=2; i<parent.length+2; i++){                \n" + 
-								"							params['parameters']+=(i==2 ? '${parameter_separator}' : '') + parent[i-2] + '${value_separator}' +$('#'+parent[i-2]+group_postfix).val() +            \n" + 
-								"								(i<parent.length+1 ? '${parameter_separator}' : '');                \n" + 
-								"						}                \n" + 
+								"						params['parameters'] += '${parameter_separator}' + ${value_js};          \n" + 
 								"						$('#background_overlay_wait_${name}').show();                \n" + 
 								"						$('#message_box_wait_${name}').show();         \n" + 
 								"					},                \n" + 
@@ -225,7 +207,6 @@ public class AutoCompleteAddress extends Widget {
 						.replace("${name}", name)
 						.replace("${group_prefix}", addressPrefix)
 						.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))
-						.replace("${id}", name)
 						.replace("${name_api}", nameAPI)
 						.replace("${service}", (String) generator.getAttribute(TagGenerator.Attribute.SERVICE))
 						.replace("${child_name_api}", (String) generator.getAttribute(TagGenerator.Attribute.ID))

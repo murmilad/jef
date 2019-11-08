@@ -44,6 +44,12 @@ public class FormData {
 		
 	}
 
+	public void putExtraValues(Map<String, String> parameters) {
+		for (String name : parameters.keySet()) {
+			putValue(name,parameters.get(name));
+		}
+	}
+
 	
 	
 }

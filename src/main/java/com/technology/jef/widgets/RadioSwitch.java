@@ -95,34 +95,39 @@ public class RadioSwitch extends List {
 	"			$('#' + visible_name).change( function(event){ \n" + 
 	"				onChangeReadOnly${name}(event.delegateTarget); \n" + 
 	"			}); \n" + 
-
+	"           $(\"#visible_${name}\" + val.id).styler({}); \n" +
 	"		});   \n" + 
-	"		$(\"#visible_${name}\").find('input').styler({});		  \n");
+	"				  \n");
 //TODO Добавить возможность вызова привязанных событий при выборе каждого элемента 
 	}
 
 	@Override
 	public String getSetItemsJS() {
 
-		return ("			$(\"#background_overlay_wait_${name}\").show();         \n"
-				+ "			$(\"#message_box_wait_${name}\").show();         \n"
-				+ "			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");        \n"
-				+ "			params['form_api'] = \"${api}\";     \n"
-				+ "			params['parameter_name'] = \"${name_api}\";      \n" 
-				+ "			ajax({                                       \n"
-				+ "					url: \"${service}\" + \"get_list\",  \n" 
-				+ "					data:  params,                       \n"
-				+ "					type: \"post\",    \n" + "					dataType: \"json\",   \n"
-				+ "					contentType: 'application/x-www-form-urlencoded'   \n"
-				+ "				}, function( data ) {     \n"
-				+ "					$(\"#visible_${name}\").empty();         \n"
-				+ "					${list_item_js}         \n"
-				+ "					$(\"#visible_${name}\").removeAttr('disabled');        \n"
-				+ "					$(\"#background_overlay_wait_${name}\").hide();         \n"
-				+ "					$(\"#message_box_wait_${name}\").hide();         \n"
-				+ "					$(\"#visible_${name}\").trigger('refresh');         \n"
-				+ "					$(\"#visible_${name}\").find('input').styler({});  \n"
-				+ "					$(\"#visible_${name}\").trigger('setValue');   \n" + "			});    \n");
+		String valueJS = getValueJS(new String[] {} , "");
+
+		return 	("			$(\"#background_overlay_wait_${name}\").show();          \n" + 
+	"			$(\"#message_box_wait_${name}\").show();          \n" + 
+	"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");         \n" + 
+	"			ajax({                                        \n" + 
+	"					url: \"${service}\" + \"get_list\",   \n" + 
+	"					data: {  \n" + 
+	"						form_api: \"${api}\",  \n" + 
+	"						parameter_name: \"${name_api}\",  \n" + 
+	"						parameters: ${value_js},  \n" + 
+	"					},    \n" + 
+	"					type: \"post\",     \n" + 
+	"					dataType: \"json\",    \n" + 
+	"					contentType: 'application/x-www-form-urlencoded'    \n" + 
+	"				}, function( data ) {      \n" + 
+	"					$(\"#visible_${name}\").empty();          \n" + 
+	"					$(\"#visible_${name}\").removeAttr('disabled');         \n" + 
+	"					${list_item_js}          \n" + 
+	"					$(\"#visible_${name}\").trigger('refresh');          \n" + 
+	"					$(\"#visible_${name}\").trigger('setValue');    \n" + 
+	"					$(\"#background_overlay_wait_${name}\").hide();          \n" + 
+	"					$(\"#message_box_wait_${name}\").hide();          \n" + 
+	"			});     \n").replace("${value_js}", valueJS);
 	}
 
 	@Override
@@ -270,12 +275,8 @@ public class RadioSwitch extends List {
 	"					            	url: '${service}get_list_interactive',          \n" + 
 	"							data: {          \n" + 
 	"								parameter_name:'${child_name_api}',          \n" + 
-	"								id: $(\"#id\").val(),          \n" + 
 	"								form_api: '${api}',          \n" + 
-	"								form_id:$(\"#form_id\").val(),          \n" + 
 	"								parameters: valueJS,          \n" + 
-	"								city_id: params.city_id,                  \n" + 
-	"								id: params.id,                  \n" + 
 	"								rnd: Math.floor(Math.random() * 10000),          \n" + 
 	"							},         \n" + 
 	"					            	type: 'post',          \n" + 

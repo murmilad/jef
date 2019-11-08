@@ -52,7 +52,8 @@ public class FormGenerator extends TagGenerator {
 
 		
 		Tag form = dom.add(Tag.Type.FORM, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.ID, "form");
+		     put(Tag.Property.ID, (String) getAttribute(TagGenerator.Attribute.ID));
+		     put(Tag.Property.NAME, (String) getAttribute(TagGenerator.Attribute.ID));
 		}});
 
 		form.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
@@ -204,7 +205,7 @@ public class FormGenerator extends TagGenerator {
 		}});
 
 		//TODO предусматреть внедрение JS из XML при нажатии кнопки "Далее" 
-		
+		String valueJS = Widget.getValueJS(new String[] {}, "");
 		// При нажатии клавиши Enter вызываем нажатие кноеки "Далее"
 		buttonsRow.add(Tag.Type.SCRIPT, 
 													("				$( document ).ready(function() {                  \n" + 
@@ -229,14 +230,12 @@ public class FormGenerator extends TagGenerator {
 	"						$(\"#background_overlay_wait_form\").show();                           \n" + 
 	"			            		$(\"#message_box_wait_form\").show();                           \n" + 
 	"						$(\"[id^='visible_']\").each(function(index, item){           \n" + 
-	"							$(this).removeClass(\"error\");           \n" + 
+	"							$(this).parent().children('').removeClass(\"error\");           \n" + 
 	"						});           \n" + 
 	" 						ajax({                        \n" + 
 	"					       	url: '${service}set',                        \n" + 
 	"							data: {                        \n" + 
-	"								city_id: params.city_id,                                \n" + 
-	"								id: params.id,                                \n" + 
-	"								parameters: field_values.join('${parameter_separator}'),                        \n" + 
+	"								parameters: field_values.join('${parameter_separator}') + '${parameter_separator}' + ${value_js},                        \n" + 
 	"							},                       \n" + 
 	"						       type: 'post',                        \n" + 
 	"						       dataType: 'json',                        \n" + 
@@ -250,7 +249,7 @@ public class FormGenerator extends TagGenerator {
 	"										var group = obj.group;     \n" + 
 	"										var errors = data.errors.parametersErrors[name];      \n" + 
 	"										$.each( errors, function(index, error) {               \n" + 
-	"											$(\"#visible_\" + name).addClass(\"error\");               \n" + 
+	"											$(\"#visible_\" + name).parent().children('').addClass(\"error\");;               \n" + 
 	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                \n" + 
 	"											hasErrors = true;          \n" + 
 	"										});            \n" + 
@@ -269,14 +268,16 @@ public class FormGenerator extends TagGenerator {
 	"									window.scrollTo(0, 0);             \n" + 
 	"								} else {         \n" + 
 	"									$('#error').hide();        \n" + 
-	"									${redirect_js}         \n" + 
+	"									$('#${name}').trigger('set', [data]); \n" + 
+	"									         \n" + 
 	"								}          \n" + 
 	"						});                          \n" + 
 	"					});                          \n" + 
 	"				});                \n")
+							.replace("${name}", (String) getAttribute(TagGenerator.Attribute.ID))
 							.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 							.replace("${parameter_separator}", PARAMETER_SEPARATOR)
-							.replace("${redirect_js}", !"".equals((String) getAttribute(TagGenerator.Attribute.REDIRECT))? "window.location.replace('" + (String) getAttribute(TagGenerator.Attribute.REDIRECT) + "');" : "location.reload();")
+							.replace("${value_js}", valueJS)
 							.replace("${service}", (String) getAttribute(TagGenerator.Attribute.SERVICE))
 		);
 		
@@ -430,11 +431,13 @@ public class FormGenerator extends TagGenerator {
 				);
 		}
 
+
 		// Добавляем скрипт загрузки данных формы (страницы)
 
 		// Получаем строку адреса и разбиваем ее на параметры, далее отправляем rest запрос 
 		// с указанными параметрами по указанному в XML параметре service
 		// после, получаем данные и заполняем ими форму (страницу)
+
 		String serviceCallJS = "";
 		for (String formApi: formInterfaceApiMap.keySet()) {
 			
@@ -443,74 +446,87 @@ public class FormGenerator extends TagGenerator {
 				serviceCallJS += "	$('#form_id').bind('${parrent_api}_group_loaded', function(){ \n"
 						.replace("${parrent_api}", formInterfaceApiMap.get(formApi));
 			}
-				
+
+
 			serviceCallJS += 
-																											("   \n" + 
-	"				formsWaitedToLoad++;                        \n" + 
-	"				params['form_api'] = \"${api}\";                        \n" + 
-	"				getJSON( \"${service}\" + \"get\", params, function( data ) {    \n" + 
-	"					load_form_data_${api}(data, '');    \n" + 
-	"					formsWaitedToLoad--;                        \n" + 
-	"					if (formsWaitedToLoad === 0) {                        \n" + 
-	"						$(\"#background_overlay_wait_form\").hide();                        \n" + 
-	"    						$(\"#message_box_wait_form\").hide();                        \n" + 
-	"						$( document ).trigger('setListOnLoad');                      \n" + 
-	"					}					                        \n" + 
-	"					$('#form_id').trigger('${api}_group_loaded');         \n" + 
-	"				});                      \n" + 
-	"				function load_form_data_${api}(data, groupPrefix){    \n" + 
-	"					if (data.status_code === 1) {                        \n" + 
-	"						$.each(data.parameters, function(key, parameter) {               \n" + 
-	"							if (parameter.attributes.READONLY) {                        \n" + 
-	"				 				$('#visible_' + key + groupPrefix).prop( \"disabled\", true);                   \n" + 
-	"					 			$(\"#tr_\" + key + groupPrefix).css('color', 'lightgray');                   \n" + 
-	"							};                  \n" + 
-	"							if (parameter.attributes.INVISIBLE) {                        \n" + 
-	"					 			$(\"#tr_\" + key + groupPrefix).css('display', 'none');                   \n" + 
-	"							};                  \n" + 
-	"						});                       \n" + 
-	"						$.each(data.parameters, function(key, parameter) {                        \n" + 
-	"							var valueArray = parameter.value.split('${value_separator}');                       \n" + 
-	"							$(\"#\" + key + groupPrefix).val(valueArray[0]);                        \n" + 
-	"						});                       \n" + 
-	"						$.each(data.parameters, function(key, parameter) {                        \n" + 
-	"							var valueArray = parameter.value.split('${value_separator}');                       \n" + 
-	"							$(\"#\" + key + groupPrefix).trigger('setValueOnLoad',[{value:valueArray[0], name:(valueArray.length > 1 ? valueArray[1] : '')}]);               \n" + 
-	"						});                \n" + 
-	"								var hasErrors = false;      \n" + 
-	"								if (data.errors.parametersErrors != null) {               \n" + 
-	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return  a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {          \n" + 
-	"										var name = obj.name;         \n" + 
-	"										var group = obj.group;         \n" + 
-	"										var errors = data.errors.parametersErrors[name];          \n" + 
-	"										$.each( errors, function(index, error) {                   \n" + 
-	"											$(\"#visible_\" + name + groupPrefix).addClass(\"error\");                   \n" + 
-	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                    \n" + 
-	"											hasErrors = true;              \n" + 
-	"										});                \n" + 
+																												("    \n" + 
+	"				formsWaitedToLoad++;                         \n" + 
+	"				ajax({            \n" + 
+	"			            	url: '${service}get',            \n" + 
+	"					data: {            \n" + 
+	"						form_api: \"${api}\", \n" + 
+	"						parameters: ${value_js}, \n" + 
+	"						no_cache: Math.floor(Math.random() * 10000)            \n" + 
+	"					},           \n" + 
+	"			           	type: 'post',            \n" + 
+	"			        	dataType: 'json',            \n" + 
+	"		           		contentType: 'application/x-www-form-urlencoded',            \n" + 
+	"				}, function (data) { \n" + 
+
+
+	"					load_form_data_${api}(data, '');     \n" + 
+	"					formsWaitedToLoad--;                         \n" + 
+	"					if (formsWaitedToLoad === 0) {                         \n" + 
+	"						$(\"#background_overlay_wait_form\").hide();                         \n" + 
+	"    						$(\"#message_box_wait_form\").hide();                         \n" + 
+	"						$( document ).trigger('setListOnLoad');                       \n" + 
+	"					}					                         \n" + 
+	"					$('#form_id').trigger('${api}_group_loaded');          \n" + 
+	"				});                       \n" + 
+	"				function load_form_data_${api}(data, groupPrefix){     \n" + 
+	"					if (data.status_code === 1) {                         \n" + 
+	"						$.each(data.parameters, function(key, parameter) {                \n" + 
+	"							if (parameter.attributes.READONLY) {                         \n" + 
+	"				 				$('#visible_' + key + groupPrefix).prop( \"disabled\", true);                    \n" + 
+	"					 			$(\"#tr_\" + key + groupPrefix).css('color', 'lightgray');                    \n" + 
+	"							};                   \n" + 
+	"							if (parameter.attributes.INVISIBLE) {                         \n" + 
+	"					 			$(\"#tr_\" + key + groupPrefix).css('display', 'none');                    \n" + 
+	"							};                   \n" + 
+	"						});                        \n" + 
+	"						$.each(data.parameters, function(key, parameter) {                         \n" + 
+	"							var valueArray = parameter.value.split('${value_separator}');                        \n" + 
+	"							$(\"#\" + key + groupPrefix).val(valueArray[0]);                         \n" + 
+	"						});                        \n" + 
+	"						$.each(data.parameters, function(key, parameter) {                         \n" + 
+	"							var valueArray = parameter.value.split('${value_separator}');                        \n" + 
+	"							$(\"#\" + key + groupPrefix).trigger('setValueOnLoad',[{value:valueArray[0], name:(valueArray.length > 1 ? valueArray[1] : '')}]);                \n" + 
+	"						});                 \n" + 
+	"								var hasErrors = false;       \n" + 
+	"								if (data.errors.parametersErrors != null) {                \n" + 
+	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return  a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {           \n" + 
+	"										var name = obj.name;          \n" + 
+	"										var group = obj.group;          \n" + 
+	"										var errors = data.errors.parametersErrors[name];           \n" + 
+	"										$.each( errors, function(index, error) {                    \n" + 
+	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error\");                    \n" + 
+	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                     \n" + 
+	"											hasErrors = true;               \n" + 
+	"										});                 \n" + 
+	"									});                 \n" + 
+	"								}                \n" + 
+	"								if (data.errors.formErrors != null) {                \n" + 
+	"									$.each( data.errors.formErrors, function(index, error) {                   \n" + 
+	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                    \n" + 
+	"										hasErrors = true;              \n" + 
 	"									});                \n" + 
-	"								}               \n" + 
-	"								if (data.errors.formErrors != null) {               \n" + 
-	"									$.each( data.errors.formErrors, function(index, error) {                  \n" + 
-	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                   \n" + 
-	"										hasErrors = true;             \n" + 
-	"									});               \n" + 
-	"								}          \n" + 
-	"								if (hasErrors || $('#error:visible').length > 0) {       \n" + 
-	"									$('#error').show();       \n" + 
-	"								} else {       \n" + 
-	"									$('#error').hide();       \n" + 
-	"								}       \n" + 
-	"					}                \n" + 
-	"					$.each(data.groups, function(key, parameters) {                        \n" + 
-	"							var currentGroupPrefix = add_${multiplie_group_name}(parameters);                        \n" + 
-	"							load_form_data_${api}(parameters, currentGroupPrefix); \n" + 
-	"					});                       \n" + 
-	"				}    \n")
+	"								}           \n" + 
+	"								if (hasErrors || $('#error:visible').length > 0) {        \n" + 
+	"									$('#error').show();        \n" + 
+	"								} else {        \n" + 
+	"									$('#error').hide();        \n" + 
+	"								}        \n" + 
+	"					}                 \n" + 
+	"					$.each(data.groups, function(key, parameters) {                         \n" + 
+	"							var currentGroupPrefix = add_${multiplie_group_name}(parameters);                         \n" + 
+	"							load_form_data_${api}(parameters, currentGroupPrefix);  \n" + 
+	"					});                        \n" + 
+	"				}     \n")
 				.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 				.replace("${service}", (String) getParrent().getAttribute(TagGenerator.Attribute.SERVICE))				
 				.replace("${api}",  formApi)
-				.replace("${multiplie_group_name}", GROUP_SEPARATOR + formApi);
+				.replace("${multiplie_group_name}", GROUP_SEPARATOR + formApi)
+				.replace("${value_js}", valueJS);
 
 			
 
@@ -518,28 +534,28 @@ public class FormGenerator extends TagGenerator {
 				serviceCallJS += "	}); \n";
 			}
 		}
-		dom.add(Tag.Type.SCRIPT,		("		var params = window    \n" + 
-			"		    	.location    \n" + 
-			"		    	.search    \n" + 
-			"		    	.replace('?','')    \n" + 
-			"		    	.split('&')    \n" + 
-			"		    	.reduce(    \n" + 
-			"		    			function(p,e){    \n" + 
-			"		    				var a = e.split('=');    \n" + 
-			"		    				p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);    \n" + 
-			"		    				return p;    \n" + 
-			"		    			},    \n" + 
-			"		        {}    \n" + 
-			"		    );    \n" + 
-			" 		var formsWaitedToLoad = 0;    \n" + 
-			"		$( document ).ready(function() {    \n" + 
-			"				$(\"#background_overlay_wait_form\").show();    \n" + 
-			"				$(\"#message_box_wait_form\").show();    \n" + 
-			"				params['no_cache'] = Math.floor(Math.random() * 10000);                 \n" + 
-			"				getJSON( \"${service}\" + \"check\", params, function( data ) {});  \n" + 
-			"				${service_call_js}		});    \n")
+		dom.add(Tag.Type.SCRIPT,			("		var uri_params = window     \n" + 
+	"		    	.location     \n" + 
+	"		    	.search     \n" + 
+	"		    	.replace('?','')     \n" + 
+	"		    	.split('&')     \n" + 
+	"		    	.reduce(     \n" + 
+	"		    			function(p,e){     \n" + 
+	"		    				var a = e.split('=');     \n" + 
+	"		    				p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);     \n" + 
+	"		    				return p;     \n" + 
+	"		    			},     \n" + 
+	"		        {}     \n" + 
+	"		    );     \n" + 
+	" 		var formsWaitedToLoad = 0;     \n" + 
+	"		$( document ).ready(function() {     \n" + 
+	"				$(\"#background_overlay_wait_form\").show();     \n" + 
+	"				$(\"#message_box_wait_form\").show();     \n" + 
+	"				getJSON( \"${service}\" + \"check\", {no_cache: Math.floor(Math.random() * 10000)}, function( data ) {});  \n" + 
+	"				${service_call_js}		});    \n")
 			.replace("${service}",  ((String) getParrent().getAttribute(TagGenerator.Attribute.SERVICE)).replaceAll("/\\w+/$", "/seseion/"))
-			.replace("${service_call_js}", serviceCallJS)				
+			.replace("${service_call_js}", serviceCallJS)
+			.replace("${value_js}", valueJS)				
 		);
 
 

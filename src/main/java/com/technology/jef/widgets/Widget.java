@@ -337,12 +337,8 @@ public abstract class Widget {
 							"			            	url: '${service}get_is_visible_interactive',        \n" + 
 							"						data: {        \n" + 
 							"							parameter_name:'${child_name_api}',        \n" + 
-							"							id: $(\"#id\").val(),        \n" + 
 							"							form_api: '${api}',        \n" + 
-							"							form_id:$(\"#form_id\").val(),      \n" + 
 							"							parameters: ${value_js},        \n" + 
-							"							city_id: params.city_id,                \n" + 
-							"							id: params.id,                \n" + 
 							"							rnd: Math.floor(Math.random() * 10000),        \n" + 
 							"						},       \n" + 
 							"				            type: 'post',        \n" + 
@@ -466,12 +462,8 @@ public abstract class Widget {
 				"				            	url: '${service}get_${request_type}_interactive',     \n" + 
 				"							data: {     \n" + 
 				"								parameter_name:'${child_name_api}',     \n" + 
-				"								id: $(\"#id\").val(),     \n" + 
 				"								form_api: '${api}',     \n" + 
-				"								form_id:$(\"#form_id\").val(),     \n" + 
 				"								parameters: valueJS,     \n" + 
-				"								city_id: params.city_id,                \n" + 
-				"								id: params.id,                \n" + 
 				"								rnd: Math.floor(Math.random() * 10000),     \n" + 
 				"							},     \n" + 
 				"					            type: 'post',     \n" + 
@@ -555,12 +547,12 @@ public abstract class Widget {
 		   * @return код JavaScript
 		   */
 	
-		protected String getValueJS(String[] parrentElements, String prefix) {
+		public static String getValueJS(String[] parrentElements, String prefix) {
 			String valueJS = "";
 			
 			for (Integer i = 0; i < parrentElements.length; i++) {
 				String parrentElementName = parrentElements[i];
-				valueJS = valueJS.concat("'${parrent_name_api_value_js}' + '${value_separator}' + encodeURIComponent($('#${parrent_name_value_js}').val())${divider}"
+				valueJS = valueJS.concat("'${parrent_name_api_value_js}' + '${value_separator}' + $('#${parrent_name_value_js}').val()${divider}"
 				.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 				.replace("${parrent_name_api_value_js}", parrentElementName)
 				.replace("${parrent_name_value_js}", parrentElementName + prefix))
@@ -568,12 +560,13 @@ public abstract class Widget {
 				
 			}
 			valueJS = valueJS.concat(" \n" + 
-					"	+ '${parameter_separator}' + Object.keys(params).filter(function callback(currentValue, index, array) {  \n" + 
+					"	${increment_operation} Object.keys(uri_params).filter(function callback(currentValue, index, array) {  \n" + 
 					"	    return currentValue != \"\"; \n" + 
 					"	}).map(function callback(currentValue, index, array) {  \n" + 
-					"	    return currentValue + \"${value_separator}\"  + params[currentValue]; \n" + 
+					"	    return 'uri_' + currentValue + \"${value_separator}\"  + uri_params[currentValue]; \n" + 
 					"	}).join(\"${parameter_separator}\") \n"
-			).replace("${parameter_separator}", PARAMETER_SEPARATOR)
+			).replace("${increment_operation}", "".equals(valueJS) ? "" : "+ '${parameter_separator}' + ")
+			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR);
 			return valueJS;
 		}

@@ -141,13 +141,9 @@ public class PopUpList extends List {
 	"				            	url: '${service}get_list_interactive',           \n" + 
 	"							data: {           \n" + 
 	"								parameter_name:'${child_name_api}',           \n" + 
-	"								id: $(\"#id\").val(),           \n" + 
 	"								form_api: '${api}',           \n" + 
-	"								form_id:$(\"#form_id\").val(),           \n" + 
 	"								parameters: valueJS,           \n" + 
-	"								city_id: params.city_id,                 \n" + 
-	"								id: params.id,                 \n" + 
-	"								rnd: Math.floor(Math.random() * 10000),           \n" + 
+	"								no_cache: Math.floor(Math.random() * 10000),           \n" + 
 	"							},          \n" + 
 	"					            type: 'post',           \n" + 
 	"					            dataType: 'json',           \n" + 
