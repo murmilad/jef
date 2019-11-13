@@ -31,7 +31,7 @@ public class InterfaceGenerator extends TagGenerator {
 		}});
 		head.add(Tag.Type.META, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.HTTPEQUIV, "Content-Type");
-		     put(Tag.Property.CONTENT, "text/html; charset=windows-1251");
+		     put(Tag.Property.CONTENT, "text/html; charset=utf-8");
 		}});
 		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.REL, "stylesheet");
@@ -43,7 +43,7 @@ public class InterfaceGenerator extends TagGenerator {
 		     put(Tag.Property.TYPE, "text/css");
 		     put(Tag.Property.HREF, "css/styles.css?v=2.12.1");
 		}});
-		head.add(Tag.Type.SCRIPT, ("	$.ajaxSetup({scriptCharset: \"windows-1251\" , contentType: \"application/json; charset=windows-1251\"});  \n" + 
+		head.add(Tag.Type.SCRIPT, ("	$.ajaxSetup({scriptCharset: \"utf-8\" , contentType: \"application/json; charset=utf-8\"});  \n" + 
 					"	$.fn.isBound = function(type) {  \n" + 
 					"		    var data = $._data($(this).get(0), \"events\")[type];  \n" + 
 					"		    if (data === undefined || data.length === 0) {  \n" + 

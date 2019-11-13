@@ -37,7 +37,7 @@ public class AutoCompleteEditable extends Widget {
 				return 		(" \n" + 
 	"	$('#visible_${child_name}').val('---');   \n" + 
 	"	$('#${child_name}').val('');   \n" + 
-	"	${child_name}_autocomplete_result = null; \n" + 
+	"	${child_name}_autocomplete_result = []; \n" + 
 	" ");
 			}
 
@@ -61,7 +61,7 @@ public class AutoCompleteEditable extends Widget {
 
 			parrent.add(Tag.Type.SCRIPT, 
 														("                      \n" + 
-	"		var ${name}_autocomplete_result;    \n" + 
+	"		var ${name}_autocomplete_result = [];    \n" + 
 	"		var ${name}_autocomplete_typing;    \n" + 
 	"        $( document ).ready(function() {    \n" + 
 	"			$('#visible_${name}').on('input', function () {                      \n" + 
@@ -83,9 +83,9 @@ public class AutoCompleteEditable extends Widget {
 	"			$('#visible_${name}').on(\"click\", function(){${name}_autocomplete_typing = false;})   \n" + 
 	"			$('#visible_${name}').autocomplete({                      \n" + 
 	"					lookup: function (query, done) {    \n" + 
-	"						if (${name}_autocomplete_result) {    \n" + 
+	"						if (${name}_autocomplete_result[query]) {    \n" + 
 	"								done({                      \n" + 
-	"									suggestions: $.map(${name}_autocomplete_result.data, function(dataItem) {        \n" + 
+	"									suggestions: $.map(${name}_autocomplete_result[query].data, function(dataItem) {        \n" + 
 	"										var re = new RegExp('^' + $(\"#visible_${name}\").val(), 'i');                    \n" + 
 	"										if (dataItem.name.match(re) || !${name}_autocomplete_typing){                      \n" + 
 	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name };                      \n" + 
@@ -93,6 +93,8 @@ public class AutoCompleteEditable extends Widget {
 	"									})                      \n" + 
 	"								});               \n" + 
 	"						} else {    \n" + 
+	"							$('#background_overlay_wait_${name}').show();                      \n" + 
+	"							$('#message_box_wait_${name}').show();               \n" + 
 	"							ajax({                 \n" + 
 	"								type: \"POST\",                 \n" + 
 	"								url: '${service}get_list${interactive}',                    \n" + 
@@ -101,11 +103,11 @@ public class AutoCompleteEditable extends Widget {
 	"								dataType: 'json',            \n" + 
 	"							}, function (response) {        \n" + 
 	"								response.data.unshift({name: '---', id: ''}) \n" + 
-	"								${name}_autocomplete_result = response;    \n" + 
+	"								${name}_autocomplete_result[query] = response;    \n" + 
 	"								$('#background_overlay_wait_${name}').hide();                      \n" + 
 	"								$('#message_box_wait_${name}').hide();                      \n" + 
 	"								done({                      \n" + 
-	"									suggestions: $.map(${name}_autocomplete_result.data, function(dataItem) {        \n" + 
+	"									suggestions: $.map(${name}_autocomplete_result[query].data, function(dataItem) {        \n" + 
 	"										var re = new RegExp('^' + $(\"#visible_${name}\").val(), 'i');                    \n" + 
 	"										if (dataItem.name.match(re) || !${name}_autocomplete_typing){                      \n" + 
 	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name };                      \n" + 
@@ -144,10 +146,6 @@ public class AutoCompleteEditable extends Widget {
 	"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}${prefix}').val();                 \n" + 
 	"						// модифицируем params чтобы передать реальные значения параметров - parent                     \n" + 
 	"						params['parameters'] += '${parameter_separator}' + ${value_js};          \n" + 
-	"						if (!${name}_autocomplete_result) {    \n" + 
-	"							$('#background_overlay_wait_${name}').show();                      \n" + 
-	"							$('#message_box_wait_${name}').show();               \n" + 
-	"						}    \n" + 
 	"					},                      \n" + 
 	"			});                      \n" + 
 	"		});          \n")

@@ -2,8 +2,12 @@ package com.technology.jef.wecompiler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -71,6 +75,7 @@ public class WECompiler {
 	private static void compile(String srcFilePath, String destHtmlPath, String destJsPath, String locale) {
 		File srcFile = new File(srcFilePath);
 
+
 		Locale currentLocale;
 	    ResourceBundle textSource;
 
@@ -100,8 +105,11 @@ public class WECompiler {
 	        				generator.createDOM();
 
 							try {
-		        				PrintWriter outHTML;
-								outHTML = new PrintWriter(destHtmlPath + "/" +  attributes.getValue("id") + ".html");
+								File fileHTML = new File(destHtmlPath + "/" +  attributes.getValue("id") + ".html");
+								fileHTML.getParentFile().mkdirs();
+
+								PrintWriter outHTML = new PrintWriter(new OutputStreamWriter(
+										new FileOutputStream(fileHTML), StandardCharsets.UTF_8), true);
 		        				outHTML.println(generator.getHtml());
 		        				outHTML.close();
 							} catch (FileNotFoundException e) {
@@ -109,7 +117,11 @@ public class WECompiler {
 							}
 
 							try {
-		        				PrintWriter outJS = new PrintWriter(destJsPath + "/" +  attributes.getValue("id") + ".js");
+								File fileJS = new File(destJsPath + "/" +  attributes.getValue("id") + ".js");
+								fileJS.getParentFile().mkdirs();
+
+		        				PrintWriter outJS = new PrintWriter(new OutputStreamWriter(
+										new FileOutputStream(fileJS), StandardCharsets.UTF_8), true);
 		        				outJS.println(generator.getJs());
 		        				outJS.close();
 							} catch (FileNotFoundException e) {
