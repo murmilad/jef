@@ -87,6 +87,7 @@ public class Tag {
 		HTTPEQUIV,
 		CONTENT,
 
+		CHARSET,
 		CHANGE,
 		CLICK,
 		BLUR,

@@ -22,16 +22,16 @@ public class InterfaceGenerator extends TagGenerator {
 		
 		Tag head = dom.add(Tag.Type.HEAD);
 		head.add(Tag.Type.META, new HashMap<Tag.Property, String>(){{
+		     put(Tag.Property.HTTPEQUIV, "content-type");
+		     put(Tag.Property.CONTENT, "text/html; charset=UTF-8");
+		}});
+		head.add(Tag.Type.META, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.HTTPEQUIV, "pragma");
 		     put(Tag.Property.CONTENT, "no-cache");
 		}});
 		head.add(Tag.Type.META, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.HTTPEQUIV, "X-UA-Compatible");
 		     put(Tag.Property.CONTENT, "IE=edge");
-		}});
-		head.add(Tag.Type.META, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.HTTPEQUIV, "Content-Type");
-		     put(Tag.Property.CONTENT, "text/html; charset=utf-8");
 		}});
 		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.REL, "stylesheet");
