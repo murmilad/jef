@@ -82,54 +82,24 @@ public class AutoCompleteEditable extends Widget {
 	"			$('#visible_${name}').on(\"keydown\", function(){${name}_autocomplete_typing = true;})   \n" + 
 	"			$('#visible_${name}').on(\"click\", function(){${name}_autocomplete_typing = false;})   \n" + 
 	"			$('#visible_${name}').autocomplete({                      \n" + 
-	"					lookup: function (query, done) {    \n" + 
-	"						if (${name}_autocomplete_result[query]) {    \n" + 
-	"								done({                      \n" + 
-	"									suggestions: $.map(${name}_autocomplete_result[query].data, function(dataItem) {        \n" + 
-	"										var re = new RegExp('^' + $(\"#visible_${name}\").val(), 'i');                    \n" + 
-	"										if (dataItem.name.match(re) || !${name}_autocomplete_typing){                      \n" + 
-	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name };                      \n" + 
-	"										}                      \n" + 
-	"									})                      \n" + 
-	"								});               \n" + 
-	"						} else {    \n" + 
-	"							$('#background_overlay_wait_${name}').show();                      \n" + 
-	"							$('#message_box_wait_${name}').show();               \n" + 
-	"							ajax({                 \n" + 
-	"								type: \"POST\",                 \n" + 
-	"								url: '${service}get_list${interactive}',                    \n" + 
-	"								data: this.params ,           \n" + 
-	"								contentType: 'application/x-www-form-urlencoded',                   \n" + 
-	"								dataType: 'json',            \n" + 
-	"							}, function (response) {        \n" + 
-	"								response.data.unshift({name: '---', id: ''}) \n" + 
-	"								${name}_autocomplete_result[query] = response;    \n" + 
-	"								$('#background_overlay_wait_${name}').hide();                      \n" + 
-	"								$('#message_box_wait_${name}').hide();                      \n" + 
-	"								done({                      \n" + 
-	"									suggestions: $.map(${name}_autocomplete_result[query].data, function(dataItem) {        \n" + 
-	"										var re = new RegExp('^' + $(\"#visible_${name}\").val(), 'i');                    \n" + 
-	"										if (dataItem.name.match(re) || !${name}_autocomplete_typing){                      \n" + 
-	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name };                      \n" + 
-	"										}                      \n" + 
-	"									})                      \n" + 
-	"								});               \n" + 
-	"							});		                 \n" + 
-	"						}    \n" + 
-	"					},                 \n" + 
-	"					params:{			// доп параметры                    \n" + 
-	"						parameter_name:'${name_api}',                      \n" + 
-	"						form_api:'${api}',                      \n" + 
+	"					serviceUrl: '${service}get_list${interactive}',        \n" + 
+	"					type: 'POST',        \n" + 
+	"					paramName:'value_1',// основной параметр для поиска                          \n" + 
+	"					minChars:0,                          \n" + 
+	"					showNoSuggestionNotice: true,                          \n" + 
+	"					noSuggestionNotice: '${couldnt_find}',                          \n" + 
+	"					params:{			// доп параметры                          \n" + 
+	"						parameter_name:'${name_api}',                            \n" + 
+	"						form_api:'${api}',                            \n" + 
+	"					},                          \n" + 
+	"					preventBadQueries: false,                            \n" + 
+	"					forceFixPosition: true,                            \n" + 
+	"					deferRequestBy: 1000,                            \n" + 
+	"					dataType: 'text',   \n" + 
+	"					ajaxSettings: {  \n" + 
+	"						dataType: 'json',   \n" + 
+	"						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',	  \n" + 
 	"					},  \n" + 
-	"					autoFocus: true,  \n" + 
-	"					matchContains: true,    \n" + 
-	"					minChars:0,                    \n" + 
-	"					showNoSuggestionNotice: true,                    \n" + 
-	"					formatResult:function (suggestion, currentValue) { \n" + 
-	"						 var strongRe= new RegExp(\"(\" + currentValue + \")\",\"gi\"); \n" + 
-	"						 return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"'> \" + suggestion.name.replace(strongRe, \"<strong>$1</strong>\") + \"</div>\"; \n" + 
-	"					},                 \n" + 
-	"					noSuggestionNotice: '${couldnt_find}',                    \n" + 
 	"					onSelect: function (suggestion) {                      \n" + 
 	"						// ставим выбранное значение в hidden поле                      \n" + 
 	"						$('#${name}').val(suggestion.data);      \n" + 
@@ -138,6 +108,24 @@ public class AutoCompleteEditable extends Widget {
 	"						$('#visible_${name}').attr('title', '');                      \n" + 
 	"						$('#visible_${name}').trigger('autoCompleteChange');        \n" + 
 	"					},                      \n" + 
+	"					onSearchError: function (query, jqXHR, textStatus, errorThrown) {    \n" + 
+	"						$('#background_overlay_wait_${name}').hide();    \n" + 
+	"						$('#message_box_wait_${name}').hide();    \n" + 
+	"						showError(\"Error: \" + errorThrown, jqXHR.responseText + 'Parameters:' + query + '<br><br>');      \n" + 
+	"					},    \n" + 
+	"					transformResult: function(response) {       \n" + 
+	"						response.data.unshift({name: '---', id: ''}) \n" + 
+	"						var query = $('#visible_${name_api}${prefix}').val();                          \n" + 
+	"						return {       \n" + 
+	"									suggestions: $.map(response.data, function(dataItem) {        \n" + 
+	"										var index = dataItem.name.toLowerCase().indexOf(query.toLowerCase());           \n" + 
+	"										var visible_name =  index >= 0 ? dataItem.name.substr(0, index) + '<b>' + query + '</b>' + dataItem.name.substr(index+query.length, dataItem.name.length) : dataItem.name;           \n" + 
+	"										if (!${name}_autocomplete_typing){                      \n" + 
+	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name};                      \n" + 
+	"										}                      \n" + 
+	"									})                      \n" + 
+	"						};       \n" + 
+	"					},       \n" + 
 	"					onSearchStart: function (params) {                      \n" + 
 	"						if (!$('#visible_${name}').is(\":visible\")){ // динамический visible вызывает у элемента change :( приходится проверять видим элемент или нет                      \n" + 
 	"							return false;                      \n" + 
@@ -146,7 +134,20 @@ public class AutoCompleteEditable extends Widget {
 	"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}${prefix}').val();                 \n" + 
 	"						// модифицируем params чтобы передать реальные значения параметров - parent                     \n" + 
 	"						params['parameters'] += '${parameter_separator}' + ${value_js};          \n" + 
+	"						$('#background_overlay_wait_${name}').show();      \n" + 
+	"						$('#message_box_wait_${name}').show();      \n" + 
 	"					},                      \n" + 
+	"					onSearchComplete: function (query, suggestions) {      \n" + 
+	"						$('#background_overlay_wait_${name}').hide();      \n" + 
+	"						$('#message_box_wait_${name}').hide();      \n" + 
+	"						if (suggestions.length==0){      \n" + 
+	"							// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение      \n" + 
+	"							$('#${name}').val('|'+$('#visible_${name}').val());      \n" + 
+	"						}      \n" + 
+	"					} ,    \n" + 
+	"					formatResult:function (suggestion, currentValue) {            \n" + 
+	"						return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"'> \" + suggestion.html + \"</div>\";            \n" + 
+	"					},                            \n" + 
 	"			});                      \n" + 
 	"		});          \n")
 						.replace("${prefix}", (String) generator.getAttribute(TagGenerator.Attribute.PREFIX))
