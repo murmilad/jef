@@ -63,167 +63,173 @@ public class AutoCompleteAddress extends Widget {
 			
 
 			 parrent.add(Tag.Type.SCRIPT, 
-											("                   \n" + 
-	"		var ${name}_autocomplete_result = [];       \n" + 
-	"        $( document ).ready(function() {                   \n" + 
-	"			var group_postfix='';                   \n" + 
-	"			if (match = 'visible_${name}'.match(/_group_.*/)){                   \n" + 
-	"				group_postfix = match[0]                   \n" + 
-	"			}                   \n" + 
-	"			$('#visible_${name}').on('input', function () {                   \n" + 
-	"				// ручной ввод без выбора из списка                   \n" + 
-	"				if ($(\"#visible_${name}\").val()){                   \n" + 
-	"					$(\"#visible_\"+\"${name}\").addClass('warning');                   \n" + 
-	"					$(\"#visible_\"+\"${name}\").attr('title', '${couldnt_find}');                   \n" + 
-	"					if (\"visible_${name}\".indexOf('house')!==-1){ // номер дома без fias_code - получаем общегородской индекс                   \n" + 
-	"						ajax({                   \n" + 
-	"					      	      	url: '${service}get_list_interactive',                    \n" + 
-	"							data: {                    \n" + 
-	"								parameter_name: '${child_name_api}',                    \n" + 
-	"								form_api: '${api}',                    \n" + 
-	"								parameters: ${value_js},                \n" + 
-	"								rnd: Math.floor(Math.random() * 10000),                    \n" + 
-	"							},                   \n" + 
-	"							type: \"POST\",                   \n" + 
-	"					        dataType: 'json',                \n" + 
-	"				           	contentType: 'application/x-www-form-urlencoded',                \n" + 
-	"						}, function (response) {     \n" + 
-	"								$('#${group_prefix}'+'post_index'+group_postfix).val(response.value);                   \n" + 
-	"								$('#visible_'+'${group_prefix}'+'post_index'+group_postfix).val(response.value);                   \n" + 
-	"						});                   \n" + 
-	"					}                   \n" + 
-	"				}                   \n" + 
-	"				$(\"#${name}\").val('|'+$(\"#visible_${name}\").val());                   \n" + 
-	"			});    \n" + 
-	"			if ($._data( $(\"#visible_${name}\")[0], \"events\" ).change) {    \n" + 
-	"				jQuery.map(jQuery.grep($._data( $(\"#visible_${name}\")[0], \"events\" ).change, function( a ) {     \n" + 
-	"					return a.handler.toString().indexOf('onChange') >= 0;     \n" + 
-	"				}), function( a ) {     \n" + 
-	"					$('#visible_${name}').bind('autoCompleteChange', a.handler);     \n" + 
-	"					$('#visible_${name}').unbind('change', a.handler)     \n" + 
-	"				});     \n" + 
-	"			}    \n" + 
-	"			$('#visible_${name}').autocomplete({                   \n" + 
-	"					lookup: function (query, done) {              \n" + 
-	"						    $('#background_overlay_wait_${name}').show();                       \n" + 
-	"						    $('#message_box_wait_${name}').show();                \n" + 
-	"						if (${name}_autocomplete_result[query]) {       \n" + 
-	"						setTimeout(function(){ \n" + 
-	"								done({                         \n" + 
-	"									suggestions: $.map(${name}_autocomplete_result[query].data, function(dataItem) {           \n" + 
-	"										if (\"visible_${name}\".indexOf('house')!==-1){                   \n" + 
-	"											return { value: dataItem.name + (dataItem.block ? ' ${sector} '+dataItem.block : '') + (dataItem.building ? ' ${building} '+dataItem.building : ''),                   \n" + 
-	"											        data: dataItem.id,                   \n" + 
-	"													 post_index: dataItem.post_index,                   \n" + 
-	"													 name: dataItem.name,                   \n" + 
-	"													 building:dataItem.building,                   \n" + 
-	"													block: dataItem.block                   \n" + 
-	"											};                   \n" + 
-	"										}else{                   \n" + 
-	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name };                   \n" + 
-	"										}                   \n" + 
-	"									})                         \n" + 
-	"								});                  \n" + 
-	"								$('#background_overlay_wait_${name}').hide();                   \n" + 
-	"								$('#message_box_wait_${name}').hide();                   \n" + 
-	"						}, 0); \n" + 
-	"						} else {       \n" + 
-	"							ajax({              \n" + 
-	"								type: \"POST\",              \n" + 
-	"								url: '${service}get_list_interactive',                 \n" + 
-	"								data: this.params ,        \n" + 
-	"								contentType: 'application/x-www-form-urlencoded',                \n" + 
-	"								dataType: 'json',         \n" + 
-	"							}, function (response) {     \n" + 
-	"								${name}_autocomplete_result[query] = response;     \n" + 
-	"								if (response.data.length==0){                   \n" + 
-	"									// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение                   \n" + 
-	"									$('#${name}').val('|'+$('#visible_${name}').val());                   \n" + 
-	"								}                   \n" + 
-	"								done({                   \n" + 
-	"									suggestions: $.map(${name}_autocomplete_result[query].data, function(dataItem) {                   \n" + 
-	"										if (\"visible_${name}\".indexOf('house')!==-1){                   \n" + 
-	"											return { value: dataItem.name + (dataItem.block ? ' ${sector} '+dataItem.block : '') + (dataItem.building ? ' ${building} '+dataItem.building : ''),                   \n" + 
-	"											        data: dataItem.id,                   \n" + 
-	"													 post_index: dataItem.post_index,                   \n" + 
-	"													 name: dataItem.name,                   \n" + 
-	"													 building:dataItem.building,                   \n" + 
-	"													block: dataItem.block                   \n" + 
-	"											};                   \n" + 
-	"										}else{                   \n" + 
-	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name };                   \n" + 
-	"										}                   \n" + 
-	"									})                   \n" + 
-	"								});            \n" + 
-	"								$('#background_overlay_wait_${name}').hide();                   \n" + 
-	"								$('#message_box_wait_${name}').hide();                   \n" + 
-	"							});		              \n" + 
-	"						}		              \n" + 
-	"					},              \n" + 
-	"					params:{			// доп параметры                 \n" + 
-	"						parameter_name:'${name_api}',                   \n" + 
-	"						form_api:'${api}',                   \n" + 
-	"					},                 \n" + 
-	"					paramName:'value_1',// основной параметр для поиска                 \n" + 
-	"					minChars:0,                 \n" + 
-	"					showNoSuggestionNotice: true,                 \n" + 
-	"					noSuggestionNotice: '${couldnt_find}',                 \n" + 
-	"					preventBadQueries: false,                   \n" + 
-	"					forceFixPosition: true,                   \n" + 
-	"					deferRequestBy: 1000,                   \n" + 
-	"					formatResult:function (suggestion, currentValue) {   \n" + 
-	"                        var index = suggestion.name.toLowerCase().indexOf(currentValue.toLowerCase());   \n" + 
-	"						 return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"'> \" + suggestion.name.substr(0, index) + '<b>' + currentValue + '</b>' + suggestion.name.substr(index+currentValue.length, suggestion.name.length) + \"</div>\";   \n" + 
-	"					},                   \n" + 
-	"					onSelect: function (suggestion) {                   \n" + 
-	"							// ставим выбранное значение в hidden поле                   \n" + 
-	"						$('#${name}').val((suggestion.data||'')+'|'+(suggestion.name||'')); // значение через разделитель                   \n" + 
-	"						$('#visible_${name}').val(suggestion.name).change();                    \n" + 
-	"						$('#visible_${name}').removeClass('warning');                   \n" + 
-	"						$('#visible_${name}').attr('title', '');                   \n" + 
-	"						if (\"visible_${name}\".indexOf('region_code')!==-1){                   \n" + 
-	"								// для регион фед значения в город ставим значение региона                   \n" + 
-	"								var FEDERAL_REGIONS = [                   \n" + 
-	"								'0c5b2444-70a0-4932-980c-b4dc0d3f02b5', // Moscow                   \n" + 
-	"								'c2deb16a-0330-4f05-821f-1d09c93331e6', // Spb                   \n" + 
-	"								'6fdecb78-893a-4e3f-a5ba-aa062459463b', // Baykonur                   \n" + 
-	"								'63ed1a35-4be6-4564-a1ec-0c51f7383314'  // Sevastopol                   \n" + 
-	"								];                   \n" + 
-	"								if (FEDERAL_REGIONS.indexOf(suggestion.data)!==-1){                   \n" + 
-	"										$('#visible_'+'${group_prefix}'+'city_code'+group_postfix).val(suggestion.name);                   \n" + 
-	"										$('#${group_prefix}'+'city_code'+group_postfix).val((suggestion.data||'')+'|'+(suggestion.name||'')); // значение через разделитель                   \n" + 
-	"								}                   \n" + 
-	"						}                   \n" + 
-	"							if (\"visible_${name}\".indexOf('house')!==-1){                   \n" + 
-	"								// для дома подтягиваются индекс строение и корпус                   \n" + 
-	"                                				$('#${group_prefix}'+'building'+group_postfix).val(suggestion.building);                   \n" + 
-	"				                            $('#${group_prefix}'+'section'+group_postfix).val(suggestion.block);                   \n" + 
-	"								$('#${group_prefix}'+'block'+group_postfix).val(suggestion.block);                   \n" + 
-	"                                				$('#${group_prefix}'+'post_index'+group_postfix).val(suggestion.post_index);                   \n" + 
-	"								$('#visible_'+'${group_prefix}'+'building'+group_postfix).val(suggestion.building);                   \n" + 
-	"								$('#visible_'+'${group_prefix}'+'section'+group_postfix).val(suggestion.block);                   \n" + 
-	"								$('#visible_'+'${group_prefix}'+'block'+group_postfix).val(suggestion.block);                   \n" + 
-	"								$('#visible_'+'${group_prefix}'+'post_index'+group_postfix).val(suggestion.post_index);                   \n" + 
-	"							}                   \n" + 
-	"                           check_addr_field('real', 'visible_real_and_reg_equals');     \n" + 
-	"						$('#visible_${name}').trigger('autoCompleteChange');     \n" + 
-	"					},                   \n" + 
-	"					onSearchStart: function (params) {                   \n" + 
-	"						if (!$('#visible_${name}').is(\":visible\")){ // динамический visible вызывает у элемента change :( приходится проверять видим элемент или нет                   \n" + 
-	"							return false;                   \n" + 
-	"						}                   \n" + 
-	"						// если значение было заполнено ранее то прерываем поиск, все равно будет одна запись                   \n" + 
-	"						var fias_code = $('#${name}').val(); fias_code = fias_code.substring(0, fias_code.indexOf('|'));                   \n" + 
-	"						if($('#visible_${name}').val() && fias_code){                   \n" + 
-	"							return false;                   \n" + 
-	"						}                   \n" + 
-	"						// динам параметры для формирования GET к ajax - сам запрос                   \n" + 
-	"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}'+group_postfix).val();               \n" + 
-	"						// модифицируем params чтобы передать реальные значения параметров - parent                   \n" + 
-	"						params['parameters'] += '${parameter_separator}' + ${value_js};             \n" + 
-	"					},                   \n" + 
-	"			});                   \n" + 
-	"		});       \n")
+												("                    \n" + 
+	"		var ${name}_autocomplete_result = [];        \n" + 
+	"        $( document ).ready(function() {                    \n" + 
+	"			var group_postfix='';                    \n" + 
+	"			if (match = 'visible_${name}'.match(/_group_.*/)){                    \n" + 
+	"				group_postfix = match[0]                    \n" + 
+	"			}                    \n" + 
+	"			$('#visible_${name}').on('input', function () {                    \n" + 
+	"				// ручной ввод без выбора из списка                    \n" + 
+	"				if ($(\"#visible_${name}\").val()){                    \n" + 
+	"					$(\"#visible_\"+\"${name}\").addClass('warning');                    \n" + 
+	"					$(\"#visible_\"+\"${name}\").attr('title', '${couldnt_find}');                    \n" + 
+	"					if (\"visible_${name}\".indexOf('house')!==-1){ // номер дома без fias_code - получаем общегородской индекс                    \n" + 
+	"						ajax({                    \n" + 
+	"					      	      	url: '${service}get_list_interactive',                     \n" + 
+	"							data: {                     \n" + 
+	"								parameter_name: '${child_name_api}',                     \n" + 
+	"								form_api: '${api}',                     \n" + 
+	"								parameters: ${value_js},                 \n" + 
+	"								rnd: Math.floor(Math.random() * 10000),                     \n" + 
+	"							},                    \n" + 
+	"							type: \"POST\",                    \n" + 
+	"					        dataType: 'json',                 \n" + 
+	"				           	contentType: 'application/x-www-form-urlencoded',                 \n" + 
+	"						}, function (response) {      \n" + 
+	"								$('#${group_prefix}'+'post_index'+group_postfix).val(response.value);                    \n" + 
+	"								$('#visible_'+'${group_prefix}'+'post_index'+group_postfix).val(response.value);                    \n" + 
+	"						});                    \n" + 
+	"					}                    \n" + 
+	"				}                    \n" + 
+	"				$(\"#${name}\").val('|'+$(\"#visible_${name}\").val());                    \n" + 
+	"			});     \n" + 
+	"			if ($._data( $(\"#visible_${name}\")[0], \"events\" ).change) {     \n" + 
+	"				jQuery.map(jQuery.grep($._data( $(\"#visible_${name}\")[0], \"events\" ).change, function( a ) {      \n" + 
+	"					return a.handler.toString().indexOf('onChange') >= 0;      \n" + 
+	"				}), function( a ) {      \n" + 
+	"					$('#visible_${name}').bind('autoCompleteChange', a.handler);      \n" + 
+	"					$('#visible_${name}').unbind('change', a.handler)      \n" + 
+	"				});      \n" + 
+	"			}     \n" + 
+	"			$('#visible_${name}').autocomplete({                    \n" + 
+	"					lookup: function (query, done) {               \n" + 
+	"						    $('#background_overlay_wait_${name}').show();                        \n" + 
+	"						    $('#message_box_wait_${name}').show();                 \n" + 
+	"						if (${name}_autocomplete_result[query]) {        \n" + 
+	"						setTimeout(function(){  \n" + 
+	"								done({                          \n" + 
+	"									suggestions: $.map(${name}_autocomplete_result[query].data, function(dataItem) {            \n" + 
+	"										var index = dataItem.name.toLowerCase().indexOf(query.toLowerCase());    \n" + 
+	"										var visible_name =  dataItem.name.substr(0, index) + '<b>' + query + '</b>' + dataItem.name.substr(index+query.length, dataItem.name.length);    \n" + 
+	"										if (\"visible_${name}\".indexOf('house')!==-1){                    \n" + 
+	"											return { value: dataItem.name + (dataItem.block ? ' ${sector} '+dataItem.block : '') + (dataItem.building ? ' ${building} '+dataItem.building : ''),                    \n" + 
+	"											        data: dataItem.id,                    \n" + 
+	"													 post_index: dataItem.post_index,                    \n" + 
+	"													 name: dataItem.name,                    \n" + 
+	"													 html: visible_name, \n" + 
+	"													 building:dataItem.building,                    \n" + 
+	"													block: dataItem.block                    \n" + 
+	"											};                    \n" + 
+	"										}else{                    \n" + 
+	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name };                    \n" + 
+	"										}                    \n" + 
+	"									})                          \n" + 
+	"								});                   \n" + 
+	"								$('#background_overlay_wait_${name}').hide();                    \n" + 
+	"								$('#message_box_wait_${name}').hide();                    \n" + 
+	"						}, 0);  \n" + 
+	"						} else {        \n" + 
+	"							ajax({               \n" + 
+	"								type: \"POST\",               \n" + 
+	"								url: '${service}get_list_interactive',                  \n" + 
+	"								data: this.params ,         \n" + 
+	"								contentType: 'application/x-www-form-urlencoded',                 \n" + 
+	"								dataType: 'json',          \n" + 
+	"							}, function (response) {      \n" + 
+	"								${name}_autocomplete_result[query] = response;      \n" + 
+	"								if (response.data.length==0){                    \n" + 
+	"									// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение                    \n" + 
+	"									$('#${name}').val('|'+$('#visible_${name}').val());                    \n" + 
+	"								}                    \n" + 
+	"								done({                    \n" + 
+	"									suggestions: $.map(${name}_autocomplete_result[query].data, function(dataItem) {                    \n" + 
+	"										var index = dataItem.name.toLowerCase().indexOf(query.toLowerCase());    \n" + 
+	"										var visible_name =  dataItem.name.substr(0, index) + '<b>' + query + '</b>' + dataItem.name.substr(index+query.length, dataItem.name.length);    \n" + 
+
+	"										if (\"visible_${name}\".indexOf('house')!==-1){                    \n" + 
+	"											return { value: dataItem.name + (dataItem.block ? ' ${sector} '+dataItem.block : '') + (dataItem.building ? ' ${building} '+dataItem.building : ''),                    \n" + 
+	"											        data: dataItem.id,                    \n" + 
+	"													 post_index: dataItem.post_index,                    \n" + 
+	"													 name: dataItem.name, \n" + 
+	"													 html: visible_name, \n" + 
+	"													 building:dataItem.building,                    \n" + 
+	"													block: dataItem.block                    \n" + 
+	"											};                    \n" + 
+	"										}else{                    \n" + 
+	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name };                    \n" + 
+	"										}                    \n" + 
+	"									})                    \n" + 
+	"								});             \n" + 
+	"								$('#background_overlay_wait_${name}').hide();                    \n" + 
+	"								$('#message_box_wait_${name}').hide();                    \n" + 
+	"							});		               \n" + 
+	"						}		               \n" + 
+	"					},               \n" + 
+	"					params:{			// доп параметры                  \n" + 
+	"						parameter_name:'${name_api}',                    \n" + 
+	"						form_api:'${api}',                    \n" + 
+	"					},                  \n" + 
+	"					paramName:'value_1',// основной параметр для поиска                  \n" + 
+	"					minChars:0,                  \n" + 
+	"					showNoSuggestionNotice: true,                  \n" + 
+	"					noSuggestionNotice: '${couldnt_find}',                  \n" + 
+	"					preventBadQueries: false,                    \n" + 
+	"					forceFixPosition: true,                    \n" + 
+	"					deferRequestBy: 1000,                    \n" + 
+	"					formatResult:function (suggestion, currentValue) {    \n" + 
+	"						return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"'> \" + suggestion.html + \"</div>\";    \n" + 
+	"					},                    \n" + 
+	"					onSelect: function (suggestion) {                    \n" + 
+	"							// ставим выбранное значение в hidden поле                    \n" + 
+	"						$('#${name}').val((suggestion.data||'')+'|'+(suggestion.name||'')); // значение через разделитель                    \n" + 
+	"						$('#visible_${name}').val(suggestion.name).change();                     \n" + 
+	"						$('#visible_${name}').removeClass('warning');                    \n" + 
+	"						$('#visible_${name}').attr('title', '');                    \n" + 
+	"						if (\"visible_${name}\".indexOf('region_code')!==-1){                    \n" + 
+	"								// для регион фед значения в город ставим значение региона                    \n" + 
+	"								var FEDERAL_REGIONS = [                    \n" + 
+	"								'0c5b2444-70a0-4932-980c-b4dc0d3f02b5', // Moscow                    \n" + 
+	"								'c2deb16a-0330-4f05-821f-1d09c93331e6', // Spb                    \n" + 
+	"								'6fdecb78-893a-4e3f-a5ba-aa062459463b', // Baykonur                    \n" + 
+	"								'63ed1a35-4be6-4564-a1ec-0c51f7383314'  // Sevastopol                    \n" + 
+	"								];                    \n" + 
+	"								if (FEDERAL_REGIONS.indexOf(suggestion.data)!==-1){                    \n" + 
+	"										$('#visible_'+'${group_prefix}'+'city_code'+group_postfix).val(suggestion.name);                    \n" + 
+	"										$('#${group_prefix}'+'city_code'+group_postfix).val((suggestion.data||'')+'|'+(suggestion.name||'')); // значение через разделитель                    \n" + 
+	"								}                    \n" + 
+	"						}                    \n" + 
+	"							if (\"visible_${name}\".indexOf('house')!==-1){                    \n" + 
+	"								// для дома подтягиваются индекс строение и корпус                    \n" + 
+	"                                				$('#${group_prefix}'+'building'+group_postfix).val(suggestion.building);                    \n" + 
+	"				                            $('#${group_prefix}'+'section'+group_postfix).val(suggestion.block);                    \n" + 
+	"								$('#${group_prefix}'+'block'+group_postfix).val(suggestion.block);                    \n" + 
+	"                                				$('#${group_prefix}'+'post_index'+group_postfix).val(suggestion.post_index);                    \n" + 
+	"								$('#visible_'+'${group_prefix}'+'building'+group_postfix).val(suggestion.building);                    \n" + 
+	"								$('#visible_'+'${group_prefix}'+'section'+group_postfix).val(suggestion.block);                    \n" + 
+	"								$('#visible_'+'${group_prefix}'+'block'+group_postfix).val(suggestion.block);                    \n" + 
+	"								$('#visible_'+'${group_prefix}'+'post_index'+group_postfix).val(suggestion.post_index);                    \n" + 
+	"							}                    \n" + 
+	"                           check_addr_field('real', 'visible_real_and_reg_equals');      \n" + 
+	"						$('#visible_${name}').trigger('autoCompleteChange');      \n" + 
+	"					},                    \n" + 
+	"					onSearchStart: function (params) {                    \n" + 
+	"						if (!$('#visible_${name}').is(\":visible\")){ // динамический visible вызывает у элемента change :( приходится проверять видим элемент или нет                    \n" + 
+	"							return false;                    \n" + 
+	"						}                    \n" + 
+	"						// если значение было заполнено ранее то прерываем поиск, все равно будет одна запись                    \n" + 
+	"						var fias_code = $('#${name}').val(); fias_code = fias_code.substring(0, fias_code.indexOf('|'));                    \n" + 
+	"						if($('#visible_${name}').val() && fias_code){                    \n" + 
+	"							return false;                    \n" + 
+	"						}                    \n" + 
+	"						// динам параметры для формирования GET к ajax - сам запрос                    \n" + 
+	"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}'+group_postfix).val();                \n" + 
+	"						// модифицируем params чтобы передать реальные значения параметров - parent                    \n" + 
+	"						params['parameters'] += '${parameter_separator}' + ${value_js};              \n" + 
+	"					},                    \n" + 
+	"			});                    \n" + 
+	"		});        \n")
 						.replace("${couldnt_find}", CurrentLocale.getInstance().getTextSource().getString("couldnt_find"))
 						.replace("${sector}", CurrentLocale.getInstance().getTextSource().getString("sector"))
 						.replace("${building}", CurrentLocale.getInstance().getTextSource().getString("building"))
