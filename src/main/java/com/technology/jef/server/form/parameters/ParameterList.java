@@ -10,6 +10,9 @@ public class ParameterList {
 
 	private List<Parameter> formParameters = new LinkedList<Parameter>();
 	private Map<String, String> inputParameters = new HashMap<String, String>();
+	public ParameterList(Map<String, String> allInputParameters) {
+		setInputParameters(allInputParameters);
+	}
 	public List<Parameter> getFormParameters() {
 		return formParameters;
 	}

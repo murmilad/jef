@@ -41,9 +41,9 @@ public class FormParameters {
 		this.parrentApi = parrentApi;
 	}
 
-	public void addParameter(String name, String value, Boolean isRequired, String formPrefix) {
+	public void addParameter(String name, String value, Boolean isRequired, String formPrefix, Map<String,String> allInputParameters) {
 		if (!this.parameters.containsKey(formPrefix)) {
-			this.parameters.put(formPrefix, new ParameterList());
+			this.parameters.put(formPrefix, new ParameterList(new HashMap<String, String>(allInputParameters)));
 		}
 		this.parameters.get(formPrefix).addFormParameter(new Parameter(name, value, isRequired));
 		this.parameters.get(formPrefix).putInputParameter(name, value);
@@ -65,12 +65,4 @@ public class FormParameters {
 		this.currentApi = currentApi;
 	}
 
-
-	public void addExtraParameters(Map<String, String> extraParametersMap) {
-		for (String formPrefix: parameters.keySet()) {
-			for (String name: extraParametersMap.keySet()) {
-				addParameter(name, extraParametersMap.get(name), false, formPrefix);
-			}
-		}
-	}
 }

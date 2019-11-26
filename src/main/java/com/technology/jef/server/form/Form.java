@@ -237,7 +237,7 @@ public abstract class Form {
 								value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
 							}
 		
-							this.formData.putValue(interfaceFieldName, value);
+							this.formData.putValue(interfaceFieldName, value != null ? value.toString() : "");
 						} else {
 						
 							this.formData.putValue(interfaceFieldName, fieldValue != null ? fieldValue.toString() : "");

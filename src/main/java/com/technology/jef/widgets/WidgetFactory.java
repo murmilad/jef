@@ -111,6 +111,18 @@ public class WidgetFactory {
 		case ANYTEXT:
 			widget = new AnyText();
 			break;
+		case DOCUMENT:
+			widget = new Document();
+			break;
+		case IMAGE:
+			widget = new Image();
+			break;
+		case IMAGE_SHORT:
+			widget = new ImageShort();
+			break;
+		case IMAGE_WEBCAM:
+			widget = new ImageWebCam();
+			break;
 		}
 		
 		return widget;

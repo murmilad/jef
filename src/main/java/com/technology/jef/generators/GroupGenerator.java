@@ -125,13 +125,16 @@ public class GroupGenerator extends TagGenerator {
 		// если группа у нас расширяемая, то добавляем соответсвующие элементы правления
 		if (isMultiplie) {
 //TODO Добавить возможность управления видимостью кнопки "удалить"
-			dom.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.NAME, "button_del_<NUMBER>");
-				 put(Tag.Property.ID, "button_del_<NUMBER>");
-				 put(Tag.Property.CLASS, "interface_del_button");
-				 put(Tag.Property.TYPE, "button");
-				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
-			}});
+			dom.add(Tag.Type.DIV,
+				new HashMap<Tag.Property, String>(){{
+					 put(Tag.Property.STYLE, "width: 100%;text-align: left; display: flex;");
+				}}).add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+					put(Tag.Property.NAME, "button_del_<NUMBER>");
+					put(Tag.Property.ID, "button_del_<NUMBER>");
+					put(Tag.Property.CLASS, "interface_del_button");
+					put(Tag.Property.TYPE, "button");
+					put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
+				}});
 //TODO Добавить ограничение по количеству добавляемых групп
 			
 			dom.add(Tag.Type.SCRIPT, 	(" \n" + 

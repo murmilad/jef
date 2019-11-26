@@ -107,7 +107,7 @@ public class Service<F extends FormFactory> {
 
 		ResultDto result = null;
 
-		Map<String,String> extraParametersMap = new HashMap<String,String>();
+		Map<String,String> allInputParametersMap = new HashMap<String,String>();
 		Map<String, FormParameters> formsMap = new HashMap<String, FormParameters>();
 		List<FormParameters> formsList = new LinkedList<FormParameters>();
 
@@ -123,6 +123,7 @@ public class Service<F extends FormFactory> {
 			// добавляем в карту API пустой класс параметров 
 			if (prefixMatcher.matches()) {
 				formsMap.put(String.valueOf(value), new FormParameters(String.valueOf(value)));
+				allInputParametersMap.put(prefixMatcher.group(1), value);
 			}
 		}
 
@@ -150,17 +151,16 @@ public class Service<F extends FormFactory> {
 					// Если текущий параметр содержит значение поля формы
 					} else if (apiMatcher.group(1) == null){
 						String groupPrefix = apiMatcher.group(4) != null ? apiMatcher.group(4).replace(currentForm + "_", "") : "";
-						formsMap.get(currentForm).addParameter(apiMatcher.group(2), parameters.get(name), "1".equals(parameters.get("required_" + name)), groupPrefix);
+						formsMap.get(currentForm).addParameter(apiMatcher.group(2), parameters.get(name), "1".equals(parameters.get("required_" + name)), groupPrefix, allInputParametersMap);
 					}
 				} else {
-					extraParametersMap.put(name, parameters.get(name));
+					allInputParametersMap.put(name, parameters.get(name));
 				}
 			}
 		}
 
 		// Формируем дерево вызовов API переберая карту
 		for (String formKey : formsMap.keySet()) {
-			formsMap.get(formKey).addExtraParameters(extraParametersMap);
 			if (formsMap.get(formKey).getParrentApi() == null) {
 				formsList.add(formsMap.get(formKey));
 			} else {

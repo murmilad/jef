@@ -392,7 +392,8 @@ public class FormGenerator extends TagGenerator {
 	"					}}     \n" + 
 	"					$(\"#button_add_${multiplie_group_name}\").click(function(){   \n" + 
 	"						setTimeout(function( x ) {   \n" + 
-	"							add_${multiplie_group_name}();   \n" + 
+	"							var prefix = add_${multiplie_group_name}();   \n" + 
+	"							$('#fildset_' + prefix).find('input[name^=\"visible_\"]').change(); \n" + 
 	"						}, 100);  \n" + 
 	"					});   \n" + 
 	"					function add_${multiplie_group_name}() {   \n" + 
