@@ -123,7 +123,8 @@ public class Service<F extends FormFactory> {
 			// добавляем в карту API пустой класс параметров 
 			if (prefixMatcher.matches()) {
 				formsMap.put(String.valueOf(value), new FormParameters(String.valueOf(value)));
-				allInputParametersMap.put(prefixMatcher.group(1), value);
+			} else if (!name.contains("parrent_api")) {
+				allInputParametersMap.put(name, parameters.get(name));
 			}
 		}
 
@@ -153,8 +154,6 @@ public class Service<F extends FormFactory> {
 						String groupPrefix = apiMatcher.group(4) != null ? apiMatcher.group(4).replace(currentForm + "_", "") : "";
 						formsMap.get(currentForm).addParameter(apiMatcher.group(2), parameters.get(name), "1".equals(parameters.get("required_" + name)), groupPrefix, allInputParametersMap);
 					}
-				} else {
-					allInputParametersMap.put(name, parameters.get(name));
 				}
 			}
 		}
