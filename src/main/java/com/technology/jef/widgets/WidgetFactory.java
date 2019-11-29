@@ -111,9 +111,6 @@ public class WidgetFactory {
 		case ANYTEXT:
 			widget = new AnyText();
 			break;
-		case DOCUMENT:
-			widget = new Document();
-			break;
 		case IMAGE:
 			widget = new Image();
 			break;

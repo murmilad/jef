@@ -4,13 +4,24 @@ import static com.technology.jef.server.WebServiceConstant.SERVICE_STATUS_OK;
 import static com.technology.jef.server.serialize.SerializeConstant.*;
 import static com.technology.jef.server.WebServiceConstant.*;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+
+import org.apache.commons.codec.binary.Base64OutputStream;
 
 import com.technology.jef.server.dto.FormDto;
 import com.technology.jef.server.dto.ListItemDto;
@@ -463,4 +474,36 @@ public class Service<F extends FormFactory> {
 		return String.join(LIST_SEPARATOR, list.stream().map((OptionDto item) -> item.getValue().toString()).collect(Collectors.toList()));
 	}
 
+	/**
+	 * Преобразование потока с картинкой в base64URI. Необходимо для реализации сервиса поддержки виджета Image в IE<10
+	 * 
+	 * @param inputStream Поток картинки
+	 * @return Строка base64URI
+	 * @throws ServiceException
+	 */
+	
+	public String imageToBase64(InputStream inputStream) throws ServiceException {
+        try {
+        	ImageInputStream imageStream = ImageIO.createImageInputStream(inputStream);
+        	Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(imageStream);
+
+        	if (imageReaders.hasNext()) {
+        	    ImageReader reader = (ImageReader) imageReaders.next();
+        	    reader.setInput(imageStream);
+        	    BufferedImage bufferedImage = reader.read(0);
+        	    String formatName = reader.getFormatName();
+        	    ByteArrayOutputStream byteaOutput = new ByteArrayOutputStream();
+        	    Base64OutputStream base64Output = new Base64OutputStream(byteaOutput);
+        	    ImageIO.write(bufferedImage, formatName, base64Output);
+        	    String base64 = new String(byteaOutput.toByteArray());
+
+        	    return "data:image/" + reader.getFormatName().toLowerCase() + ";base64," + base64;
+        	}
+        	return "";
+        	
+        } catch(IOException e) {
+        	throw new ServiceException(e.getMessage(),e);
+        }
+
+	}
 }

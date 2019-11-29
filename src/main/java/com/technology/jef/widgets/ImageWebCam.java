@@ -26,6 +26,7 @@ public class ImageWebCam extends Image {
 			parrent.add(Tag.Type.IMG, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "img_visible_" + name);
 				 put(Tag.Property.NAME, "img_visible_" + name);
+				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
 			}});
 
 			Tag fieldset = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
@@ -54,7 +55,7 @@ public class ImageWebCam extends Image {
 			}});
 
 			parrent.add(Tag.Type.DIV, 	(
-					"	<script src=\"/js/webcam/webcam.min.js\"></script> \n" + 
+					"	<script src=\"js/webcam.min.js\"></script> \n" + 
 					"	<img src=\"data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=\" id=\"camera_snapshot_${name}\"><br> \n" + 
 					"	<input style=\"width:200px;\"               id=\"init_camera_button_${name}\"   type=\"button\" value=\"Клиент готов. Включить камеру\" onclick=\"init_camera_${name}()\"> \n" + 
 					"	<input style=\"width:80px;\"                id=\"not_present_camera_button_${name}\"   type=\"button\" value=\"Нет камеры\" onclick=\"not_present_camera_${name}()\"> \n" + 
@@ -68,7 +69,7 @@ public class ImageWebCam extends Image {
 			parrent.add(Tag.Type.SCRIPT, 	(" \n" + 
 	"  var field_name_${name} = '#img_visible_${name}'; \n" + 
 	"                        var name_${name} = '#${name}' \n" + 
-	"                        var header_name_${name} = '#div_header_visible_${name}';\".q` \n" + 
+	"                        var header_name_${name} = '#div_header_visible_${name}'; \n" + 
 	"            if (!document.addEventListener) { \n" + 
 	"                // IE8 или ниже \n" + 
 	"                $(field_name_${name}).show(); // возвращаем превью для старого механизма \n" + 

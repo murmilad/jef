@@ -28,7 +28,11 @@ public class ImageShort extends Image {
 				 put(Tag.Property.NAME, "div_header_visible_" + name);
 			}});
 
-			input.add(Tag.Type.IMG);
+			input.add(Tag.Type.IMG, new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.ID, "img_visible_" + name);
+				 put(Tag.Property.NAME, "img_visible_" + name);
+				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
+			}});
 			
 			parrent.add(Tag.Type.FONT, "<br>" + (String) generator.getAttribute(TagGenerator.Attribute.HINT), new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.TYPE, "text");

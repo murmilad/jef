@@ -102,7 +102,7 @@ public class InterfaceGenerator extends TagGenerator {
 	"		).done(function(data){  \n" + 
 	"			operateResult(data, callback);  \n" + 
 	"		}).fail(function(jqXHR, textStatus, errorThrown){  \n" + 
-	"			showError(\"Error: \" + errorThrown, jqXHR.responseText);  \n" + 
+	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText); \n" + 
 	"		});  \n" + 
 	"	}  \n" + 
 
@@ -113,7 +113,7 @@ public class InterfaceGenerator extends TagGenerator {
 	"		).done(function(data){  \n" + 
 	"			operateResult(data, callback);  \n" + 
 	"		}).fail(function(jqXHR, textStatus, errorThrown){  \n" + 
-	"			showError(\"Error: \" + errorThrown, jqXHR.responseText);  \n" + 
+	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);  \n" + 
 	"		});  \n" + 
 	"	} \n"),		
 			new HashMap<Tag.Property, String>(){{

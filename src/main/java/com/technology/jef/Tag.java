@@ -46,7 +46,8 @@ public class Tag {
 		LI,
 		LINK,
 		OPTION,
-		TEXTAREA
+		TEXTAREA,
+		IFRAME,
 	}
 
    /**
@@ -86,6 +87,9 @@ public class Tag {
 		REL,
 		HTTPEQUIV,
 		CONTENT,
+		TARGET,
+		ACTI,
+		DATA_URL,
 
 		CHARSET,
 		CHANGE,
@@ -442,7 +446,7 @@ public class Tag {
 			for (Property propertyKey: property.keySet()) {
 				if (!ACTION_PROPERTIES.contains(propertyKey)) {
 					
-					html = html.concat(" " + (propertyKey == Property.HTTPEQUIV ? "http-equiv" :  propertyKey.toString().toLowerCase()) + "=\"" + property.get(propertyKey) + "\"");
+					html = html.concat(" " + (propertyKey == Property.HTTPEQUIV ? "http-equiv" :  propertyKey.toString().toLowerCase().replaceAll("_", "-")) + "=\"" + property.get(propertyKey) + "\"");
 				}
 			}
 			

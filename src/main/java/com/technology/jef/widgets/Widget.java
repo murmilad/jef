@@ -42,7 +42,6 @@ public abstract class Widget {
 			LABEL,
 			POPUP_LIST,
 			LIST,
-			DOCUMENT,
 			IMAGE,
 			IMAGE_SHORT,
 			IMAGE_WEBCAM,

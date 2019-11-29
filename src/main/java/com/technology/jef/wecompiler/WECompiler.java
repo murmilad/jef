@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -64,15 +66,21 @@ public class WECompiler {
 			if (args.length == 4) {
 				compile(args[0], args[1], args[2], args[3]);
 				
+				
+				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("js"), new File(args[2]));
 			} else if (args.length < 4) {
 				compile(args[0], "src/html/", "src/html/", "ru_RU");
+
+				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("js"), new File("src/html/"));
 			}
 		} catch (Exception e) {
 			showError(e.getMessage());
 		}
 	}
 
+
 	private static void compile(String srcFilePath, String destHtmlPath, String destJsPath, String locale) {
+		
 		File srcFile = new File(srcFilePath);
 
 
