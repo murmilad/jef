@@ -64,7 +64,6 @@ public class AutoCompleteAddress extends Widget {
 
 			 parrent.add(Tag.Type.SCRIPT, 
 																				("                            \n" + 
-	"		var ${name}_autocomplete_result = [];                \n" + 
 	"        $( document ).ready(function() {                            \n" + 
 	"			var group_postfix='';                            \n" + 
 	"			if (match = 'visible_${name}'.match(/_group_.*/)){                            \n" + 
@@ -107,6 +106,7 @@ public class AutoCompleteAddress extends Widget {
 	"					serviceUrl: '${service}get_list_interactive',        \n" + 
 	"					type: 'POST',        \n" + 
 	"					paramName:'value_1',// основной параметр для поиска                          \n" + 
+	"					zIndex:99,                                 \n" + 
 	"					minChars:0,                          \n" + 
 	"					showNoSuggestionNotice: true,                          \n" + 
 	"					noSuggestionNotice: '${couldnt_find}',                          \n" + 
@@ -158,33 +158,42 @@ public class AutoCompleteAddress extends Widget {
 	"					onSearchError: function (query, jqXHR, textStatus, errorThrown) {    \n" + 
 	"						$('#background_overlay_wait_${name}').hide();    \n" + 
 	"						$('#message_box_wait_${name}').hide();    \n" + 
+	"						$(\"#${name}\").trigger('unlock');               \n" + 
 	"						showError(\"Error: \" + errorThrown, jqXHR.responseText + 'Parameters:' + query + '<br><br>');      \n" + 
 	"					},    \n" + 
 	"					transformResult: function(response) {       \n" + 
 	"						var query = $('#visible_${name_api}'+group_postfix).val();                          \n" + 
-	"						return {       \n" + 
-	"							suggestions: $.map(response.data, function(dataItem) {  \n" + 
-	"								var index = dataItem.name.toLowerCase().indexOf(query.toLowerCase());           \n" + 
-	"								var visible_name =  dataItem.name.substr(0, index) + '<b>' + query + '</b>' + dataItem.name.substr(index+query.length, dataItem.name.length);           \n" + 
-	"								if (\"visible_${name}\".indexOf('house')!==-1){                           \n" + 
-	"									return { value: dataItem.name + (dataItem.block ? ' ${sector} '+dataItem.block : '') + (dataItem.building ? ' ${building} '+dataItem.building : ''),                           \n" + 
-	"									        data: dataItem.id,                           \n" + 
-	"											 post_index: dataItem.post_index,                           \n" + 
-	"											 name: dataItem.name,        \n" + 
-	"											 html: visible_name,        \n" + 
-	"											 building:dataItem.building,                           \n" + 
-	"											block: dataItem.block                           \n" + 
-	"									};                           \n" + 
-	"								}else{                           \n" + 
-	"									return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name };                           \n" + 
-	"								}                           \n" + 
-	"							})                           \n" + 
-	"						};       \n" + 
+	"						var isHouse = (\"visible_${name}\".indexOf('house')!==-1);     \n" + 
+	"						if (response.data.length > 200) {     \n" + 
+	"							response.data[199] =  {name: '...', disabled: true};     \n" + 
+	"						}     \n" + 
+	"						return {              \n" + 
+	"							suggestions: $.map(response.data.slice(0, 200), function(dataItem) {         \n" + 
+	"								var index = dataItem.name.toLowerCase().indexOf(query.toLowerCase());                  \n" + 
+	"								var visible_name =  dataItem.name.substr(0, index) + '<b>' + query + '</b>' + dataItem.name.substr(index+query.length, dataItem.name.length);                  \n" + 
+	"								if (isHouse){                                  \n" + 
+	"									return { value: dataItem.name + (dataItem.block ? ' корп '+dataItem.block : '') + (dataItem.building ? ' стр '+dataItem.building : ''),                                  \n" + 
+	"									        data: dataItem.id,                                  \n" + 
+	"											 post_index: dataItem.post_index,                                  \n" + 
+	"											 name: dataItem.name,               \n" + 
+	"											 html: visible_name,               \n" + 
+	"											 building:dataItem.building,                                  \n" + 
+	"											block: dataItem.block,   \n" + 
+	"											disabled: dataItem.disabled,                                  \n" + 
+	"									};                                  \n" + 
+	"								}else{                                  \n" + 
+	"									return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name, disabled: dataItem.disabled, };                                  \n" + 
+	"								}                                  \n" + 
+	"							})                                  \n" + 
+	"						};              \n" + 
 	"					},       \n" + 
 	"					onSearchStart: function (params) {                            \n" + 
 	"						if (!$('#visible_${name}').is(\":visible\")){ // динамический visible вызывает у элемента change :( приходится проверять видим элемент или нет                            \n" + 
 	"							return false;                            \n" + 
 	"						}                            \n" + 
+	"						if ($('#message_box_wait_${name}').is(\":visible\")){ // не вызывать поиск пока выполняется этот же запрос                                   \n" + 
+	"							return false;                                   \n" + 
+	"						}                                   \n" + 
 	"						// если значение было заполнено ранее то прерываем поиск, все равно будет одна запись                            \n" + 
 	"						var fias_code = $('#${name}').val(); fias_code = fias_code.substring(0, fias_code.indexOf('|'));                            \n" + 
 	"						if($('#visible_${name}').val() && fias_code){                            \n" + 
@@ -196,17 +205,23 @@ public class AutoCompleteAddress extends Widget {
 	"						params['parameters'] += '${parameter_separator}' + ${value_js};                      \n" + 
 	"						$('#background_overlay_wait_${name}').show();      \n" + 
 	"						$('#message_box_wait_${name}').show();      \n" + 
+	"						$(\"#${name}\").trigger('lock');               \n" + 
 	"					},      \n" + 
 	"					onSearchComplete: function (query, suggestions) {      \n" + 
 	"						$('#background_overlay_wait_${name}').hide();      \n" + 
 	"						$('#message_box_wait_${name}').hide();      \n" + 
+	"						$(\"#${name}\").trigger('unlock');               \n" + 
 	"						if (suggestions.length==0){      \n" + 
 	"							// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение      \n" + 
 	"							$('#${name}').val('|'+$('#visible_${name}').val());      \n" + 
 	"						}      \n" + 
 	"					} ,    \n" + 
 	"					formatResult:function (suggestion, currentValue) {            \n" + 
-	"						return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"'> \" + suggestion.html + \"</div>\";            \n" + 
+	"						if (suggestion.disabled) { \n" + 
+	"							return \"<div style='color:gray;' > \" + suggestion.html + \"</div>\"; \n" + 
+	"						} else { \n" + 
+	"							return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"'> \" + suggestion.html + \"</div>\";                   \n" + 
+	"						} \n" + 
 	"					},                            \n" + 
 	"				});     \n" + 
 	"			});                \n")

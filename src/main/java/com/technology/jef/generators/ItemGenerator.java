@@ -25,31 +25,25 @@ public class ItemGenerator extends TagGenerator {
 	public Tag generate(String qName) {
 		
 		
-		// Добавляем сообщение "Ожидайте...", которое будет показываться при загрузке связных списков
-		dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.ID, "background_overlay_wait_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
-			 put(Tag.Property.NAME, "background_overlay_wait");
-			 put(Tag.Property.CLASS, "background_overlay_wait");
-		}});
-
-		dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.ID, "message_box_wait_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
-			 put(Tag.Property.NAME, "message_box_wait");
-			 put(Tag.Property.CLASS, "message_box_wait");
-		}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("wait"), new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.NAME, "message_overlay_wait");
-			 put(Tag.Property.CLASS, "message_overlay_wait");
-		}});
 		
 		Tag element = dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "div_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
 		     put(Tag.Property.CLASS, "interface_element_horizontal");
-		     put(Tag.Property.STYLE, 
+		     put(Tag.Property.STYLE, "position:relative;" + 
 		    		 (hasAttribute(TagGenerator.Attribute.HEIGHT) ? ("height: " +  getAttribute(TagGenerator.Attribute.HEIGHT) + ";") : "") 
 		    		 + ("true".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? "height: 45px;" : "") 
 		    		 + (hasAttribute(TagGenerator.Attribute.WIDTH) ? "" : "width:100%;")
 		     );
 		}});
+
+		element.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			 put(Tag.Property.ID, "message_box_wait_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
+			 put(Tag.Property.NAME, "message_box_wait");
+			 put(Tag.Property.CLASS, "message_box_loading");
+			}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
+			 put(Tag.Property.NAME, "message_overlay_wait");
+			 put(Tag.Property.CLASS, "message_overlay_loading");
+			}});
 
 		Tag element_table = element.add(Tag.Type.TABLE, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "table_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));

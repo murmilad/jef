@@ -108,6 +108,7 @@ public class RadioSwitch extends List {
 
 		return 	("			$(\"#background_overlay_wait_${name}\").show();          \n" + 
 	"			$(\"#message_box_wait_${name}\").show();          \n" + 
+	"			$(\"#${name}\").trigger('lock');         \n" + 
 	"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");         \n" + 
 	"			ajax({                                        \n" + 
 	"					url: \"${service}\" + \"get_list\",   \n" + 
@@ -127,6 +128,7 @@ public class RadioSwitch extends List {
 	"					$(\"#visible_${name}\").trigger('setValue');    \n" + 
 	"					$(\"#background_overlay_wait_${name}\").hide();          \n" + 
 	"					$(\"#message_box_wait_${name}\").hide();          \n" + 
+	"					$(\"#${name}\").trigger('unlock');         \n" + 
 	"			});     \n").replace("${value_js}", valueJS);
 	}
 
@@ -260,7 +262,8 @@ public class RadioSwitch extends List {
 	"						$(\"#visible_${child_name}\").empty();             \n" + 
 	"						$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
 	"						$(\"#background_overlay_wait_${parrent_name}\").show();             \n" + 
-	"	            				$(\"#message_box_wait_${parrent_name}\").show();             \n" + 
+	"	            		$(\"#message_box_wait_${parrent_name}\").show();             \n" + 
+	"						$(\"#${parrent_name}\").trigger('lock');         \n" + 
 	"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");             \n" + 
 	"						$(\"#visible_${parrent_name}\").trigger('refresh');             \n" + 
 	"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {             \n" + 
@@ -316,7 +319,8 @@ public class RadioSwitch extends List {
 	"									}       \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');             \n" + 
 	"									$(\"#background_overlay_wait_${parrent_name}\").hide();             \n" + 
-	"				      	      				$(\"#message_box_wait_${parrent_name}\").hide();             \n" + 
+	"		      	      				$(\"#message_box_wait_${parrent_name}\").hide();             \n" + 
+	"									$(\"#${parrent_name}\").trigger('unlock');         \n" + 
 	"								}             \n" + 
 	"								--ajax_is_child_blocked${prefix}[\"${child_name}\"];      \n" + 
 	"								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {      \n" + 

@@ -120,7 +120,8 @@ public class List extends Widget {
 			"							$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#visible_${child_name}\");           \n" + 
 			"							$(\"#visible_${child_name}\").trigger('refresh');           \n" + 
 			"							$(\"#background_overlay_wait_${parrent_name}\").show();           \n" + 
-			"		            				$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
+			"            				$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
+			"							$(\"#${parrent_name}\").trigger('lock');         \n" + 
 			"							$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");           \n" + 
 			"							$(\"#visible_${parrent_name}\").trigger('refresh');           \n" + 
 			"							if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {           \n" + 
@@ -177,7 +178,8 @@ public class List extends Widget {
 			"										}     \n" + 
 			"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');           \n" + 
 			"										$(\"#background_overlay_wait_${parrent_name}\").hide();           \n" + 
-			"					      	      				$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
+			"					      	      		$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
+			"										$(\"#${parrent_name}\").trigger('unlock');         \n" + 
 			"									}           \n" + 
 			"									--ajax_is_child_blocked${prefix}[\"${child_name}\"];    \n" + 
 			"									if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {    \n" + 
@@ -250,6 +252,7 @@ public class List extends Widget {
 			return 			("	$(\"#visible_${name}\").focusin( function() {     \n" + 
 							"			$(\"#background_overlay_wait_${name}\").show();        \n" + 
 							"			$(\"#message_box_wait_${name}\").show();        \n" + 
+							"			$(\"#${name}\").trigger('lock');         \n" + 
 							"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");        \n" + 
 							"			ajax({    \n" + 
 							"					url: \"${service}\" + \"get_list\",   \n" + 
@@ -268,6 +271,7 @@ public class List extends Widget {
 							"					$(\"#visible_${name}\").removeAttr('disabled');        \n" + 
 							"					$(\"#background_overlay_wait_${name}\").hide();        \n" + 
 							"					$(\"#message_box_wait_${name}\").hide();        \n" + 
+							"					$(\"#${name}\").trigger('unlock');         \n" + 
 							"					$(\"#visible_${name}\").trigger('refresh');        \n" + 
 							"					$(\"#visible_${name}\").unbind(\"focusin\");       \n" + 
 							"					if (value) {    \n" + 

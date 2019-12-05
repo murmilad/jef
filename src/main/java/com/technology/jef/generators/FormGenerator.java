@@ -51,7 +51,7 @@ public class FormGenerator extends TagGenerator {
 		}});
 
 		
-		Tag form = dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+		Tag form = dom.add(Tag.Type.FORM, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, (String) getAttribute(TagGenerator.Attribute.ID));
 		     put(Tag.Property.NAME, (String) getAttribute(TagGenerator.Attribute.ID));
 		}});

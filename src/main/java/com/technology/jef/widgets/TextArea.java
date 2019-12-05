@@ -56,11 +56,17 @@ public class TextArea extends Widget {
 					 put(Tag.Property.NAME, "visible_" + name);
 					 put(Tag.Property.ROWS, "3");
 					 put(Tag.Property.STYLE, "height:80; width:100%;");
-					 put(Tag.Property.KEYUP, !"".equals(generator.getAttribute(TagGenerator.Attribute.MAXLENGTH))
-							 ? "TextThreshold(this, " + (String) generator.getAttribute(TagGenerator.Attribute.MAXLENGTH) + ");" 
-							 : "TextThreshold(this, 256);"
-							 );
 				}});
+
+			parrent.add(Tag.Type.SCRIPT, 	(" \n" + 
+					"			$(\"#visible_${name}\").on(\"keyup\",function(event){ \n" + 
+					"				if (event.delegateTarget.value.length >= ${thresh}) { \n" + 
+					"					event.delegateTarget.value = event.delegateTarget.value.slice(0, ${thresh}); \n" + 
+					"					alert('Количество введенных символов не должно превышать ' + ${thresh} + '!'); \n" + 
+					"				} \n" + 
+					"			}); \n")
+					.replace("${name}", name)
+					.replace("${thresh}", !"".equals(generator.getAttribute(TagGenerator.Attribute.MAXLENGTH)) ? (String) generator.getAttribute(TagGenerator.Attribute.MAXLENGTH) : "255"));
 			
 			return elementInput;
 		}

@@ -31,6 +31,7 @@ public class CheckBoxList extends RadioSwitch {
 			
 			return 					("			$(\"#background_overlay_wait_${name}\").show();          \n" + 
 	"			$(\"#message_box_wait_${name}\").show();          \n" + 
+	"			$(\"#${name}\").trigger('lock');         \n" + 
 	"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");          \n" + 
 	"			ajax({    \n" + 
 	"					url: \"${service}\" + \"get_list\",   \n" + 
@@ -48,6 +49,7 @@ public class CheckBoxList extends RadioSwitch {
 	"					$(\"#visible_${name}\").removeAttr('disabled');          \n" + 
 	"					$(\"#background_overlay_wait_${name}\").hide();          \n" + 
 	"					$(\"#message_box_wait_${name}\").hide();          \n" + 
+	"					$(\"#${name}\").trigger('unlock');         \n" + 
 	"					$(\"#visible_${name}\").trigger('refresh');          \n" + 
 	"					$(\"#visible_${name}\").unbind(\"focusin\");         \n" + 
 	"					$(\"#visible_${name}\").find('input').styler({});    \n" + 

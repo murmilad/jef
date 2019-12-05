@@ -852,8 +852,13 @@
 
         select: function (i) {
             var that = this;
-            that.hide();
-            that.onSelect(i);
+
+			if (that.suggestions[i].disabled) {
+				return;
+			} else {
+            	that.hide();
+            	that.onSelect(i);
+            }
         },
 
         moveUp: function () {

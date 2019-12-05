@@ -37,7 +37,6 @@ public class AutoCompleteEditable extends Widget {
 				return 		(" \n" + 
 	"	$('#visible_${child_name}').val('---');   \n" + 
 	"	$('#${child_name}').val('');   \n" + 
-	"	${child_name}_autocomplete_result = []; \n" + 
 	" ");
 			}
 
@@ -61,8 +60,6 @@ public class AutoCompleteEditable extends Widget {
 
 			parrent.add(Tag.Type.SCRIPT, 
 														("                      \n" + 
-	"		var ${name}_autocomplete_result = [];    \n" + 
-	"		var ${name}_autocomplete_typing;    \n" + 
 	"        $( document ).ready(function() {    \n" + 
 	"			$('#visible_${name}').on('input', function () {                      \n" + 
 	"				// ручной ввод без выбора из списка                      \n" + 
@@ -79,8 +76,6 @@ public class AutoCompleteEditable extends Widget {
 	"					$('#visible_${name}').unbind('change', a.handler)        \n" + 
 	"				});        \n" + 
 	"			}    \n" + 
-	"			$('#visible_${name}').on(\"keydown\", function(){${name}_autocomplete_typing = true;})   \n" + 
-	"			$('#visible_${name}').on(\"click\", function(){${name}_autocomplete_typing = false;})   \n" + 
 	"			$('#visible_${name}').autocomplete({                      \n" + 
 	"					serviceUrl: '${service}get_list${interactive}',        \n" + 
 	"					type: 'POST',        \n" + 
@@ -94,6 +89,7 @@ public class AutoCompleteEditable extends Widget {
 	"					},                          \n" + 
 	"					preventBadQueries: false,                            \n" + 
 	"					forceFixPosition: true,                            \n" + 
+	"					zIndex:99,                            \n" + 
 	"					deferRequestBy: 1000,                            \n" + 
 	"					dataType: 'text',   \n" + 
 	"					ajaxSettings: {  \n" + 
@@ -111,6 +107,7 @@ public class AutoCompleteEditable extends Widget {
 	"					onSearchError: function (query, jqXHR, textStatus, errorThrown) {    \n" + 
 	"						$('#background_overlay_wait_${name}').hide();    \n" + 
 	"						$('#message_box_wait_${name}').hide();    \n" + 
+	"						$(\"#${name}\").trigger('unlock');           \n" + 
 	"						showError(\"Error: \" + errorThrown, jqXHR.responseText + 'Parameters:' + query + '<br><br>');      \n" + 
 	"					},    \n" + 
 	"					transformResult: function(response) {       \n" + 
@@ -120,9 +117,7 @@ public class AutoCompleteEditable extends Widget {
 	"									suggestions: $.map(response.data, function(dataItem) {        \n" + 
 	"										var index = dataItem.name.toLowerCase().indexOf(query.toLowerCase());           \n" + 
 	"										var visible_name =  index >= 0 ? dataItem.name.substr(0, index) + '<b>' + query + '</b>' + dataItem.name.substr(index+query.length, dataItem.name.length) : dataItem.name;           \n" + 
-	"										if (!${name}_autocomplete_typing){                      \n" + 
-	"											return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name};                      \n" + 
-	"										}                      \n" + 
+	"										return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name};                         \n" + 
 	"									})                      \n" + 
 	"						};       \n" + 
 	"					},       \n" + 
@@ -130,19 +125,24 @@ public class AutoCompleteEditable extends Widget {
 	"						if (!$('#visible_${name}').is(\":visible\")){ // динамический visible вызывает у элемента change :( приходится проверять видим элемент или нет                      \n" + 
 	"							return false;                      \n" + 
 	"						}                      \n" + 
+	"						if ($('#message_box_wait_${name}').is(\":visible\")){ // не вызывать поиск пока выполняется этот же запрос                              \n" + 
+	"							return false;                              \n" + 
+	"						}                              \n" + 
 	"						// динам параметры для формирования GET к ajax - сам запрос                      \n" + 
-	"						params['parameters']='${name_api}${value_separator}' + $('#visible_${name_api}${prefix}').val();                 \n" + 
+	"						params['parameters']='${name_api}${value_separator}' + ($('#visible_${name_api}${prefix}').val() == '---' ? '' : $('#visible_${name_api}${prefix}').val());                   \n" + 
 	"						// модифицируем params чтобы передать реальные значения параметров - parent                     \n" + 
 	"						params['parameters'] += '${parameter_separator}' + ${value_js};          \n" + 
 	"						$('#background_overlay_wait_${name}').show();      \n" + 
 	"						$('#message_box_wait_${name}').show();      \n" + 
+	"						$(\"#${name}\").trigger('lock');           \n" + 
 	"					},                      \n" + 
 	"					onSearchComplete: function (query, suggestions) {      \n" + 
 	"						$('#background_overlay_wait_${name}').hide();      \n" + 
 	"						$('#message_box_wait_${name}').hide();      \n" + 
+	"						$(\"#${name}\").trigger('unlock');           \n" + 
 	"						if (suggestions.length==0){      \n" + 
 	"							// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение      \n" + 
-	"							$('#${name}').val('|'+$('#visible_${name}').val());      \n" + 
+	"							$('#${name}').val('');         \n" + 
 	"						}      \n" + 
 	"					} ,    \n" + 
 	"					formatResult:function (suggestion, currentValue) {            \n" + 

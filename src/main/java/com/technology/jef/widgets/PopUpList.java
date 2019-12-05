@@ -126,7 +126,8 @@ public class PopUpList extends List {
 	"						$(\"#fake_visible_${child_name}\").val('${loading}');           \n" + 
 	"						//$(\"#visible_${child_name}\").trigger('refresh');           \n" + 
 	"						$(\"#background_overlay_wait_${parrent_name}\").show();           \n" + 
-	"				            	$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
+	"		            	$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
+	"						$(\"#${parrent_name}\").trigger('lock');         \n" + 
 	"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");           \n" + 
 	"						$(\"#visible_${parrent_name}\").trigger('refresh');           \n" + 
 	"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {           \n" + 
@@ -185,7 +186,8 @@ public class PopUpList extends List {
 	"										}    \n" + 
 	"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');           \n" + 
 	"										$(\"#background_overlay_wait_${parrent_name}\").hide();           \n" + 
-	"			            						$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
+	"	            						$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
+	"										$(\"#${parrent_name}\").trigger('unlock');         \n" + 
 	"									}           \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('refresh');           \n" + 
 	"									//$(\"#visible_${child_name}\").trigger('refresh');           \n" + 
@@ -200,7 +202,8 @@ public class PopUpList extends List {
 	"									}   \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');           \n" + 
 	"									$(\"#background_overlay_wait_${parrent_name}\").hide();           \n" + 
-	"		            						$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
+	"            						$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
+	"									$(\"#${parrent_name}\").trigger('unlock');         \n" + 
 	"								}           \n" + 
 	"								--ajax_is_child_blocked${prefix}[\"${child_name}\"];  \n" + 
 	"								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {  \n" + 

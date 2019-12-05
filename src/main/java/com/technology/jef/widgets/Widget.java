@@ -1,6 +1,7 @@
 package com.technology.jef.widgets;
 
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -104,6 +105,44 @@ public abstract class Widget {
 			}});
 			
 			Tag resultElement = assembleTag(name, generator);
+			resultElement.add(Tag.Type.SCRIPT,							("    \n" + 
+	"	$('#${name}').on('setLocked', function () {   \n" + 
+	"		var val = {value: 0};    \n" + 
+	"		${set_active_js}    \n" + 
+	"	});    \n" + 
+	"	$('#${name}').on('setUnlocked', function () {    \n" + 
+	"		var val = {value: 1};    \n" + 
+	"		${set_active_js}  \n" + 
+	"	});    \n")
+				.replace("${set_active_js}", getSetActiveJS().replace("${child_name}", name))
+				.replace("${name}", name)
+			); 
+
+			for (String parrentName : Stream.of( 
+					(String[])generator.getAttribute(TagGenerator.Attribute.AJAX_VISIBLE_PARRENT),
+					(String[])generator.getAttribute(TagGenerator.Attribute.AJAX_ACTIVE_PARRENT),
+					(String[])generator.getAttribute(TagGenerator.Attribute.AJAX_VALUE_PARRENT),
+					(String[])generator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT)
+			).flatMap(Stream::of).toArray(String[]::new)) {
+				resultElement.add(Tag.Type.SCRIPT,						("   \n" + 
+	"	$('#${name}').on('lock', function () {  \n" + 
+	"		$('#${parrent_name}').trigger('setLocked'); \n" + 
+	"	});   \n" + 
+	"	$('#${name}').on('unlock', function () {   \n" + 
+	"		$('#${parrent_name}').trigger('setUnlocked'); \n" + 
+	"	});   \n" + 
+	"	$('#${parrent_name}').on('lock', function () {  \n" + 
+	"		$('#${name}').trigger('setLocked'); \n" + 
+	"	});   \n" + 
+	"	$('#${parrent_name}').on('unlock', function () {   \n" + 
+	"		$('#${name}').trigger('setUnlocked'); \n" + 
+	"	});   \n")
+					.replace("${set_active_js}", getSetActiveJS().replace("${child_name}", name))
+					.replace("${parrent_name}", parrentName)
+					.replace("${name}", name)
+				); 
+				
+			}
 			
 			resultElement.add(Tag.Type.SCRIPT,			("	$(\"#${name}\").bind(\"setValueOnLoad\", function (event, data) {      \n" + 
 					"		var isLoading = true;      \n" + 
@@ -329,6 +368,7 @@ public abstract class Widget {
 							"					$(\"#visible_${parrent_name}\").trigger('refresh');        \n" + 
 							"					$(\"#background_overlay_wait_${parrent_name}\").show();        \n" + 
 							"	            	$(\"#message_box_wait_${parrent_name}\").show();        \n" + 
+							"					$(\"#${parrent_name}\").trigger('lock');         \n" + 
 							"					if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {        \n" + 
 							"						ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;        \n" + 
 							"					}					++ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];        \n" + 
@@ -369,7 +409,8 @@ public abstract class Widget {
 							"								}  \n" + 
 							"								$(\"#visible_${parrent_name}\").removeAttr('disabled');        \n" + 
 							"								$(\"#background_overlay_wait_${parrent_name}\").hide();        \n" + 
-							"			            				$(\"#message_box_wait_${parrent_name}\").hide();        \n" + 
+							"	            				$(\"#message_box_wait_${parrent_name}\").hide();        \n" + 
+							"								$(\"#${parrent_name}\").trigger('unlock');         \n" + 
 							"							}        \n" + 
 							"							--ajax_is_child_blocked${prefix}[\"${child_name}\"]; \n" + 
 							"							if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) { \n" + 
@@ -453,6 +494,7 @@ public abstract class Widget {
 				"						$(\"#visible_${parrent_name}\").trigger('refresh');      \n" + 
 				"						$(\"#background_overlay_wait_${parrent_name}\").show();      \n" + 
 				"		            	$(\"#message_box_wait_${parrent_name}\").show();      \n" + 
+				"						$(\"#${parrent_name}\").trigger('lock');         \n" + 
 				"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {      \n" + 
 				"							ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;      \n" + 
 				"						}      \n" + 
@@ -512,7 +554,8 @@ public abstract class Widget {
 				"									}  \n" + 
 				"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');      \n" + 
 				"									$(\"#background_overlay_wait_${parrent_name}\").hide();      \n" + 
-				"		            						$(\"#message_box_wait_${parrent_name}\").hide();      \n" + 
+				"		            				$(\"#message_box_wait_${parrent_name}\").hide();      \n" + 
+				"									$(\"#${parrent_name}\").trigger('unlock');         \n" + 
 				"									$(\"#visible_${child_name}\").unbind('set_find_result');    \n" + 
 				"								}      \n" + 
 				"								--ajax_is_child_blocked${prefix}[\"${child_name}\"]; \n" + 

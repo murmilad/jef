@@ -57,7 +57,7 @@ public class InterfaceGenerator extends TagGenerator {
 		}});
 		head.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.TYPE, "text/javascript");
-		     put(Tag.Property.SRC, "js/jquery.autocomplete.js");
+		     put(Tag.Property.SRC, "js/jquery.autocomplete.js?v=1");
 		}});
 		
 		head.add(Tag.Type.SCRIPT, 
@@ -102,7 +102,7 @@ public class InterfaceGenerator extends TagGenerator {
 	"		).done(function(data){  \n" + 
 	"			operateResult(data, callback);  \n" + 
 	"		}).fail(function(jqXHR, textStatus, errorThrown){  \n" + 
-	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText); \n" + 
+	"			showError(\"Error: \" + errorThrown, jqXHR.responseText);  \n" + 
 	"		});  \n" + 
 	"	}  \n" + 
 
@@ -113,8 +113,12 @@ public class InterfaceGenerator extends TagGenerator {
 	"		).done(function(data){  \n" + 
 	"			operateResult(data, callback);  \n" + 
 	"		}).fail(function(jqXHR, textStatus, errorThrown){  \n" + 
-	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);  \n" + 
+	"			showError(\"Error: \" + errorThrown, jqXHR.responseText);  \n" + 
 	"		});  \n" + 
+	"	} \n" + 
+	"	window.onerror = function(errorThrown, url, linenumber) { \n" + 
+	"		showError(\"Java script error\",  errorThrown + '<br>URL: ' + url + '<br>Line Number: ' + linenumber);   \n" + 
+	"		return true; \n" + 
 	"	} \n"),		
 			new HashMap<Tag.Property, String>(){{
 		    put(Tag.Property.TYPE, "text/javascript");
@@ -136,7 +140,7 @@ public class InterfaceGenerator extends TagGenerator {
 			}}).add(Tag.Type.SCRIPT, 		
 					(" \n" + 
 					"	$( document ).ready(function() {  \n" + 
-					"		$('#header').load(\"${header_uri}\");  \n" + 
+					"		$('#header').load(\"${header_uri}?no_cache=\" + Math.floor(Math.random() * 10000));  \n" + 
 					"	}); \n")
 					.replace("${header_uri}",(String) getAttribute(TagGenerator.Attribute.HEADER))
 			);

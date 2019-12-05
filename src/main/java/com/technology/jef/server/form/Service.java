@@ -134,7 +134,7 @@ public class Service<F extends FormFactory> {
 			// добавляем в карту API пустой класс параметров 
 			if (prefixMatcher.matches()) {
 				formsMap.put(String.valueOf(value), new FormParameters(String.valueOf(value)));
-			} else if (!name.contains("parrent_api")) {
+			} else if (!name.contains("api_") && !name.contains("required_")) {
 				allInputParametersMap.put(name, parameters.get(name));
 			}
 		}
@@ -497,7 +497,7 @@ public class Service<F extends FormFactory> {
         	    ImageIO.write(bufferedImage, formatName, base64Output);
         	    String base64 = new String(byteaOutput.toByteArray());
 
-        	    return "data:image/" + reader.getFormatName().toLowerCase() + ";base64," + base64;
+        	    return "data:image/" + reader.getFormatName().toLowerCase() + ";base64," + base64.replaceAll("[\\r\\n]", "");
         	}
         	return "";
         	
