@@ -32,28 +32,21 @@ public class FormGenerator extends TagGenerator {
 	@Override
 	public Tag generate(String qName) {
 
-		// Добавляем сообщение "Подождите...", которое будет показываться при загрузке формы
-		dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.ID, "background_overlay_wait_form");
-			 put(Tag.Property.NAME, "background_overlay_wait");
-			 put(Tag.Property.CLASS, "background_overlay_wait_form");
-			 put(Tag.Property.STYLE, "display: block;");
-		}});
-
-		dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.ID, "message_box_wait_form");
-			 put(Tag.Property.NAME, "message_box_wait");
-			 put(Tag.Property.CLASS, "message_box_wait");
-			 put(Tag.Property.STYLE, "display: block;");
-		}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("wait"), new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.NAME, "message_overlay_wait");
-			 put(Tag.Property.CLASS, "message_overlay_wait");
-		}});
 
 		
 		Tag form = dom.add(Tag.Type.FORM, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, (String) getAttribute(TagGenerator.Attribute.ID));
 		     put(Tag.Property.NAME, (String) getAttribute(TagGenerator.Attribute.ID));
+		}});
+
+		form.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			 put(Tag.Property.ID, "message_box_wait_form");
+			 put(Tag.Property.NAME, "message_box_wait");
+			 put(Tag.Property.CLASS, "message_box_loading");
+			 put(Tag.Property.STYLE, "display: block;");
+		}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
+			 put(Tag.Property.NAME, "message_overlay_wait");
+			 put(Tag.Property.CLASS, "message_overlay_loading");
 		}});
 
 		form.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
@@ -208,72 +201,74 @@ public class FormGenerator extends TagGenerator {
 		String valueJS = Widget.getValueJS(new String[] {}, "");
 		// При нажатии клавиши Enter вызываем нажатие кноеки "Далее"
 		buttonsRow.add(Tag.Type.SCRIPT, 
-													("				$( document ).ready(function() {                  \n" + 
-	"					$(\":input\").keypress(function (e) {                  \n" + 
-	"					      if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {                  \n" + 
-	"					          $(\"#submit_button:visible\").click();                  \n" + 
-	"					          return false;                  \n" + 
-	"					      } else {                  \n" + 
-	"					          return true;                  \n" + 
-	"					      }                  \n" + 
-	"					});                  \n" + 
-	"					$(\"#submit_button\").on(\"click\", function(event){                 \n" + 
-	"						var field_values = [];   \n" + 
-	"						var globalIndex;   \n" + 
-	"						$('input[type=\"hidden\"][name^=\"required_\"], input[type=\"hidden\"][name^=\"parrent_api_\"], input[type=\"hidden\"][name^=\"api_\"]').each( function(index, element){                 \n" + 
-	"							field_values[index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                 \n" + 
-	"							globalIndex = index;   \n" + 
-	"						});                 \n" + 
-	"						$('input[type=\"hidden\"]').not('[name^=\"required_\"], [name^=\"parrent_api_\"], [name^=\"api_\"]').each( function(index, element){                 \n" + 
-	"							field_values[globalIndex + index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                 \n" + 
-	"						});                 \n" + 
-	"						$(\"#background_overlay_wait_form\").show();                           \n" + 
-	"			            		$(\"#message_box_wait_form\").show();                           \n" + 
-	"						$(\"[id^='visible_']\").each(function(index, item){           \n" + 
-	"							$(this).parent().children('').removeClass(\"error\");           \n" + 
-	"						});           \n" + 
-	" 						ajax({                        \n" + 
-	"					       	url: '${service}set',                        \n" + 
-	"							data: {                        \n" + 
-	"								parameters: field_values.join('${parameter_separator}') + '${parameter_separator}' + ${value_js},                        \n" + 
-	"							},                       \n" + 
-	"						       type: 'post',                        \n" + 
-	"						       dataType: 'json',                        \n" + 
-	"				            		contentType: 'application/x-www-form-urlencoded',                        \n" + 
-	"						}, function (data) {           \n" + 
-	"								var hasErrors = false;               \n" + 
-	"								$(\"#error_list\").empty();             \n" + 
-	"								if (data.errors.parametersErrors != null) {        \n" + 
-	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {      \n" + 
-	"										var name = obj.name;     \n" + 
-	"										var group = obj.group;     \n" + 
-	"										var errors = data.errors.parametersErrors[name];      \n" + 
-	"										$.each( errors, function(index, error) {               \n" + 
-	"											$(\"#visible_\" + name).parent().children('').addClass(\"error\");;               \n" + 
-	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                \n" + 
-	"											hasErrors = true;          \n" + 
-	"										});            \n" + 
-	"									});            \n" + 
-	"								}            \n" + 
-	"								if (data.errors.formErrors != null) {            \n" + 
-	"									$.each( data.errors.formErrors, function(index, error) {               \n" + 
-	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                \n" + 
-	"										hasErrors = true;          \n" + 
-	"									});            \n" + 
-	"								}            \n" + 
-	"								if (hasErrors) {          \n" + 
-	"									$('#error').show();        \n" + 
-	"									$(\"#background_overlay_wait_form\").hide();                \n" + 
-	"	    							$(\"#message_box_wait_form\").hide();                \n" + 
-	"									window.scrollTo(0, 0);             \n" + 
-	"								} else {         \n" + 
-	"									$('#error').hide();        \n" + 
-	"									$('#${name}').trigger('set', [data]); \n" + 
-	"									         \n" + 
-	"								}          \n" + 
-	"						});                          \n" + 
-	"					});                          \n" + 
-	"				});                \n")
+														("				$( document ).ready(function() {                   \n" + 
+	"					$(\":input\").keypress(function (e) {                   \n" + 
+	"					      if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {                   \n" + 
+	"					          $(\"#submit_button:visible\").click();                   \n" + 
+	"					          return false;                   \n" + 
+	"					      } else {                   \n" + 
+	"					          return true;                   \n" + 
+	"					      }                   \n" + 
+	"					});                   \n" + 
+	"					$(\"#submit_button\").on(\"click\", function(event){ \n" + 
+	"						setForm(); \n" + 
+	"					}); \n" + 
+	"				});                 \n" +
+	"					function setForm() {                  \n" + 
+	"						var field_values = [];    \n" + 
+	"						var globalIndex;    \n" + 
+	"						$('input[type=\"hidden\"][name^=\"required_\"], input[type=\"hidden\"][name^=\"parrent_api_\"], input[type=\"hidden\"][name^=\"api_\"]').each( function(index, element){                  \n" + 
+	"							field_values[index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                  \n" + 
+	"							globalIndex = index;    \n" + 
+	"						});                  \n" + 
+	"						$('input[type=\"hidden\"]').not('[name^=\"required_\"], [name^=\"parrent_api_\"], [name^=\"api_\"]').each( function(index, element){                  \n" + 
+	"							field_values[globalIndex + index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                  \n" + 
+	"						});                  \n" + 
+	"						$(\"#background_overlay_wait_form\").show();                            \n" + 
+	"			            		$(\"#message_box_wait_form\").show();                            \n" + 
+	"						$(\"[id^='visible_']\").each(function(index, item){            \n" + 
+	"							$(this).parent().children('').removeClass(\"error\");            \n" + 
+	"						});            \n" + 
+	" 						ajax({                         \n" + 
+	"					       	url: '${service}set',                         \n" + 
+	"							data: {                         \n" + 
+	"								parameters: field_values.join('${parameter_separator}') + '${parameter_separator}' + ${value_js},                         \n" + 
+	"							},                        \n" + 
+	"						       type: 'post',                         \n" + 
+	"						       dataType: 'json',                         \n" + 
+	"				            		contentType: 'application/x-www-form-urlencoded',                         \n" + 
+	"						}, function (data) {            \n" + 
+	"								var hasErrors = false;                \n" + 
+	"								$(\"#error_list\").empty();              \n" + 
+	"								if (data.errors.parametersErrors != null) {         \n" + 
+	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {       \n" + 
+	"										var name = obj.name;      \n" + 
+	"										var group = obj.group;      \n" + 
+	"										var errors = data.errors.parametersErrors[name];       \n" + 
+	"										$.each( errors, function(index, error) {                \n" + 
+	"											$(\"#visible_\" + name).parent().children('').addClass(\"error\");;                \n" + 
+	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                 \n" + 
+	"											hasErrors = true;           \n" + 
+	"										});             \n" + 
+	"									});             \n" + 
+	"								}             \n" + 
+	"								if (data.errors.formErrors != null) {             \n" + 
+	"									$.each( data.errors.formErrors, function(index, error) {                \n" + 
+	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                 \n" + 
+	"										hasErrors = true;           \n" + 
+	"									});             \n" + 
+	"								}             \n" + 
+	"								if (hasErrors) {           \n" + 
+	"									$('#error').show();         \n" + 
+	"									$(\"#background_overlay_wait_form\").hide();                 \n" + 
+	"	    							$(\"#message_box_wait_form\").hide();                 \n" + 
+	"									window.scrollTo(0, 0);              \n" + 
+	"								} else {          \n" + 
+	"									$('#error').hide();         \n" + 
+	"									$('#${name}').trigger('set', [data]);" +
+	"  								}           \n" + 
+	"						});                           \n" + 
+	"					}                           \n")
 							.replace("${name}", (String) getAttribute(TagGenerator.Attribute.ID))
 							.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 							.replace("${parameter_separator}", PARAMETER_SEPARATOR)
@@ -397,6 +392,7 @@ public class FormGenerator extends TagGenerator {
 	"						}, 100);  \n" + 
 	"					});   \n" + 
 	"					function add_${multiplie_group_name}() {   \n" + 
+	"						$( document ).unbind('setListOnLoad');   \n" + 
 	"						var groupPrefix = \"${multiplie_group_name}_\" + number_${multiplie_group_name};  \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").show();     \n" + 
 	"						$(\"#message_box_wait_${multiplie_group_name}\").show();     \n" + 
@@ -423,6 +419,7 @@ public class FormGenerator extends TagGenerator {
 	"    	      					$(\"#message_box_wait_${multiplie_group_name}\").hide();    \n" + 
 	"						number_${multiplie_group_name}++;     \n" + 
 	"						count_${multiplie_group_name}++;     \n" + 
+	"						$( document ).trigger('setListOnLoad');   \n" + 
 	"						return groupPrefix;  \n" + 
 	"					}   \n")
 					.replace("${multiplie_group_name}", GROUP_SEPARATOR + (String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))
@@ -535,19 +532,7 @@ public class FormGenerator extends TagGenerator {
 				serviceCallJS += "	}); \n";
 			}
 		}
-		dom.add(Tag.Type.SCRIPT,			("		var uri_params = window     \n" + 
-	"		    	.location     \n" + 
-	"		    	.search     \n" + 
-	"		    	.replace('?','')     \n" + 
-	"		    	.split('&')     \n" + 
-	"		    	.reduce(     \n" + 
-	"		    			function(p,e){     \n" + 
-	"		    				var a = e.split('=');     \n" + 
-	"		    				p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);     \n" + 
-	"		    				return p;     \n" + 
-	"		    			},     \n" + 
-	"		        {}     \n" + 
-	"		    );     \n" + 
+		dom.add(Tag.Type.SCRIPT,			( "\n" +
 	" 		var formsWaitedToLoad = 0;     \n" + 
 	"		$( document ).ready(function() {     \n" + 
 	"				$(\"#background_overlay_wait_form\").show();     \n" + 

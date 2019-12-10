@@ -61,65 +61,80 @@ public class InterfaceGenerator extends TagGenerator {
 		}});
 		
 		head.add(Tag.Type.SCRIPT, 
-										(" $.support.cors = true;     \n" +  // Кросс-домены
-	"		(function($) {       \n" + 
-	"		    $(function() {       \n" + 
-	"		        $('input').styler();       \n" + 
-	"		    })       \n" + 
-	"		})(jQuery)        \n" + 
-	"	function showError (header, message){     \n" + 
-	"		$(\"#background_overlay_error\").show();            \n" + 
-	"   		$(\"#message_box_error\").show();            \n" + 
-	"		$(\"#message_header_error\").html(header);     \n" + 
-	"		$(\"#message_body_error\").html(message);     \n" + 
-	"	}      \n" + 
-	"	function deleteAllCookies() {    \n" + 
-	"	    var cookies = document.cookie.split(\";\");    \n" + 
-	"	    for (var i = 0; i < cookies.length; i++) {    \n" + 
-	"	        var cookie = cookies[i];    \n" + 
-	"	        var eqPos = cookie.indexOf(\"=\");    \n" + 
-	"	        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;    \n" + 
-	"	        document.cookie = name + \"=;expires=Thu, 01 Jan 1970 00:00:00 GMT\";    \n" + 
-	"	    }    \n" + 
+											(" $.support.cors = true;      \n" + 
+	"		(function($) {        \n" + 
+	"		    $(function() {        \n" + 
+	"		        $('input').styler();        \n" + 
+	"		    })        \n" + 
+	"		})(jQuery)         \n" + 
+	"	function showError (header, message){      \n" + 
+	"		$(\"#background_overlay_error\").show();             \n" + 
+	"   		$(\"#message_box_error\").show();             \n" + 
+	"		$(\"#message_header_error\").html(header);      \n" + 
+	"		$(\"#message_body_error\").html(message);      \n" + 
+	"	}       \n" + 
+	"	function deleteAllCookies() {     \n" + 
+	"	    var cookies = document.cookie.split(\";\");     \n" + 
+	"	    for (var i = 0; i < cookies.length; i++) {     \n" + 
+	"	        var cookie = cookies[i];     \n" + 
+	"	        var eqPos = cookie.indexOf(\"=\");     \n" + 
+	"	        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;     \n" + 
+	"	        document.cookie = name + \"=;expires=Thu, 01 Jan 1970 00:00:00 GMT\";     \n" + 
+	"	    }     \n" + 
+	"	}     \n" + 
+	"	function operateResult (result, callback) {    \n" + 
+	"		if (result.status_code == 2) {    \n" + 
+	"			if (result.error.error_code == 2) {    \n" + 
+	"				window.location.replace(\"/?_auth=logout\");    \n" + 
+	"				deleteAllCookies();    \n" + 
+	"			} else {    \n" + 
+	"				showError(result.error.error_description, result.error.error_message);    \n" + 
+	"			}    \n" + 
+	"		} else if (result.status_code == 1) {    \n" + 
+	"			if (callback) {    \n" + 
+	"				callback(result, this);    \n" + 
+	"			}    \n" + 
+	"		}    \n" + 
 	"	}    \n" + 
-	"	function operateResult (result, callback) {   \n" + 
-	"		if (result.status_code == 2) {   \n" + 
-	"			if (result.error.error_code == 2) {   \n" + 
-	"				window.location.replace(\"/?_auth=logout\");   \n" + 
-	"				deleteAllCookies();   \n" + 
-	"			} else {   \n" + 
-	"				showError(result.error.error_description, result.error.error_message);   \n" + 
-	"			}   \n" + 
-	"		} else if (result.status_code == 1) {   \n" + 
-	"			if (callback) {   \n" + 
-	"				callback(result, this);   \n" + 
-	"			}   \n" + 
-	"		}   \n" + 
+	"	function ajax(parameters, callback) {   \n" + 
+	"		$.ajax(   \n" + 
+	"			parameters   \n" + 
+	"		).done(function(data){   \n" + 
+	"			operateResult(data, callback);   \n" + 
+	"		}).fail(function(jqXHR, textStatus, errorThrown){   \n" + 
+	"			showError(\"Error: \" + errorThrown, jqXHR.responseText);   \n" + 
+	"		});   \n" + 
 	"	}   \n" + 
-	"	function ajax(parameters, callback) {  \n" + 
-	"		$.ajax(  \n" + 
+	"	function getJSON(url, parameters, callback){  \n" + 
+	"		$.getJSON(  \n" + 
+	"			url,  \n" + 
 	"			parameters  \n" + 
-	"		).done(function(data){  \n" + 
-	"			operateResult(data, callback);  \n" + 
-	"		}).fail(function(jqXHR, textStatus, errorThrown){  \n" + 
-	"			showError(\"Error: \" + errorThrown, jqXHR.responseText);  \n" + 
-	"		});  \n" + 
+	"		).done(function(data){   \n" + 
+	"			operateResult(data, callback);   \n" + 
+	"		}).fail(function(jqXHR, textStatus, errorThrown){   \n" + 
+	"			showError(\"Error: \" + errorThrown, jqXHR.responseText);   \n" + 
+	"		});   \n" + 
 	"	}  \n" + 
-
-	"	function getJSON(url, parameters, callback){ \n" + 
-	"		$.getJSON( \n" + 
-	"			url, \n" + 
-	"			parameters \n" + 
-	"		).done(function(data){  \n" + 
-	"			operateResult(data, callback);  \n" + 
-	"		}).fail(function(jqXHR, textStatus, errorThrown){  \n" + 
-	"			showError(\"Error: \" + errorThrown, jqXHR.responseText);  \n" + 
-	"		});  \n" + 
-	"	} \n" + 
-	"	window.onerror = function(errorThrown, url, linenumber) { \n" + 
-	"		showError(\"Java script error\",  errorThrown + '<br>URL: ' + url + '<br>Line Number: ' + linenumber);   \n" + 
-	"		return true; \n" + 
+//	"	window.onerror = function(errorThrown, url, linenumber) {  \n" + 
+//	"		showError(\"Java script error\",  errorThrown + '<br>URL: ' + url + '<br>Line Number: ' + linenumber);    \n" + 
+//	"		return true;  \n" + 
+//	"	}  \n" + 
+	"	if (!uri_params) { \n" + 
+	"		var uri_params = window      \n" + 
+	"		    	.location      \n" + 
+	"		    	.search      \n" + 
+	"		    	.replace('?','')      \n" + 
+	"		    	.split('&')      \n" + 
+	"		    	.reduce(      \n" + 
+	"		    			function(p,e){      \n" + 
+	"		    				var a = e.split('=');      \n" + 
+	"		    				p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);      \n" + 
+	"		    				return p;      \n" + 
+	"		    			},      \n" + 
+	"		        {}      \n" + 
+	"		    ); \n" + 
 	"	} \n"),		
+
 			new HashMap<Tag.Property, String>(){{
 		    put(Tag.Property.TYPE, "text/javascript");
 		    put(Tag.Property.SRC, "js/jquery.formstyler.js?v=2.0.0");
@@ -146,10 +161,11 @@ public class InterfaceGenerator extends TagGenerator {
 			);
 		}
 
-		div.add(Tag.Type.H1).add(Tag.Type.DIV, (String) getAttribute(TagGenerator.Attribute.NAME));
-
+		if (!"".equals((String) getAttribute(TagGenerator.Attribute.NAME))) {
+			div.add(Tag.Type.H1).add(Tag.Type.DIV, (String) getAttribute(TagGenerator.Attribute.NAME));
+		}
 		Tag content = div.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.CLASS, "content");
+		     put(Tag.Property.CLASS, !"".equals((String) getAttribute(TagGenerator.Attribute.NAME)) ? "content" : "");
 		     put(Tag.Property.STYLE, "padding: 5px;");
 		}});
 		// Добавляем сообщение об ошибке при выполнении запроса

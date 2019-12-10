@@ -127,7 +127,10 @@ public class GroupGenerator extends TagGenerator {
 //TODO Добавить возможность управления видимостью кнопки "удалить"
 			dom.add(Tag.Type.DIV,
 				new HashMap<Tag.Property, String>(){{
-					 put(Tag.Property.STYLE, "width: 100%;text-align: left; display: flex;");
+					 put(Tag.Property.STYLE, "width: 100%; display: inline-block;");
+				}}).add(Tag.Type.DIV,
+						new HashMap<Tag.Property, String>(){{
+						put(Tag.Property.STYLE, "width: 100%;text-align: left; display: block;");
 				}}).add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 					put(Tag.Property.NAME, "button_del_<NUMBER>");
 					put(Tag.Property.ID, "button_del_<NUMBER>");
@@ -171,7 +174,7 @@ public class GroupGenerator extends TagGenerator {
 			}});
 			
 //TODO Добавить ограничение на видимость кнопок "добавить" для групп
-			multilineParrentDOM.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+			multilineParrentDOM.getParrent().add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.NAME, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.TYPE, "button");

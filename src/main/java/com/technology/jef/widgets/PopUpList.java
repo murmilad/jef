@@ -60,7 +60,6 @@ public class PopUpList extends List {
 				 put(Tag.Property.TYPE, "text");
 				 put(Tag.Property.READONLY, "readonly");
 				 put(Tag.Property.STYLE, "width:100%;cursor: default;");
-				 put(Tag.Property.CLICK, "onPopWindowvisible_" + name + "(this);");
 			}});
 
 			Tag elementInput = styledDiv.add(Tag.Type.SELECT, new HashMap<Tag.Property, String>(){{
@@ -84,12 +83,10 @@ public class PopUpList extends List {
 			String valueJS = getValueJS((String[])currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT), prefix);
 			String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
 
-			// Вызываем функцию связи в событиях родительского элемента
-			// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
 			currentGenerator.getDom().add(Tag.Type.SCRIPT,
 					(
-					" $(\"#visible_${parrent_name}\").change(function(){\n" +
-					"		onChange${parrent_name}_${child_name}_ct_ajax_list(this);\n" +
+					" $(\"#fake_visible_${child_name}\").on('click', function(){\n" +
+					"		onChange${parrent_name}_${child_name}_ct_ajax_list_popup(this);\n" +
 					" }); \n")
 					.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
 					.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
@@ -110,11 +107,10 @@ public class PopUpList extends List {
 				ignoreEmptyJS = ignoreEmptyJS.replace("${force_ajax}", "");
 			}
 
-			String bodyJS = super.getListConnectJS(currentGenerator, parrentGenerator);
-			bodyJS += 
+			String bodyJS = 
 								("					 \n" + 
 	"					// реагирование на получение фокуса           \n" + 
-	"					function onPopWindowvisible_${child_name}(){           \n" + 
+	"					function onChange${parrent_name}_${child_name}_ct_ajax_list_popup(){           \n" + 
 	"						var valueJS = ${value_js};         \n" + 
 	"						${ignore_empty_js}           \n" + 
 	"						// сохраняем предыдущее значение           \n" + 
@@ -264,6 +260,112 @@ public class PopUpList extends List {
 			return bodyJS;
 		}
 		
+		public String getSetItemsJS() {
+
+			String valueJS = getValueJS(new String[] {} , "");
+			
+			return 			("	$(\"#fake_visible_${name}\").on('click', function() {     \n" + 
+					"						var previous_text = $(\"#fake_visible_${name}\").val();           \n" + 
+					"						var previous_id = $(\"#${name}\").val();           \n" + 
+					"						$(\"#fake_visible_${name}\").attr(\"disabled\",\"disabled\");           \n" + 
+					"						$(\"#visible_${name}\").empty();           \n" + 
+					"						$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#visible_${name}\");           \n" + 
+					"						$(\"#fake_visible_${name}\").val('${loading}');           \n" + 
+					"						//$(\"#visible_${name}\").trigger('refresh');           \n" + 
+					"						$(\"#background_overlay_wait_${name}\").show();           \n" + 
+					"		            	$(\"#message_box_wait_${name}\").show();           \n" + 
+					"						$(\"#${name}\").trigger('lock');         \n" + 
+					"						ajax({           \n" + 
+					"				            	url: '${service}get_list',           \n" + 
+					"							data: {           \n" + 
+					"								parameter_name:'${name_api}',           \n" + 
+					"								form_api: '${api}',           \n" + 
+					"								parameters:  ${value_js},           \n" + 
+					"								no_cache: Math.floor(Math.random() * 10000),           \n" + 
+					"							},          \n" + 
+					"					            type: 'post',           \n" + 
+					"					            dataType: 'json',           \n" + 
+					"				           		contentType: 'application/x-www-form-urlencoded',           \n" + 
+					"						}, function (data) {   \n" + 
+					"								$(\"#visible_${name}\").empty();           \n" + 
+					"								$(\"#fake_visible_${name}\").val('${not_selected}');           \n" + 
+					"								// создаем слой           \n" + 
+					"								$(\"#fake_visible_${name}\").after(\"<div id='popup_${name}' class='popup'><p id='column1'></p><p id='column2'></p></div>\");           \n" + 
+					"								$(\"#popup_${name}\").prepend(\"<h3>${select} \"+$('label[for=\"visible_${name}\"]').html()+\"</h3>\");           \n" + 
+					"								$(\"#popup_${name}\").prepend(\"<div id='popup_${name}_close' class='popup_close'>${close}</div>\");           \n" + 
+					"								var i = 0;           \n" + 
+					"								$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${name}\");           \n" + 
+					"								$.each(data.data, function(key, val) {           \n" + 
+					"									$(\"<option/>\", {'value': val.id, html: val.name, 'selected': val.value }).appendTo(\"#visible_${name}\");           \n" + 
+					"									i += 1;           \n" + 
+					"									var bold = val.id==previous_id;   \n" + 
+					"									var values = val.name.split(\"${value_separator}\"); \n" + 
+					"									if (i % 2 == 0) {           \n" + 
+					"										$(\"#column1\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u>'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</span>');      \n" + 
+					"									}else{      \n" + 
+					"										$(\"#column2\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u>'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</span>');      \n" + 
+					"									}           \n" + 
+					"							  	});           \n" + 
+					"								if (i==0){           \n" + 
+					"									// удаляем динам окно           \n" + 
+					"									$( \"#popup_${name}\" ).remove();           \n" + 
+					"									$(\"#fake_visible_${name}\").val('${list_empty}');           \n" + 
+					"									$(\"#${name}\").val('');           \n" + 
+					"									$(\"#fake_visible_${name}\").removeAttr('disabled');           \n" + 
+					"									$(\"#background_overlay_wait_${name}\").hide();           \n" + 
+					"	          						$(\"#message_box_wait_${name}\").hide();           \n" + 
+					"									$(\"#${name}\").trigger('unlock');         \n" + 
+					"									return;           \n" + 
+					"								}           \n" + 
+					"								$(\"#fake_visible_${name}\").removeAttr('disabled');           \n" + 
+					"								$(\"#background_overlay_wait_${name}\").hide();           \n" + 
+					"          						$(\"#message_box_wait_${name}\").hide();           \n" + 
+					"								$(\"#${name}\").trigger('unlock');         \n" + 
+
+					"								// показываем фон           \n" + 
+					"								$(\".overlay\").show();           \n" + 
+					"								// вешаем обработчик динамически на click на каждый элемент списка popuplist_header           \n" + 
+					"								$(document).one(\"click\", \".popuplist_header\", function() {           \n" + 
+					"									 // из id извлекаем значение и выводим           \n" + 
+					"									 var id_value = $(this).attr('id');           \n" + 
+					"									 var arr = id_value.split('_');           \n" + 
+					"									 $(\"#fake_visible_${name}\").val($(this).find(\"u\").text());           \n" + 
+					"									 $(\"#visible_${name}\").val(arr[1]);           \n" + 
+					"									 $(\"#${name}\").val(arr[1]);           \n" + 
+					"									 // закрываем фон           \n" + 
+					"									 $(\".overlay\").hide();           \n" + 
+					"									 // удаляем динам окно           \n" + 
+					"									 $(\"#popup_${name}\" ).remove();           \n" + 
+					"									 // посылаем событие на обновление           \n" + 
+					"									 $(\"#visible_${name}\").change();           \n" + 
+					"									 $(\"#visible_${name}\").trigger('refresh');           \n" + 
+					"								});           \n" + 
+					"								// вешаем обработчик динамически на click на закрыть           \n" + 
+					"								$(document).one(\"click\", \".popup_close\", function() {           \n" + 
+					"									// закрываем фон           \n" + 
+					"									$(\".overlay\").hide();           \n" + 
+					"									// удаляем динам окно           \n" + 
+					"									$(\"#popup_${name}\").remove();           \n" + 
+					"									// восстанавливаем предыдущий выбор           \n" + 
+					"									$(\"#fake_visible_${name}\").val(previous_text);           \n" + 
+					"									$(\"#${name}\").val(previous_id);           \n" + 
+					"									$(\"#visible_${name}\").val(previous_id);           \n" + 
+					"									// посылаем событие на обновление           \n" + 
+					"									//$(\"#visible_${name}\").change();           \n" + 
+					"								});           \n" + 
+					"						});           \n" + 
+							"	});     \n"
+					)
+					.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+					.replace("${value_js}", valueJS)
+					.replace("${select}", CurrentLocale.getInstance().getTextSource().getString("select"))
+					.replace("${close}", CurrentLocale.getInstance().getTextSource().getString("close"))
+					.replace("${list_empty}", CurrentLocale.getInstance().getTextSource().getString("list_empty"))
+					.replace("${loading}", CurrentLocale.getInstance().getTextSource().getString("loading"))
+					.replace("${not_selected}", CurrentLocale.getInstance().getTextSource().getString("not_selected"))
+					;
+		}
+
 		
 		public String getSetValueJS() {
 			// Добавить условие для загрузки зависимых списков (пока работает только для незаполненных ранее)
@@ -277,5 +379,9 @@ public class PopUpList extends List {
 						"		$(\"#visible_${child_name}\").val(data.value).change(); \n" + 
 						"	} \n");
 		}
+		
+		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
 
+			return element;
+		}
 }

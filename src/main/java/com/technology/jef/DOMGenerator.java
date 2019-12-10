@@ -24,6 +24,8 @@ import com.technology.jef.generators.GroupGenerator;
 import com.technology.jef.generators.InterfaceGenerator;
 import com.technology.jef.generators.ItemGenerator;
 import com.technology.jef.generators.ScriptGenerator;
+import com.technology.jef.generators.TabGenerator;
+import com.technology.jef.generators.TabsGenerator;
 import com.technology.jef.generators.TagGenerator;
 import com.technology.jef.generators.TagGenerator.Name;
 
@@ -230,6 +232,18 @@ public class DOMGenerator {
 		case SCRIPT:
 			generator = new ScriptGenerator();
 			// Формируем DOM модель на уровне скрипта
+    		// Добавляем ссылку на текущую позицию в DOM в адресный стек
+    		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
+			break;
+		case TAB:
+			generator = new TabGenerator();
+			// Формируем DOM модель на уровне таба
+    		// Добавляем ссылку на текущую позицию в DOM в адресный стек
+    		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
+			break;
+		case TABS:
+			generator = new TabsGenerator();
+			// Формируем DOM модель на уровне контейнера табов
     		// Добавляем ссылку на текущую позицию в DOM в адресный стек
     		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
 			break;
