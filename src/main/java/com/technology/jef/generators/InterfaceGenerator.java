@@ -38,11 +38,14 @@ public class InterfaceGenerator extends TagGenerator {
 		     put(Tag.Property.TYPE, "text/css");
 		     put(Tag.Property.HREF, "css/jquery.formstyler.css?v=2.0.0");
 		}});
+
+		String styleCSS =  (String) getAttribute(TagGenerator.Attribute.STYLE);
 		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.REL, "stylesheet");
 		     put(Tag.Property.TYPE, "text/css");
-		     put(Tag.Property.HREF, "css/styles.css?v=2.12.1");
+		     put(Tag.Property.HREF, "css/" +(!"".equals(styleCSS) ? styleCSS : "styles.css?v=2.12.1"));
 		}});
+
 		head.add(Tag.Type.SCRIPT, ("	$.ajaxSetup({scriptCharset: \"utf-8\" , contentType: \"application/json; charset=utf-8\"});  \n" + 
 					"	$.fn.isBound = function(type) {  \n" + 
 					"		    var data = $._data($(this).get(0), \"events\")[type];  \n" + 
