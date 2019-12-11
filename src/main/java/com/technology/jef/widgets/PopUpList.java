@@ -11,7 +11,7 @@ import static com.technology.jef.server.serialize.SerializeConstant.*;
 /**
 * Виджет всплывающий список
 */
-public class PopUpList extends List {
+public class PopUpList extends Widget {
 
 	  /**
 	   * Метод возвращает тип виджета
@@ -83,12 +83,22 @@ public class PopUpList extends List {
 			String valueJS = getValueJS((String[])currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT), prefix);
 			String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
 
+			// Вызываем функцию связи в событиях родительского элемента
+			// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
+			currentGenerator.getDom().add(Tag.Type.SCRIPT,
+					(
+					" $(\"#visible_${parrent_name}\").change(function(){\n" +
+					"		$(\"#${child_name}\").trigger('cleanValue');\n" +
+					" }); \n")
+					.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
+					.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
+			);
+
 			currentGenerator.getDom().add(Tag.Type.SCRIPT,
 					(
 					" $(\"#fake_visible_${child_name}\").on('click', function(){\n" +
-					"		onChange${parrent_name}_${child_name}_ct_ajax_list_popup(this);\n" +
+					"		onChange_${child_name}_ct_ajax_list_popup(this);\n" +
 					" }); \n")
-					.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
 					.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 			);
 			
@@ -110,7 +120,7 @@ public class PopUpList extends List {
 			String bodyJS = 
 								("					 \n" + 
 	"					// реагирование на получение фокуса           \n" + 
-	"					function onChange${parrent_name}_${child_name}_ct_ajax_list_popup(){           \n" + 
+	"					function onChange_${child_name}_ct_ajax_list_popup(){           \n" + 
 	"						var valueJS = ${value_js};         \n" + 
 	"						${ignore_empty_js}           \n" + 
 	"						// сохраняем предыдущее значение           \n" + 

@@ -1,6 +1,7 @@
 package com.technology.jef.widgets;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
@@ -204,7 +205,7 @@ public class Find extends Widget {
 					"						$(\"#visible_${result_name}${prefix}\").change(); \n")
 					.replace("${result_name}", ajax_parrent_list[i])
 					.replace("${prefix}", prefix)
-					.replace("${index}", String.valueOf(i));
+					.replace("${index}", Objects.toString(i, ""));
 
 				if (i+1 < ajax_parrent_list.length) {
 					subList =
@@ -220,7 +221,7 @@ public class Find extends Widget {
 						"							$(\"#visible_${result_name}${prefix}\").change(); \n")
 						.replace("${result_name}", ajax_parrent_list[i])
 						.replace("${prefix}", prefix)
-						.replace("${index}", String.valueOf(i))
+						.replace("${index}", Objects.toString(i, ""))
 						.replace("${child_result_name}", ajax_parrent_list[i+1]);
 				}
 				

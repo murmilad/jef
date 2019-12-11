@@ -32,6 +32,21 @@ public class FormGenerator extends TagGenerator {
 	@Override
 	public Tag generate(String qName) {
 
+		Tag body = dom.locateUp(Tag.Type.BODY);
+		if (body != null) {
+			body.unshift(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.ID, "message_overlay_wait_form");
+				 put(Tag.Property.NAME, "message_overlay_wait_form");
+				 put(Tag.Property.CLASS, "background_overlay_form_loading");
+				 put(Tag.Property.STYLE, "display: block;");
+			}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.NAME, "message_box_overlay_wait_form");
+				 put(Tag.Property.CLASS, "message_overlay_form_loading");
+			}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.NAME, "message_box_wait_form");
+				 put(Tag.Property.CLASS, "message_box_form_loading");
+			}});
+		}
 
 		
 		Tag form = dom.add(Tag.Type.FORM, new HashMap<Tag.Property, String>(){{
@@ -39,15 +54,6 @@ public class FormGenerator extends TagGenerator {
 		     put(Tag.Property.NAME, (String) getAttribute(TagGenerator.Attribute.ID));
 		}});
 
-		form.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.ID, "message_box_wait_form");
-			 put(Tag.Property.NAME, "message_box_wait");
-			 put(Tag.Property.CLASS, "message_box_loading");
-			 put(Tag.Property.STYLE, "display: block;");
-		}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.NAME, "message_overlay_wait");
-			 put(Tag.Property.CLASS, "message_overlay_loading");
-		}});
 
 		form.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "form_id");
@@ -224,8 +230,9 @@ public class FormGenerator extends TagGenerator {
 	"						$('input[type=\"hidden\"]').not('[name^=\"required_\"], [name^=\"parrent_api_\"], [name^=\"api_\"]').each( function(index, element){                  \n" + 
 	"							field_values[globalIndex + index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                  \n" + 
 	"						});                  \n" + 
-	"						$(\"#background_overlay_wait_form\").show();                            \n" + 
-	"			            		$(\"#message_box_wait_form\").show();                            \n" + 
+	"						$(\"#message_overlay_wait_form\").show();                         \n" + 
+	"    					$(\"#message_box_overlay_wait_form\").show();                         \n" +
+	"    					$(\"#message_box_wait_form\").show();                         \n" +
 	"						$(\"[id^='visible_']\").each(function(index, item){            \n" + 
 	"							$(this).parent().children('').removeClass(\"error\");            \n" + 
 	"						});            \n" + 
@@ -260,12 +267,16 @@ public class FormGenerator extends TagGenerator {
 	"								}             \n" + 
 	"								if (hasErrors) {           \n" + 
 	"									$('#error').show();         \n" + 
-	"									$(\"#background_overlay_wait_form\").hide();                 \n" + 
-	"	    							$(\"#message_box_wait_form\").hide();                 \n" + 
+	"									$(\"#message_overlay_wait_form\").hide();                         \n" + 
+	"			    					$(\"#message_box_overlay_wait_form\").hide();                         \n" +
+	"    								$(\"#message_box_wait_form\").hide();                         \n" +
 	"									window.scrollTo(0, 0);              \n" + 
 	"								} else {          \n" + 
 	"									$('#error').hide();         \n" + 
 	"									$('#${name}').trigger('set', [data]);" +
+	"									$(\"#message_overlay_wait_form\").hide();                         \n" + 
+	"			    					$(\"#message_box_overlay_wait_form\").hide();                         \n" +
+	"    								$(\"#message_box_wait_form\").hide();                         \n" +
 	"  								}           \n" + 
 	"						});                           \n" + 
 	"					}                           \n")
@@ -388,7 +399,8 @@ public class FormGenerator extends TagGenerator {
 	"					$(\"#button_add_${multiplie_group_name}\").click(function(){   \n" + 
 	"						setTimeout(function( x ) {   \n" + 
 	"							var prefix = add_${multiplie_group_name}();   \n" + 
-	"							$('#fildset_' + prefix).find('input[name^=\"visible_\"]').change(); \n" + 
+	"							load_form_data_${group_api}(groupInitialParams${group_api}, prefix);     \n" + 
+	"							$( document ).trigger('setListOnLoad');                       \n" + 
 	"						}, 100);  \n" + 
 	"					});   \n" + 
 	"					function add_${multiplie_group_name}() {   \n" + 
@@ -426,6 +438,7 @@ public class FormGenerator extends TagGenerator {
 					.replace("${encoded_tag}", new String(encodedHTML))
 					.replace("${encoded_script}", new String(encodedJS))
 					.replace("${action}", ACTION_UPDATE)
+					.replace("${group_api}", (String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))
 				);
 		}
 
@@ -465,12 +478,21 @@ public class FormGenerator extends TagGenerator {
 	"					load_form_data_${api}(data, '');     \n" + 
 	"					formsWaitedToLoad--;                         \n" + 
 	"					if (formsWaitedToLoad === 0) {                         \n" + 
-	"						$(\"#background_overlay_wait_form\").hide();                         \n" + 
-	"    						$(\"#message_box_wait_form\").hide();                         \n" + 
+	"						$(\"#message_overlay_wait_form\").hide();                         \n" + 
+	"    					$(\"#message_box_overlay_wait_form\").hide();                         \n" +
+	"    					$(\"#message_box_wait_form\").hide();                         \n" +
 	"						$( document ).trigger('setListOnLoad');                       \n" + 
 	"					}					                         \n" + 
 	"					$('#form_id').trigger('${api}_group_loaded');          \n" + 
-	"				});                       \n" + 
+	"				});                       \n")
+		.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+		.replace("${service}", (String) getParrent().getAttribute(TagGenerator.Attribute.SERVICE))				
+		.replace("${api}",  formApi)
+		.replace("${multiplie_group_name}", GROUP_SEPARATOR + formApi)
+		.replace("${value_js}", valueJS);
+
+		dom.add(Tag.Type.SCRIPT,			( "\n" +
+	"				var groupInitialParams${api};     \n" + 
 	"				function load_form_data_${api}(data, groupPrefix){     \n" + 
 	"					if (data.status_code === 1) {                         \n" + 
 	"						$.each(data.parameters, function(key, parameter) {                \n" + 
@@ -519,12 +541,15 @@ public class FormGenerator extends TagGenerator {
 	"							var currentGroupPrefix = add_${multiplie_group_name}(parameters);                         \n" + 
 	"							load_form_data_${api}(parameters, currentGroupPrefix);  \n" + 
 	"					});                        \n" + 
+	"					groupInitialParams${api} = data;     \n" + 
+	"					groupInitialParams${api}.groups = [];     \n" + 
 	"				}     \n")
 				.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 				.replace("${service}", (String) getParrent().getAttribute(TagGenerator.Attribute.SERVICE))				
 				.replace("${api}",  formApi)
 				.replace("${multiplie_group_name}", GROUP_SEPARATOR + formApi)
-				.replace("${value_js}", valueJS);
+				.replace("${value_js}", valueJS)
+		);
 
 			
 

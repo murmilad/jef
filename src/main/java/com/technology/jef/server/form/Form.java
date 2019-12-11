@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,7 +49,7 @@ public abstract class Form {
 				throws ServiceException {
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
-			parameters.put("id", String.valueOf(primaryId));
+			parameters.put("id", Objects.toString(primaryId, ""));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				list = getFieldsMap().get(parameterName).getListHandler(parameterName, parameters);
@@ -72,7 +73,7 @@ public abstract class Form {
 
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
-			parameters.put("id", String.valueOf(primaryId));
+			parameters.put("id", Objects.toString(primaryId, ""));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				list = getFieldsMap().get(parameterName).getListInteractiveHandler(parameterName, parameters);
@@ -95,7 +96,7 @@ public abstract class Form {
 
 			String value = "";
 			
-			parameters.put("id", String.valueOf(primaryId));
+			parameters.put("id", Objects.toString(primaryId, ""));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				value = getFieldsMap().get(parameterName).getValueHandler(parameterName, parameters);
@@ -120,7 +121,7 @@ public abstract class Form {
 
 			Boolean isVisible = null;
 			
-			parameters.put("id", String.valueOf(primaryId));
+			parameters.put("id", Objects.toString(primaryId, ""));
 			
 			if (getFieldsMap().containsKey(parameterName)) {
 				isVisible = getFieldsMap().get(parameterName).isVisibleHandler(parameterName, parameters);
@@ -142,7 +143,7 @@ public abstract class Form {
 		protected  Boolean isActive(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
 			Boolean isActive = null;
 
-			parameters.put("id", String.valueOf(primaryId));
+			parameters.put("id", Objects.toString(primaryId, ""));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				isActive = getFieldsMap().get(parameterName).isActiveHandler(parameterName, parameters);
@@ -169,7 +170,7 @@ public abstract class Form {
 
 			List<String> errors = new LinkedList<String>();
 
-			parameters.put("id", String.valueOf(primaryId));
+			parameters.put("id", Objects.toString(primaryId, ""));
 			
 			if (getFieldsMap().containsKey(parameterName)) {
 				List<String> localErrors = getFieldsMap().get(parameterName).checkHandler(parameterName, parameters);

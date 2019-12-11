@@ -247,6 +247,16 @@ public class Tag {
 	}
 
 	  /**
+	   * Метод добавляет дочерний тег в начало
+	   * 
+	   * @param type имя тега
+	   * @return добавленный тег
+	   */
+	public Tag unshift(Type type) {
+		return unshift(type, null, null, new HashMap<Property, String>());
+	}
+
+	  /**
 	   * Метод добавляет дочерний тег
 	   * 
 	   * @param type имя тега
@@ -255,6 +265,17 @@ public class Tag {
 	   */
 	public Tag add(Type type, String body) {
 		return add(type, null, body, new HashMap<Property, String>());
+	}
+
+	  /**
+	   * Метод добавляет дочерний тег  в начало
+	   * 
+	   * @param type имя тега
+	   * @param body тело тега
+	   * @return добавленный тег
+	   */
+	public Tag unshift(Type type, String body) {
+		return unshift(type, null, body, new HashMap<Property, String>());
 	}
 
 	
@@ -270,6 +291,17 @@ public class Tag {
 	}
 
 	  /**
+	   * Метод добавляет дочерний тег в начало
+	   * 
+	   * @param type имя тега
+	   * @param properties атрибуты тега
+	   * @return добавленный тег
+	   */
+	public Tag unshift(Type type, Map<Property, String> properties) {
+		return unshift(type, null, null, properties);
+	}
+
+	  /**
 	   * Метод добавляет дочерний тег
 	   * 
 	   * @param type имя тега
@@ -280,8 +312,36 @@ public class Tag {
 	public Tag add(Type type, String body, Map<Property, String> properties) {
 		return add(type, null, body, properties);
 	}
-	
 
+	/**
+	   * Метод добавляет дочерний тег в начало
+	   * 
+	   * @param type имя тега
+	   * @param body тело тега
+	   * @param properties атрибуты тега
+	   * @return добавленный тег
+	   */
+	public Tag unshift(Type type, String body, Map<Property, String> properties) {
+		return unshift(type, null, body, properties);
+	}
+		
+
+	  /**
+	   * Метод добавляет дочерний тег в начало
+	   * 
+	   * @param type имя тега
+	   * @param body_before тело тега, которое будет выводится до дочерних тегов
+	   * @param body тело тега
+	   * @param properties атрибуты тега
+	   * @return добавленный тег
+	   */
+	public Tag unshift(Type type, String body_before, String body, Map<Property, String> properties) {
+		Tag newTag = new Tag(type, body_before, body, this, properties);
+
+		this.children.add(0,newTag);
+
+		return newTag;
+	}
 	  /**
 	   * Метод добавляет дочерний тег
 	   * 
@@ -519,5 +579,17 @@ public class Tag {
 		return js;
 	}
 
+	public Tag locateUp(Type type) {
+		if (this.getType().equals(type)) {
+			return this;
+		} else {
+			Tag parrent = getParrent();
+			if (parrent != null) {
+				return getParrent().locateUp(type);
+			} else {
+				return null;
+			}
+		}
+	}
 }
 

@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -67,7 +68,8 @@ public class Service<F extends FormFactory> {
 			for (String secondaryId: groupIdList) {
 				groups.add(getFormDto(id, "".endsWith(secondaryId) ? null : Integer.parseInt(secondaryId), formApi, parameters));
 			}
-			fromResult = new FormDto(SERVICE_STATUS_OK, groups);
+			fromResult = getFormDto(id, null, formApi, parameters);
+			fromResult.setGroups(groups);
 
 		} else {
 			fromResult = getFormDto(id, null, formApi, parameters);
@@ -86,7 +88,7 @@ public class Service<F extends FormFactory> {
 		Form form = factory.getForm(formApi);
 		form.load(primaryId, secondaryId, parameters);
 
-		form.getFormData().putValue("group_id", String.valueOf(secondaryId));
+		form.getFormData().putValue("group_id", Objects.toString(secondaryId, ""));
 		form.getFormData().putExtraValues(parameters);
 
 		fromResult = new FormDto(SERVICE_STATUS_OK);
@@ -133,7 +135,7 @@ public class Service<F extends FormFactory> {
 			
 			// добавляем в карту API пустой класс параметров 
 			if (prefixMatcher.matches()) {
-				formsMap.put(String.valueOf(value), new FormParameters(String.valueOf(value)));
+				formsMap.put(Objects.toString(value, ""), new FormParameters(Objects.toString(value, "")));
 			} else if (!name.contains("api_") && !name.contains("required_")) {
 				allInputParametersMap.put(name, parameters.get(name));
 			}
@@ -152,7 +154,7 @@ public class Service<F extends FormFactory> {
 				if (apiName != null) { 
 
 					// Имя текущего API
-					String currentForm = String.valueOf(apiName); 
+					String currentForm = Objects.toString(apiName, ""); 
 
 					// Если текущий параметр содержит PARRENT_API
 					if ("parrent_api".equals(apiMatcher.group(1))) { 

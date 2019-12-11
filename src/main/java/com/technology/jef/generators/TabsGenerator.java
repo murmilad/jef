@@ -35,6 +35,7 @@ public class TabsGenerator extends TagGenerator {
 		Tag form = container.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "form_container");
 		     put(Tag.Property.CLASS, "form_container");
+		     put(Tag.Property.STYLE, "position: relative;");
 		}});
 
 
