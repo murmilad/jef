@@ -34,7 +34,7 @@ public class FormGenerator extends TagGenerator {
 
 		Tag body = dom.locateUp(Tag.Type.BODY);
 		if (body != null) {
-			body.unshift(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			body.getChildren().get(0).unshift(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "message_overlay_wait_form");
 				 put(Tag.Property.NAME, "message_overlay_wait_form");
 				 put(Tag.Property.CLASS, "background_overlay_form_loading");
@@ -274,9 +274,6 @@ public class FormGenerator extends TagGenerator {
 	"								} else {          \n" + 
 	"									$('#error').hide();         \n" + 
 	"									$('#${name}').trigger('set', [data]);" +
-	"									$(\"#message_overlay_wait_form\").hide();                         \n" + 
-	"			    					$(\"#message_box_overlay_wait_form\").hide();                         \n" +
-	"    								$(\"#message_box_wait_form\").hide();                         \n" +
 	"  								}           \n" + 
 	"						});                           \n" + 
 	"					}                           \n")
