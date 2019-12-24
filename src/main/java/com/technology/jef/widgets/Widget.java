@@ -124,19 +124,27 @@ public abstract class Widget {
 					(String[])generator.getAttribute(TagGenerator.Attribute.AJAX_VALUE_PARRENT),
 					(String[])generator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT)
 			).flatMap(Stream::of).toArray(String[]::new)) {
-				resultElement.add(Tag.Type.SCRIPT,						("   \n" + 
-	"	$('#${name}').on('lock', function () {  \n" + 
-	"		$('#${parrent_name}').trigger('setLocked'); \n" + 
-	"	});   \n" + 
-	"	$('#${name}').on('unlock', function () {   \n" + 
-	"		$('#${parrent_name}').trigger('setUnlocked'); \n" + 
-	"	});   \n" + 
-	"	$('#${parrent_name}').on('lock', function () {  \n" + 
-	"		$('#${name}').trigger('setLocked'); \n" + 
-	"	});   \n" + 
-	"	$('#${parrent_name}').on('unlock', function () {   \n" + 
-	"		$('#${name}').trigger('setUnlocked'); \n" + 
-	"	});   \n")
+				resultElement.add(Tag.Type.SCRIPT,							("    \n" + 
+	"	$('#${name}').on('lock', function () {   \n" + 
+	"		if (!$('#${parrent_name}').attr('data-disabled')) {  \n" + 
+	"			$('#${parrent_name}').trigger('setLocked');  \n" + 
+	"		} \n" + 
+	"	});    \n" + 
+	"	$('#${name}').on('unlock', function () {    \n" + 
+	"		if (!$('#${parrent_name}').attr('data-disabled')) {  \n" + 
+	"			$('#${parrent_name}').trigger('setUnlocked');  \n" + 
+	"		} \n" + 
+	"	});    \n" + 
+	"	$('#${parrent_name}').on('lock', function () {   \n" + 
+	"		if (!$('#${name}').attr('data-disabled')) {  \n" + 
+	"			$('#${name}').trigger('setLocked');  \n" + 
+	"		} \n" + 
+	"	});    \n" + 
+	"	$('#${parrent_name}').on('unlock', function () {    \n" + 
+	"		if (!$('#${name}').attr('data-disabled')) {  \n" + 
+	"			$('#${name}').trigger('setUnlocked');  \n" + 
+	"		} \n" + 
+	"	});    \n")
 					.replace("${set_active_js}", getSetActiveJS().replace("${child_name}", name))
 					.replace("${parrent_name}", parrentName)
 					.replace("${name}", name)

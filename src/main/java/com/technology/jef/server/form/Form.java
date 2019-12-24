@@ -14,6 +14,14 @@ import com.technology.jef.CurrentLocale;
 import com.technology.jef.server.dto.OptionDto;
 import com.technology.jef.server.dto.RecordDto;
 import com.technology.jef.server.exceptions.ServiceException;
+import com.technology.jef.server.form.Field.CheckListener;
+import com.technology.jef.server.form.Field.GetAttributesListener;
+import com.technology.jef.server.form.Field.GetListInteractiveListener;
+import com.technology.jef.server.form.Field.GetListListener;
+import com.technology.jef.server.form.Field.GetValueListener;
+import com.technology.jef.server.form.Field.IsActiveListener;
+import com.technology.jef.server.form.Field.IsRequiredListener;
+import com.technology.jef.server.form.Field.IsVisibleListener;
 import com.technology.jef.server.form.FormData.Attribute;
 
 /**
@@ -52,7 +60,11 @@ public abstract class Form {
 			parameters.put("id", Objects.toString(primaryId, ""));
 
 			if (getFieldsMap().containsKey(parameterName)) {
-				list = getFieldsMap().get(parameterName).getListHandler(parameterName, parameters);
+				GetListListener listListener = getFieldsMap().get(parameterName).getGetListListener();
+				if (listListener == null) {
+					throw new ServiceException("listListener is not definded for parameter: '" + parameterName + "'");
+				}
+				list = listListener.handle(parameterName, parameters);
 			} else {
 				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
 			}
@@ -76,7 +88,11 @@ public abstract class Form {
 			parameters.put("id", Objects.toString(primaryId, ""));
 
 			if (getFieldsMap().containsKey(parameterName)) {
-				list = getFieldsMap().get(parameterName).getListInteractiveHandler(parameterName, parameters);
+				GetListInteractiveListener listInteractiveListener = getFieldsMap().get(parameterName).getGetListInteractiveListener();
+				if (listInteractiveListener == null) {
+					throw new ServiceException("listInteractiveListener is not definded for parameter: '" + parameterName + "'");
+				}
+				list = listInteractiveListener.handle(parameterName, parameters);
 			} else {
 				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
 			}
@@ -99,7 +115,11 @@ public abstract class Form {
 			parameters.put("id", Objects.toString(primaryId, ""));
 
 			if (getFieldsMap().containsKey(parameterName)) {
-				value = getFieldsMap().get(parameterName).getValueHandler(parameterName, parameters);
+				GetValueListener getValueListener = getFieldsMap().get(parameterName).getGetValueListener();
+				if (getValueListener == null) {
+					throw new ServiceException("getValueListener is not definded for parameter: '" + parameterName + "'");
+				}
+				value = getValueListener.handle(parameterName, parameters);
 			} else {
 				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
 			}
@@ -124,7 +144,11 @@ public abstract class Form {
 			parameters.put("id", Objects.toString(primaryId, ""));
 			
 			if (getFieldsMap().containsKey(parameterName)) {
-				isVisible = getFieldsMap().get(parameterName).isVisibleHandler(parameterName, parameters);
+				IsVisibleListener isVisibleListener = getFieldsMap().get(parameterName).getIsVisibleListener();
+				if (isVisibleListener == null) {
+					throw new ServiceException("isVisibleListener is not definded for parameter: '" + parameterName + "'");
+				}
+				isVisible = isVisibleListener.handle(parameterName, parameters);
 			} else {
 				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
 			}
@@ -146,7 +170,11 @@ public abstract class Form {
 			parameters.put("id", Objects.toString(primaryId, ""));
 
 			if (getFieldsMap().containsKey(parameterName)) {
-				isActive = getFieldsMap().get(parameterName).isActiveHandler(parameterName, parameters);
+				IsActiveListener isActiveListener = getFieldsMap().get(parameterName).getIsActiveListener();
+				if (isActiveListener == null) {
+					throw new ServiceException("isActiveListener is not definded for parameter: '" + parameterName + "'");
+				}
+				isActive = isActiveListener.handle(parameterName, parameters);
 			} else {
 				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
 			}
@@ -173,17 +201,23 @@ public abstract class Form {
 			parameters.put("id", Objects.toString(primaryId, ""));
 			
 			if (getFieldsMap().containsKey(parameterName)) {
-				List<String> localErrors = getFieldsMap().get(parameterName).checkHandler(parameterName, parameters);
-				if (localErrors != null) {
-					errors = localErrors; 
-				};
+				CheckListener checkListener = getFieldsMap().get(parameterName).getCheckListener();
+				if (checkListener != null) {
+					List<String> localErrors = checkListener.handle(parameterName, parameters);
+					if (localErrors != null) {
+						errors = localErrors; 
+					};
+				}
 			}
 
 			if (getFieldsMap().containsKey(parameterName)) {
-				Boolean localRequired = (Boolean) getFieldsMap().get(parameterName).isRequiredHandler(parameterName, parameters);
-				if (localRequired != null) {
-					isRequired = localRequired; 
-				};
+				IsRequiredListener isRequiredListener = getFieldsMap().get(parameterName).getIsRequiredListener();
+				if (isRequiredListener != null) {
+					Boolean localRequired = (Boolean) isRequiredListener.handle(parameterName, parameters);
+					if (localRequired != null) {
+						isRequired = localRequired; 
+					};
+				}
 			}
 
 			if (isRequired && "".equals(parameters.get(parameterName))) {
@@ -193,6 +227,25 @@ public abstract class Form {
 			return errors;
 		}
 
+		/**
+		 * Метод получения атрибутов параметра формы (видимость, доступность к редактированию)
+		 * @param parameterName наименование параметра на форме
+		 * @param id идентификатор анкеты
+		 * @return список атрибутов параметра
+		 * @throws ServiceException
+		 */
+		protected Map<Attribute, Boolean> getAttributes(String parameterName, Integer id) throws ServiceException {
+
+			Map<Attribute, Boolean> attributes = new HashMap<Attribute, Boolean>();
+			if (getFieldsMap().containsKey(parameterName)) {
+				GetAttributesListener getAttributesListener = getFieldsMap().get(parameterName).getGetAttributesListener();
+				if (getAttributesListener != null) {
+					attributes = getAttributesListener.handle(parameterName, id);
+				}
+			}
+			
+			return attributes;
+		}
 
 		
 		/**
@@ -297,19 +350,6 @@ public abstract class Form {
 
 			return daoParameters;
 		}
-
-		/**
-		 * Метод получения атрибутов параметра формы (видимость, доступность к редактированию)
-		 * @param parameterName наименование параметра на форме
-		 * @param id идентификатор анкеты
-		 * @return список атрибутов параметра
-		 * @throws ServiceException
-		 */
-		public Map<Attribute, Boolean> getAttributes(String parameterName, Integer id) {
-
-			return new HashMap<Attribute, Boolean>();
-		}
-
 
 		/**
 		 * Общая проверка данных, связанных с формой

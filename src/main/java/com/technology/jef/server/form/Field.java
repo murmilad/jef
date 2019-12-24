@@ -1,15 +1,141 @@
 package com.technology.jef.server.form;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import com.technology.jef.server.dto.OptionDto;
 import com.technology.jef.server.exceptions.ServiceException;
+import com.technology.jef.server.form.FormData.Attribute;
 
 public class Field {
 
-	private String fieldName;
+	// Listeners
+	
+	@FunctionalInterface
+	public interface GetValueListener {
+		public abstract String handle (String parameterName, Map<String, String> parameters) throws ServiceException;
 
+	}
+	private GetValueListener getValueListener = null;
+	public void getValueListener(GetValueListener listener) {
+		getValueListener = listener;
+	}
+	public GetValueListener getGetValueListener() {
+		return getValueListener;
+	}
+
+
+	@FunctionalInterface
+	public interface IsActiveListener {
+		public abstract Boolean handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+
+	}
+	private IsActiveListener isActiveListener = null;
+	public void isActiveListener(IsActiveListener listener) {
+		isActiveListener = listener;
+	}
+	public IsActiveListener getIsActiveListener() {
+		return isActiveListener;
+	}
+
+	
+	@FunctionalInterface
+	public interface IsVisibleListener {
+		public abstract Boolean handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+
+	}
+	private IsVisibleListener isVisibleListener = null;
+	public void isVisibleListener(IsVisibleListener listener) {
+		isVisibleListener = listener;
+	}
+	public IsVisibleListener getIsVisibleListener() {
+		return isVisibleListener;
+	}
+
+	
+	@FunctionalInterface
+	public interface GetListListener {
+		public abstract List<OptionDto> handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+
+	}
+	private GetListListener getListListener = null;
+	public void getListListener(GetListListener listener) {
+		getListListener = listener;
+	}
+	public GetListListener getGetListListener() {
+		return getListListener;
+	}
+	
+
+	@FunctionalInterface
+	public interface GetListInteractiveListener {
+		public abstract List<OptionDto> handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+
+	}
+	private GetListInteractiveListener getListInteractiveListener = null;
+	public void getListInteractiveListener(GetListInteractiveListener listener) {
+		getListInteractiveListener = listener;
+	}
+	public GetListInteractiveListener getGetListInteractiveListener() {
+		return getListInteractiveListener;
+	}
+
+	
+	@FunctionalInterface
+	public interface IsRequiredListener {
+		public abstract Boolean handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+
+	}
+	private IsRequiredListener isRequiredListener = null;
+	public void isRequiredListener(IsRequiredListener listener) {
+		isRequiredListener = listener;
+	}
+	public IsRequiredListener getIsRequiredListener() {
+		return isRequiredListener;
+	}
+
+	
+	@FunctionalInterface
+	public interface CheckListener {
+		public abstract List<String> handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+
+	}
+	private CheckListener checkListener = null;
+	public void checkListener(CheckListener listener) {
+		checkListener = listener;
+	}
+	public CheckListener getCheckListener() {
+		return checkListener;
+	}
+
+
+	/**
+	 * Метод получения атрибутов параметра формы (видимость, доступность к редактированию)
+	 * @param parameterName наименование параметра на форме
+	 * @param id идентификатор анкеты
+	 * @return список атрибутов параметра
+	 * @throws ServiceException
+	 */
+	
+	@FunctionalInterface
+	public interface GetAttributesListener {
+		public abstract Map<Attribute, Boolean> handle (String parameterName, Integer primaryId) throws ServiceException;
+
+	}
+	private GetAttributesListener getAttributesListener = null;
+	public void getAttributesListener(GetAttributesListener listener) {
+		getAttributesListener = listener;
+	}
+	public GetAttributesListener getGetAttributesListener() {
+		return getAttributesListener;
+	}
+
+	
+	
+	private String fieldName;
+	
 	public Field(String fieldName) {
 		setFieldName(fieldName);
 	}
@@ -24,37 +150,6 @@ public class Field {
 
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
-	}
-
-
-	public List<String> checkHandler(String parameterName, Map<String, String> parameters) throws ServiceException {
-		return null;
-	}
-
-	public String getValueHandler(String parameterName, Map<String, String> parameters) throws ServiceException {
-		throw new ServiceException("getValueHandler is not definded for parameter: '" + parameterName + "'");
-	}
-
-	
-	public List<OptionDto> getListHandler(String parameterName, Map<String, String> parameters) throws ServiceException {
-		throw new ServiceException("getListHandler is not definded for parameter: '" + parameterName + "'");
-	}
-
-	
-	public List<OptionDto> getListInteractiveHandler(String parameterName, Map<String, String> parameters) throws ServiceException {
-		throw new ServiceException("getListInteractiveHandler is not definded for parameter: '" + parameterName + "'");
-	}
-
-	public Boolean isVisibleHandler(String parameterName, Map<String, String> parameters) throws ServiceException {
-		throw new ServiceException("isVisibleHandler is not definded for parameter: '" + parameterName + "'");
-	}
-
-	public Boolean isActiveHandler(String parameterName, Map<String, String> parameters) throws ServiceException {
-		throw new ServiceException("isActiveHandler is not definded for parameter: '" + parameterName + "'");
-	}
-
-	public Boolean isRequiredHandler(String parameterName, Map<String, String> parameters) throws ServiceException {
-		return null;
 	}
 
 }

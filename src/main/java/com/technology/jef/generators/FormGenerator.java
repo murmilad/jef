@@ -495,9 +495,11 @@ public class FormGenerator extends TagGenerator {
 	"						$.each(data.parameters, function(key, parameter) {                \n" + 
 	"							if (parameter.attributes.READONLY) {                         \n" + 
 	"				 				$('#visible_' + key + groupPrefix).prop( \"disabled\", true);                    \n" + 
+	"				 				$('#' + key + groupPrefix).attr( \"data-disabled\", true);                    \n" + 
 	"					 			$(\"#tr_\" + key + groupPrefix).css('color', 'lightgray');                    \n" + 
 	"							};                   \n" + 
 	"							if (parameter.attributes.INVISIBLE) {                         \n" + 
+	"				 				$('#' + key + groupPrefix).attr( \"data-invisible\", true);                    \n" + 
 	"					 			$(\"#tr_\" + key + groupPrefix).css('display', 'none');                    \n" + 
 	"							};                   \n" + 
 	"						});                        \n" + 
