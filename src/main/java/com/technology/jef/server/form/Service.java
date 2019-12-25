@@ -61,7 +61,7 @@ public class Service<F extends FormFactory> {
 		FormDto fromResult = null;
 
 		Form form = factory.getForm(formApi);
-		List<String> groupIdList = form.getGroups(id);
+		List<String> groupIdList = form.getGroups(id, parameters);
 
 		if (groupIdList != null) {
 			List<FormDto> groups = new LinkedList<FormDto>();

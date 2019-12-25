@@ -367,10 +367,11 @@ public abstract class Form {
 		 * Получение списка идентификаторов если форма являетсся групповой
 		 * 
 		 * @param primaryId идентификатор анкеты
+		 * @param parameters 
 		 * @return список идентификаторов групп
 		 * @throws ServiceException
 		 */
-		public List<String> getGroups(Integer primaryId)  throws ServiceException {
+		public List<String> getGroups(Integer primaryId, Map<String, String> parameters)  throws ServiceException {
 			
 			return null;
 		}
