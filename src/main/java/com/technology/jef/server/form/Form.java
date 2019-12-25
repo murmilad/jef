@@ -330,12 +330,13 @@ public abstract class Form {
 		 * Удаление групповой формы
 		 * @param primaryId идентификатор анкеты
 		 * @param secondaryId данные о группе (если она множимая)
+		 * @param parametersMap 
 		 * @return TODO
 
 		 * @throws ServiceException
 		 */
 
-		public void deleteForm(Integer primaryId, Integer secondaryId)  throws ServiceException {};
+		public void deleteForm(Integer primaryId, Integer secondaryId, Map<String, String> parametersMap)  throws ServiceException {};
 
 		protected RecordDto mapDaoParameters(Map<String, String> parameters) {
 

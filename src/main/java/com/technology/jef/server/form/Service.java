@@ -210,7 +210,7 @@ public class Service<F extends FormFactory> {
 							String secondaryId = parameters.get("group_id" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
 							String action = parameters.get("action" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
 							if (ACTION_DELETE.equals(action)) {
-								deleteFormData(currentPrimaryId, secondaryId == null | "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), formParameters.getCurrentApi());
+								deleteFormData(currentPrimaryId, secondaryId == null | "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), formParameters.getCurrentApi(), parameters);
 							} else {
 								newRecordId.set(0,  saveFormData(currentPrimaryId, secondaryId == null | "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), formParameters.getCurrentApi(), formParameters.getInputParameters(groupPrefix)));
 							}
@@ -314,12 +314,12 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public void deleteFormData(Integer primaryId, Integer secondaryId, String formApi)
+	public void deleteFormData(Integer primaryId, Integer secondaryId, String formApi, Map<String, String> parametersMap)
 			throws ServiceException {
 		
 		Form form = factory.getForm(formApi);
 		
-		form.deleteForm(primaryId, secondaryId);
+		form.deleteForm(primaryId, secondaryId, parametersMap);
 	}
 
 
