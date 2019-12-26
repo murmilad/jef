@@ -135,7 +135,7 @@ public class RadioSwitch extends List {
 	@Override
 	public String getSetActiveJS() {
 
-		return "		if (val.value) { \n "
+		return "		if (data.value) { \n "
 				+ "			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n "
 				+ "				$( element ).prop( \"disabled\", false); \n	" 
 				+ "			});                                           \n "

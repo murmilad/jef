@@ -107,11 +107,11 @@ public abstract class Widget {
 			Tag resultElement = assembleTag(name, generator);
 			resultElement.add(Tag.Type.SCRIPT,							("    \n" + 
 	"	$('#${name}').on('setLocked', function () {   \n" + 
-	"		var val = {value: 0};    \n" + 
+	"		var data = {value: 0};    \n" + 
 	"		${set_active_js}    \n" + 
 	"	});    \n" + 
 	"	$('#${name}').on('setUnlocked', function () {    \n" + 
-	"		var val = {value: 1};    \n" + 
+	"		var data = {value: 1};    \n" + 
 	"		${set_active_js}  \n" + 
 	"	});    \n")
 				.replace("${set_active_js}", getSetActiveJS().replace("${child_name}", name))
@@ -295,7 +295,7 @@ public abstract class Widget {
 		public String getSetActiveJS() {
 			
 			return 
-			"		if (val.value) { \n " + 
+			"		if (data.value) { \n " + 
 			"			$('#visible_${child_name}').prop( \"disabled\", false); \n " +
 			"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
 			"		} else { \n " +
@@ -455,13 +455,13 @@ public abstract class Widget {
 				currentGenerator.getDom().add(Tag.Type.SCRIPT,
 						(
 						" $(\"#visible_${parrent_name}\").change(function(){\n" +
-						"		onChange${parrent_name}_${child_name}_ct_ajax_active(this);\n" +
+						"		onChange${parrent_name}_${child_name}_ct_ajax_is_active(this);\n" +
 						" }); \n")
 						.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
 						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 				);
 
-				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), getSetActiveJS(), valueJS, "active");
+				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), getSetActiveJS().concat("$('#${child_name}').attr('data-disabled', data.value)"), valueJS, "is_active");
 			}
 			
 		/**
