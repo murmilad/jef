@@ -36,7 +36,7 @@ public class List extends Widget {
 		public Tag assembleTag(String name, TagGenerator generator) {
 			Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
 				put(Tag.Property.ID, "fieldset_" + name);
-				put(Tag.Property.CLASS, "fieldset frames_border");
+				put(Tag.Property.CLASS, "fieldset second_frames_border");
 			}});
 
 			Tag elementInput = mainInput
@@ -55,7 +55,7 @@ public class List extends Widget {
 						put(Tag.Property.ID, "visible_" + name);
 						put(Tag.Property.NAME, "visible_" + name);
 						put(Tag.Property.STYLE, "width: 100%;");
-						put(Tag.Property.CLASS, "select select_height frames_border second_color widgets_background_color first_text_color second_font");
+						put(Tag.Property.CLASS, "select first_text_color");
 					}});
 			
 			if (!"".equals(generator.getAttribute(TagGenerator.Attribute.HIDE_IF_EMPTY))) {

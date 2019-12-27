@@ -74,7 +74,7 @@ public class GroupGenerator extends TagGenerator {
 		Tag tagFieldset = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "fildset_" + name);
 			 put(Tag.Property.NAME, "fildset_" + name);
-			 put(Tag.Property.CLASS, "fieldset frames_border");
+			 put(Tag.Property.CLASS, "fieldset second_frames_border");
 			 put(Tag.Property.STYLE, "display: block; margin: 5px;");
 		}});
 		
@@ -135,7 +135,7 @@ public class GroupGenerator extends TagGenerator {
 				}}).add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 					put(Tag.Property.NAME, "button_del_<NUMBER>");
 					put(Tag.Property.ID, "button_del_<NUMBER>");
-					put(Tag.Property.CLASS, "interface_del_button buttons_height");
+					put(Tag.Property.CLASS, "interface_del_button buttons_color buttons_height");
 					put(Tag.Property.TYPE, "button");
 					put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
 				}});
@@ -169,7 +169,7 @@ public class GroupGenerator extends TagGenerator {
 			dom.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "group_action_<NUMBER>");
 				 put(Tag.Property.ID, "group_action_<NUMBER>");
-				 put(Tag.Property.CLASS, "interface_del_button buttons_height");
+				 put(Tag.Property.CLASS, "interface_del_button buttons_color buttons_height");
 				 put(Tag.Property.TYPE, "hidden");
 				 put(Tag.Property.VALUE, "create");
 			}});
@@ -179,7 +179,7 @@ public class GroupGenerator extends TagGenerator {
 				 put(Tag.Property.ID, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.NAME, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.TYPE, "button");
-				 put(Tag.Property.CLASS, "interface_add_button buttons_height");
+				 put(Tag.Property.CLASS, "interface_add_button buttons_color buttons_height");
 				 put(Tag.Property.STYLE, "display: inline-block");
 				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("add") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
 			}});
@@ -205,7 +205,7 @@ public class GroupGenerator extends TagGenerator {
 			dom.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "group_action_<NUMBER>");
 				 put(Tag.Property.ID, "group_action_<NUMBER>");
-				 put(Tag.Property.CLASS, "interface_del_button buttons_height");
+				 put(Tag.Property.CLASS, "interface_del_button buttons_color buttons_height");
 				 put(Tag.Property.TYPE, "hidden");
 			}});
 			

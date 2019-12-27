@@ -111,7 +111,7 @@
             onSearchComplete: noop,
             onSearchError: noop,
             preserveInput: false,
-            containerClass: 'autocomplete-suggestions frames_border background_color',
+            containerClass: 'autocomplete-suggestions first_frames_border background_color',
             tabDisabled: false,
             dataType: 'text',
             currentRequest: null,
@@ -153,7 +153,7 @@
     };
 
     function _formatGroup(suggestion, category) {
-        return '<div class="autocomplete-group first_text_color frames_border">' + category + '</div>';
+        return '<div class="autocomplete-group first_text_color first_frames_border">' + category + '</div>';
     };
 
     Autocomplete.prototype = {

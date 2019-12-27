@@ -54,7 +54,7 @@ public class PopUpList extends Widget {
 				 put(Tag.Property.CLASS, "styled");
 			}});
 
-			styledDiv.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+			Tag elementInput = styledDiv.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "fake_visible_" + name);
 				 put(Tag.Property.NAME, "fake_visible_" + name);
 				 put(Tag.Property.TYPE, "text");
@@ -62,7 +62,7 @@ public class PopUpList extends Widget {
 				 put(Tag.Property.STYLE, "width:100%;cursor: default;");
 			}});
 
-			Tag elementInput = styledDiv.add(Tag.Type.SELECT, new HashMap<Tag.Property, String>(){{
+			styledDiv.add(Tag.Type.SELECT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.STYLE, "display: none;");
@@ -159,9 +159,9 @@ public class PopUpList extends Widget {
 	"								$(\"#visible_${child_name}\").empty();            \n" + 
 	"								$(\"#fake_visible_${child_name}\").val('${not_selected}');            \n" + 
 	"								// создаем слой            \n" + 
-	"								$(\"#fake_visible_${child_name}\").after(\"<div id='popup_${child_name}' class='popup background_color frames_border'><p id='column1'></p><p id='column2'></p></div>\");            \n" + 
+	"								$(\"#fake_visible_${child_name}\").after(\"<div id='popup_${child_name}' class='popup background_color first_frames_border'><p id='column1'></p><p id='column2'></p></div>\");            \n" + 
 	"								$(\"#popup_${child_name}\").prepend(\"<h3>${select} \"+$('label[for=\"visible_${child_name}\"]').html()+\"</h3>\");            \n" + 
-	"								$(\"#popup_${child_name}\").prepend(\"<div id='popup_${child_name}_close' class='popup_close buttons_height second_color'>${close}</div>\");            \n" + 
+	"								$(\"#popup_${child_name}\").prepend(\"<div id='popup_${child_name}_close' class='popup_close buttons_height buttons_color'>${close}</div>\");            \n" + 
 	"								var i = 0;            \n" + 
 	"								$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");            \n" + 
 	"								$.each(data.data, function(key, val) {            \n" + 
@@ -170,9 +170,9 @@ public class PopUpList extends Widget {
 	"									var bold = val.id==previous_id;    \n" + 
 	"									var values = val.name.split(\"${value_separator}\");  \n" + 
 	"									if (i % 2 == 0) {            \n" + 
-	"										$(\"#column1\").append('<br><br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u  class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');       \n" + 
+	"										$(\"#column1\").append('<br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u  class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');       \n" + 
 	"									}else{       \n" + 
-	"										$(\"#column2\").append('<br><br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u  class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');       \n" + 
+	"										$(\"#column2\").append('<br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u  class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');       \n" + 
 	"									}            \n" + 
 	"							  	});            \n" + 
 	"								if (i==0){            \n" + 
@@ -308,9 +308,9 @@ public class PopUpList extends Widget {
 					"								$(\"#visible_${name}\").empty();           \n" + 
 					"								$(\"#fake_visible_${name}\").val('${not_selected}');           \n" + 
 					"								// создаем слой           \n" + 
-					"								$(\"#fake_visible_${name}\").after(\"<div id='popup_${name}' class='popup background_color frames_border'><p id='column1'></p><p id='column2'></p></div>\");           \n" + 
+					"								$(\"#fake_visible_${name}\").after(\"<div id='popup_${name}' class='popup background_color first_frames_border'><p id='column1'></p><p id='column2'></p></div>\");           \n" + 
 					"								$(\"#popup_${name}\").prepend(\"<h3>${select} \"+$('label[for=\"visible_${name}\"]').html()+\"</h3>\");           \n" + 
-					"								$(\"#popup_${name}\").prepend(\"<div id='popup_${name}_close' class='popup_close  buttons_height second_color'>${close}</div>\");           \n" + 
+					"								$(\"#popup_${name}\").prepend(\"<div id='popup_${name}_close' class='popup_close  buttons_height buttons_color'>${close}</div>\");           \n" + 
 					"								var i = 0;           \n" + 
 					"								$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${name}\");           \n" + 
 					"								$.each(data.data, function(key, val) {           \n" + 
@@ -319,9 +319,9 @@ public class PopUpList extends Widget {
 					"									var bold = val.id==previous_id;   \n" + 
 					"									var values = val.name.split(\"${value_separator}\"); \n" + 
 					"									if (i % 2 == 0) {           \n" + 
-					"										$(\"#column1\").append('<br><br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');      \n" + 
+					"										$(\"#column1\").append('<br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');      \n" + 
 					"									}else{      \n" + 
-					"										$(\"#column2\").append('<br><br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');      \n" + 
+					"										$(\"#column2\").append('<br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');      \n" + 
 					"									}           \n" + 
 					"							  	});           \n" + 
 					"								if (i==0){           \n" + 

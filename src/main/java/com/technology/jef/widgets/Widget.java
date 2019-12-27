@@ -118,6 +118,10 @@ public abstract class Widget {
 				.replace("${name}", name)
 			); 
 
+			if ("text".equals(resultElement.getProperty(Tag.Property.TYPE)) || "search".equals(resultElement.getProperty(Tag.Property.TYPE)) || Tag.Type.TEXTAREA.equals(resultElement.getType()) ) {
+				resultElement.setProperty(Tag.Property.CLASS, resultElement.getProperty(Tag.Property.CLASS) + "widget first_frames_border widgets_color widgets_height widgets_font");
+			}
+
 			for (String parrentName : Stream.of( 
 					(String[])generator.getAttribute(TagGenerator.Attribute.AJAX_VISIBLE_PARRENT),
 					(String[])generator.getAttribute(TagGenerator.Attribute.AJAX_ACTIVE_PARRENT),

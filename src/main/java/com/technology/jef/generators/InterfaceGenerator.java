@@ -156,7 +156,7 @@ public class InterfaceGenerator extends TagGenerator {
 
 		Tag div = body.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			put(Tag.Property.ID, "wrapper");
-		    put(Tag.Property.CLASS, "wrapper work_area_width");
+		    put(Tag.Property.CLASS, "wrapper" + (!"".equals((String) getAttribute(TagGenerator.Attribute.NAME))? " work_area_width" : ""));
 		}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "main_content");
 		     put(Tag.Property.CLASS, "block");
@@ -175,13 +175,13 @@ public class InterfaceGenerator extends TagGenerator {
 
 		if (!"".equals((String) getAttribute(TagGenerator.Attribute.NAME))) {
 			div.add(Tag.Type.H1, new HashMap<Tag.Property, String>(){{
-			     put(Tag.Property.CLASS, "block_h1 work_area_header_height work_area_header_font_size work_area_header_line_height");
+			     put(Tag.Property.CLASS, "block_h1 header_height header_font_size header_line_height");
 			}}).add(Tag.Type.DIV, (String) getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
-			     put(Tag.Property.CLASS, "block_h1_div work_area_header_height first_color");
+			     put(Tag.Property.CLASS, "block_h1_div header_height header_color");
 			}});
 		}
 		Tag content = div.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.CLASS, !"".equals((String) getAttribute(TagGenerator.Attribute.NAME)) ? "content frames_border" : "");
+		     put(Tag.Property.CLASS, !"".equals((String) getAttribute(TagGenerator.Attribute.NAME)) ? "content first_frames_border" : "");
 		     put(Tag.Property.STYLE, "padding: 5px;");
 		}});
 		// Добавляем сообщение об ошибке при выполнении запроса

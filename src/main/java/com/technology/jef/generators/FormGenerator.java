@@ -75,7 +75,7 @@ public class FormGenerator extends TagGenerator {
 		Tag errors = form.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "error");
 		     put(Tag.Property.NAME, "error");
-		     put(Tag.Property.STYLE, "color: red; display: none;");
+		     put(Tag.Property.STYLE, "color: red; display: none; padding-left:20px;");
 		}});
 		errors.add(Tag.Type.H4, CurrentLocale.getInstance().getTextSource().getString("found_errors"));
 		errors.add(Tag.Type.UL, new HashMap<Tag.Property, String>(){{
@@ -199,7 +199,7 @@ public class FormGenerator extends TagGenerator {
 		     put(Tag.Property.NAME, "submit_button");
 		     put(Tag.Property.TYPE, "button");
 		     put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("next"));
-		     put(Tag.Property.CLASS, "submit_button buttons_height buttons_width");
+		     put(Tag.Property.CLASS, "submit_button buttons_color buttons_height buttons_width");
 		     put(Tag.Property.CLICK, "$(\"#api_action\").val(\"save\");");
 		}});
 
@@ -291,7 +291,7 @@ public class FormGenerator extends TagGenerator {
 			     put(Tag.Property.NAME, "api_back_button");
 			     put(Tag.Property.TYPE, "button");
 			     put(Tag.Property.VALUE,  CurrentLocale.getInstance().getTextSource().getString("back"));
-			     put(Tag.Property.CLASS, "submit_button buttons_height buttons_width");
+			     put(Tag.Property.CLASS, "submit_button buttons_color buttons_height buttons_width");
 			     put(Tag.Property.CLICK, "$(\"#api_action\").val(\"back\");");
 			}});
 		}

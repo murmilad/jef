@@ -33,7 +33,7 @@ public class Image extends Widget {
 			
 
 			Tag fieldset = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
-				put(Tag.Property.CLASS, "fieldset frames_border");
+				put(Tag.Property.CLASS, "fieldset second_frames_border");
 			}});
 			
 			fieldset.add(Tag.Type.LEGEND).add(Tag.Type.LABEL, new HashMap<Tag.Property, String>(){{
