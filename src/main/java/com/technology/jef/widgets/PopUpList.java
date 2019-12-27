@@ -35,9 +35,10 @@ public class PopUpList extends Widget {
 			public String getCleanValueJS() {
 				
 				return 	("							$(\"#visible_${child_name}\").empty();  \n" + 
-						"							$(\"#fake_visible_${child_name}\").val('Не выбрано');  \n" + 
+						"							$(\"#fake_visible_${child_name}\").val('${not_selected}');  \n" + 
 						"							$( \"#popup_${child_name}\" ).remove();  \n" + 
-						"							$(\"#${child_name}\").val('');  \n"); 
+						"							$(\"#${child_name}\").val('');  \n")
+						.replace("${not_selected}", CurrentLocale.getInstance().getTextSource().getString("not_selected")); 
 			}
 
 			
