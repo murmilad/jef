@@ -32,7 +32,8 @@ public class ListEditable extends List {
 	   */
 		public Tag assembleTag(String name, TagGenerator generator) {
 			Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "fieldset_" + name);
+				put(Tag.Property.ID, "fieldset_" + name);
+				put(Tag.Property.CLASS, "fieldset frames_border");
 			}});
 
 			mainInput

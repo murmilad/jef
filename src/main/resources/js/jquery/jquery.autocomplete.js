@@ -74,7 +74,7 @@
         that.options = $.extend(true, {}, Autocomplete.defaults, options);
         that.classes = {
             selected: 'autocomplete-selected',
-            suggestion: 'autocomplete-suggestion'
+            suggestion: 'autocomplete-suggestion '
         };
         that.hint = null;
         that.hintValue = '';
@@ -111,7 +111,7 @@
             onSearchComplete: noop,
             onSearchError: noop,
             preserveInput: false,
-            containerClass: 'autocomplete-suggestions',
+            containerClass: 'autocomplete-suggestions frames_border background_color',
             tabDisabled: false,
             dataType: 'text',
             currentRequest: null,
@@ -144,7 +144,7 @@
         var pattern = '(' + utils.escapeRegExChars(currentValue) + ')';
 
         return suggestion.value
-            .replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>')
+            .replace(new RegExp(pattern, 'gi'), '<strong class="autocomplete-suggestions-strong first_text_color">$1<\/strong>')
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
@@ -153,7 +153,7 @@
     };
 
     function _formatGroup(suggestion, category) {
-        return '<div class="autocomplete-group">' + category + '</div>';
+        return '<div class="autocomplete-group first_text_color frames_border">' + category + '</div>';
     };
 
     Autocomplete.prototype = {
@@ -189,7 +189,7 @@
             // Deselect active element when mouse leaves suggestions container:
             container.on('mouseout.autocomplete', function () {
                 that.selectedIndex = -1;
-                container.children('.' + selected).removeClass(selected);
+                container.children('.' + selected).removeClass(selected + ' second_color');
             });
 
             // Listen for click event on suggestions list:
@@ -830,13 +830,13 @@
                 container = $(that.suggestionsContainer),
                 children = container.find('.' + that.classes.suggestion);
 
-            container.find('.' + selected).removeClass(selected);
+            container.find('.' + selected).removeClass(selected  + ' second_color');
 
             that.selectedIndex = index;
 
             if (that.selectedIndex !== -1 && children.length > that.selectedIndex) {
                 activeItem = children.get(that.selectedIndex);
-                $(activeItem).addClass(selected);
+                $(activeItem).addClass(selected + ' second_color');
                 return activeItem;
             }
 
@@ -869,7 +869,7 @@
             }
 
             if (that.selectedIndex === 0) {
-                $(that.suggestionsContainer).children('.' + that.classes.suggestion).first().removeClass(that.classes.selected);
+                $(that.suggestionsContainer).children('.' + that.classes.suggestion).first().removeClass(that.classes.selected  + ' second_color');
                 that.selectedIndex = -1;
                 that.ignoreValueChange = false;
                 that.el.val(that.currentValue);

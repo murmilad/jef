@@ -34,6 +34,7 @@ public class RadioSwitch extends List {
 		Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>() {
 			{
 				put(Tag.Property.ID, "fieldset_" + name);
+				put(Tag.Property.CLASS, "fieldset frames_border");
 			}
 		});
 

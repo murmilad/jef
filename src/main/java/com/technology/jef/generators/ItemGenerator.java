@@ -28,7 +28,7 @@ public class ItemGenerator extends TagGenerator {
 		
 		Tag element = dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "div_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
-		     put(Tag.Property.CLASS, "interface_element_horizontal");
+		     put(Tag.Property.CLASS, "div_interface_element_horizontal interface_element_horizontal");
 		     put(Tag.Property.STYLE, "position:relative;" + 
 		    		 (hasAttribute(TagGenerator.Attribute.HEIGHT) ? ("height: " +  getAttribute(TagGenerator.Attribute.HEIGHT) + ";") : "") 
 		    		 + ("true".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? "height: 45px;" : "") 
@@ -39,7 +39,7 @@ public class ItemGenerator extends TagGenerator {
 		element.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "message_box_wait_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
 			 put(Tag.Property.NAME, "message_box_wait");
-			 put(Tag.Property.CLASS, "message_box_loading");
+			 put(Tag.Property.CLASS, "message_box_loading background_color");
 			}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.NAME, "message_overlay_wait");
 			 put(Tag.Property.CLASS, "message_overlay_loading");

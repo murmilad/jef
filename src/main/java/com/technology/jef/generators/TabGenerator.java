@@ -7,6 +7,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
+import com.technology.jef.Tag.Type;
 import com.technology.jef.generators.TagGenerator.Handler;
 import com.technology.jef.widgets.Widget;
 
@@ -38,8 +39,21 @@ public class TabGenerator extends TagGenerator {
 		     put(Tag.Property.DATA_FORM_ID, (String) getAttribute(TagGenerator.Attribute.FORM_ID));
 		     put(Tag.Property.ID, (String) getAttribute(TagGenerator.Attribute.ID) + "_tab");
 		     put(Tag.Property.NAME, (String) getAttribute(TagGenerator.Attribute.ID) + "_tab");
-		     put(Tag.Property.CLASS, "tab");
+		     put(Tag.Property.CLASS, "tab second_color");
 		}});
+		tab.add(Type.SCRIPT, 	("					$( \"#${name}_tab\" ).hover(  \n" + 
+	"						function() {  \n" + 
+	"							$( this ).addClass( \"first_color\");  \n" + 
+	"							$( this ).removeClass( \"second_color\" );  \n" + 
+	"						}, function() {  \n" + 
+	"							if (!$( this ).hasClass( \"current\")) { \n" + 
+	"								$( this ).addClass( \"second_color\");  \n" + 
+	"								$( this ).removeClass( \"first_color\" );  \n" + 
+	"							} \n" + 
+	"						}  \n" + 
+	"					);  \n")
+				.replace("${name}", (String) getAttribute(TagGenerator.Attribute.ID))
+		);
 
 		addHandler(TagGenerator.Name.SCRIPT, new Handler() {
 			@Override
@@ -57,11 +71,11 @@ public class TabGenerator extends TagGenerator {
 	public void onEndElement() {
 		if (!hasOnClick) {
 			dom.add(Tag.Type.SCRIPT, 
-					("                        \n" + 
-			"					$(\"#${name}_tab\").on(\"click\", function(event){                       \n" + 
-			"						loadForm('${form}'); \n" + 
-			"					});                                \n" + 
-			"   \n")
+						("                         \n" + 
+	"					$(\"#${name}_tab\").on(\"click\", function(event){                        \n" + 
+	"						loadForm('${form}');  \n" + 
+	"					});                                 \n" + 
+	"					\n")
 			.replace("${form}", (String) getAttribute(TagGenerator.Attribute.FORM_ID))
 			.replace("${name}", (String) getAttribute(TagGenerator.Attribute.ID))
 			);

@@ -37,6 +37,7 @@ public class Find extends Widget {
 
 			Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "fieldset_" + name);
+				 put(Tag.Property.CLASS, "fieldset frames_border");
 			}});
 
 			Tag elementInput = mainInput
@@ -78,7 +79,7 @@ public class Find extends Widget {
 				 put(Tag.Property.ID, "button_" + name);
 				 put(Tag.Property.NAME, "button_" + name);
 				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("find"));
-				 put(Tag.Property.CLASS, "interface_button");
+				 put(Tag.Property.CLASS, "interface_button first_color second_text_color");
 				 put(Tag.Property.TYPE, "button");
 				 put(Tag.Property.STYLE, "margin-left:10px;margin-right:10px;");
 				 put(Tag.Property.CLICK, "onClickFindButton" + name + "(this);");

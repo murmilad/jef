@@ -68,10 +68,12 @@ public class WECompiler {
 				
 				
 				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("js"), new File(args[2]));
+				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("css"), new File(args[2].replaceAll("js[\\/]?$", "css")));
 			} else if (args.length < 4) {
 				compile(args[0], "src/html/", "src/html/", "ru_RU");
 
 				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("js"), new File("src/html/"));
+				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("css"), new File("src/html/"));
 			}
 		} catch (Exception e) {
 			showError(e.getMessage());

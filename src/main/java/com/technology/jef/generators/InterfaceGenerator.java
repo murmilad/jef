@@ -43,7 +43,13 @@ public class InterfaceGenerator extends TagGenerator {
 		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.REL, "stylesheet");
 		     put(Tag.Property.TYPE, "text/css");
-		     put(Tag.Property.HREF, "css/" +(!"".equals(styleCSS) ? styleCSS : "styles.css?v=2.12.1"));
+		     put(Tag.Property.HREF, "css/" + (!"".equals(styleCSS) ? styleCSS : "default_scheme.css"));
+		}});
+
+		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
+		     put(Tag.Property.REL, "stylesheet");
+		     put(Tag.Property.TYPE, "text/css");
+		     put(Tag.Property.HREF, "css/jef.css?v=1.1.2");
 		}});
 
 		head.add(Tag.Type.SCRIPT, ("	$.ajaxSetup({scriptCharset: \"utf-8\" , contentType: \"application/json; charset=utf-8\"});  \n" + 
@@ -143,11 +149,14 @@ public class InterfaceGenerator extends TagGenerator {
 		    put(Tag.Property.SRC, "js/jquery.formstyler.js?v=2.0.0");
 		}});
 		
-		Tag body = dom.add(Tag.Type.BODY);
+		Tag body = dom.add(Tag.Type.BODY, new HashMap<Tag.Property, String>(){{
+			 put(Tag.Property.CLASS, "body first_font background_color");
+		}});
 
 
 		Tag div = body.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			put(Tag.Property.ID, "wrapper");
+		    put(Tag.Property.CLASS, "wrapper work_area_width");
 		}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "main_content");
 		     put(Tag.Property.CLASS, "block");
@@ -165,46 +174,50 @@ public class InterfaceGenerator extends TagGenerator {
 		}
 
 		if (!"".equals((String) getAttribute(TagGenerator.Attribute.NAME))) {
-			div.add(Tag.Type.H1).add(Tag.Type.DIV, (String) getAttribute(TagGenerator.Attribute.NAME));
+			div.add(Tag.Type.H1, new HashMap<Tag.Property, String>(){{
+			     put(Tag.Property.CLASS, "block_h1 work_area_header_height work_area_header_font_size work_area_header_line_height");
+			}}).add(Tag.Type.DIV, (String) getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
+			     put(Tag.Property.CLASS, "block_h1_div work_area_header_height first_color");
+			}});
 		}
 		Tag content = div.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.CLASS, !"".equals((String) getAttribute(TagGenerator.Attribute.NAME)) ? "content" : "");
+		     put(Tag.Property.CLASS, !"".equals((String) getAttribute(TagGenerator.Attribute.NAME)) ? "content frames_border" : "");
 		     put(Tag.Property.STYLE, "padding: 5px;");
 		}});
 		// Добавляем сообщение об ошибке при выполнении запроса
 		content.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "background_overlay_error");
 			 put(Tag.Property.NAME, "background_overlay_error");
-			 put(Tag.Property.CLASS, "background_overlay_error");
+			 put(Tag.Property.CLASS, "background_overlay_error background_color");
 		}});
 
 		Tag errorBox = content.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "message_box_error");
 			 put(Tag.Property.NAME, "message_box_error");
-			 put(Tag.Property.CLASS, "message_box_error");
+			 put(Tag.Property.CLASS, "message_box_error error_border messages_color");
 		}});
 		
 		errorBox.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "message_header_error");
 			 put(Tag.Property.NAME, "message_header_error");
-			 put(Tag.Property.CLASS, "message_header_error");
+			 put(Tag.Property.CLASS, "message_header_error messages_color");
 		}});
 
 		errorBox.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "message_body_error");
 			 put(Tag.Property.NAME, "message_body_error");
-			 put(Tag.Property.CLASS, "message_body_error");
+			 put(Tag.Property.CLASS, "message_body_error messages_color");
 		}});
 		
 		errorBox.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "message_buttons_error");
 			 put(Tag.Property.NAME, "message_buttons_error");
-			 put(Tag.Property.CLASS, "message_buttons_error");
+			 put(Tag.Property.CLASS, "message_buttons_error messages_color");
 		}}).add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "message_error_button");
 			 put(Tag.Property.TYPE, "button");
 			 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("return"));
-			 put(Tag.Property.CLASS, "interface_button");
+			 put(Tag.Property.CLASS, "interface_button first_color second_text_color");
 			 put(Tag.Property.CLICK, "location.reload();");
 		}});
 		

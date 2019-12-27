@@ -37,14 +37,14 @@ public class FormGenerator extends TagGenerator {
 			body.getChildren().get(0).unshift(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "message_overlay_wait_form");
 				 put(Tag.Property.NAME, "message_overlay_wait_form");
-				 put(Tag.Property.CLASS, "background_overlay_form_loading");
+				 put(Tag.Property.CLASS, "background_overlay_form_loading background_color");
 				 put(Tag.Property.STYLE, "display: block;");
 			}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "message_box_overlay_wait_form");
 				 put(Tag.Property.CLASS, "message_overlay_form_loading");
 			}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "message_box_wait_form");
-				 put(Tag.Property.CLASS, "message_box_form_loading");
+				 put(Tag.Property.CLASS, "message_box_form_loading messages_border messages_color");
 			}});
 		}
 
@@ -175,12 +175,10 @@ public class FormGenerator extends TagGenerator {
 	public void onEndElement() {
 		//Добавляем кнопки сохранения формы и перехода
 		
-		Tag buttons = dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.CLASS, "interface_buttons");
-		}});
+		Tag buttons = dom.add(Tag.Type.DIV);
 
 		Tag buttonsRow = buttons.add(Tag.Type.TABLE, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.CLASS, "interface_buttons");
+		     put(Tag.Property.CLASS, "interface_buttons_frame");
 		}}).add(Tag.Type.TR, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "tr_submit_button");
 		     put(Tag.Property.CLASS, "buttons");
@@ -188,9 +186,11 @@ public class FormGenerator extends TagGenerator {
 		
 		buttonsRow.add(Tag.Type.TD, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ALIGN, "left");
+		     put(Tag.Property.CLASS, "block_td");
 		}});
 		buttonsRow.add(Tag.Type.TD, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ALIGN, "right");
+		     put(Tag.Property.CLASS, "block_td");
 		}});
 		//TODO продумать динамическое указание readonly для кнопок перехода
 
@@ -199,7 +199,7 @@ public class FormGenerator extends TagGenerator {
 		     put(Tag.Property.NAME, "submit_button");
 		     put(Tag.Property.TYPE, "button");
 		     put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("next"));
-		     put(Tag.Property.CLASS, "submit_button");
+		     put(Tag.Property.CLASS, "submit_button buttons_height buttons_width");
 		     put(Tag.Property.CLICK, "$(\"#api_action\").val(\"save\");");
 		}});
 
@@ -234,7 +234,7 @@ public class FormGenerator extends TagGenerator {
 	"    					$(\"#message_box_overlay_wait_form\").show();                         \n" +
 	"    					$(\"#message_box_wait_form\").show();                         \n" +
 	"						$(\"[id^='visible_']\").each(function(index, item){            \n" + 
-	"							$(this).parent().children('').removeClass(\"error\");            \n" + 
+	"							$(this).parent().children('').removeClass(\"error error_color\");            \n" + 
 	"						});            \n" + 
 	" 						ajax({                         \n" + 
 	"					       	url: '${service}set',                         \n" + 
@@ -253,7 +253,7 @@ public class FormGenerator extends TagGenerator {
 	"										var group = obj.group;      \n" + 
 	"										var errors = data.errors.parametersErrors[name];       \n" + 
 	"										$.each( errors, function(index, error) {                \n" + 
-	"											$(\"#visible_\" + name).parent().children('').addClass(\"error\");;                \n" + 
+	"											$(\"#visible_\" + name).parent().children('').addClass(\"error error_color\");                \n" + 
 	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                 \n" + 
 	"											hasErrors = true;           \n" + 
 	"										});             \n" + 
@@ -291,7 +291,7 @@ public class FormGenerator extends TagGenerator {
 			     put(Tag.Property.NAME, "api_back_button");
 			     put(Tag.Property.TYPE, "button");
 			     put(Tag.Property.VALUE,  CurrentLocale.getInstance().getTextSource().getString("back"));
-			     put(Tag.Property.CLASS, "submit_button");
+			     put(Tag.Property.CLASS, "submit_button buttons_height buttons_width");
 			     put(Tag.Property.CLICK, "$(\"#api_action\").val(\"back\");");
 			}});
 		}
@@ -518,7 +518,7 @@ public class FormGenerator extends TagGenerator {
 	"										var group = obj.group;          \n" + 
 	"										var errors = data.errors.parametersErrors[name];           \n" + 
 	"										$.each( errors, function(index, error) {                    \n" + 
-	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error\");                    \n" + 
+	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error error_color\");                    \n" + 
 	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                     \n" + 
 	"											hasErrors = true;               \n" + 
 	"										});                 \n" + 
@@ -559,7 +559,6 @@ public class FormGenerator extends TagGenerator {
 		dom.add(Tag.Type.SCRIPT,			( "\n" +
 	" 		var formsWaitedToLoad = 0;     \n" + 
 	"		$( document ).ready(function() {     \n" + 
-	"				$(\"#background_overlay_wait_form\").show();     \n" + 
 	"				$(\"#message_box_wait_form\").show();     \n" + 
 	"				getJSON( \"${service}\" + \"check\", {no_cache: Math.floor(Math.random() * 10000)}, function( data ) {});  \n" + 
 	"				${service_call_js}		});    \n")

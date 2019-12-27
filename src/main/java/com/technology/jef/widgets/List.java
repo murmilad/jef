@@ -35,7 +35,8 @@ public class List extends Widget {
 	   */
 		public Tag assembleTag(String name, TagGenerator generator) {
 			Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "fieldset_" + name);
+				put(Tag.Property.ID, "fieldset_" + name);
+				put(Tag.Property.CLASS, "fieldset frames_border");
 			}});
 
 			Tag elementInput = mainInput
@@ -54,6 +55,7 @@ public class List extends Widget {
 						put(Tag.Property.ID, "visible_" + name);
 						put(Tag.Property.NAME, "visible_" + name);
 						put(Tag.Property.STYLE, "width: 100%;");
+						put(Tag.Property.CLASS, "select select_height frames_border second_color widgets_background_color first_text_color second_font");
 					}});
 			
 			if (!"".equals(generator.getAttribute(TagGenerator.Attribute.HIDE_IF_EMPTY))) {
@@ -123,6 +125,8 @@ public class List extends Widget {
 			"            				$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
 			"							$(\"#${parrent_name}\").trigger('lock');         \n" + 
 			"							$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");           \n" + 
+			"							$(\"#visible_${parrent_name}\").addClass(\"second_color\");        \n" + 
+			"							$(\"#visible_${parrent_name}\").removeClass(\"first_text_color\");        \n" + 
 			"							$(\"#visible_${parrent_name}\").trigger('refresh');           \n" + 
 			"							if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {           \n" + 
 			"								ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;           \n" + 
@@ -175,6 +179,7 @@ public class List extends Widget {
 			"									if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {           \n" + 
 			"										if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {     \n" + 
 			"											$(\"#visible_${parrent_name}\").removeAttr('disabled');     \n" + 
+			"											$(\"#visible_${parrent_name}\").removeClass(\"second_color\");        \n" + 
 			"										}     \n" + 
 			"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');           \n" + 
 			"										$(\"#background_overlay_wait_${parrent_name}\").hide();           \n" + 
@@ -254,6 +259,8 @@ public class List extends Widget {
 							"			$(\"#message_box_wait_${name}\").show();        \n" + 
 							"			$(\"#${name}\").trigger('lock');         \n" + 
 							"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");        \n" + 
+							"			$(\"#visible_${name}\").addClass(\"second_color\");        \n" + 
+
 							"			ajax({    \n" + 
 							"					url: \"${service}\" + \"get_list\",   \n" + 
 							"					data: { \n" + 
@@ -269,6 +276,7 @@ public class List extends Widget {
 							"					$(\"#visible_${name}\").empty();        \n" + 
 							"					${list_item_js}        \n" + 
 							"					$(\"#visible_${name}\").removeAttr('disabled');        \n" + 
+							"					$(\"#visible_${name}\").removeClass(\"second_color\");        \n" + 
 							"					$(\"#background_overlay_wait_${name}\").hide();        \n" + 
 							"					$(\"#message_box_wait_${name}\").hide();        \n" + 
 							"					$(\"#${name}\").trigger('unlock');         \n" + 

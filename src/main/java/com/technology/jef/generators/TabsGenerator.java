@@ -42,7 +42,7 @@ public class TabsGenerator extends TagGenerator {
 		form.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "message_box_wait_tab");
 			 put(Tag.Property.NAME, "message_box_wait");
-			 put(Tag.Property.CLASS, "message_box_loading");
+			 put(Tag.Property.CLASS, "message_box_loading background_color");
 			 put(Tag.Property.STYLE, "display: none;");
 		}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.NAME, "message_overlay_wait");
@@ -74,8 +74,10 @@ public class TabsGenerator extends TagGenerator {
 	"				});    \n" + 
 	"				function loadForm(formId) {    \n" + 
 	"			            $(\"#message_box_wait_tab\").show();                                    \n" + 
-	"						$('div.tab').removeClass('current');   \n" + 
-	"						$( 'div[data-form-id=\"'+formId+'\"]' ).addClass('current');   \n" + 
+	"						$('.tab').removeClass('current first_color');   \n" + 
+	"						$('.tab').addClass('second_color');   \n" + 
+	"						$( 'div[data-form-id=\"'+formId+'\"]' ).removeClass('second_color');   \n" + 
+	"						$( 'div[data-form-id=\"'+formId+'\"]' ).addClass('current first_color');   \n" + 
 	"					$.ajax({         \n" + 
 	"				       	url: formId + '.html?no_cache=' + Math.floor(Math.random() * 10000),                                 \n" + 
 	"						data: uri_params,                                \n" + 

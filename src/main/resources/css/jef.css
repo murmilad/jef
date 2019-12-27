@@ -1,0 +1,318 @@
+/* Interface */
+
+* {
+    margin: 0;
+}
+
+/* Groups */
+.fieldset {
+    padding: 17px;
+}
+
+/* Main body */
+.main_content{
+}
+
+.wrapper {
+    margin: 0 auto;
+    position: relative;
+}
+
+.body {
+}
+
+/* Elements */
+
+.error {
+}
+
+.div_interface_element_horizontal {
+	float: left;
+}
+
+.interface_element_horizontal {
+	vertical-align: middle;
+}
+
+.block{
+   
+}
+
+.block_td {
+	
+}
+
+.block_h1{
+    color: #FFF;
+    text-transform: uppercase;
+    text-shadow: 0 1px #500;
+}
+
+.block_h1_div {
+    display: block;
+    text-align: center;
+    padding: 0 13px;
+}
+
+/* Buttons */
+.interface_buttons_frame {  
+	width:100%;
+}
+
+.interface_button{
+	margin:0px;
+    border: none;
+    padding:5px;
+}
+
+
+.submit_button {
+    margin-top: 20px;
+    padding: 0;
+    border: none;
+}
+
+.interface_del_button{  
+    margin-top: 20px;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.interface_add_button{  
+    margin-top: 20px;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.interface_expand {
+	
+}
+
+/* Autocomplete/Combobox */
+.content {
+    padding: 17px;
+}
+
+.combobox { 
+  /* "relative" and "inline-block" (or just "block") are needed
+     here so that "absolute" works correctly in children */
+  position: relative;
+}
+
+.downarrow {
+  /* ▾ Outside normal flow, relative to container */
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 1px;
+  width: 1.25em;
+  
+  cursor: default;
+  nav-index: -1; /* nonfunctional in most browsers */
+
+  border-width: 0px;          /* disable by default */
+  border-style: inherit; /* copy parent border */
+  border-color: inherit; /* copy parent border */
+}
+.downarrow::before {
+  text-align: center;
+  
+  /* vertical centering trick */
+  position: relative;
+  top: 50%;
+  display: block; /* transform requires block/inline-block */
+  transform: translateY(-50%);
+  content: "\25BC";
+}
+
+.autocomplete-suggestions {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;cursor: default;overflow: auto;}
+.autocomplete-suggestion { padding: 2px 9px; white-space: nowrap; overflow: hidden; font-size: 14px;}
+.autocomplete-no-suggestion { padding: 2px 5px;}
+.autocomplete-selected {  }
+.autocomplete-suggestions-strong { font-weight: bold; }
+.autocomplete-group { padding: 2px 5px; font-weight: bold; font-size: 16px; display: block; }
+
+
+.select {
+   text-overflow: ellipsis;
+   white-space: nowrap;
+}
+
+/* Popup */
+
+.popup {
+    padding: 20px;
+    height: 85%;
+    left: 25%;
+    margin-left: -50px;
+    margin-top: -50px;
+    position: fixed;
+    top: 10%;
+    width: 50%;
+    z-index: 9999999;
+    overflow: scroll;
+}
+.popup h3{
+	text-align:center;
+}
+.popup #column1{
+	float:left;
+	width:50%;
+}
+.popup #column2{
+	float:right;
+	width:50%;
+}
+.popup  .popuplist_header u{
+	font-weight:bold;
+	cursor: pointer;
+	margin-bottom:10px;
+}
+
+.popup_close{
+	float:right;
+	cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 6px;
+}
+
+/* Message boxes */
+
+.background_overlay_wait {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 105;
+  display:none;
+}
+
+.message_box_wait{
+    width: 470px;
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -9em;
+    margin-left: -20em;
+    padding: 20px;
+    z-index: 106;
+    display: none;
+}
+.message_overlay_wait{
+    text-align: center;
+    vertical-align: middle;
+    font-size: 18px;
+}
+
+.background_overlay_error {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 107;
+  display:none;
+  text-align: center;
+  vertical-align: middle;
+  
+}
+.message_box_error{
+    position: fixed;
+    top: 10%;
+    left: 20%;
+    padding: 20px;
+    z-index: 108;
+    display: none;
+}
+.message_header_error{
+	text-align: center;
+    vertical-align: middle;
+    font-size: 18px;
+}
+.message_buttons_error{
+	text-align: left;
+    vertical-align: middle;
+}
+
+.message_body_error{
+	margin: 5px;
+	overflow: auto;
+    max-width: 770px;
+    max-height: 730px;
+}
+
+.message_box_loading{
+    position: absolute;
+    padding: 2px;
+    width: 100%;
+    height: 100%;
+    z-index: 101;
+    display: none;
+}
+.message_overlay_loading{
+    font-size: 18px;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+.background_overlay_form_loading{
+    position: absolute;
+    padding: 2px;
+    width: 100%;
+    height: 100%;
+    z-index: 102;
+    display: none;
+}
+
+.message_overlay_form_loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 103;
+}
+
+.message_box_form_loading{
+    width: 470px;
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -9em;
+    margin-left: -20em;
+    padding: 20px;
+    z-index: 104;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 18px;
+}
+
+/* navigation */
+
+.tabs_container {
+    display: table;	
+}
+
+.tab {
+    display: block;
+    float: left;
+    vertical-align: middle;
+    padding: 10px;
+    margin: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+div.current {
+	
+}
+
+

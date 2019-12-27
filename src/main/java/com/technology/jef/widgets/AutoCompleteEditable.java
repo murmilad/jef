@@ -193,7 +193,7 @@ public class AutoCompleteEditable extends Widget {
 			span.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.TABINDEX, "-1");
 				 put(Tag.Property.ID, "downarrow__" + name);
-				 put(Tag.Property.CLASS, "downarrow");
+				 put(Tag.Property.CLASS, "downarrow downarrow_size downarrow_color");
 				 put(Tag.Property.CLICK, "if ($(\"[data-field='${name}']:visible\").length === 0) {$('#visible_${name}').focus();} ".replace("${name}", name));
 			}});
 			

@@ -32,7 +32,9 @@ public class Image extends Widget {
 		public Tag assembleTag(String name, TagGenerator generator) {
 			
 
-			Tag fieldset = parrent.add(Tag.Type.FIELDSET);
+			Tag fieldset = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
+				put(Tag.Property.CLASS, "fieldset frames_border");
+			}});
 			
 			fieldset.add(Tag.Type.LEGEND).add(Tag.Type.LABEL, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.FOR, name);
