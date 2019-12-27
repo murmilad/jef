@@ -170,9 +170,9 @@ public class PopUpList extends Widget {
 	"									var bold = val.id==previous_id;    \n" + 
 	"									var values = val.name.split(\"${value_separator}\");  \n" + 
 	"									if (i % 2 == 0) {            \n" + 
-	"										$(\"#column1\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u  class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</span>');       \n" + 
+	"										$(\"#column1\").append('<br><br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u  class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');       \n" + 
 	"									}else{       \n" + 
-	"										$(\"#column2\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u  class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</span>');       \n" + 
+	"										$(\"#column2\").append('<br><br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u  class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');       \n" + 
 	"									}            \n" + 
 	"							  	});            \n" + 
 	"								if (i==0){            \n" + 
@@ -219,6 +219,13 @@ public class PopUpList extends Widget {
 	"								//$(\"#visible_${child_name}\").trigger('refresh');            \n" + 
 	"								// показываем фон            \n" + 
 	"								$(\".overlay\").show();            \n" + 
+	"								$('.popuplist_header').hover( \n" + 
+	"									function() { \n" + 
+	"										$( this ).addClass( \"second_color\" ); \n" + 
+	"									}, function() { \n" + 
+	"										$( this ).removeClass( \"second_color\" ); \n" + 
+	"									} \n" + 
+	"								);\n" +
 	"								// вешаем обработчик динамически на click на каждый элемент списка popuplist_header            \n" + 
 	"								$(document).one(\"click\", \".popuplist_header\", function() {            \n" + 
 	"									 // из id извлекаем значение и выводим            \n" + 
@@ -312,9 +319,9 @@ public class PopUpList extends Widget {
 					"									var bold = val.id==previous_id;   \n" + 
 					"									var values = val.name.split(\"${value_separator}\"); \n" + 
 					"									if (i % 2 == 0) {           \n" + 
-					"										$(\"#column1\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</span>');      \n" + 
+					"										$(\"#column1\").append('<br><br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');      \n" + 
 					"									}else{      \n" + 
-					"										$(\"#column2\").append('<br><br><span class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</span>');      \n" + 
+					"										$(\"#column2\").append('<br><br><div class=\"popuplist_header\" id=\"popupelementid_'+val.id+'\"><u class=\"url_color\">'+(bold?'<b>':'')+values[0]+(bold?'</b>':'') + '</u>' + (values.length > 1 ? values[1] : '') +'</div>');      \n" + 
 					"									}           \n" + 
 					"							  	});           \n" + 
 					"								if (i==0){           \n" + 

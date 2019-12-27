@@ -70,7 +70,7 @@ public class WECompiler {
 				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("js"), new File(args[2]));
 
 				File newDestDir = new File(args[2].replaceAll("js[\\/]?$", "css"));
-				if (!newDestDir.exists() && newDestDir.mkdir()) {
+				if (newDestDir.exists() || newDestDir.mkdir()) {
 					FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("css"), newDestDir);
 				}
 			} else if (args.length < 4) {
