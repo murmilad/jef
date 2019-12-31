@@ -76,7 +76,7 @@ public class AutoCompleteAddress extends Widget {
 	"					$(\"#visible_\"+\"${name}\").attr('title', '${couldnt_find}');                            \n" + 
 	"					if (\"visible_${name}\".indexOf('house')!==-1){ // номер дома без fias_code - получаем общегородской индекс                            \n" + 
 	"						ajax({                            \n" + 
-	"					      	      	url: '${service}get_list_interactive',                             \n" + 
+	"					      	      	url: '${service}get_list${interactive}',                             \n" + 
 	"							data: {                             \n" + 
 	"								parameter_name: '${child_name_api}',                             \n" + 
 	"								form_api: '${api}',                             \n" + 
@@ -103,7 +103,7 @@ public class AutoCompleteAddress extends Widget {
 	"				});              \n" + 
 	"			}             \n" + 
 	"			$('#visible_${name}').autocomplete({        \n" + 
-	"					serviceUrl: '${service}get_list_interactive',        \n" + 
+	"					serviceUrl: '${service}get_list${interactive}',        \n" + 
 	"					type: 'POST',        \n" + 
 	"					paramName:'value_1',// основной параметр для поиска                          \n" + 
 	"					zIndex:99,                                 \n" + 
@@ -237,6 +237,7 @@ public class AutoCompleteAddress extends Widget {
 						.replace("${name_api}", nameAPI)
 						.replace("${service}", (String) generator.getAttribute(TagGenerator.Attribute.SERVICE))
 						.replace("${child_name_api}", (String) generator.getAttribute(TagGenerator.Attribute.ID))
+						.replace("${interactive}", ajax_parrent_list.length > 0 ? "_interactive" : "")
 
 			);
 
