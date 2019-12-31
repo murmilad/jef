@@ -36,7 +36,7 @@ public class AutoCompleteEditable extends Widget {
 				
 				return 		(" \n" + 
 	"	$('#visible_${child_name}').val('---');   \n" + 
-	"	$('#${child_name}').val('');   \n" + 
+	"	$('input#${child_name}').val('');   \n" + 
 	" ");
 			}
 
@@ -98,7 +98,7 @@ public class AutoCompleteEditable extends Widget {
 	"					},  \n" + 
 	"					onSelect: function (suggestion) {                      \n" + 
 	"						// ставим выбранное значение в hidden поле                      \n" + 
-	"						$('#${name}').val(suggestion.data);      \n" + 
+	"						$('input#${name}').val(suggestion.data);      \n" + 
 	"						$('#visible_${name}').val(suggestion.name).change();                      \n" + 
 	"						$('#visible_${name}').removeClass('warning');                      \n" + 
 	"						$('#visible_${name}').attr('title', '');                      \n" + 
@@ -107,7 +107,7 @@ public class AutoCompleteEditable extends Widget {
 	"					onSearchError: function (query, jqXHR, textStatus, errorThrown) {    \n" + 
 	"						$('#background_overlay_wait_${name}').hide();    \n" + 
 	"						$('#message_box_wait_${name}').hide();    \n" + 
-	"						$(\"#${name}\").trigger('unlock');           \n" + 
+	"						$(\"input#${name}\").trigger('unlock');           \n" + 
 	"						showError(\"Error: \" + errorThrown, jqXHR.responseText + 'Parameters:' + query + '<br><br>');      \n" + 
 	"					},    \n" + 
 	"					transformResult: function(response) {       \n" + 
@@ -134,15 +134,15 @@ public class AutoCompleteEditable extends Widget {
 	"						params['parameters'] += '${parameter_separator}' + ${value_js};          \n" + 
 	"						$('#background_overlay_wait_${name}').show();      \n" + 
 	"						$('#message_box_wait_${name}').show();      \n" + 
-	"						$(\"#${name}\").trigger('lock');           \n" + 
+	"						$(\"input#${name}\").trigger('lock');           \n" + 
 	"					},                      \n" + 
 	"					onSearchComplete: function (query, suggestions) {      \n" + 
 	"						$('#background_overlay_wait_${name}').hide();      \n" + 
 	"						$('#message_box_wait_${name}').hide();      \n" + 
-	"						$(\"#${name}\").trigger('unlock');           \n" + 
+	"						$(\"input#${name}\").trigger('unlock');           \n" + 
 	"						if (suggestions.length==0){      \n" + 
 	"							// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение      \n" + 
-	"							$('#${name}').val('');         \n" + 
+	"							$('input#${name}').val('');         \n" + 
 	"						}      \n" + 
 	"					} ,    \n" + 
 	"					formatResult:function (suggestion, currentValue) {            \n" + 
@@ -227,10 +227,10 @@ public class AutoCompleteEditable extends Widget {
 				return  		("  \n" + 
 	"	if (data.value != '') { \n" + 
 	"		$('#visible_${child_name}').val(data.name).blur();  \n" + 
-	"		$('#${child_name}').val(data.value);  \n" + 
+	"		$('input#${child_name}').val(data.value);  \n" + 
 	"	} else { \n" + 
 	"		$('#visible_${child_name}').val('---').blur();  \n" + 
-	"		$('#${child_name}').val('');  \n" + 
+	"		$('input#${child_name}').val('');  \n" + 
 	"	} \n")
 				;
 			}
@@ -259,7 +259,7 @@ public class AutoCompleteEditable extends Widget {
 					
 					String bodyJS =
 							("		function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){      \n" + 
-							"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
+							"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 							"		}      \n")
 					.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 					.replace("${child_name}", name);
@@ -292,7 +292,7 @@ public class AutoCompleteEditable extends Widget {
 					
 					String bodyJS =
 							("		function onChange${parrent_name}_${child_name}_ct_ajax_value(${parrent_name}List){      \n" + 
-							"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
+							"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 							"		}      \n")
 					.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 					.replace("${child_name}", name);

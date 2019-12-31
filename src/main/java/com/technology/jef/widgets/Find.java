@@ -103,14 +103,14 @@ public class Find extends Widget {
 			String valueJS = "";
 			String nameAPI = name.replace(prefix, "");
 
-			valueJS = valueJS.concat("&value_1=\" + encodeURIComponent($(\"#${parrent_name}${prefix}\").val()) + \"&parrent_1=${parrent_name}"
+			valueJS = valueJS.concat("&value_1=\" + encodeURIComponent($(\"input#${parrent_name}${prefix}\").val()) + \"&parrent_1=${parrent_name}"
 					.replace("${parrent_name}", nameAPI)
 					.replace("${prefix}", prefix)
 			);
 			String[] ajax_parrent_list = (String[])generator.getAttribute(TagGenerator.Attribute.AJAX_VALUE_PARRENT);
 
 			for (Integer i = 1; i <= ajax_parrent_list.length; i++) {
-				valueJS = valueJS.concat("&value_${index}=\" + encodeURIComponent($(\"#${parrent_name}${prefix}\").val()) + \"&parrent_${index}=${parrent_name}"
+				valueJS = valueJS.concat("&value_${index}=\" + encodeURIComponent($(\"input#${parrent_name}${prefix}\").val()) + \"&parrent_${index}=${parrent_name}"
 						.replace("${index}", String.valueOf(i+1))
 						.replace("${parrent_name}", ajax_parrent_list[i-1])
 						.replace("${prefix}", prefix)
@@ -118,7 +118,7 @@ public class Find extends Widget {
 			}
 
 			String ajaxSearchJS = 
-				("					$(\"#${name}\").on( \"clean_find_data\", function() { \n" + 
+				("					$(\"input#${name}\").on( \"clean_find_data\", function() { \n" + 
 				"						$(\"#search_result_${name}\") \n" + 
 				"							.empty() \n" + 
 				"							.val(\"\") \n" + 

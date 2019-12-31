@@ -65,7 +65,7 @@ public class Label extends Widget {
 			
 			return 
 					"	$('#visible_${child_name}').html(data.value); \n" +
-					"	$('#${child_name}').val(data.value); \n" + 
+					"	$('input#${child_name}').val(data.value); \n" + 
 					"	$('#hidden_${child_name}').val(data.value).change(); \n";
 		}
 
@@ -81,7 +81,7 @@ public class Label extends Widget {
 			
 			return
 					"	$('#visible_${child_name}').html(''); \n" +
-					"	$('#${child_name}').val(''); \n" + 
+					"	$('input#${child_name}').val(''); \n" + 
 					"	$('#hidden_${child_name}').val('').change(); \n";
 		}
 

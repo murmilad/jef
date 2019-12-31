@@ -495,21 +495,21 @@ public class FormGenerator extends TagGenerator {
 	"						$.each(data.parameters, function(key, parameter) {                \n" + 
 	"							if (parameter.attributes.READONLY) {                         \n" + 
 	"				 				$('#visible_' + key + groupPrefix).prop( \"disabled\", true);                    \n" + 
-	"				 				$('#' + key + groupPrefix).attr( \"data-disabled\", true);                    \n" + 
+	"				 				$('input#' + key + groupPrefix).attr( \"data-disabled\", true);                    \n" + 
 	"					 			$(\"#tr_\" + key + groupPrefix).css('color', 'lightgray');                    \n" + 
 	"							};                   \n" + 
 	"							if (parameter.attributes.INVISIBLE) {                         \n" + 
-	"				 				$('#' + key + groupPrefix).attr( \"data-invisible\", true);                    \n" + 
+	"				 				$('input#' + key + groupPrefix).attr( \"data-invisible\", true);                    \n" + 
 	"					 			$(\"#tr_\" + key + groupPrefix).css('display', 'none');                    \n" + 
 	"							};                   \n" + 
 	"						});                        \n" + 
 	"						$.each(data.parameters, function(key, parameter) {                         \n" + 
 	"							var valueArray = parameter.value.split('${value_separator}');                        \n" + 
-	"							$(\"#\" + key + groupPrefix).val(valueArray[0]);                         \n" + 
+	"							$(\"input#\" + key + groupPrefix).val(valueArray[0]);                         \n" + 
 	"						});                        \n" + 
 	"						$.each(data.parameters, function(key, parameter) {                         \n" + 
 	"							var valueArray = parameter.value.split('${value_separator}');                        \n" + 
-	"							$(\"#\" + key + groupPrefix).trigger('setValueOnLoad',[{value:valueArray[0], name:(valueArray.length > 1 ? valueArray[1] : '')}]);                \n" + 
+	"							$(\"input#\" + key + groupPrefix).trigger('setValueOnLoad',[{value:valueArray[0], name:(valueArray.length > 1 ? valueArray[1] : '')}]);                \n" + 
 	"						});                 \n" + 
 	"								var hasErrors = false;       \n" + 
 	"								if (data.errors.parametersErrors != null) {                \n" + 

@@ -31,7 +31,7 @@ public class CheckBoxList extends RadioSwitch {
 			
 			return 					("			$(\"#background_overlay_wait_${name}\").show();          \n" + 
 	"			$(\"#message_box_wait_${name}\").show();          \n" + 
-	"			$(\"#${name}\").trigger('lock');         \n" + 
+	"			$(\"#input${name}\").trigger('lock');         \n" + 
 	"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");          \n" + 
 	"			ajax({    \n" + 
 	"					url: \"${service}\" + \"get_list\",   \n" + 
@@ -49,7 +49,7 @@ public class CheckBoxList extends RadioSwitch {
 	"					$(\"#visible_${name}\").removeAttr('disabled');          \n" + 
 	"					$(\"#background_overlay_wait_${name}\").hide();          \n" + 
 	"					$(\"#message_box_wait_${name}\").hide();          \n" + 
-	"					$(\"#${name}\").trigger('unlock');         \n" + 
+	"					$(\"input#${name}\").trigger('unlock');         \n" + 
 	"					$(\"#visible_${name}\").trigger('refresh');          \n" + 
 	"					$(\"#visible_${name}\").unbind(\"focusin\");         \n" + 
 	"					$(\"#visible_${name}\").find('input').styler({});    \n" + 
@@ -95,11 +95,11 @@ public class CheckBoxList extends RadioSwitch {
 		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
 			element.add(Tag.Type.SCRIPT, 	(" \n" + 
 					"	function fill_${name}_checks() { \n" + 
-					"		$(\"#${name}\").val(\"\"); \n" + 
+					"		$(\"input#${name}\").val(\"\"); \n" + 
 					"		$(\"#visible_${name}\").trigger('refresh'); \n" +
 					"		$(\":input[name^='visible_${name}']\").each( function(index, element){ \n" + 
 					"			if ($( this ).prop(\"checked\")){ \n" + 
-					"				$(\"#${name}\").val($(\"#${name}\").val() + ($(\"#${name}\").val()? \"|\" : \"\") + $( this ).val()); \n" + 
+					"				$(\"input#${name}\").val($(\"input#${name}\").val() + ($(\"input#${name}\").val()? \"|\" : \"\") + $( this ).val()); \n" + 
 					"			} \n" + 
 					"		}); \n" + 
 					"	} \n")
@@ -170,7 +170,7 @@ public class CheckBoxList extends RadioSwitch {
 			public String getSetValueJS() {
 				return  				("	if (isLoading) {   \n" + 
 	"		$(\"#visible_${child_name}\").bind('setValue', function(){     \n" + 
-	"			$('#${child_name}').val(data.value);    \n" + 
+	"			$('input#${child_name}').val(data.value);    \n" + 
 	"			data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {   \n" + 
 	"				$('#visible_${child_name}' + currentValue).prop('checked', true);     \n" + 
 	"				$('#visible_${child_name}' + currentValue).change();    \n" + 
@@ -179,7 +179,7 @@ public class CheckBoxList extends RadioSwitch {
 	"			});   \n" + 
 	"		});     \n" + 
 	"	} else {  \n" + 
-	"	$('#${child_name}').val(data.value);    \n" + 
+	"	$('input#${child_name}').val(data.value);    \n" + 
 	"		data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {   \n" + 
 	"			$('#visible_${child_name}' + currentValue).prop('checked', true);     \n" + 
 	"			$('#visible_${child_name}' + currentValue).change();    \n" + 

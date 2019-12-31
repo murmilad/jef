@@ -113,7 +113,7 @@ public class List extends Widget {
 			String bodyJS =
 					("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){           \n" + 
 			"						var valueJS = ${value_js}; \n" + 
-			"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
+			"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 			"						if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)){ return };           \n" + 
 			"						$(\"#visible_${child_name}\").unbind(\"focusin\");          \n" + 
 			"						$(\"#visible_${child_name}\").focusin( function() {          \n" + 
@@ -123,7 +123,7 @@ public class List extends Widget {
 			"							$(\"#visible_${child_name}\").trigger('refresh');           \n" + 
 			"							$(\"#background_overlay_wait_${parrent_name}\").show();           \n" + 
 			"            				$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
-			"							$(\"#${parrent_name}\").trigger('lock');         \n" + 
+			"							$(\"input#${parrent_name}\").trigger('lock');         \n" + 
 			"							$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");           \n" + 
 			"							$(\"#visible_${parrent_name}\").addClass(\"second_color\");        \n" + 
 			"							$(\"#visible_${parrent_name}\").removeClass(\"first_text_color\");        \n" + 
@@ -156,10 +156,10 @@ public class List extends Widget {
 			"										if (\"${hide_if_empty}\"){           \n" + 
 			"											${child_name}.css(\"display\", 'none');           \n" + 
 			"											$('#visible_${child_name}').val('');           \n" + 
-			"											$('#${child_name}').val('');           \n" + 
+			"											$('input#${child_name}').val('');           \n" + 
 			"											$('#is_empty_${child_name}').val(1);           \n" + 
 			"										}else{           \n" + 
-			"											if ($('#${child_name}').attr('invisible') == 'false') {           \n" + 
+			"											if ($('input#${child_name}').attr('invisible') == 'false') {           \n" + 
 			"												if ((document.getElementById && !document.all) || window.opera)           \n" + 
 			"													${child_name}.css(\"display\",'table-row');           \n" + 
 			"												else           \n" + 
@@ -167,7 +167,7 @@ public class List extends Widget {
 			"											}           \n" + 
 			"										}           \n" + 
 			"									}else{           \n" + 
-			"										if ($('#${child_name}').attr('invisible') == 'false') {           \n" + 
+			"										if ($('input#${child_name}').attr('invisible') == 'false') {           \n" + 
 			"											if ((document.getElementById && !document.all) || window.opera)           \n" + 
 			"												${child_name}.css(\"display\",'table-row');           \n" + 
 			"											else           \n" + 
@@ -184,7 +184,7 @@ public class List extends Widget {
 			"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');           \n" + 
 			"										$(\"#background_overlay_wait_${parrent_name}\").hide();           \n" + 
 			"					      	      		$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
-			"										$(\"#${parrent_name}\").trigger('unlock');         \n" + 
+			"										$(\"input#${parrent_name}\").trigger('unlock');         \n" + 
 			"									}           \n" + 
 			"									--ajax_is_child_blocked${prefix}[\"${child_name}\"];    \n" + 
 			"									if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {    \n" + 
@@ -257,7 +257,7 @@ public class List extends Widget {
 			return 			("	$(\"#visible_${name}\").focusin( function() {     \n" + 
 							"			$(\"#background_overlay_wait_${name}\").show();        \n" + 
 							"			$(\"#message_box_wait_${name}\").show();        \n" + 
-							"			$(\"#${name}\").trigger('lock');         \n" + 
+							"			$(\"input#${name}\").trigger('lock');         \n" + 
 							"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");        \n" + 
 							"			$(\"#visible_${name}\").addClass(\"second_color\");        \n" + 
 
@@ -279,12 +279,12 @@ public class List extends Widget {
 							"					$(\"#visible_${name}\").removeClass(\"second_color\");        \n" + 
 							"					$(\"#background_overlay_wait_${name}\").hide();        \n" + 
 							"					$(\"#message_box_wait_${name}\").hide();        \n" + 
-							"					$(\"#${name}\").trigger('unlock');         \n" + 
+							"					$(\"input#${name}\").trigger('unlock');         \n" + 
 							"					$(\"#visible_${name}\").trigger('refresh');        \n" + 
 							"					$(\"#visible_${name}\").unbind(\"focusin\");       \n" + 
 							"					if (value) {    \n" + 
 							"						$(\"#visible_${name}\").val(value);    \n" + 
-							"						$(\"#${name}\").val(value);    \n" + 
+							"						$(\"input#${name}\").val(value);    \n" + 
 							"					}    \n" + 
 							"					$(\"#visible_${name}\").find('input').styler({});  \n" + 
 							"			});       \n" + 

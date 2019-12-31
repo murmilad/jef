@@ -24,7 +24,7 @@ public class Image extends Widget {
 		return ("	                                                 \n" 
 				+ "			$(\"#img_visible_${child_name}\").prop('src', data.value);   \n"
 				+ "			$(\"#visible_${child_name}\").change();   \n"
-				+ "			$(\"#${child_name}\").val(data.value); \n" 
+				+ "			$(\"input#${child_name}\").val(data.value); \n" 
 				+ "	                                            \n");
 	}
 
@@ -105,7 +105,7 @@ public class Image extends Widget {
 	"					var reader = new FileReader();     \n" + 
 	"					reader.onload = function(e) {     \n" + 
 	"						$('#img_visible_${name}').attr('src', e.target.result);     \n" + 
-	"						$('#${name}').val(e.target.result);     \n" + 
+	"						$('input#${name}').val(e.target.result);     \n" + 
 	"					}     \n" + 
 	"					reader.readAsDataURL(data.files[0]);     \n" + 
 	"					return false;    \n" + 
@@ -114,7 +114,7 @@ public class Image extends Widget {
 	"	        },       \n" + 
 	"		success : function(data, textStatus, jqXHR) {   \n" + 
 	"			$('#img_visible_${name}').attr('src', data); \n" + 
-	"			$('#${name}').val(data);     \n" + 
+	"			$('input#${name}').val(data);     \n" + 
 	"		},   \n" + 
 	"		error : function(jqXHR, textStatus, errorThrown) {   \n" + 
 	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);    \n" + 

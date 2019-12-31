@@ -106,11 +106,11 @@ public abstract class Widget {
 			
 			Tag resultElement = assembleTag(name, generator);
 			resultElement.add(Tag.Type.SCRIPT,							("    \n" + 
-	"	$('#${name}').on('setLocked', function () {   \n" + 
+	"	$('input#${name}').on('setLocked', function () {   \n" + 
 	"		var data = {value: 0};    \n" + 
 	"		${set_active_js}    \n" + 
 	"	});    \n" + 
-	"	$('#${name}').on('setUnlocked', function () {    \n" + 
+	"	$('input#${name}').on('setUnlocked', function () {    \n" + 
 	"		var data = {value: 1};    \n" + 
 	"		${set_active_js}  \n" + 
 	"	});    \n")
@@ -129,24 +129,24 @@ public abstract class Widget {
 					(String[])generator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT)
 			).flatMap(Stream::of).toArray(String[]::new)) {
 				resultElement.add(Tag.Type.SCRIPT,							("    \n" + 
-	"	$('#${name}').on('lock', function () {   \n" + 
-	"		if (!$('#${parrent_name}').attr('data-disabled')) {  \n" + 
-	"			$('#${parrent_name}').trigger('setLocked');  \n" + 
+	"	$('input#${name}').on('lock', function () {   \n" + 
+	"		if (!$('input#${parrent_name}').attr('data-disabled')) {  \n" + 
+	"			$('input#${parrent_name}').trigger('setLocked');  \n" + 
 	"		} \n" + 
 	"	});    \n" + 
-	"	$('#${name}').on('unlock', function () {    \n" + 
-	"		if (!$('#${parrent_name}').attr('data-disabled')) {  \n" + 
-	"			$('#${parrent_name}').trigger('setUnlocked');  \n" + 
+	"	$('input#${name}').on('unlock', function () {    \n" + 
+	"		if (!$('input#${parrent_name}').attr('data-disabled')) {  \n" + 
+	"			$('input#${parrent_name}').trigger('setUnlocked');  \n" + 
 	"		} \n" + 
 	"	});    \n" + 
-	"	$('#${parrent_name}').on('lock', function () {   \n" + 
-	"		if (!$('#${name}').attr('data-disabled')) {  \n" + 
-	"			$('#${name}').trigger('setLocked');  \n" + 
+	"	$('input#${parrent_name}').on('lock', function () {   \n" + 
+	"		if (!$('input#${name}').attr('data-disabled')) {  \n" + 
+	"			$('input#${name}').trigger('setLocked');  \n" + 
 	"		} \n" + 
 	"	});    \n" + 
-	"	$('#${parrent_name}').on('unlock', function () {    \n" + 
-	"		if (!$('#${name}').attr('data-disabled')) {  \n" + 
-	"			$('#${name}').trigger('setUnlocked');  \n" + 
+	"	$('input#${parrent_name}').on('unlock', function () {    \n" + 
+	"		if (!$('input#${name}').attr('data-disabled')) {  \n" + 
+	"			$('input#${name}').trigger('setUnlocked');  \n" + 
 	"		} \n" + 
 	"	});    \n")
 					.replace("${set_active_js}", getSetActiveJS().replace("${child_name}", name))
@@ -156,22 +156,22 @@ public abstract class Widget {
 				
 			}
 			
-			resultElement.add(Tag.Type.SCRIPT,			("	$(\"#${name}\").bind(\"setValueOnLoad\", function (event, data) {      \n" + 
+			resultElement.add(Tag.Type.SCRIPT,			("	$(\"input#${name}\").bind(\"setValueOnLoad\", function (event, data) {      \n" + 
 					"		var isLoading = true;      \n" + 
 					"		${setValueJS} \n" + 
-					"		$(\"#${name}\").bind(\"cleanValue\", function(){ \n" + 
+					"		$(\"input#${name}\").bind(\"cleanValue\", function(){ \n" + 
 					"			if (formsWaitedToLoad === 0) { \n" + 
 					"				${cleanValueJS} \n" +
 					"			}	\n " +		
 					"		}); \n" + 
-					"		$(\"#${name}\").unbind(\"setValueOnLoad\");   \n" + 
+					"		$(\"input#${name}\").unbind(\"setValueOnLoad\");   \n" + 
 					"	});      \n" + 
 					"	$( document ).bind('setListOnLoad', function() {      \n" + 
 					"		${setItemsJS}     \n" + 
 					"	});      \n" + 
 					"	function onChangeReadOnly${name}(current){       \n" + 
 					"		if (typeof current.value != 'undefined'){  \n" + 
-					"			$('#${name}').val(current.value);       \n" + 
+					"			$('input#${name}').val(current.value);       \n" + 
 					"		}  \n" + 
 					"	}       \n" + 
 					"	function onKeyDownReadOnly${name}(current){       \n" + 
@@ -356,7 +356,7 @@ public abstract class Widget {
 						("			if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)) {\n" + 
 								"				$('#tr_${child_name}').css(\"display\", 'none');\n" + 
 								"				$('#visible_${child_name}').val('').change();\n" + 
-								"				$('#${child_name}').attr('invisible', true);\n" + 
+								"				$('input#${child_name}').attr('invisible', true);\n" + 
 								"				$('#tr_${child_name}').trigger('refresh');\n" + 
 								"				return;" + 
 								"			}")
@@ -375,12 +375,12 @@ public abstract class Widget {
 								("				function onChange${parrent_name}_${child_name}_ct_ajax_visible(${parrent_name}List){        \n" + 
 							"					var valueJS = ${value_js};     \n" + 
 							"					${ignore_empty_js}         \n" + 
-							"					$('#${child_name}').attr('invisible', true);        \n" + 
+							"					$('input#${child_name}').attr('invisible', true);        \n" + 
 							"					$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");        \n" + 
 							"					$(\"#visible_${parrent_name}\").trigger('refresh');        \n" + 
 							"					$(\"#background_overlay_wait_${parrent_name}\").show();        \n" + 
 							"	            	$(\"#message_box_wait_${parrent_name}\").show();        \n" + 
-							"					$(\"#${parrent_name}\").trigger('lock');         \n" + 
+							"					$(\"input#${parrent_name}\").trigger('lock');         \n" + 
 							"					if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {        \n" + 
 							"						ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;        \n" + 
 							"					}					++ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];        \n" + 
@@ -405,11 +405,11 @@ public abstract class Widget {
 							"										$('#tr_${child_name}').css(\"display\",'table-row');        \n" + 
 							"									else        \n" + 
 							"										$('#tr_${child_name}').css(\"display\",'inline');        \n" + 
-							"										$('#${child_name}').attr('invisible', false);        \n" + 
+							"										$('input#${child_name}').attr('invisible', false);        \n" + 
 							"								} else {        \n" + 
 							"									$('#tr_${child_name}').css(\"display\", 'none');        \n" + 
 							"									$('#visible_${child_name}').val('').change();        \n" + 
-							"									$('#${child_name}').attr('invisible', true);        \n" + 
+							"									$('input#${child_name}').attr('invisible', true);        \n" + 
 							"								}        \n" + 
 							"							$('#tr_${child_name}').trigger('refresh');        \n" + 
 							"							--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];   \n" + 
@@ -422,7 +422,7 @@ public abstract class Widget {
 							"								$(\"#visible_${parrent_name}\").removeAttr('disabled');        \n" + 
 							"								$(\"#background_overlay_wait_${parrent_name}\").hide();        \n" + 
 							"	            				$(\"#message_box_wait_${parrent_name}\").hide();        \n" + 
-							"								$(\"#${parrent_name}\").trigger('unlock');         \n" + 
+							"								$(\"input#${parrent_name}\").trigger('unlock');         \n" + 
 							"							}        \n" + 
 							"							--ajax_is_child_blocked${prefix}[\"${child_name}\"]; \n" + 
 							"							if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) { \n" + 
@@ -465,7 +465,7 @@ public abstract class Widget {
 						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 				);
 
-				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), getSetActiveJS().concat("$('#${child_name}').attr('data-disabled', data.value)"), valueJS, "is_active");
+				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), getSetActiveJS().concat("$('input#${child_name}').attr('data-disabled', data.value)"), valueJS, "is_active");
 			}
 			
 		/**
@@ -500,13 +500,13 @@ public abstract class Widget {
 				"						var valueJS = ${value_js};    \n" + 
 				"						var isLoading = false;    \n" + 
 				"						if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)){ return };           \n" + 
-				"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
+				"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 				"						$(\"#visible_${child_name}\").trigger('refresh');      \n" + 
 				"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");      \n" + 
 				"						$(\"#visible_${parrent_name}\").trigger('refresh');      \n" + 
 				"						$(\"#background_overlay_wait_${parrent_name}\").show();      \n" + 
 				"		            	$(\"#message_box_wait_${parrent_name}\").show();      \n" + 
-				"						$(\"#${parrent_name}\").trigger('lock');         \n" + 
+				"						$(\"input#${parrent_name}\").trigger('lock');         \n" + 
 				"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {      \n" + 
 				"							ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;      \n" + 
 				"						}      \n" + 
@@ -543,7 +543,7 @@ public abstract class Widget {
 				"										${child_name}.css(\"display\", 'none');      \n" + 
 				"										$('#is_empty_${child_name}').val(1);      \n" + 
 				"									}else{      \n" + 
-				"										if ($('#${child_name}').attr('invisible') == 'false') {      \n" + 
+				"										if ($('input#${child_name}').attr('invisible') == 'false') {      \n" + 
 				"											if ((document.getElementById && !document.all) || window.opera)      \n" + 
 				"												${child_name}.css(\"display\",'table-row');      \n" + 
 				"											else      \n" + 
@@ -551,7 +551,7 @@ public abstract class Widget {
 				"										}      \n" + 
 				"									}      \n" + 
 				"								}else{      \n" + 
-				"									if ($('#${child_name}').attr('invisible') == 'false') {Value      \n" + 
+				"									if ($('input#${child_name}').attr('invisible') == 'false') {Value      \n" + 
 				"										if ((document.getElementById && !document.all) || window.opera)      \n" + 
 				"											${child_name}.css(\"display\",'table-row');      \n" + 
 				"										else      \n" + 
@@ -567,7 +567,7 @@ public abstract class Widget {
 				"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');      \n" + 
 				"									$(\"#background_overlay_wait_${parrent_name}\").hide();      \n" + 
 				"		            				$(\"#message_box_wait_${parrent_name}\").hide();      \n" + 
-				"									$(\"#${parrent_name}\").trigger('unlock');         \n" + 
+				"									$(\"input#${parrent_name}\").trigger('unlock');         \n" + 
 				"									$(\"#visible_${child_name}\").unbind('set_find_result');    \n" + 
 				"								}      \n" + 
 				"								--ajax_is_child_blocked${prefix}[\"${child_name}\"]; \n" + 
@@ -610,7 +610,7 @@ public abstract class Widget {
 			
 			for (Integer i = 0; i < parrentElements.length; i++) {
 				String parrentElementName = parrentElements[i];
-				valueJS = valueJS.concat("'${parrent_name_api_value_js}' + '${value_separator}' + $('#${parrent_name_value_js}').val()${divider}"
+				valueJS = valueJS.concat("'${parrent_name_api_value_js}' + '${value_separator}' + $('input#${parrent_name_value_js}').val()${divider}"
 				.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 				.replace("${parrent_name_api_value_js}", parrentElementName)
 				.replace("${parrent_name_value_js}", parrentElementName + prefix))

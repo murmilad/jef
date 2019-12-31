@@ -34,7 +34,7 @@ public class CheckBox extends Widget {
 		return 		(" \n" + 
 	"	$('#visible_${child_name}').prop('checked', data.value === '1' ? true : false);  \n" + 
 	"	$('#visible_${child_name}').change(); \n" + 
-	"	$('#${child_name}').val(data.value); \n");
+	"	$('input#${child_name}').val(data.value); \n");
 	}
 
 	@Override

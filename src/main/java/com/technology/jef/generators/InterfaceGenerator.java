@@ -39,12 +39,14 @@ public class InterfaceGenerator extends TagGenerator {
 		     put(Tag.Property.HREF, "css/jquery.formstyler.css?v=2.0.0");
 		}});
 
-		String styleCSS =  (String) getAttribute(TagGenerator.Attribute.STYLE);
-		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.REL, "stylesheet");
-		     put(Tag.Property.TYPE, "text/css");
-		     put(Tag.Property.HREF, "css/" + (!"".equals(styleCSS) ? styleCSS : "default_scheme.css"));
-		}});
+		if (!"".equals((String) getAttribute(TagGenerator.Attribute.NAME))) {
+			String styleCSS =  (String) getAttribute(TagGenerator.Attribute.STYLE);
+			head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
+			     put(Tag.Property.REL, "stylesheet");
+			     put(Tag.Property.TYPE, "text/css");
+			     put(Tag.Property.HREF, "css/" + (!"".equals(styleCSS) ? styleCSS : "default_scheme.css"));
+			}});
+		}
 
 		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.REL, "stylesheet");

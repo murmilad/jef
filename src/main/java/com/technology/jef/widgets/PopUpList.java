@@ -37,7 +37,7 @@ public class PopUpList extends Widget {
 				return 	("							$(\"#visible_${child_name}\").empty();  \n" + 
 						"							$(\"#fake_visible_${child_name}\").val('${not_selected}');  \n" + 
 						"							$( \"#popup_${child_name}\" ).remove();  \n" + 
-						"							$(\"#${child_name}\").val('');  \n")
+						"							$(\"input#${child_name}\").val('');  \n")
 						.replace("${not_selected}", CurrentLocale.getInstance().getTextSource().getString("not_selected")); 
 			}
 
@@ -89,7 +89,7 @@ public class PopUpList extends Widget {
 			currentGenerator.getDom().add(Tag.Type.SCRIPT,
 					(
 					" $(\"#visible_${parrent_name}\").change(function(){\n" +
-					"		$(\"#${child_name}\").trigger('cleanValue');\n" +
+					"		$(\"input#${child_name}\").trigger('cleanValue');\n" +
 					" }); \n")
 					.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
 					.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
@@ -105,7 +105,7 @@ public class PopUpList extends Widget {
 			
 			String ignoreEmptyJS = 
 					("			if ((valueJS).match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)) {\n" + 
-							"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
+							"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 							"							return; \n" + 
 							"						} \n")
 							.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
@@ -126,7 +126,7 @@ public class PopUpList extends Widget {
 	"						${ignore_empty_js}            \n" + 
 	"						// сохраняем предыдущее значение            \n" + 
 	"						var previous_text = $(\"#fake_visible_${child_name}\").val();            \n" + 
-	"						var previous_id = $(\"#${child_name}\").val();            \n" + 
+	"						var previous_id = $(\"input#${child_name}\").val();            \n" + 
 	"						$(\"#fake_visible_${child_name}\").attr(\"disabled\",\"disabled\");            \n" + 
 	"						$(\"#visible_${child_name}\").empty();            \n" + 
 	"						$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#visible_${child_name}\");            \n" + 
@@ -134,7 +134,7 @@ public class PopUpList extends Widget {
 	"						//$(\"#visible_${child_name}\").trigger('refresh');            \n" + 
 	"						$(\"#background_overlay_wait_${parrent_name}\").show();            \n" + 
 	"		            	$(\"#message_box_wait_${parrent_name}\").show();            \n" + 
-	"						$(\"#${parrent_name}\").trigger('lock');          \n" + 
+	"						$(\"input#${parrent_name}\").trigger('lock');          \n" + 
 	"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");            \n" + 
 	"						$(\"#visible_${parrent_name}\").trigger('refresh');            \n" + 
 	"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {            \n" + 
@@ -180,7 +180,7 @@ public class PopUpList extends Widget {
 	"									// удаляем динам окно            \n" + 
 	"									$( \"#popup_${child_name}\" ).remove();            \n" + 
 	"									$(\"#fake_visible_${child_name}\").val('${list_empty}');            \n" + 
-	"									$(\"#${child_name}\").val('');            \n" + 
+	"									$(\"input#${child_name}\").val('');            \n" + 
 	"									if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {      \n" + 
 	"										$(\"#visible_${parrent_name}\").removeAttr('disabled');      \n" + 
 	"									}      \n" + 
@@ -194,7 +194,7 @@ public class PopUpList extends Widget {
 	"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');            \n" + 
 	"										$(\"#background_overlay_wait_${parrent_name}\").hide();            \n" + 
 	"	            						$(\"#message_box_wait_${parrent_name}\").hide();            \n" + 
-	"										$(\"#${parrent_name}\").trigger('unlock');          \n" + 
+	"										$(\"input#${parrent_name}\").trigger('unlock');          \n" + 
 	"									}            \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('refresh');            \n" + 
 	"									//$(\"#visible_${child_name}\").trigger('refresh');            \n" + 
@@ -210,7 +210,7 @@ public class PopUpList extends Widget {
 	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');            \n" + 
 	"									$(\"#background_overlay_wait_${parrent_name}\").hide();            \n" + 
 	"            						$(\"#message_box_wait_${parrent_name}\").hide();            \n" + 
-	"									$(\"#${parrent_name}\").trigger('unlock');          \n" + 
+	"									$(\"input#${parrent_name}\").trigger('unlock');          \n" + 
 	"								}            \n" + 
 	"								--ajax_is_child_blocked${prefix}[\"${child_name}\"];   \n" + 
 	"								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {   \n" + 
@@ -234,7 +234,7 @@ public class PopUpList extends Widget {
 	"									 var arr = id_value.split('_');            \n" + 
 	"									 $(\"#fake_visible_${child_name}\").val($(this).find(\"u\").text());            \n" + 
 	"									 $(\"#visible_${child_name}\").val(arr[1]);            \n" + 
-	"									 $(\"#${child_name}\").val(arr[1]);            \n" + 
+	"									 $(\"input#${child_name}\").val(arr[1]);            \n" + 
 	"									 // закрываем фон            \n" + 
 	"									 $(\".overlay\").hide();            \n" + 
 	"									 // удаляем динам окно            \n" + 
@@ -251,7 +251,7 @@ public class PopUpList extends Widget {
 	"									$(\"#popup_${child_name}\").remove();            \n" + 
 	"									// восстанавливаем предыдущий выбор            \n" + 
 	"									$(\"#fake_visible_${child_name}\").val(previous_text);            \n" + 
-	"									$(\"#${child_name}\").val(previous_id);            \n" + 
+	"									$(\"input#${child_name}\").val(previous_id);            \n" + 
 	"									$(\"#visible_${child_name}\").val(previous_id);            \n" + 
 	"									// посылаем событие на обновление            \n" + 
 	"									//$(\"#visible_${child_name}\").change();            \n" + 
@@ -285,7 +285,7 @@ public class PopUpList extends Widget {
 			
 			return 			("	$(\"#fake_visible_${name}\").on('click', function() {     \n" + 
 					"						var previous_text = $(\"#fake_visible_${name}\").val();           \n" + 
-					"						var previous_id = $(\"#${name}\").val();           \n" + 
+					"						var previous_id = $(\"input#${name}\").val();           \n" + 
 					"						$(\"#fake_visible_${name}\").attr(\"disabled\",\"disabled\");           \n" + 
 					"						$(\"#visible_${name}\").empty();           \n" + 
 					"						$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#visible_${name}\");           \n" + 
@@ -293,7 +293,7 @@ public class PopUpList extends Widget {
 					"						//$(\"#visible_${name}\").trigger('refresh');           \n" + 
 					"						$(\"#background_overlay_wait_${name}\").show();           \n" + 
 					"		            	$(\"#message_box_wait_${name}\").show();           \n" + 
-					"						$(\"#${name}\").trigger('lock');         \n" + 
+					"						$(\"input#${name}\").trigger('lock');         \n" + 
 					"						ajax({           \n" + 
 					"				            	url: '${service}get_list',           \n" + 
 					"							data: {           \n" + 
@@ -329,17 +329,17 @@ public class PopUpList extends Widget {
 					"									// удаляем динам окно           \n" + 
 					"									$( \"#popup_${name}\" ).remove();           \n" + 
 					"									$(\"#fake_visible_${name}\").val('${list_empty}');           \n" + 
-					"									$(\"#${name}\").val('');           \n" + 
+					"									$(\"input#${name}\").val('');           \n" + 
 					"									$(\"#fake_visible_${name}\").removeAttr('disabled');           \n" + 
 					"									$(\"#background_overlay_wait_${name}\").hide();           \n" + 
 					"	          						$(\"#message_box_wait_${name}\").hide();           \n" + 
-					"									$(\"#${name}\").trigger('unlock');         \n" + 
+					"									$(\"input#${name}\").trigger('unlock');         \n" + 
 					"									return;           \n" + 
 					"								}           \n" + 
 					"								$(\"#fake_visible_${name}\").removeAttr('disabled');           \n" + 
 					"								$(\"#background_overlay_wait_${name}\").hide();           \n" + 
 					"          						$(\"#message_box_wait_${name}\").hide();           \n" + 
-					"								$(\"#${name}\").trigger('unlock');         \n" + 
+					"								$(\"input#${name}\").trigger('unlock');         \n" + 
 
 					"								// показываем фон           \n" + 
 					"								$(\".overlay\").show();           \n" + 
@@ -350,7 +350,7 @@ public class PopUpList extends Widget {
 					"									 var arr = id_value.split('_');           \n" + 
 					"									 $(\"#fake_visible_${name}\").val($(this).find(\"u\").text());           \n" + 
 					"									 $(\"#visible_${name}\").val(arr[1]);           \n" + 
-					"									 $(\"#${name}\").val(arr[1]);           \n" + 
+					"									 $(\"input#${name}\").val(arr[1]);           \n" + 
 					"									 // закрываем фон           \n" + 
 					"									 $(\".overlay\").hide();           \n" + 
 					"									 // удаляем динам окно           \n" + 
@@ -374,7 +374,7 @@ public class PopUpList extends Widget {
 					"									$(\"#popup_${name}\").remove();           \n" + 
 					"									// восстанавливаем предыдущий выбор           \n" + 
 					"									$(\"#fake_visible_${name}\").val(previous_text);           \n" + 
-					"									$(\"#${name}\").val(previous_id);           \n" + 
+					"									$(\"input#${name}\").val(previous_id);           \n" + 
 					"									$(\"#visible_${name}\").val(previous_id);           \n" + 
 					"									// посылаем событие на обновление           \n" + 
 					"									//$(\"#visible_${name}\").change();           \n" + 

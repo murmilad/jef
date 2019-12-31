@@ -36,7 +36,7 @@ public class AutoCompleteAddress extends Widget {
 				
 				return ("	$('#visible_${child_name}').val(''); \n" + 
 						"	${child_name}_autocomplete_result = []; \n" + 
-						"       $('#${child_name}').val('|'); \n"
+						"       $('input#${child_name}').val('|'); \n"
 						);
 			}
 
@@ -87,12 +87,12 @@ public class AutoCompleteAddress extends Widget {
 	"					        dataType: 'json',                         \n" + 
 	"				           	contentType: 'application/x-www-form-urlencoded',                         \n" + 
 	"						}, function (response) {              \n" + 
-	"								$('#${group_prefix}'+'post_index'+group_postfix).val(response.value);                            \n" + 
+	"								$('input#${group_prefix}'+'post_index'+group_postfix).val(response.value);                            \n" + 
 	"								$('#visible_'+'${group_prefix}'+'post_index'+group_postfix).val(response.value);                            \n" + 
 	"						});                            \n" + 
 	"					}                            \n" + 
 	"				}                            \n" + 
-	"				$(\"#${name}\").val('|'+$(\"#visible_${name}\").val());                            \n" + 
+	"				$(\"input#${name}\").val('|'+$(\"#visible_${name}\").val());                            \n" + 
 	"			});             \n" + 
 	"			if ($._data( $(\"#visible_${name}\")[0], \"events\" ).change) {             \n" + 
 	"				jQuery.map(jQuery.grep($._data( $(\"#visible_${name}\")[0], \"events\" ).change, function( a ) {              \n" + 
@@ -124,7 +124,7 @@ public class AutoCompleteAddress extends Widget {
 	"					},  \n" + 
 	"					onSelect: function (suggestion) {                            \n" + 
 	"							// ставим выбранное значение в hidden поле                            \n" + 
-	"						$('#${name}').val((suggestion.data||'')+'|'+(suggestion.name||'')); // значение через разделитель                            \n" + 
+	"						$('input#${name}').val((suggestion.data||'')+'|'+(suggestion.name||'')); // значение через разделитель                            \n" + 
 	"						$('#visible_${name}').val(suggestion.name).change();                             \n" + 
 	"						$('#visible_${name}').removeClass('warning');                            \n" + 
 	"						$('#visible_${name}').attr('title', '');                            \n" + 
@@ -138,15 +138,15 @@ public class AutoCompleteAddress extends Widget {
 	"								];                            \n" + 
 	"								if (FEDERAL_REGIONS.indexOf(suggestion.data)!==-1){                            \n" + 
 	"										$('#visible_'+'${group_prefix}'+'city_code'+group_postfix).val(suggestion.name);                            \n" + 
-	"										$('#${group_prefix}'+'city_code'+group_postfix).val((suggestion.data||'')+'|'+(suggestion.name||'')); // значение через разделитель                            \n" + 
+	"										$('input#${group_prefix}'+'city_code'+group_postfix).val((suggestion.data||'')+'|'+(suggestion.name||'')); // значение через разделитель                            \n" + 
 	"								}                            \n" + 
 	"						}                            \n" + 
 	"							if (\"visible_${name}\".indexOf('house')!==-1){                            \n" + 
 	"								// для дома подтягиваются индекс строение и корпус                            \n" + 
-	"                                				$('#${group_prefix}'+'building'+group_postfix).val(suggestion.building);                            \n" + 
-	"				                            $('#${group_prefix}'+'section'+group_postfix).val(suggestion.block);                            \n" + 
-	"								$('#${group_prefix}'+'block'+group_postfix).val(suggestion.block);                            \n" + 
-	"                                				$('#${group_prefix}'+'post_index'+group_postfix).val(suggestion.post_index);                            \n" + 
+	"                                				$('input#${group_prefix}'+'building'+group_postfix).val(suggestion.building);                            \n" + 
+	"				                            $('input#${group_prefix}'+'section'+group_postfix).val(suggestion.block);                            \n" + 
+	"								$('input#${group_prefix}'+'block'+group_postfix).val(suggestion.block);                            \n" + 
+	"                                				$('input#${group_prefix}'+'post_index'+group_postfix).val(suggestion.post_index);                            \n" + 
 	"								$('#visible_'+'${group_prefix}'+'building'+group_postfix).val(suggestion.building);                            \n" + 
 	"								$('#visible_'+'${group_prefix}'+'section'+group_postfix).val(suggestion.block);                            \n" + 
 	"								$('#visible_'+'${group_prefix}'+'block'+group_postfix).val(suggestion.block);                            \n" + 
@@ -158,7 +158,7 @@ public class AutoCompleteAddress extends Widget {
 	"					onSearchError: function (query, jqXHR, textStatus, errorThrown) {    \n" + 
 	"						$('#background_overlay_wait_${name}').hide();    \n" + 
 	"						$('#message_box_wait_${name}').hide();    \n" + 
-	"						$(\"#${name}\").trigger('unlock');               \n" + 
+	"						$(\"input#${name}\").trigger('unlock');               \n" + 
 	"						showError(\"Error: \" + errorThrown, jqXHR.responseText + 'Parameters:' + query + '<br><br>');      \n" + 
 	"					},    \n" + 
 	"					transformResult: function(response) {       \n" + 
@@ -195,7 +195,7 @@ public class AutoCompleteAddress extends Widget {
 	"							return false;                                   \n" + 
 	"						}                                   \n" + 
 	"						// если значение было заполнено ранее то прерываем поиск, все равно будет одна запись                            \n" + 
-	"						var fias_code = $('#${name}').val(); fias_code = fias_code.substring(0, fias_code.indexOf('|'));                            \n" + 
+	"						var fias_code = $('input#${name}').val(); fias_code = fias_code.substring(0, fias_code.indexOf('|'));                            \n" + 
 	"						if($('#visible_${name}').val() && fias_code){                            \n" + 
 	"							return false;                            \n" + 
 	"						}                            \n" + 
@@ -205,15 +205,15 @@ public class AutoCompleteAddress extends Widget {
 	"						params['parameters'] += '${parameter_separator}' + ${value_js};                      \n" + 
 	"						$('#background_overlay_wait_${name}').show();      \n" + 
 	"						$('#message_box_wait_${name}').show();      \n" + 
-	"						$(\"#${name}\").trigger('lock');               \n" + 
+	"						$(\"input#${name}\").trigger('lock');               \n" + 
 	"					},      \n" + 
 	"					onSearchComplete: function (query, suggestions) {      \n" + 
 	"						$('#background_overlay_wait_${name}').hide();      \n" + 
 	"						$('#message_box_wait_${name}').hide();      \n" + 
-	"						$(\"#${name}\").trigger('unlock');               \n" + 
+	"						$(\"input#${name}\").trigger('unlock');               \n" + 
 	"						if (suggestions.length==0){      \n" + 
 	"							// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение      \n" + 
-	"							$('#${name}').val('|'+$('#visible_${name}').val());      \n" + 
+	"							$('input#${name}').val('|'+$('#visible_${name}').val());      \n" + 
 	"						}      \n" + 
 	"					} ,    \n" + 
 	"					formatResult:function (suggestion, currentValue) {            \n" + 
@@ -291,7 +291,7 @@ public class AutoCompleteAddress extends Widget {
 				
 				return  	" \n" + 
 				"	$('#visible_${child_name}').val(data.value.split('|').pop()).blur(); \n" + 
-				"	$('#${child_name}').val(data.value); \n"  
+				"	$('input#${child_name}').val(data.value); \n"  
 				;
 			}
 
@@ -319,7 +319,7 @@ public class AutoCompleteAddress extends Widget {
 					
 					String bodyJS =
 							("		function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){      \n" + 
-							"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
+							"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 							"		}      \n")
 					.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 					.replace("${child_name}", name);
@@ -352,7 +352,7 @@ public class AutoCompleteAddress extends Widget {
 					
 					String bodyJS =
 							("		function onChange${parrent_name}_${child_name}_ct_ajax_value(${parrent_name}List){      \n" + 
-							"						$(\"#${child_name}\").trigger('cleanValue');       \n" + 
+							"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 							"		}      \n")
 					.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 					.replace("${child_name}", name);
