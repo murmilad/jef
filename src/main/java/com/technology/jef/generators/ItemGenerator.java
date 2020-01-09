@@ -31,7 +31,7 @@ public class ItemGenerator extends TagGenerator {
 		     put(Tag.Property.CLASS, "div_interface_element_horizontal interface_element_horizontal");
 		     put(Tag.Property.STYLE, "position:relative;" + 
 		    		 (hasAttribute(TagGenerator.Attribute.HEIGHT) ? ("height: " +  getAttribute(TagGenerator.Attribute.HEIGHT) + ";") : "") 
-		    		 + ("true".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? "height: 45px;" : "") 
+		    		 + ("1".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? "height: 45px;" : "") 
 		    		 + (hasAttribute(TagGenerator.Attribute.WIDTH) ? "" : "width:100%;")
 		     );
 		}});
@@ -50,7 +50,7 @@ public class ItemGenerator extends TagGenerator {
 		     put(Tag.Property.CLASS, "interface_element_horizontal");
 		     put(Tag.Property.STYLE, 
 		    		 (hasAttribute(TagGenerator.Attribute.HEIGHT) ? ("height: " +  getAttribute(TagGenerator.Attribute.HEIGHT) + ";") : "") 
-		    		 + ("true".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? ("width: " + getAttribute(TagGenerator.Attribute.WIDTH) + ";") : "width:100%;") 
+		    		 + ("1".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? ("width: " + getAttribute(TagGenerator.Attribute.WIDTH) + ";") : "width:100%;") 
 		     );
 		}});
 		
