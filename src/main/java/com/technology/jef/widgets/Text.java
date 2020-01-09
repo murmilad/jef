@@ -22,7 +22,7 @@ public class Text extends Widget {
 		@Override
 		public String getInputRegexp() {
 			
-			return "[\\w\\p{L}\\u{2116} -\\.:@\\/\\\\а-яА-Я]+";
+			return "[\\w\\p{L}\\u{2116} -\\.:@\\/\\\\а-яА-Я№]+";
 		}
 		
 	  /**
