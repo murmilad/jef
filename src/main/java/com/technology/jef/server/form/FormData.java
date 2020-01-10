@@ -36,7 +36,7 @@ public class FormData {
 	}
 
 	public String getValue(String interfaceFieldName) {
-		return this.values.get(interfaceFieldName);
+		return this.values.get(interfaceFieldName) != null ? this.values.get(interfaceFieldName) : "";
 	}
 
 	public void putAttributes(String parameterName, Map<Attribute, Boolean> attributes) {
