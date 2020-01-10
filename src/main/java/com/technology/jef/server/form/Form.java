@@ -340,11 +340,15 @@ public abstract class Form {
 
 		protected RecordDto mapDaoParameters(Map<String, String> parameters) {
 
-			RecordDto daoParameters = new RecordDto();
+			return mapDaoParameters(parameters, new RecordDto());
+		}
+
+		protected RecordDto mapDaoParameters(Map<String, String> parameters, RecordDto daoParameters) {
+
 			
 			Map<String,Field> parametersMap = getFieldsMap();
 			for (String name : parametersMap.keySet()) {
-				if (parametersMap.get(name).getFieldName() != null) {
+				if (parametersMap.get(name).getFieldName() != null && parameters.get(name) != null) {
 					daoParameters.put(parametersMap.get(name).getFieldName(), parameters.get(name));
 				}
 			}
