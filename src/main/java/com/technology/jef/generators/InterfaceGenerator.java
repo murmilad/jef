@@ -166,6 +166,7 @@ public class InterfaceGenerator extends TagGenerator {
 		if (!"".equals(getAttribute(TagGenerator.Attribute.HEADER))) {
 			div.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				put(Tag.Property.ID, "header");
+				put(Tag.Property.CLASS, "work_area_width");
 			}}).add(Tag.Type.SCRIPT, 		
 					(" \n" + 
 					"	$( document ).ready(function() {  \n" + 

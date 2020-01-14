@@ -106,6 +106,7 @@ public class GroupGenerator extends TagGenerator {
 		tagCaption.add(Tag.Type.SPAN, caption, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.NAME, "span_" + name);
 			 put(Tag.Property.ID, "span_" + name);
+			 put(Tag.Property.CLASS, "third_text_color");
 		}});
 		
 		tagFieldset = tagFieldset.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
@@ -137,7 +138,7 @@ public class GroupGenerator extends TagGenerator {
 					put(Tag.Property.ID, "button_del_<NUMBER>");
 					put(Tag.Property.CLASS, "interface_del_button buttons_color buttons_height");
 					put(Tag.Property.TYPE, "button");
-					put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
+					put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", "").toLowerCase());
 				}});
 //TODO Добавить ограничение по количеству добавляемых групп
 			
@@ -181,7 +182,7 @@ public class GroupGenerator extends TagGenerator {
 				 put(Tag.Property.TYPE, "button");
 				 put(Tag.Property.CLASS, "interface_add_button buttons_color buttons_height");
 				 put(Tag.Property.STYLE, "display: inline-block");
-				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("add") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", ""));
+				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("add") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", "").toLowerCase());
 			}});
 			
 

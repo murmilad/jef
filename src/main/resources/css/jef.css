@@ -311,10 +311,11 @@
     display: block;
     float: left;
     vertical-align: middle;
-    padding: 10px;
+    padding: 6px;
     margin: 5px;
     color: white;
     cursor: pointer;
+    font-weight: bold;
 }
 
 div.current {
