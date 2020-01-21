@@ -381,4 +381,42 @@ public abstract class Form {
 			return null;
 		}
 
+		protected static Map<String, Field> addIsVisible(String fieldRegex, IsVisibleListener listener, Map<String, Field> fieldsMap) {
+
+			
+			for (String isVisibleField: fieldsMap.keySet()) {
+				if (isVisibleField.matches(fieldRegex)) {
+					IsVisibleListener isVisibleListener = fieldsMap.get(isVisibleField).getIsVisibleListener();
+		
+					fieldsMap.get(isVisibleField).isVisibleListener((String parameterName, Map<String, String> parameters) -> {
+						return isVisibleListener.handle(parameterName, parameters) || listener.handle(parameterName, parameters);
+					});
+				}
+			}
+
+			
+			return fieldsMap;
+		}	
+
+		protected static Map<String, Field> addCheck(String fieldRegex, CheckListener listener, Map<String, Field> fieldsMap) {
+
+			
+			for (String checkField: fieldsMap.keySet()) {
+				if (checkField.matches(fieldRegex)) {
+					CheckListener checkListener = fieldsMap.get(checkField).getCheckListener();
+		
+					fieldsMap.get(checkField).checkListener((String parameterName, Map<String, String> parameters) -> {
+						List<String> result = checkListener.handle(parameterName, parameters);
+						for (String error : listener.handle(parameterName, parameters)) {
+							result.add(error);
+						}
+						return  result;
+					});
+				}
+			}
+
+			
+			return fieldsMap;
+		}	
+
 }
