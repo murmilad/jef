@@ -7,6 +7,7 @@ import com.technology.jef.widgets.text.Inn;
 import com.technology.jef.widgets.text.Money;
 import com.technology.jef.widgets.text.Number;
 import com.technology.jef.widgets.text.Phone;
+import com.technology.jef.widgets.text.ReadOnly;
 
 /**
  * Класс - фабрика виджетов
@@ -120,7 +121,11 @@ public class WidgetFactory {
 		case IMAGE_WEBCAM:
 			widget = new ImageWebCam();
 			break;
+		case TEXT_READ_ONLY:
+			widget = new ReadOnly();
+			break;
 		}
+		
 		
 		return widget;
 	}

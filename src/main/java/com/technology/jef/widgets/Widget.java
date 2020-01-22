@@ -61,6 +61,7 @@ public abstract class Widget {
 			AUTO_COMPLETE,
 			AUTO_COMPLETE_ADDRESS,
 			AUTO_COMPLETE_EDITABLE,
+			TEXT_READ_ONLY,
 		}
 		
 		protected Tag parrent;
