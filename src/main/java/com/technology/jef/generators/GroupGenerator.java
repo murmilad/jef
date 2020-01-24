@@ -8,6 +8,7 @@ import org.xml.sax.Attributes;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
+import com.technology.jef.widgets.Widget;
 
 import static com.technology.jef.server.serialize.SerializeConstant.*;
 import static com.technology.jef.server.WebServiceConstant.*;
@@ -126,21 +127,28 @@ public class GroupGenerator extends TagGenerator {
 	public void onEndElement() {
 		// если группа у нас расширяемая, то добавляем соответсвующие элементы правления
 		if (isMultiplie) {
-//TODO Добавить возможность управления видимостью кнопки "удалить"
-			dom.add(Tag.Type.DIV,
+			Tag buttonDel = dom.add(Tag.Type.DIV,
 				new HashMap<Tag.Property, String>(){{
 					 put(Tag.Property.STYLE, "width: 100%; display: inline-block;");
 				}}).add(Tag.Type.DIV,
 						new HashMap<Tag.Property, String>(){{
-						put(Tag.Property.STYLE, "width: 100%;text-align: left; display: block;");
-				}}).add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+						put(Tag.Property.STYLE, "position:relative; width: 100%;text-align: left; display: block;");
+				}});
+			buttonDel.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.ID, "message_box_wait_button_del_<NUMBER>");
+				 put(Tag.Property.NAME, "message_box_wait");
+				 put(Tag.Property.CLASS, "message_box_loading background_color");
+				}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.NAME, "message_overlay_wait");
+				 put(Tag.Property.CLASS, "message_overlay_loading");
+				}});
+			buttonDel.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 					put(Tag.Property.NAME, "button_del_<NUMBER>");
 					put(Tag.Property.ID, "button_del_<NUMBER>");
 					put(Tag.Property.CLASS, "interface_del_button buttons_color buttons_height");
 					put(Tag.Property.TYPE, "button");
 					put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", "").toLowerCase());
 				}});
-//TODO Добавить ограничение по количеству добавляемых групп
 			
 			dom.add(Tag.Type.SCRIPT, 	(" \n" + 
 	"	$(\"#button_del_<NUMBER>\").click(function(){  \n" + 
@@ -159,7 +167,14 @@ public class GroupGenerator extends TagGenerator {
 	"				'name': 'parrent_api_group_id<NUMBER>',     \n" + 
 	"			}).appendTo( \"#place_${multiplie_group_name}\" ); \n" + 
 	"		count_${multiplie_group_name}--; \n" +
+	"						var parameters = ${value_js};  \n" + 
+	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};  \n" + 
+	"						setButtonVisiblity('button_add', '${multiplie_group_name}', parameters);   \n" + 
+	"						setButtonVisiblity('button_del', groupPrefix, parameters);   \n" + 
 	"}); \n")
+	.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+	.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+	.replace("${value_js}", Widget.getValueJS(new String[0], ""))
 	.replace("${multiplie_group_name}", GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API))
 	.replace("${api}", (String) getAttribute(TagGenerator.Attribute.API))
 	.replace("${parrent_api}", (String) getAttribute(TagGenerator.Attribute.PARRENT_API))
@@ -174,16 +189,35 @@ public class GroupGenerator extends TagGenerator {
 				 put(Tag.Property.TYPE, "hidden");
 				 put(Tag.Property.VALUE, "create");
 			}});
+
+			Tag buttonAdd = multilineParrentDOM.getParrent().add(Tag.Type.DIV,
+					new HashMap<Tag.Property, String>(){{
+						 put(Tag.Property.STYLE, "width: 100%; display: inline-block;");
+					}}).add(Tag.Type.DIV,
+							new HashMap<Tag.Property, String>(){{
+							put(Tag.Property.STYLE, "position:relative; width: 100%;text-align: left; display: block;");
+					}});
+			buttonAdd.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.ID, "message_box_wait_button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+				 put(Tag.Property.NAME, "message_box_wait");
+				 put(Tag.Property.CLASS, "message_box_loading background_color");
+				}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.NAME, "message_overlay_wait");
+				 put(Tag.Property.CLASS, "message_overlay_loading");
+				}});
+
+			buttonAdd.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+					 put(Tag.Property.ID, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+					 put(Tag.Property.NAME, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+					 put(Tag.Property.TYPE, "button");
+					 put(Tag.Property.CLASS, "interface_add_button buttons_color buttons_height");
+					 put(Tag.Property.STYLE, "display: inline-block");
+					 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("add") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", "").toLowerCase());
+				}});
+
+
+
 			
-//TODO Добавить ограничение на видимость кнопок "добавить" для групп
-			multilineParrentDOM.getParrent().add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
-				 put(Tag.Property.NAME, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
-				 put(Tag.Property.TYPE, "button");
-				 put(Tag.Property.CLASS, "interface_add_button buttons_color buttons_height");
-				 put(Tag.Property.STYLE, "display: inline-block");
-				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("add") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", "").toLowerCase());
-			}});
 			
 
 			multilineParrentDOM.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{

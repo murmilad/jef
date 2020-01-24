@@ -146,11 +146,19 @@ public abstract class Form {
 			if (getFieldsMap().containsKey(parameterName)) {
 				IsVisibleListener isVisibleListener = getFieldsMap().get(parameterName).getIsVisibleListener();
 				if (isVisibleListener == null) {
-					throw new ServiceException("isVisibleListener is not definded for parameter: '" + parameterName + "'");
+					if ("button_add".equals(parameterName) || "button_del".equals(parameterName) ) { // Methods for buttons is optional
+						isVisible = true; // Buttons is visible by default
+					} else {
+						throw new ServiceException("isVisibleListener is not definded for parameter: '" + parameterName + "'");
+					}
 				}
 				isVisible = isVisibleListener.handle(parameterName, parameters);
 			} else {
-				throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
+				if ("button_add".equals(parameterName) || "button_del".equals(parameterName) ) { // Methods for buttons is optional
+					isVisible = true; // Buttons is visible by default
+				} else {
+					throw new ServiceException("Parameter '" + parameterName + "' is not defined in getFieldsMap method.");
+				}
 			}
 			
 			return isVisible;
