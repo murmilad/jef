@@ -19,7 +19,9 @@ public class CheckBox extends Widget {
 	@Override
 	public Tag assembleTag(String name, TagGenerator generator) {
 		
-		Tag elementInput = parrent.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+		Tag elementInput = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			 put(Tag.Property.CLASS, "widgets_height");
+		}}).add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "visible_" + name);
 			 put(Tag.Property.NAME, "visible_" + name);
 			 put(Tag.Property.TYPE, "checkbox");
