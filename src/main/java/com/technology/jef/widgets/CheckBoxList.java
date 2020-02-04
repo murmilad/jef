@@ -70,12 +70,12 @@ public class CheckBoxList extends RadioSwitch {
 					.add(Tag.Type.LABEL, new HashMap<Tag.Property, String>(){{
 						 put(Tag.Property.FOR, "visible_" + name);
 					}})
-					.add(Tag.Type.SPAN, (String) generator.getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
+					.add(Tag.Type.DIV, (String) generator.getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
 						 put(Tag.Property.NAME, "span_" + name);
 						 put(Tag.Property.STYLE, !"".equals(generator.getAttribute(TagGenerator.Attribute.REQUIRED)) ? "color: rgb(170, 0, 0);" : "color: rgb(0, 0, 0);");
 					}})
 					.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-							 put(Tag.Property.CLASS, "styled");
+							 put(Tag.Property.CLASS, "styled widgets_height");
 							put(Tag.Property.ID, "visible_" + name);
 							put(Tag.Property.NAME, "visible_" + name);
 					}});
@@ -112,9 +112,9 @@ public class CheckBoxList extends RadioSwitch {
 			return
 						("							$.each(data.data, function(key, val) {     \n" + 
 	"								var span_name = 'span_group_${name}' + val.id;    \n" + 
-	"								$(\"<span/>\", {    \n" + 
+	"								$(\"<div/>\", {    \n" + 
 	"									'id' : span_name,    \n" + 
-	"									'style' : 'white-space:nowrap; padding-bottom:5px;',    \n" + 
+	"									'style' : 'white-space:nowrap; padding-bottom:5px; float: left;',    \n" +
 	"								}).appendTo(\"#visible_${name}\");    \n" + 
 	"								var visible_name = 'visible_${name}' + val.id;    \n" + 
 	"								$(\"<input/>\", {    \n" + 
