@@ -60,7 +60,6 @@ public class AutoCompleteEditable extends Widget {
 
 			parrent.add(Tag.Type.SCRIPT, 
 														("                      \n" + 
-	"        $( document ).ready(function() {    \n" + 
 	"			$('#visible_${name}').on('input', function () {                      \n" + 
 	"				// ручной ввод без выбора из списка                      \n" + 
 	"				if ($(\"#visible_${name}\").val()){                      \n" + 
@@ -149,7 +148,7 @@ public class AutoCompleteEditable extends Widget {
 	"						return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"'> \" + suggestion.html + \"</div>\";            \n" + 
 	"					},                            \n" + 
 	"			});                      \n" + 
-	"		});          \n")
+	"	       \n")
 						.replace("${prefix}", (String) generator.getAttribute(TagGenerator.Attribute.PREFIX))
 						.replace("${couldnt_find}", CurrentLocale.getInstance().getTextSource().getString("couldnt_find"))
 						.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)

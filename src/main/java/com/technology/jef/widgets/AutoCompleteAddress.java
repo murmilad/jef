@@ -64,7 +64,6 @@ public class AutoCompleteAddress extends Widget {
 
 			 parrent.add(Tag.Type.SCRIPT, 
 																				("                            \n" + 
-	"        $( document ).ready(function() {                            \n" + 
 	"			var group_postfix='';                            \n" + 
 	"			if (match = 'visible_${name}'.match(/_group_.*/)){                            \n" + 
 	"				group_postfix = match[0]                            \n" + 
@@ -224,7 +223,7 @@ public class AutoCompleteAddress extends Widget {
 	"						} \n" + 
 	"					},                            \n" + 
 	"				});     \n" + 
-	"			});                \n")
+	"			                \n")
 						.replace("${couldnt_find}", CurrentLocale.getInstance().getTextSource().getString("couldnt_find"))
 						.replace("${sector}", CurrentLocale.getInstance().getTextSource().getString("sector"))
 						.replace("${building}", CurrentLocale.getInstance().getTextSource().getString("building"))
