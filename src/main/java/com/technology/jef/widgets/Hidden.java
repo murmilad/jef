@@ -21,6 +21,8 @@ public class Hidden extends Widget {
 		public Tag assembleTag(String name, TagGenerator generator) {
 			
 			((Tag) generator.getAttribute(TagGenerator.Attribute.VISIBLE_ROW)).setProperty(Tag.Property.STYLE, "display: none;");
+			((Tag) generator.getAttribute(TagGenerator.Attribute.VISIBLE_TAG)).setProperty(Tag.Property.STYLE, "display: none;");
+			
 
 			Tag elementInput = parrent.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);
