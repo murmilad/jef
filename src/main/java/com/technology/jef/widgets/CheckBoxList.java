@@ -99,7 +99,7 @@ public class CheckBoxList extends RadioSwitch {
 					"		$(\"#visible_${name}\").trigger('refresh'); \n" +
 					"		$(\":input[name^='visible_${name}']\").each( function(index, element){ \n" + 
 					"			if ($( this ).prop(\"checked\")){ \n" + 
-					"				$(\"input#${name}\").val($(\"input#${name}\").val() + ($(\"input#${name}\").val()? \"|\" : \"\") + $( this ).val()); \n" + 
+					"				$(\"input#${name}\").val($(\"input#${name}\").val() + ($(\"input#${name}\").val()? \"|\" : \"\") + $( this ).attr('value')); \n" + 
 					"			} \n" + 
 					"		}); \n" + 
 					"	} \n")

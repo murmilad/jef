@@ -172,12 +172,12 @@ public abstract class Widget {
 					"	});      \n" + 
 					"	function onChangeReadOnly${name}(current){       \n" + 
 					"		if (typeof current.value != 'undefined'){  \n" + 
-					"			$('input#${name}').val(current.value);       \n" + 
+					"			$('input#${name}').val($( current ).attr('value') || $( current ).prop('value'));       //IE9 support\n" + 
 					"		}  \n" + 
 					"	}       \n" + 
 					"	function onKeyDownReadOnly${name}(current){       \n" + 
 					"		if(window.event.keyCode == 13){       \n" + 
-					"			$('#visible_${name}').val(current.value).change();       \n" + 
+					"			$('#visible_${name}').val($( current ).attr('value') || $( current ).prop('value')).change();       //IE9 support\n" + 
 					"		}       \n" + 
 					"	}       \n")
 					.replace("${cleanValueJS}", this.getCleanValueJS().replace("${child_name}", name))
