@@ -172,7 +172,7 @@ public class AutoCompleteEditable extends Widget {
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.TYPE, "search");
-				 put(Tag.Property.STYLE, "padding-right:0px;width:100%;");
+				 put(Tag.Property.STYLE, "padding-right:0px;width:100%;margin-top:1px;margin-bottom:1px;");
 //				 put(Tag.Property.CHANGE, 	("var group_postfix='';  \n" + 
 //				"			if (match = '${name}'.match(/_group_.*/)){  \n" + 
 //				"				group_postfix = match[0]  \n" + 
