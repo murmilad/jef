@@ -17,7 +17,7 @@ Just cteate your Form inherited Class and implement Listeners for your fields
 ![](rest-form-parameters.gif)
 
 ###  Implement Load/Save methods
-Create load and save methods for sour Form
+Create load and save methods for your Form
 ![](rest-form-loadsave.gif)
 
 ### Register your new form
@@ -26,10 +26,8 @@ Create load and save methods for sour Form
 ## Technical details
 ### REST Entry point
 Implement Java services *aka Jersey, Django,.. etc.* using this Framework classess. 
-This link for Jersey realisation: 
-```
-https://github.com/murmilad/jefshowcase/blob/master/src/main/java/com/technology/showcase/jersey/FormWebService.java
-```
+This link for Jersey [realisation](https://github.com/murmilad/jefshowcase/blob/master/src/main/java/com/technology/showcase/jersey/FormWebService.java).
+
 If you use  non-Jersey realisation you can create your own FormWebService but using same functional as the link above .
 
 
