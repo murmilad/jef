@@ -1,9 +1,9 @@
 # Java Enterprise Form framework
 
-It's simple RESTy framework for fast developing forms with connected fields, like this:
-*Show case project https://github.com/murmilad/jefshowcase*
-
+It's simple RESTy framework for fast developing forms with dependent on each other fields, like this:
 ![](connected-elements.gif)
+
+*Show case project https://github.com/murmilad/jefshowcase*
 
 ## Howo to develop
 Simple bunch of steps:
