@@ -21,6 +21,7 @@ public class CheckBox extends Widget {
 		
 		Tag elementInput = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.CLASS, "widgets_height");
+			 put(Tag.Property.STYLE, "margin: 1px;");
 		}}).add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "visible_" + name);
 			 put(Tag.Property.NAME, "visible_" + name);
