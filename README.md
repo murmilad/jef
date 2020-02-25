@@ -1,7 +1,7 @@
 # Java Enterprise Form framework
 
 It's simple RESTy framework for fast developing forms with dependent on each other fields.
-You can simply create Forms with a dynamic hierarchical fields where the hierarchy based on other field values as below:
+You can simply create Forms also with a dynamic dependant fields as below:
 ![](connected-elements.gif)
 
 *Showcase project https://github.com/murmilad/jefshowcase*
