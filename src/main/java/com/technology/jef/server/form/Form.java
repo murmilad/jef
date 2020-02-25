@@ -291,7 +291,7 @@ public abstract class Form {
 						Pattern pattern = Pattern.compile("^(.+)_id$");
 						Matcher matcher = pattern.matcher(parametersMap.get(interfaceFieldName).getFieldName());
 		
-						if (matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
+						if ((fieldValue == null || !fieldValue.toString().contains(PARAMETER_NAME_VALUE_SEPARATOR)) && matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
 							String value = PARAMETER_NAME_VALUE_SEPARATOR;
 							if (formData.get(matcher.group(1) + "_name") != null) {
 								value = formData.get(parametersMap.get(interfaceFieldName).getFieldName()) +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");

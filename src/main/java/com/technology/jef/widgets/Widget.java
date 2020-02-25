@@ -167,7 +167,7 @@ public abstract class Widget {
 					"		}); \n" + 
 					"		$(\"input#${name}\").unbind(\"setValueOnLoad\");   \n" + 
 					"	});      \n" + 
-					"	$( document ).bind('setListOnLoad', function() {      \n" + 
+					"	$( document ).bind('setListOnLoad_${api}', function() {      \n" + 
 					"		${setItemsJS}     \n" + 
 					"	});      \n" + 
 					"	function onChangeReadOnly${name}(current){       \n" + 
@@ -183,6 +183,7 @@ public abstract class Widget {
 					.replace("${cleanValueJS}", this.getCleanValueJS().replace("${child_name}", name))
 					.replace("${setValueJS}", this.getSetValueJS().replace("${child_name}", name))
 					.replace("${name}", name)
+					.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))
 					.replace("${setItemsJS}",
 							((String[]) generator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT)).length == 0 // Грузим списки только если нет зависимостей
 								? this.getSetItemsJS()

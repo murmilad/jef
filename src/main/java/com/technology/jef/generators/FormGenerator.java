@@ -397,11 +397,11 @@ public class FormGenerator extends TagGenerator {
 	"						setTimeout(function( x ) {       \n" + 
 	"							var prefix = add_${multiplie_group_name}();       \n" + 
 	"							load_form_data_${group_api}(groupInitialParams${group_api}, prefix);         \n" + 
-	"							$( document ).trigger('setListOnLoad');                           \n" + 
+	"							$( document ).trigger('setListOnLoad_${group_api}');                           \n" + 
 	"						}, 100);      \n" + 
 	"					});       \n" + 
 	"					function add_${multiplie_group_name}() {       \n" + 
-	"						$( document ).unbind('setListOnLoad');       \n" + 
+	"						$( document ).unbind('setListOnLoad_${group_api}');       \n" + 
 	"						var groupPrefix = \"${multiplie_group_name}_\" + number_${multiplie_group_name};      \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").show();         \n" + 
 	"						$(\"#message_box_wait_${multiplie_group_name}\").show();         \n" + 
@@ -432,10 +432,10 @@ public class FormGenerator extends TagGenerator {
 	"						setButtonVisiblity('button_del', groupPrefix, parameters);   \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").hide();        \n" + 
 	"    	      					$(\"#message_box_wait_${multiplie_group_name}\").hide();        \n" + 
-	"						$( document ).trigger('setListOnLoad');       \n" + 
+	"						$( document ).trigger('setListOnLoad_${group_api}');       \n" + 
 	"						return groupPrefix;      \n" + 
 	"					}       \n" + 
-	"	$( document ).bind('setListOnLoad', function() {      \n" + 
+	"	$( document ).bind('setListOnLoad_${group_api}', function() {      \n" + 
 	"						var parameters = ${value_js};  \n" + 
 	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};  \n" + 
 	"						setButtonVisiblity('button_add', '${multiplie_group_name}', parameters);   \n" + 
@@ -509,14 +509,14 @@ public class FormGenerator extends TagGenerator {
 
 
 	"					load_form_data_${api}(data, '');     \n" + 
+	"					$( document ).trigger('setListOnLoad_${api}');                       \n" + 
+	"					$('#form_id').trigger('${api}_group_loaded');          \n" + 
 	"					formsWaitedToLoad--;                         \n" + 
 	"					if (formsWaitedToLoad === 0) {                         \n" + 
 	"						$(\"#message_overlay_wait_form\").hide();                         \n" + 
 	"    					$(\"#message_box_overlay_wait_form\").hide();                         \n" +
 	"    					$(\"#message_box_wait_form\").hide();                         \n" +
-	"						$( document ).trigger('setListOnLoad');                       \n" + 
 	"					}					                         \n" + 
-	"					$('#form_id').trigger('${api}_group_loaded');          \n" + 
 	"				});                       \n")
 		.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 		.replace("${service}", (String) getParrent().getAttribute(TagGenerator.Attribute.SERVICE))				
