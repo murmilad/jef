@@ -1,6 +1,7 @@
 package com.technology.jef.generators;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
@@ -236,7 +237,7 @@ public class InterfaceGenerator extends TagGenerator {
 		// Добавляем загрузку сгенерированного JS для текущего интерфейса 
 		dom.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.TYPE, "text/javascript");
-		     put(Tag.Property.SRC, "js/" + getAttribute(TagGenerator.Attribute.ID) + ".js");
+		     put(Tag.Property.SRC, "js/" + getAttribute(TagGenerator.Attribute.ID) + ".js?no_cache=" + new Random().nextInt(10000));
 		}});
 	}
 	
