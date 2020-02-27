@@ -396,9 +396,15 @@ public abstract class Form {
 				if (isVisibleField.matches(fieldRegex)) {
 					IsVisibleListener isVisibleListener = fieldsMap.get(isVisibleField).getIsVisibleListener();
 		
-					fieldsMap.get(isVisibleField).isVisibleListener((String parameterName, Map<String, String> parameters) -> {
-						return isVisibleListener.handle(parameterName, parameters) || listener.handle(parameterName, parameters);
-					});
+					if (isVisibleListener != null) {
+						fieldsMap.get(isVisibleField).isVisibleListener((String parameterName, Map<String, String> parameters) -> {
+							return isVisibleListener.handle(parameterName, parameters) && listener.handle(parameterName, parameters);
+						});
+					} else {
+						fieldsMap.get(isVisibleField).isVisibleListener((String parameterName, Map<String, String> parameters) -> {
+							return listener.handle(parameterName, parameters);
+						});
+					}
 				}
 			}
 
