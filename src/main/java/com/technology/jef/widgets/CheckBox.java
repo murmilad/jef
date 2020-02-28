@@ -48,7 +48,13 @@ public class CheckBox extends Widget {
 
 	@Override
 	protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
-		element.setProperty(Tag.Property.CHANGE, element.getProperty(Tag.Property.CHANGE) + "onChangeReadOnly" + name + "({value: this.checked ? 1 : 0});");
+		element.add(Tag.Type.SCRIPT, 	(" \n" + 
+			"			$('#visible_${name}').bindFirst('change', function(event){  \n" + 
+			"				onChangeReadOnly${name}({value: event.delegateTarget.checked ? 1 : 0});  \n" + 
+			"			});  \n")
+			.replace("${name}", name)
+		);
+		
 
 		return element;
 	}

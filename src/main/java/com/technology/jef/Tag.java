@@ -591,5 +591,21 @@ public class Tag {
 			}
 		}
 	}
+
+	public Tag locateDown(Type type) {
+		if (this.getType().equals(type)) {
+			return this;
+		} else {
+			for (Tag child : getChildren()) {
+				if (child.getType().equals(type)) {
+					return child;
+				} else {
+					return child.locateDown(type);
+				}
+			}
+		}
+		return null;
+	}
+
 }
 

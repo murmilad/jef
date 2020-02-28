@@ -55,14 +55,29 @@ public class InterfaceGenerator extends TagGenerator {
 		     put(Tag.Property.HREF, "css/jef.css?v=1.1.2");
 		}});
 
-		head.add(Tag.Type.SCRIPT, ("	$.ajaxSetup({scriptCharset: \"utf-8\" , contentType: \"application/json; charset=utf-8\"});  \n" + 
-					"	$.fn.isBound = function(type) {  \n" + 
-					"		    var data = $._data($(this).get(0), \"events\")[type];  \n" + 
-					"		    if (data === undefined || data.length === 0) {  \n" + 
-					"		        return false;  \n" + 
-					"		    }  \n" + 
-					"		    return true;  \n" + 
-					"	};")
+		head.add(Tag.Type.SCRIPT, 	("	$.ajaxSetup({scriptCharset: \"utf-8\" , contentType: \"application/json; charset=utf-8\"});   \n" + 
+			"	$.fn.isBound = function(type) {   \n" + 
+			"		    var data = $._data($(this).get(0), \"events\")[type];   \n" + 
+			"		    if (data === undefined || data.length === 0) {   \n" + 
+			"		        return false;   \n" + 
+			"		    }   \n" + 
+			"		    return true;   \n" + 
+			"	}; \n" + 
+			"	$.fn.bindFirst = function(name, fn) { \n" + 
+			"	    // bind as you normally would \n" + 
+			"	    // don't want to miss out on any jQuery magic \n" + 
+			"	    this.on(name, fn); \n" + 
+		
+			"	    // Thanks to a comment by @Martin, adding support for \n" + 
+			"	    // namespaced events too. \n" + 
+			"	    this.each(function() { \n" + 
+			"	        var handlers = $._data(this, 'events')[name.split('.')[0]]; \n" + 
+			"	        // take out the handler we just inserted from the end \n" + 
+			"	        var handler = handlers.pop(); \n" + 
+			"	        // move it at the beginning \n" + 
+			"	        handlers.splice(0, 0, handler); \n" + 
+			"	    }); \n" + 
+			"	}; \n")
 			, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.TYPE, "text/javascript");
 		     put(Tag.Property.SRC, "js/jquery-3.2.1.min.js");

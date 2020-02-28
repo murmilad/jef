@@ -32,7 +32,7 @@ public class FormData {
 	}
 
 	public void putValue(String interfaceFieldName, String value) {
-		this.values.put(interfaceFieldName, value);
+		this.values.put(interfaceFieldName, value != null ? value : "");
 	}
 
 	public String getValue(String interfaceFieldName) {

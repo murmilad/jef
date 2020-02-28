@@ -90,10 +90,10 @@ public class RadioSwitch extends List {
 	"				html: val.name,    \n" + 
 	"				'for': visible_name,    \n" + 
 	"			}).appendTo(\"#visible_${name}\");  \n" + 
-	"			$('#' + visible_name).click( function(event){ \n" + 
+	"			$('#' + visible_name).bindFirst('click', function(event){ \n" + 
 	"				onChangeReadOnly${name}(event.delegateTarget); \n" + 
 	"			}); \n" + 
-	"			$('#' + visible_name).change( function(event){ \n" + 
+	"			$('#' + visible_name).bindFirst('change', function(event){ \n" + 
 	"				onChangeReadOnly${name}(event.delegateTarget); \n" + 
 	"			}); \n" + 
 	"           $(\"#visible_${name}\" + val.id).styler({}); \n" +
@@ -203,10 +203,11 @@ public class RadioSwitch extends List {
 						.concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
 
 		// Вызываем функцию связи в событиях родительского элемента
-		for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
-			radioSwitch.setProperty(Tag.Property.CHANGE,
-					radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
-			radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
+		Tag parrentTag = parrentGenerator.getDom().locateDown(Tag.Type.INPUT);
+		if (parrentTag != null) {
+			parrentTag.setProperty(Tag.Property.CHANGE,
+			parrentTag.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
+			parrentTag.setProperty(Tag.Property.CLICK, parrentTag.getProperty(Tag.Property.CLICK).concat(onChangeJS));
 		}
 
 		return super.getVisibleConnectJS(currentGenerator, parrentGenerator);
@@ -222,10 +223,11 @@ public class RadioSwitch extends List {
 						.concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
 
 		// Вызываем функцию связи в событиях родительского элемента
-		for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
-			radioSwitch.setProperty(Tag.Property.CHANGE,
-					radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
-			radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
+		Tag parrentTag = parrentGenerator.getDom().locateDown(Tag.Type.INPUT);
+		if (parrentTag != null) {
+			parrentTag.setProperty(Tag.Property.CHANGE,
+			parrentTag.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
+			parrentTag.setProperty(Tag.Property.CLICK, parrentTag.getProperty(Tag.Property.CLICK).concat(onChangeJS));
 		}
 
 		return super.getActiveConnectJS(currentGenerator, parrentGenerator);
@@ -247,10 +249,11 @@ public class RadioSwitch extends List {
 						.concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))));
 
 		// Вызываем функцию связи в событиях родительского элемента
-		for (Tag radioSwitch : parrentGenerator.getDom().getChildren()) {
-			radioSwitch.setProperty(Tag.Property.CHANGE,
-					radioSwitch.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
-			radioSwitch.setProperty(Tag.Property.CLICK, radioSwitch.getProperty(Tag.Property.CLICK).concat(onChangeJS));
+		Tag parrentTag = parrentGenerator.getDom().locateDown(Tag.Type.INPUT);
+		if (parrentTag != null) {
+			parrentTag.setProperty(Tag.Property.CHANGE,
+			parrentTag.getProperty(Tag.Property.CHANGE).concat(onChangeJS));
+			parrentTag.setProperty(Tag.Property.CLICK, parrentTag.getProperty(Tag.Property.CLICK).concat(onChangeJS));
 		}
 
 		super.getListConnectJS(currentGenerator, parrentGenerator);

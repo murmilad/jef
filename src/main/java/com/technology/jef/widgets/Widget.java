@@ -172,7 +172,7 @@ public abstract class Widget {
 					"	});      \n" + 
 					"	function onChangeReadOnly${name}(current){       \n" + 
 					"		if (typeof current.value != 'undefined'){  \n" + 
-					"			$('input#${name}').val($( current ).attr('value') || $( current ).prop('value'));       //IE9 support\n" + 
+					"			$('input#${name}').val(current.value || $( current ).attr('value') || $( current ).prop('value') );       //IE9 support\n" + 
 					"		}  \n" + 
 					"	}       \n" + 
 					"	function onKeyDownReadOnly${name}(current){       \n" + 
@@ -220,9 +220,18 @@ public abstract class Widget {
 	   */
 		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
 
-			element.setProperty(Tag.Property.BLUR, element.getProperty(Tag.Property.BLUR) + "onChangeReadOnly" + name + "(this);");
-			element.setProperty(Tag.Property.CHANGE, element.getProperty(Tag.Property.CHANGE) + "onChangeReadOnly" + name + "(this);");
-			element.setProperty(Tag.Property.KEYDOWN, element.getProperty(Tag.Property.KEYDOWN) + "onChangeReadOnly" + name + "(this);");
+			element.add(Tag.Type.SCRIPT, 		("  \n" + 
+				"			$('#visible_${name}').bindFirst('blur', function(event){   \n" + 
+				"				onChangeReadOnly${name}(event.delegateTarget);   \n" + 
+				"			});   \n" + 
+				"			$('#visible_${name}').bindFirst('change', function(event){   \n" + 
+				"				onChangeReadOnly${name}(event.delegateTarget);   \n" + 
+				"			});   \n" + 
+				"			$('#visible_${name}').bindFirst('keydown', function(event){   \n" + 
+				"				onChangeReadOnly${name}(event.delegateTarget);   \n" + 
+				"			});   \n")
+				.replace("${name}", name)
+				);
 			 
 			return element;
 		}
