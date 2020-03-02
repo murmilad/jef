@@ -412,6 +412,29 @@ public abstract class Form {
 			return fieldsMap;
 		}	
 
+		protected static Map<String, Field> addIsRequired(String fieldRegex, IsRequiredListener listener, Map<String, Field> fieldsMap) {
+
+			
+			for (String isRequiredField: fieldsMap.keySet()) {
+				if (isRequiredField.matches(fieldRegex)) {
+					IsRequiredListener isRequiredListener = fieldsMap.get(isRequiredField).getIsRequiredListener();
+		
+					if (isRequiredListener != null) {
+						fieldsMap.get(isRequiredField).isRequiredListener((String parameterName, Map<String, String> parameters) -> {
+							return isRequiredListener.handle(parameterName, parameters) && listener.handle(parameterName, parameters);
+						});
+					} else {
+						fieldsMap.get(isRequiredField).isRequiredListener((String parameterName, Map<String, String> parameters) -> {
+							return listener.handle(parameterName, parameters);
+						});
+					}
+				}
+			}
+
+			
+			return fieldsMap;
+		}	
+
 		protected static Map<String, Field> addCheck(String fieldRegex, CheckListener listener, Map<String, Field> fieldsMap) {
 
 			
@@ -420,7 +443,11 @@ public abstract class Form {
 					CheckListener checkListener = fieldsMap.get(checkField).getCheckListener();
 		
 					fieldsMap.get(checkField).checkListener((String parameterName, Map<String, String> parameters) -> {
-						List<String> result = checkListener.handle(parameterName, parameters);
+
+						List<String> result = new LinkedList<String>();
+						if (checkListener != null) {
+							result = checkListener.handle(parameterName, parameters);
+						}
 						for (String error : listener.handle(parameterName, parameters)) {
 							result.add(error);
 						}
