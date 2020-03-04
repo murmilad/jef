@@ -88,7 +88,7 @@ public class PopUpList extends Widget {
 			// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
 			currentGenerator.getDom().add(Tag.Type.SCRIPT,
 					(
-					" $(\"#visible_${parrent_name}\").change(function(){\n" +
+					" $(\"#visible_${parrent_name}\").bind('change', function(){\n" +
 					"		$(\"input#${child_name}\").trigger('cleanValue');\n" +
 					" }); \n")
 					.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))

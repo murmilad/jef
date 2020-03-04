@@ -103,7 +103,7 @@ public class List extends Widget {
 			// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
 			currentGenerator.getDom().add(Tag.Type.SCRIPT,
 					(
-					" $(\"#visible_${parrent_name}\").change(function(){\n" +
+					" $(\"#visible_${parrent_name}\").bind('change', function(){\n" +
 					"		onChange${parrent_name}_${child_name}_ct_ajax_list(this);\n" +
 					" }); \n")
 					.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))

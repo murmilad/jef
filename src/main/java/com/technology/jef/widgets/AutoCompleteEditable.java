@@ -225,10 +225,10 @@ public class AutoCompleteEditable extends Widget {
 				
 				return  		("  \n" + 
 	"	if (data.value != '') { \n" + 
-	"		$('#visible_${child_name}').val(data.name).blur().change();  \n" + 
+	"		$('#visible_${child_name}').val(data.name).blur().trigger('autoCompleteChange');  \n" + 
 	"		$('input#${child_name}').val(data.value);  \n" + 
 	"	} else { \n" + 
-	"		$('#visible_${child_name}').val('---').blur().change();  \n" + 
+	"		$('#visible_${child_name}').val('---').blur().trigger('autoCompleteChange');  \n" + 
 	"		$('input#${child_name}').val('');  \n" + 
 	"	} \n")
 				;
@@ -281,7 +281,7 @@ public class AutoCompleteEditable extends Widget {
 					// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
 					currentGenerator.getDom().add(Tag.Type.SCRIPT,
 							(
-							" $(\"#visible_${parrent_name}\").change(function(){\n" +
+							" $(\"#visible_${parrent_name}\").bind('change', function(){\n" +
 							"		onChange${parrent_name}_${child_name}_ct_ajax_value(this);\n" +
 							" }); \n")
 							.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
