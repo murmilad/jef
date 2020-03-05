@@ -53,8 +53,8 @@ public class DaData extends Widget {
 	"									dadata_key = responce.dadata_key;   \n" + 
 	"									dadata_url = responce.dadata_url;   \n" + 
 	"									if (!dadata_key || !dadata_url){    \n" + 
-	"			  							$('#visible_${name}').attr(\"placeholder\", \"${dadata_is_not_configured}\");    \n" + 
-	"										$('#visible_${name}').attr(\"disabled\", \"disabled\");    \n" + 
+	"			  							$('#visible_${name}${group_prefix}').attr(\"placeholder\", \"${dadata_is_not_configured}\");    \n" + 
+	"										$('#visible_${name}${group_prefix}').attr(\"disabled\", \"disabled\");    \n" + 
 	"  							          	} else {    \n" + 
 	"  							          	 var token = 'Token ' + dadata_key;   \n" + 
 	"								         $.ajax({    \n" + 
@@ -66,7 +66,7 @@ public class DaData extends Widget {
 	"       						                             'Accept': 'application/json' \n" + 
 	"										}, \n" + 
 	"		            				                success: function() {    \n" + 
-	"														$('#visible_${name}').autocomplete({    \n" + 
+	"														$('#visible_${name}${group_prefix}').autocomplete({    \n" + 
 	"															serviceUrl: dadata_url,    \n" + 
 	"															deferRequestBy: 1000,    \n" + 
 	"															type:'POST',    \n" + 

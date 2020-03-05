@@ -417,17 +417,10 @@ public abstract class Form {
 			
 			for (String isRequiredField: fieldsMap.keySet()) {
 				if (isRequiredField.matches(fieldRegex)) {
-					IsRequiredListener isRequiredListener = fieldsMap.get(isRequiredField).getIsRequiredListener();
 		
-					if (isRequiredListener != null) {
-						fieldsMap.get(isRequiredField).isRequiredListener((String parameterName, Map<String, String> parameters) -> {
-							return isRequiredListener.handle(parameterName, parameters) && listener.handle(parameterName, parameters);
-						});
-					} else {
-						fieldsMap.get(isRequiredField).isRequiredListener((String parameterName, Map<String, String> parameters) -> {
-							return listener.handle(parameterName, parameters);
-						});
-					}
+					fieldsMap.get(isRequiredField).isRequiredListener((String parameterName, Map<String, String> parameters) -> {
+						return listener.handle(parameterName, parameters);
+					});
 				}
 			}
 

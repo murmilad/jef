@@ -366,11 +366,12 @@ public abstract class Widget {
 				String ignoreEmptyJS =
 						("			if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)) {\n" + 
 								"				$('#tr_${child_name}').css(\"display\", 'none');\n" + 
-								"				$('#visible_${child_name}').val('').change();\n" + 
+								"				${clean_value_js}\n" + 
 								"				$('input#${child_name}').attr('invisible', true);\n" + 
 								"				$('#tr_${child_name}').trigger('refresh');\n" + 
 								"				return;" + 
 								"			}")
+								.replace("${clean_value_js}", getCleanValueJS())
 								.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 								.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 								.replace("${value_js}", valueJS)
@@ -419,7 +420,7 @@ public abstract class Widget {
 							"										$('input#${child_name}').attr('invisible', false);        \n" + 
 							"								} else {        \n" + 
 							"									$('#tr_${child_name}').css(\"display\", 'none');        \n" + 
-							"									$('#visible_${child_name}').val('').change();        \n" + 
+							"									${clean_value_js}        \n" + 
 							"									$('input#${child_name}').attr('invisible', true);        \n" + 
 							"								}        \n" + 
 							"							$('#tr_${child_name}').trigger('refresh');        \n" + 
@@ -443,6 +444,7 @@ public abstract class Widget {
 							"							$(\"#visible_${child_name}\").trigger('refresh');        \n" + 
 							"					});        \n" + 
 							"				}        \n")
+							.replace("${clean_value_js}", getCleanValueJS())
 							.replace("${handler}", handler)
 							.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 							.replace("${ignore_empty_js}", ignoreEmptyJS)
@@ -562,7 +564,7 @@ public abstract class Widget {
 				"										}      \n" + 
 				"									}      \n" + 
 				"								}else{      \n" + 
-				"									if ($('input#${child_name}').attr('invisible') == 'false') {Value      \n" + 
+				"									if ($('input#${child_name}').attr('invisible') == 'false') {      \n" + 
 				"										if ((document.getElementById && !document.all) || window.opera)      \n" + 
 				"											${child_name}.css(\"display\",'table-row');      \n" + 
 				"										else      \n" + 

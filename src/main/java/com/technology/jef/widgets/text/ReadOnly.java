@@ -30,5 +30,9 @@ public class ReadOnly extends Text {
 			
 			return inputText;
 		}
-		
+
+		@Override
+		public String getCleanValueJS() {
+			return "";
+		}
 }
