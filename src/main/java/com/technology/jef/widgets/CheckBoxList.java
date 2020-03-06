@@ -45,8 +45,8 @@ public class CheckBoxList extends RadioSwitch {
 	"					contentType: 'application/x-www-form-urlencoded'  \n" + 
 	"				}, function( data ) {      \n" + 
 	"					$(\"#visible_${name}\").empty();          \n" + 
-	"					${list_item_js}          \n" + 
 	"					$(\"#visible_${name}\").removeAttr('disabled');          \n" + 
+	"					${list_item_js}          \n" + 
 	"					$(\"#background_overlay_wait_${name}\").hide();          \n" + 
 	"					$(\"#message_box_wait_${name}\").hide();          \n" + 
 	"					$(\"input#${name}\").trigger('unlock');         \n" + 
@@ -144,6 +144,7 @@ public class CheckBoxList extends RadioSwitch {
 				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
 				"				$( element ).prop( \"disabled\", false); \n	" +
 				"			}); \n " +
+				"           $(\"#visible_${child_name}\").find(\"input\").trigger('refresh');" +
 				"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
 				"		} else { \n " +
 				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 

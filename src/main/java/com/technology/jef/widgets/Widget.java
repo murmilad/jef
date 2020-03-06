@@ -313,6 +313,7 @@ public abstract class Widget {
 			"		if (data.value) { \n " + 
 			"			$('#visible_${child_name}').prop( \"disabled\", false); \n " +
 			"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+			"           $(\"#visible_${child_name}\").trigger('refresh');" +
 			"		} else { \n " +
 			"			$('#visible_${child_name}').prop( \"disabled\", true); \n " +
 			"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
