@@ -379,7 +379,7 @@ public abstract class Widget {
 								.replace("${child_name}", currentGenerator.getAttribute(TagGenerator.Attribute.ID) + prefix);
 
 				if (!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX))) {
-					ignoreEmptyJS = ignoreEmptyJS.replace("${force_ajax}", "(?!" + (String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX) + ")");
+					ignoreEmptyJS = ignoreEmptyJS.replace("${force_ajax}", "(^|:p:)(?!" + ((String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + ")\\w*");
 				} else {
 					ignoreEmptyJS = ignoreEmptyJS.replace("${force_ajax}", "");
 				}
@@ -595,7 +595,7 @@ public abstract class Widget {
 				" }      \n")
 			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
-			.replace("${force_ajax}", !"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)) ? ("(?!" + (String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX) + ")") : "")
+			.replace("${force_ajax}", !"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)) ? ("(^|:p:)(?!" + ((String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + ")\\w*") : "")
 			.replace("${clean_value_js}", initValueJS)
 			.replace("${set_value_js}", setValueJS)
 			.replace("${handler}", handler)

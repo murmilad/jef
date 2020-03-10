@@ -226,10 +226,10 @@ public class AutoCompleteEditable extends Widget {
 				
 				return  		("  \n" + 
 	"	if (data.value != '') { \n" + 
-	"		$('#visible_${child_name}').val(data.name).blur().change();  \n" + 
+	"		$('#visible_${child_name}').val(data.name).blur().change().trigger('autoCompleteChange');  \n" + 
 	"		$('input#${child_name}').val(data.value);  \n" + 
 	"	} else { \n" + 
-	"		$('#visible_${child_name}').val('---').blur().change();  \n" + 
+	"		$('#visible_${child_name}').val('---').blur().change().trigger('autoCompleteChange');  \n" + 
 	"		$('input#${child_name}').val('');  \n" + 
 	"	} \n")
 				;

@@ -342,8 +342,8 @@ public class RadioSwitch extends List {
 						.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 						.replace("${force_ajax}",
 								!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX))
-										? ("(?!" + (String) currentGenerator
-												.getAttribute(TagGenerator.Attribute.FORCE_AJAX) + ")")
+										? ("(^|:p:)(?!" + ((String) currentGenerator
+												.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + ")\\w*")
 										: "")
 						.replace("${value_js}", valueJS)
 						.replace("${list_item_js}", getListItemJS().replace("${name}", name))

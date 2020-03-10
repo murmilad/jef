@@ -286,7 +286,7 @@ public class AutoCompleteAddress extends Widget {
 			public String getSetValueJS() {
 				
 				return  	" \n" + 
-				"	$('#visible_${child_name}').val(data.value.split('|').pop()).blur().change(); \n" + 
+				"	$('#visible_${child_name}').val(data.value.split('|').pop()).blur().change().trigger('autoCompleteChange'); \n" + 
 				"	$('input#${child_name}').val(data.value).change(); \n"  
 				;
 			}
