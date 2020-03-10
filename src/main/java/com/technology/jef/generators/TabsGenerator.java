@@ -70,7 +70,7 @@ public class TabsGenerator extends TagGenerator {
 			dom.add(Tag.Type.SCRIPT, 
 									("				$( document ).ready(function() {                          \n" + 
 	"			            		$(\"#message_box_wait_tab\").show(); \n" + 
-	"						loadForm('${form}'); \n" + 
+	"						loadForm(uri_params['form_id'] || '${form}'); \n" + 
 	"				});    \n" + 
 	"				function loadForm(formId) {    \n" + 
 	"			            $(\"#message_box_wait_tab\").show();                                    \n" + 

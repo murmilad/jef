@@ -271,6 +271,7 @@ public class FormGenerator extends TagGenerator {
 	"			    					$(\"#message_box_overlay_wait_form\").hide();                         \n" +
 	"    								$(\"#message_box_wait_form\").hide();                         \n" +
 	"									window.scrollTo(0, 0);              \n" + 
+	"									$('#${name}').trigger('error', [data]);" +
 	"								} else {          \n" + 
 	"									$('#error').hide();         \n" + 
 	"									$('#${name}').trigger('set', [data]);" +
