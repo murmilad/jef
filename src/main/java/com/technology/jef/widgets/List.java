@@ -124,7 +124,7 @@ public class List extends Widget {
 			"							$(\"#background_overlay_wait_${parrent_name}\").show();           \n" + 
 			"            				$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
 			"							$(\"input#${parrent_name}\").trigger('lock');         \n" + 
-			"							$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");           \n" + 
+			"							$(\"#visible_${parrent_name}\").attr('disabled', 'disabled').trigger('refresh');           \n" + 
 			"							$(\"#visible_${parrent_name}\").addClass(\"second_color\");        \n" + 
 			"							$(\"#visible_${parrent_name}\").removeClass(\"first_text_color\");        \n" + 
 			"							$(\"#visible_${parrent_name}\").trigger('refresh');           \n" + 
@@ -177,7 +177,7 @@ public class List extends Widget {
 			"									--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];           \n" + 
 			"									$(\"#visible_${child_name}\").trigger('set_find_result');           \n" + 
 			"									if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {           \n" + 
-			"										if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {     \n" + 
+			"										if ($(\"#${parrent_name}\" ).attr('data-disabled') !== 'true') {     \n" + 
 			"											$(\"#visible_${parrent_name}\").removeAttr('disabled');     \n" + 
 			"											$(\"#visible_${parrent_name}\").removeClass(\"second_color\");        \n" + 
 			"										}     \n" + 

@@ -131,22 +131,22 @@ public abstract class Widget {
 			).flatMap(Stream::of).toArray(String[]::new)) {
 				resultElement.add(Tag.Type.SCRIPT,							("    \n" + 
 	"	$('input#${name}').on('lock', function () {   \n" + 
-	"		if (!$('input#${parrent_name}').attr('data-disabled')) {  \n" + 
+	"		if ($('input#${parrent_name}').attr('data-disabled') !== 'true') {  \n" + 
 	"			$('input#${parrent_name}').trigger('setLocked');  \n" + 
 	"		} \n" + 
 	"	});    \n" + 
 	"	$('input#${name}').on('unlock', function () {    \n" + 
-	"		if (!$('input#${parrent_name}').attr('data-disabled')) {  \n" + 
+	"		if ($('input#${parrent_name}').attr('data-disabled') !== 'true') {  \n" + 
 	"			$('input#${parrent_name}').trigger('setUnlocked');  \n" + 
 	"		} \n" + 
 	"	});    \n" + 
 	"	$('input#${parrent_name}').on('lock', function () {   \n" + 
-	"		if (!$('input#${name}').attr('data-disabled')) {  \n" + 
+	"		if ($('input#${name}').attr('data-disabled') !== 'true') {  \n" + 
 	"			$('input#${name}').trigger('setLocked');  \n" + 
 	"		} \n" + 
 	"	});    \n" + 
 	"	$('input#${parrent_name}').on('unlock', function () {    \n" + 
-	"		if (!$('input#${name}').attr('data-disabled')) {  \n" + 
+	"		if ($('input#${name}').attr('data-disabled') !== 'true') {  \n" + 
 	"			$('input#${name}').trigger('setUnlocked');  \n" + 
 	"		} \n" + 
 	"	});    \n")
@@ -389,7 +389,7 @@ public abstract class Widget {
 							"					var valueJS = ${value_js};     \n" + 
 							"					${ignore_empty_js}         \n" + 
 							"					$('input#${child_name}').attr('invisible', true);        \n" + 
-							"					$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");        \n" + 
+							"					$(\"#visible_${parrent_name}\").attr('disabled', 'disabled').trigger('refresh');        \n" + 
 							"					$(\"#visible_${parrent_name}\").trigger('refresh');        \n" + 
 							"					$(\"#background_overlay_wait_${parrent_name}\").show();        \n" + 
 							"	            	$(\"#message_box_wait_${parrent_name}\").show();        \n" + 
@@ -429,10 +429,9 @@ public abstract class Widget {
 							"							$(\"#visible_${child_name}\").trigger(\"set_find_result\");        \n" + 
 							"							if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {        \n" + 
 							"								$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');  \n" + 
-							"								if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {  \n" + 
+							"								if ($(\"#${parrent_name}\" ).attr('data-disabled') !== 'true') {  \n" + 
 							"									$(\"#visible_${parrent_name}\").removeAttr('disabled');  \n" + 
 							"								}  \n" + 
-							"								$(\"#visible_${parrent_name}\").removeAttr('disabled');        \n" + 
 							"								$(\"#background_overlay_wait_${parrent_name}\").hide();        \n" + 
 							"	            				$(\"#message_box_wait_${parrent_name}\").hide();        \n" + 
 							"								$(\"input#${parrent_name}\").trigger('unlock');         \n" + 
@@ -516,7 +515,7 @@ public abstract class Widget {
 				"						if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)){ return };           \n" + 
 				"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 				"						$(\"#visible_${child_name}\").trigger('refresh');      \n" + 
-				"						$(\"#visible_${parrent_name}\").attr(\"disabled\",\"disabled\");      \n" + 
+				"						$(\"#visible_${parrent_name}\").attr('disabled', 'disabled').trigger('refresh');      \n" + 
 				"						$(\"#visible_${parrent_name}\").trigger('refresh');      \n" + 
 				"						$(\"#background_overlay_wait_${parrent_name}\").show();      \n" + 
 				"		            	$(\"#message_box_wait_${parrent_name}\").show();      \n" + 
@@ -575,7 +574,7 @@ public abstract class Widget {
 				"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];      \n" + 
 				"								$(\"#visible_${child_name}\").trigger('set_find_result');      \n" + 
 				"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {      \n" + 
-				"									if (!$(\"#tr_${parrent_name}\" ).hasClass('disabled')) {  \n" + 
+				"									if ($(\"#${parrent_name}\" ).attr('data-disabled') !== 'true') {  \n" + 
 				"										$(\"#visible_${parrent_name}\").removeAttr('disabled');  \n" + 
 				"									}  \n" + 
 				"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');      \n" + 

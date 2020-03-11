@@ -304,6 +304,8 @@ public abstract class Form {
 						
 							this.formData.putValue(interfaceFieldName, fieldValue != null ? fieldValue.toString() : "");
 						}
+					} else {
+						this.formData.putValue(interfaceFieldName, "");
 					}
 				} else {
 					throw new ServiceException("Undeclared parameter '" + interfaceFieldName + "' for interface: " + this.getClass());

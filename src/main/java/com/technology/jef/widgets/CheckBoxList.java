@@ -122,6 +122,7 @@ public class CheckBoxList extends RadioSwitch {
 	"									'name' : 'visible_${name}',    \n" + 
 	"									'value' : val.id,    \n" + 
 	"									'type' : 'checkbox',    \n" + 
+	"									'disabled' : $('input#${name}').attr('data-disabled')," + 
 	"								}).appendTo(\"#\" + span_name);    \n" + 
 	"								$(\"<label/>\", {    \n" + 
 	"									html : val.name,    \n" + 
@@ -173,18 +174,18 @@ public class CheckBoxList extends RadioSwitch {
 	"		$(\"#visible_${child_name}\").bind('setValue', function(){     \n" + 
 	"			$('input#${child_name}').val(data.value);    \n" + 
 	"			data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {   \n" + 
-	"				$('#visible_${child_name}' + currentValue).prop('checked', true);     \n" + 
-	"				$('#visible_${child_name}' + currentValue).change();    \n" + 
 	"				$('#visible_${child_name}' + currentValue).click();    \n" + 
+	"				$('#visible_${child_name}' + currentValue).prop('checked', true).trigger('refresh');     \n" + 
+	"				$('#visible_${child_name}' + currentValue).change();    \n" + 
 	"				$(\"#visible_${child_name}\" + currentValue).trigger('refresh');     \n" + 
 	"			});   \n" + 
 	"		});     \n" + 
 	"	} else {  \n" + 
 	"	$('input#${child_name}').val(data.value);    \n" + 
 	"		data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {   \n" + 
-	"			$('#visible_${child_name}' + currentValue).prop('checked', true);     \n" + 
-	"			$('#visible_${child_name}' + currentValue).change();    \n" + 
 	"			$('#visible_${child_name}' + currentValue).click();    \n" + 
+	"			$('#visible_${child_name}' + currentValue).prop('checked', true).trigger('refresh');     \n" + 
+	"			$('#visible_${child_name}' + currentValue).change();    \n" + 
 	"			$(\"#visible_${child_name}\" + currentValue).trigger('refresh');     \n" + 
 	"		});   \n" + 
 	"	}  \n")

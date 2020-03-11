@@ -531,7 +531,7 @@ public class FormGenerator extends TagGenerator {
 	"					if (data.status_code === 1) {                         \n" + 
 	"						$.each(data.parameters, function(key, parameter) {                \n" + 
 	"							if (parameter.attributes.READONLY) {                         \n" + 
-	"				 				$('#visible_' + key + groupPrefix).prop( \"disabled\", true);                    \n" + 
+	"				 				$('#visible_' + key + groupPrefix).attr('disabled', 'disabled').trigger('refresh');                    \n" + 
 	"				 				$('input#' + key + groupPrefix).attr( \"data-disabled\", true);                    \n" + 
 	"					 			$(\"#tr_\" + key + groupPrefix).css('color', 'lightgray');                    \n" + 
 	"							};                   \n" + 
