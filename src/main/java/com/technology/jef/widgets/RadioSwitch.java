@@ -84,7 +84,7 @@ public class RadioSwitch extends List {
 	"				'type': 'radio',    \n" + 
 	"				'id': visible_name,    \n" + 
 	"				'name': 'visible_${name}',    \n" + 
-	"				'disabled' : $('input#${name}').attr('data-disabled')," + 
+	"				'disabled' : $('input#${name}').attr('data-disabled') ? 'disabled' : false ," + 
 	"			}).appendTo(\"#visible_${name}\");   \n" + 
 	"			$(\"<label/>\", {    \n" + 
 	"				style: 'margin:3px;',    \n" + 
@@ -321,7 +321,7 @@ public class RadioSwitch extends List {
 	"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];             \n" + 
 	"								$(\"#visible_${child_name}\").trigger('set_find_result');             \n" + 
 	"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {             \n" + 
-	"									if ($(\"#${parrent_name}\" ).attr('data-disabled') !== 'true') {       \n" + 
+	"									if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {       \n" + 
 	"										$(\"#visible_${parrent_name}\").removeAttr('disabled');       \n" + 
 	"									}       \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');             \n" + 

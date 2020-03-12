@@ -122,7 +122,7 @@ public class CheckBoxList extends RadioSwitch {
 	"									'name' : 'visible_${name}',    \n" + 
 	"									'value' : val.id,    \n" + 
 	"									'type' : 'checkbox',    \n" + 
-	"									'disabled' : $('input#${name}').attr('data-disabled')," + 
+	"									'disabled' : $('input#${name}').attr('data-disabled') ? 'disabled' : false," + 
 	"								}).appendTo(\"#\" + span_name);    \n" + 
 	"								$(\"<label/>\", {    \n" + 
 	"									html : val.name,    \n" + 

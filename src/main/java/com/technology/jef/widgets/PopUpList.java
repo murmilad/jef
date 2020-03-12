@@ -181,14 +181,14 @@ public class PopUpList extends Widget {
 	"									$( \"#popup_${child_name}\" ).remove();            \n" + 
 	"									$(\"#fake_visible_${child_name}\").val('${list_empty}');            \n" + 
 	"									$(\"input#${child_name}\").val('');            \n" + 
-	"									if ($(\"#${parrent_name}\" ).attr('data-disabled') !== 'true') {      \n" + 
+	"									if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {      \n" + 
 	"										$(\"#visible_${parrent_name}\").removeAttr('disabled');      \n" + 
 	"									}      \n" + 
 	"									$(\"#fake_visible_${child_name}\").removeAttr('disabled');            \n" + 
 	"									--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];            \n" + 
 	"									$(\"#visible_${child_name}\").trigger('set_find_result');            \n" + 
 	"									if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {            \n" + 
-	"										if ($(\"#${parrent_name}\" ).attr('data-disabled') !== 'true') {     \n" + 
+	"										if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {     \n" + 
 	"											$(\"#visible_${parrent_name}\").removeAttr('disabled');     \n" + 
 	"										}     \n" + 
 	"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');            \n" + 
@@ -204,7 +204,7 @@ public class PopUpList extends Widget {
 	"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];            \n" + 
 	"								$(\"#visible_${child_name}\").trigger('set_find_result');            \n" + 
 	"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {            \n" + 
-	"									if ($(\"#${parrent_name}\" ).attr('data-disabled') !== 'true') {    \n" + 
+	"									if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {    \n" + 
 	"										$(\"#visible_${parrent_name}\").removeAttr('disabled');    \n" + 
 	"									}    \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');            \n" + 

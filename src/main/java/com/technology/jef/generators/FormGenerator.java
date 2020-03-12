@@ -532,11 +532,11 @@ public class FormGenerator extends TagGenerator {
 	"						$.each(data.parameters, function(key, parameter) {                \n" + 
 	"							if (parameter.attributes.READONLY) {                         \n" + 
 	"				 				$('#visible_' + key + groupPrefix).attr('disabled', 'disabled').trigger('refresh');                    \n" + 
-	"				 				$('input#' + key + groupPrefix).attr( \"data-disabled\", true);                    \n" + 
+	"				 				$('input#' + key + groupPrefix).attr( \"data-disabled\", 'attribute');                    \n" + 
 	"					 			$(\"#tr_\" + key + groupPrefix).css('color', 'lightgray');                    \n" + 
 	"							};                   \n" + 
 	"							if (parameter.attributes.INVISIBLE) {                         \n" + 
-	"				 				$('input#' + key + groupPrefix).attr( \"data-invisible\", true);                    \n" + 
+	"				 				$('input#' + key + groupPrefix).attr( \"data-invisible\", 'attribute');                    \n" + 
 	"					 			$(\"#tr_\" + key + groupPrefix).css('display', 'none');                    \n" + 
 	"							};                   \n" + 
 	"						});                        \n" + 

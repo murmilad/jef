@@ -131,22 +131,22 @@ public abstract class Widget {
 			).flatMap(Stream::of).toArray(String[]::new)) {
 				resultElement.add(Tag.Type.SCRIPT,							("    \n" + 
 	"	$('input#${name}').on('lock', function () {   \n" + 
-	"		if ($('input#${parrent_name}').attr('data-disabled') !== 'true') {  \n" + 
+	"		if (!$('input#${parrent_name}').attr('data-disabled')) {  \n" + 
 	"			$('input#${parrent_name}').trigger('setLocked');  \n" + 
 	"		} \n" + 
 	"	});    \n" + 
 	"	$('input#${name}').on('unlock', function () {    \n" + 
-	"		if ($('input#${parrent_name}').attr('data-disabled') !== 'true') {  \n" + 
+	"		if (!$('input#${parrent_name}').attr('data-disabled')) {  \n" + 
 	"			$('input#${parrent_name}').trigger('setUnlocked');  \n" + 
 	"		} \n" + 
 	"	});    \n" + 
 	"	$('input#${parrent_name}').on('lock', function () {   \n" + 
-	"		if ($('input#${name}').attr('data-disabled') !== 'true') {  \n" + 
+	"		if (!$('input#${name}').attr('data-disabled')) {  \n" + 
 	"			$('input#${name}').trigger('setLocked');  \n" + 
 	"		} \n" + 
 	"	});    \n" + 
 	"	$('input#${parrent_name}').on('unlock', function () {    \n" + 
-	"		if ($('input#${name}').attr('data-disabled') !== 'true') {  \n" + 
+	"		if (!$('input#${name}').attr('data-disabled')) {  \n" + 
 	"			$('input#${name}').trigger('setUnlocked');  \n" + 
 	"		} \n" + 
 	"	});    \n")
@@ -429,7 +429,7 @@ public abstract class Widget {
 							"							$(\"#visible_${child_name}\").trigger(\"set_find_result\");        \n" + 
 							"							if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {        \n" + 
 							"								$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');  \n" + 
-							"								if ($(\"#${parrent_name}\" ).attr('data-disabled') !== 'true') {  \n" + 
+							"								if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {  \n" + 
 							"									$(\"#visible_${parrent_name}\").removeAttr('disabled');  \n" + 
 							"								}  \n" + 
 							"								$(\"#background_overlay_wait_${parrent_name}\").hide();        \n" + 
@@ -478,7 +478,7 @@ public abstract class Widget {
 						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 				);
 
-				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), getSetActiveJS().concat("$('input#${child_name}').attr('data-disabled', data.value)"), valueJS, "is_active");
+				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), getSetActiveJS().concat("if ($('input#${child_name}').attr('data-disabled') !== 'attribute') { $('input#${child_name}').attr('data-disabled', 'interactive') }"), valueJS, "is_active");
 			}
 			
 		/**
@@ -574,7 +574,7 @@ public abstract class Widget {
 				"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];      \n" + 
 				"								$(\"#visible_${child_name}\").trigger('set_find_result');      \n" + 
 				"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {      \n" + 
-				"									if ($(\"#${parrent_name}\" ).attr('data-disabled') !== 'true') {  \n" + 
+				"									if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {  \n" + 
 				"										$(\"#visible_${parrent_name}\").removeAttr('disabled');  \n" + 
 				"									}  \n" + 
 				"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');      \n" + 
