@@ -30,7 +30,9 @@ Implement Java services *aka Jersey, Django,.. etc.* using this Framework classe
 This link for Jersey [realisation](https://github.com/murmilad/jefshowcase/blob/master/src/main/java/com/technology/showcase/jersey/FormWebService.java).
 
 If you use  non-Jersey realisation you can create your own FormWebService but using same functional as the link above .
-
+## Sources
+### Maven Repository to Github howto
+Russian [instruction](https://devcolibri.com/%D0%BA%D0%B0%D0%BA-%D1%81%D0%B4%D0%B5%D0%BB%D0%B0%D1%82%D1%8C-%D1%81%D0%B2%D0%BE%D0%B9-maven-repository-%D0%BD%D0%B0-github/)
 
  
 
