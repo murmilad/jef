@@ -8,6 +8,8 @@ import java.util.Map;
 import com.technology.jef.server.dto.OptionDto;
 import com.technology.jef.server.exceptions.ServiceException;
 import com.technology.jef.server.form.FormData.Attribute;
+import com.technology.jef.server.form.parameters.Parameters;
+import com.technology.jef.server.form.parameters.Value;
 
 public class Field {
 
@@ -15,7 +17,7 @@ public class Field {
 	
 	@FunctionalInterface
 	public interface GetValueListener {
-		public abstract String handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+		public abstract String handle (String parameterName, Parameters parameters) throws ServiceException;
 
 	}
 	private GetValueListener getValueListener = null;
@@ -29,7 +31,7 @@ public class Field {
 
 	@FunctionalInterface
 	public interface IsActiveListener {
-		public abstract Boolean handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+		public abstract Boolean handle (String parameterName, Parameters parameters) throws ServiceException;
 
 	}
 	private IsActiveListener isActiveListener = null;
@@ -43,7 +45,7 @@ public class Field {
 	
 	@FunctionalInterface
 	public interface IsVisibleListener {
-		public abstract Boolean handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+		public abstract Boolean handle (String parameterName, Parameters parameters) throws ServiceException;
 
 	}
 	private IsVisibleListener isVisibleListener = null;
@@ -57,7 +59,7 @@ public class Field {
 	
 	@FunctionalInterface
 	public interface GetListListener {
-		public abstract List<OptionDto> handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+		public abstract List<OptionDto> handle (String parameterName, Parameters parameters) throws ServiceException;
 
 	}
 	private GetListListener getListListener = null;
@@ -71,7 +73,7 @@ public class Field {
 
 	@FunctionalInterface
 	public interface GetListInteractiveListener {
-		public abstract List<OptionDto> handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+		public abstract List<OptionDto> handle (String parameterName, Parameters parameters) throws ServiceException;
 
 	}
 	private GetListInteractiveListener getListInteractiveListener = null;
@@ -85,7 +87,7 @@ public class Field {
 	
 	@FunctionalInterface
 	public interface IsRequiredListener {
-		public abstract Boolean handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+		public abstract Boolean handle (String parameterName, Parameters parameters) throws ServiceException;
 
 	}
 	private IsRequiredListener isRequiredListener = null;
@@ -99,7 +101,7 @@ public class Field {
 	
 	@FunctionalInterface
 	public interface CheckListener {
-		public abstract List<String> handle (String parameterName, Map<String, String> parameters) throws ServiceException;
+		public abstract List<String> handle (String parameterName, Parameters parameters) throws ServiceException;
 
 	}
 	private CheckListener checkListener = null;

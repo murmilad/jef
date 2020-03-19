@@ -39,6 +39,12 @@ public class SerializeConstant {
    * 
    */
   public static final String FIAS_CODE_NAME_SEPARATOR = "|";
+  
+  /**
+   * Префикс для системных параметров
+   * 
+   */
+  public static final String SYSTEM_PARAMETER_PREFIX = "t_sys";
 
   
 }

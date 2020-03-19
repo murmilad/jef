@@ -143,23 +143,7 @@ public class FormGenerator extends TagGenerator {
 			if (parrentGenerator == null) {
 				System.out.println("ERROR: Can't find parrent element '" + parrentName + "' for '" + currentName  + "'");
 			} else {
-				String onChangeJS = ("onChange${parrent_name}_${child_name}_" + conectionName +"(this);")
-						// Указываем имя родителя с префиксом в зависимости от того, в добавляемой ли он группе или нет
-						.replace("${parrent_name}", parrentName.concat((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
-						// Указываем имя подчиненного элемента с префиксом в зависимости от того, в добавляемой ли он группе или нет
-						.replace("${child_name}", currentName.concat((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)));
-
-				
-				Widget.Type type = Widget.Type.valueOf(((String)parrentGenerator.getAttribute(TagGenerator.Attribute.TYPE)).toUpperCase());
-
-				// Взываем разные процедуры в зависимости от типа элемента
-				switch (type) {
-				case SHORT_RADIO_SWITCH:
-					// Вызываем функцию связи в событиях родительского элемента
-				break;
-				default:
-				break;
-				}
+			
 
 				widgetJSHandler.handle(parrentGenerator);
 			}
@@ -223,11 +207,11 @@ public class FormGenerator extends TagGenerator {
 	"					function setForm() {                  \n" + 
 	"						var field_values = [];    \n" + 
 	"						var globalIndex;    \n" + 
-	"						$('input[type=\"hidden\"][name^=\"required_\"], input[type=\"hidden\"][name^=\"parrent_api_\"], input[type=\"hidden\"][name^=\"api_\"]').each( function(index, element){                  \n" + 
+	"						$('input[type=\"hidden\"][name^=\"${system_prefix}_required_\"], input[type=\"hidden\"][name^=\"${system_prefix}_parrent_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_changed_\"]').each( function(index, element){                  \n" + 
 	"							field_values[index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                  \n" + 
 	"							globalIndex = index;    \n" + 
 	"						});                  \n" + 
-	"						$('input[type=\"hidden\"]').not('[name^=\"required_\"], [name^=\"parrent_api_\"], [name^=\"api_\"]').each( function(index, element){                  \n" + 
+	"						$('input[type=\"hidden\"]').not('[name^=\"${system_prefix}_required_\"], [name^=\"${system_prefix}_parrent_api_\"], [name^=\"${system_prefix}_api_\"], [name^=\"${system_prefix}_changed_\"]').each( function(index, element){                  \n" + 
 	"							field_values[globalIndex + index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                  \n" + 
 	"						});                  \n" + 
 	"						$(\"#message_overlay_wait_form\").show();                         \n" + 
@@ -283,6 +267,7 @@ public class FormGenerator extends TagGenerator {
 							.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 							.replace("${value_js}", valueJS)
 							.replace("${service}", (String) getAttribute(TagGenerator.Attribute.SERVICE))
+							.replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX)
 		);
 		
 		// при наличии множества форм (страниц) на интерфейсе добавляем кнопку "Назад"
@@ -293,7 +278,7 @@ public class FormGenerator extends TagGenerator {
 			     put(Tag.Property.TYPE, "button");
 			     put(Tag.Property.VALUE,  CurrentLocale.getInstance().getTextSource().getString("back"));
 			     put(Tag.Property.CLASS, "submit_button buttons_color buttons_height buttons_width");
-			     put(Tag.Property.CLICK, "$(\"#api_action\").val(\"back\");");
+			     put(Tag.Property.CLICK, "$(\"#${system_prefix}_api_action\").val(\"back\");".replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX));
 			}});
 		}
 		
@@ -433,7 +418,6 @@ public class FormGenerator extends TagGenerator {
 	"						setButtonVisiblity('button_del', groupPrefix, parameters);   \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").hide();        \n" + 
 	"    	      					$(\"#message_box_wait_${multiplie_group_name}\").hide();        \n" + 
-	"						$( document ).trigger('setListOnLoad_${group_api}');       \n" + 
 	"						return groupPrefix;      \n" + 
 	"					}       \n" + 
 	"	$( document ).bind('setListOnLoad_${group_api}', function() {      \n" + 

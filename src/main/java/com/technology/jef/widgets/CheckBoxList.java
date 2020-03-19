@@ -179,6 +179,10 @@ public class CheckBoxList extends RadioSwitch {
 	"				$('#visible_${child_name}' + currentValue).change();    \n" + 
 	"				$(\"#visible_${child_name}\" + currentValue).trigger('refresh');     \n" + 
 	"			});   \n" + 
+	"			$('#visible_${child_name}').bind('change', function(){ \n" + 
+	"				$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
+	"			}); \n" + 
+	"			$(\"#visible_${child_name}\").unbind('setValue');     \n" + 
 	"		});     \n" + 
 	"	} else {  \n" + 
 	"	$('input#${child_name}').val(data.value);    \n" + 
@@ -188,7 +192,7 @@ public class CheckBoxList extends RadioSwitch {
 	"			$('#visible_${child_name}' + currentValue).change();    \n" + 
 	"			$(\"#visible_${child_name}\" + currentValue).trigger('refresh');     \n" + 
 	"		});   \n" + 
-	"	}  \n")
+	"	}  \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX)
 				.replace("${list_separator}", LIST_SEPARATOR);
 			}
 

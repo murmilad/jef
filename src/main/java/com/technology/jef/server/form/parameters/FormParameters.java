@@ -25,11 +25,11 @@ public class FormParameters {
 		this.parameters = parameters;
 	}
 
-	public List<Parameter> getFormParameters(String formPrefix) {
+	public List<Value> getFormParameters(String formPrefix) {
 		return parameters.get(formPrefix).getFormParameters();
 	}
 
-	public Map<String,String> getInputParameters(String formPrefix) {
+	public Parameters getInputParameters(String formPrefix) {
 		return parameters.get(formPrefix).getInputParameters();
 	}
 
@@ -41,12 +41,12 @@ public class FormParameters {
 		this.parrentApi = parrentApi;
 	}
 
-	public void addParameter(String name, String value, Boolean isRequired, String formPrefix, Map<String,String> allInputParameters) {
+	public void addParameter(String name, Value parameter, String formPrefix, Parameters allInputParameters) {
 		if (!this.parameters.containsKey(formPrefix)) {
-			this.parameters.put(formPrefix, new ParameterList(new HashMap<String, String>(allInputParameters)));
+			this.parameters.put(formPrefix, new ParameterList(new Parameters(allInputParameters)));
 		}
-		this.parameters.get(formPrefix).addFormParameter(new Parameter(name, value, isRequired));
-		this.parameters.get(formPrefix).putInputParameter(name, value);
+		this.parameters.get(formPrefix).addFormParameter(parameter);
+		this.parameters.get(formPrefix).putInputParameter(name, parameter);
 	}
 
 	public void addChildren(FormParameters formParameters) {

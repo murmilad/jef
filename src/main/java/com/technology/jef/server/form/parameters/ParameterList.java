@@ -8,27 +8,27 @@ import java.util.Map;
 
 public class ParameterList {
 
-	private List<Parameter> formParameters = new LinkedList<Parameter>();
-	private Map<String, String> inputParameters = new HashMap<String, String>();
-	public ParameterList(Map<String, String> allInputParameters) {
+	private List<Value> formParameters = new LinkedList<Value>();
+	private Parameters inputParameters = new Parameters();
+	public ParameterList(Parameters allInputParameters) {
 		setInputParameters(allInputParameters);
 	}
-	public List<Parameter> getFormParameters() {
+	public List<Value> getFormParameters() {
 		return formParameters;
 	}
-	public void setFormParameters(List<Parameter> formParameters) {
+	public void setFormParameters(List<Value> formParameters) {
 		this.formParameters = formParameters;
 	}
-	public Map<String, String> getInputParameters() {
+	public Parameters getInputParameters() {
 		return inputParameters;
 	}
-	public void setInputParameters(Map<String, String> inputParameters) {
+	public void setInputParameters(Parameters inputParameters) {
 		this.inputParameters = inputParameters;
 	}
-	public void addFormParameter(Parameter parameterDto) {
+	public void addFormParameter(Value parameterDto) {
 		getFormParameters().add(parameterDto);
 	}
-	public void putInputParameter(String name, String value) {
+	public void putInputParameter(String name, Value value) {
 		getInputParameters().put(name,value);
 	}
 

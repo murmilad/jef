@@ -7,6 +7,8 @@ import com.technology.jef.Tag;
 import com.technology.jef.widgets.Widget;
 import com.technology.jef.widgets.WidgetFactory;
 
+import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAMETER_PREFIX;
+
 /**
 * Класс сборщика DOM модели уровня формы
 */
@@ -101,26 +103,34 @@ public class ItemGenerator extends TagGenerator {
 		}
 		
 		elementValue.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.ID, "api_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
-		     put(Tag.Property.NAME, "api_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
+		     put(Tag.Property.ID, SYSTEM_PARAMETER_PREFIX + "_api_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
+		     put(Tag.Property.NAME, SYSTEM_PARAMETER_PREFIX + "_api_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
 		     put(Tag.Property.TYPE, "hidden"); 
 		     put(Tag.Property.VALUE, (String) getAttribute(TagGenerator.Attribute.API)); 
 		}});
 
 		elementValue.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.ID, "parrent_api_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
-		     put(Tag.Property.NAME, "parrent_api_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
+		     put(Tag.Property.ID, SYSTEM_PARAMETER_PREFIX + "_parrent_api_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
+		     put(Tag.Property.NAME, SYSTEM_PARAMETER_PREFIX + "_parrent_api_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
 		     put(Tag.Property.TYPE, "hidden"); 
 		     put(Tag.Property.VALUE, (String) getAttribute(TagGenerator.Attribute.PARRENT_API)); 
 		}});
 
 		elementValue.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
-		     put(Tag.Property.ID, "required_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
-		     put(Tag.Property.NAME, "required_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
+		     put(Tag.Property.ID, SYSTEM_PARAMETER_PREFIX + "_required_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
+		     put(Tag.Property.NAME, SYSTEM_PARAMETER_PREFIX + "_required_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
 		     put(Tag.Property.TYPE, "hidden"); 
 		     put(Tag.Property.VALUE, (String) getAttribute(TagGenerator.Attribute.REQUIRED)); 
 		}});
 
+		elementValue.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+		     put(Tag.Property.ID, SYSTEM_PARAMETER_PREFIX + "_changed_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
+		     put(Tag.Property.NAME, SYSTEM_PARAMETER_PREFIX + "_changed_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
+		     put(Tag.Property.VALUE, "0"); 
+		     put(Tag.Property.TYPE, "hidden"); 
+		}});
+
+		
 		return widget.assembleTag(((String) getAttribute(TagGenerator.Attribute.ID)).concat((String) parrent.getAttribute(TagGenerator.Attribute.PREFIX)), this, elementValue);
 	}
 

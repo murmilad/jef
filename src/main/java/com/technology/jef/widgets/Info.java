@@ -1,5 +1,7 @@
 package com.technology.jef.widgets;
 
+import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAMETER_PREFIX;
+
 import java.util.HashMap;
 
 import com.technology.jef.Tag;
@@ -57,7 +59,12 @@ public class Info extends Widget {
 	   */
 		public String getSetValueJS() {
 			
-			return "$('#visible_${child_name}').html(data.value).change();";
+			return 	(" \n" + 
+	"	$('#visible_${child_name}').html(data.value).change(); \n" +
+	"	$('#visible_${child_name}').bind('change', function(){ \n" + 
+	"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
+	"	}); \n"  
+					).replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 		}
 
 	  /**
@@ -69,7 +76,10 @@ public class Info extends Widget {
 	   */
 		public String getCleanValueJS() {
 			
-			return "$('#visible_${child_name}').html('').change();";
+			return 	(" \n" + 
+	"	if ($('#visible_${child_name}').html() !== '') { \n" + 
+	"		$('#visible_${child_name}').html('').change(); \n" + 
+	"	} \n");
 		}
 
 }

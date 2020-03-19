@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_NAME_VALUE_SEPARATOR;
 import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_SEPARATOR;
+import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAMETER_PREFIX;
 
 import java.util.HashMap;
 
@@ -22,10 +23,11 @@ public class RadioSwitch extends List {
 	@Override
 	public String getCleanValueJS() {
 
-		return ("							   \n"
-				+ "							$(\"[name='visible_${child_name}']\").each(function(index, item){ \n"
-				+ "								$(this).prop(\"checked\", false).trigger('refresh'); \n"
-				+ "							}); \n" + "							$('input#${child_name}').val(''); \n");
+		return 	("							    \n" + 
+	"							$(\"[name='visible_${child_name}']\").each(function(index, item){  \n" + 
+	"								$(this).prop(\"checked\", false).trigger('refresh');  \n" + 
+	"							});  \n" + 
+	"							$('input#${child_name}').val('');  \n");
 	}
 
 	@Override
@@ -161,20 +163,23 @@ public class RadioSwitch extends List {
 
 	@Override
 	public String getSetValueJS() {
-		return ("	if (isLoading) {                                                 \n" 
-				+ "		$(\"#visible_${child_name}\").bind('setValue', function(){    \n"
-				+ "			$(\"#visible_${child_name}\" + data.value).click();   \n"
-				+ "			$(\"#visible_${child_name}\" + data.value).attr('checked',true).trigger('refresh');   \n"
-				+ "			$(\"#visible_${child_name}\").change();   \n"
-				+ "			$(\"input#${child_name}\").val(data.value); \n" 
-				+ "			                                                        \n" 
-				+ "		});                                                         \n"
-				+ "	} else {                                                        \n" 
-				+ "		$(\"#visible_${child_name}\" + data.value).click();         \n"
-				+ "		$(\"#visible_${child_name}\" + data.value).attr('checked',true).trigger('refresh');   \n"
-				+ "		$(\"#visible_${child_name}\").change();   \n"
-				+ "		$(\"input#${child_name}\").val(data.value);   \n" 
-				+ "	}                                            \n");
+		return 	("	if (isLoading) {                                                  \n" + 
+	"		$(\"#visible_${child_name}\").bind('setValue', function(){     \n" + 
+	"			$(\"#visible_${child_name}\" + data.value).click();    \n" + 
+	"			$(\"#visible_${child_name}\" + data.value).attr('checked',true).trigger('refresh');    \n" + 
+	"			$(\"#visible_${child_name}\").change();    \n" + 
+	"			$(\"input#${child_name}\").val(data.value);  \n" + 
+	"			$('#visible_${child_name}').bind('change', function(){  \n" + 
+	"				$('#${system_prefix}_changed_${child_name}').val('1')  \n" + 
+	"			});  \n" +
+	"			$(\"#visible_${child_name}\").unbind('setValue');     \n" + 
+	"		});                                                          \n" + 
+	"	} else {                                                         \n" + 
+	"		$(\"#visible_${child_name}\" + data.value).click();          \n" + 
+	"		$(\"#visible_${child_name}\" + data.value).attr('checked',true).trigger('refresh');    \n" + 
+	"		$(\"#visible_${child_name}\").change();    \n" + 
+	"		$(\"input#${child_name}\").val(data.value);    \n" + 
+	"	}                                             \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 	}
 
 	@Override
@@ -331,14 +336,14 @@ public class RadioSwitch extends List {
 	"								}             \n" + 
 	"								--ajax_is_child_blocked${prefix}[\"${child_name}\"];      \n" + 
 	"								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {      \n" + 
-	"				            				$(\"#visible_${child_name}\").trigger( 'on_child_unblocked');      \n" + 
+	"				            		$(\"#visible_${child_name}\").trigger( 'on_child_unblocked');      \n" + 
+	"									$(\"#visible_${child_name}\").trigger('setValue'); \n" +
 	"								}      \n" + 
 	"								$(\"#visible_${parrent_name}\").trigger('refresh');             \n" + 
 	"								$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
 	"								if (value) {     \n" + 
 	"									$(\"#visible_${child_name}\").val(value).change();     \n" + 
 	"								}     \n" + 
-	"								$(\"#visible_${child_name}\").trigger('setValue'); \n" +
 	"						});            \n" + 
 	"					}             \n")
 						.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)

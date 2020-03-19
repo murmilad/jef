@@ -1,5 +1,7 @@
 package com.technology.jef.widgets;
 
+import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAMETER_PREFIX;
+
 import java.util.HashMap;
 
 import org.xml.sax.helpers.AttributesImpl;
@@ -21,11 +23,13 @@ public class Image extends Widget {
 
 	@Override
 	public String getSetValueJS() {
-		return ("	                                                 \n" 
-				+ "			$(\"#img_visible_${child_name}\").prop('src', data.value);   \n"
-				+ "			$(\"#visible_${child_name}\").change();   \n"
-				+ "			$(\"input#${child_name}\").val(data.value); \n" 
-				+ "	                                            \n");
+		return 	("	                                                  \n" + 
+	"	$(\"#img_visible_${child_name}\").prop('src', data.value);    \n" + 
+	"	$(\"#visible_${child_name}\").change();    \n" + 
+	"	$(\"input#${child_name}\").val(data.value);  \n" + 
+	"	$('#visible_${child_name}').bind('change', function(){  \n" + 
+	"		$('#${system_prefix}_changed_${child_name}').val('1')  \n" + 
+	"	});  \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 	}
 
 	@Override

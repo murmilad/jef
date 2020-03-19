@@ -78,13 +78,14 @@ public class List extends Widget {
 		   */
 			public String getCleanValueJS() {
 				
-				return 		("							$(\"#visible_${child_name}\").empty();  \n" + 
-						"							$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");  \n" + 
-						"						  	if ($(\"#other_${child_name}\").length > 0) {  \n" + 
-						"								$(\"<option/>\", {'value': 'other', html: '${other}', 'selected': $(\"#other_${child_name}\").value }).appendTo(\"#visible_${child_name}\");  \n" + 
-						"						  	}  \n" + 
-						"							$(\"#visible_${child_name}\").val('').change();  \n"
-						)
+				return 			("							$(\"#visible_${child_name}\").empty();   \n" + 
+	"							$(\"<option/>\", {'value': '', html: '---'}).appendTo(\"#visible_${child_name}\");   \n" + 
+	"						  	if ($(\"#other_${child_name}\").length > 0) {   \n" + 
+	"								$(\"<option/>\", {'value': 'other', html: '${other}', 'selected': $(\"#other_${child_name}\").value }).appendTo(\"#visible_${child_name}\");   \n" + 
+	"						  	}   \n" +
+	"							if ($('#visible_${child_name}').val() !== '') {  \n" + 
+	"								$(\"#visible_${child_name}\").val('').change();   \n" + 
+	"							}  \n")
 						.replace("${other}", CurrentLocale.getInstance().getTextSource().getString("other"));
 			}
 
@@ -306,9 +307,12 @@ public class List extends Widget {
 							"		$(\"<option/>\", {'value': data.value, html: data.name, 'selected': true }).appendTo(\"#visible_${child_name}\");    \n" + 
 							"		$(\"#visible_${child_name}\").trigger('refresh');  \n" + 
 							"		$(\"#visible_${child_name}\").val(data.value).change(); \n" + 
+							"		$('#visible_${child_name}').bind('change', function(){ \n" + 
+							"			$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
+							"		}); \n" + 
 							"	} else { \n" + 
 							"		$(\"#visible_${child_name}\").val(data.value).change(); \n" + 
-							"	} \n");
+							"	} \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 			}
 
 }

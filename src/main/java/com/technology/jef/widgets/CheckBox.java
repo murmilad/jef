@@ -1,5 +1,7 @@
 package com.technology.jef.widgets;
 
+import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAMETER_PREFIX;
+
 import java.util.HashMap;
 
 import com.technology.jef.Tag;
@@ -37,7 +39,11 @@ public class CheckBox extends Widget {
 		return 		(" \n" + 
 	"	$('#visible_${child_name}').prop('checked', data.value === '1' ? true : false);  \n" + 
 	"	$('#visible_${child_name}').change(); \n" + 
-	"	$('input#${child_name}').val(data.value); \n");
+	"	$('input#${child_name}').val(data.value); \n"+
+	"	$('#visible_${child_name}').bind('change', function(){ \n" + 
+	"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
+	"	}); \n" 
+	).replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 	}
 
 	@Override

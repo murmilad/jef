@@ -231,7 +231,11 @@ public class AutoCompleteEditable extends Widget {
 	"	} else { \n" + 
 	"		$('#visible_${child_name}').val('---').blur().change().trigger('autoCompleteChange');  \n" + 
 	"		$('input#${child_name}').val('');  \n" + 
-	"	} \n")
+	"	} \n" + 
+	"	$('#visible_${child_name}').bind('change', function(){ \n" + 
+	"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
+	"	}); \n" 
+	).replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX)
 				;
 			}
 

@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.technology.jef.server.form.parameters.Parameters;
+import com.technology.jef.server.form.parameters.Value;
+
 
 public class FormData {
 	public enum Attribute {
@@ -12,14 +15,14 @@ public class FormData {
 		INVISIBLE,
 	}
 
-	private Map<String, String> values = new HashMap<String, String>();
+	private Parameters values = new Parameters();
 	private Map<String, Map<Attribute, Boolean>> attributes = new HashMap<String, Map<Attribute, Boolean>>();
 
-	public Map<String,String> getValues() {
+	public Parameters getValues() {
 		return values;
 	}
 
-	public void setValues(Map<String,String> values) {
+	public void setValues(Parameters values) {
 		this.values = values;
 	}
 
@@ -31,12 +34,16 @@ public class FormData {
 		this.attributes = attributes;
 	}
 
-	public void putValue(String interfaceFieldName, String value) {
-		this.values.put(interfaceFieldName, value != null ? value : "");
+	public void putValue(String interfaceFieldName, Value value) {
+		this.values.put(interfaceFieldName, value);
 	}
 
-	public String getValue(String interfaceFieldName) {
-		return this.values.get(interfaceFieldName) != null ? this.values.get(interfaceFieldName) : "";
+	public void putValue(String interfaceFieldName, String value) {
+		this.values.put(interfaceFieldName, new Value(interfaceFieldName, value));
+	}
+
+	public Value getValue(String interfaceFieldName) {
+		return this.values.get(interfaceFieldName);
 	}
 
 	public void putAttributes(String parameterName, Map<Attribute, Boolean> attributes) {
@@ -44,7 +51,7 @@ public class FormData {
 		
 	}
 
-	public void putExtraValues(Map<String, String> parameters) {
+	public void putExtraValues(Parameters parameters) {
 		for (String name : parameters.keySet()) {
 			putValue(name,parameters.get(name));
 		}

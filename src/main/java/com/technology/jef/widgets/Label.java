@@ -1,5 +1,7 @@
 package com.technology.jef.widgets;
 
+import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAMETER_PREFIX;
+
 import java.util.HashMap;
 
 import com.technology.jef.Tag;
@@ -64,9 +66,12 @@ public class Label extends Widget {
 		public String getSetValueJS() {
 			
 			return 
-					"	$('#visible_${child_name}').html(data.value); \n" +
+					("	$('#visible_${child_name}').html(data.value); \n" +
 					"	$('input#${child_name}').val(data.value); \n" + 
-					"	$('#hidden_${child_name}').val(data.value).change(); \n";
+					"	$('#hidden_${child_name}').val(data.value).change(); \n"+
+			"	$('#visible_${child_name}').bind('change', function(){ \n" + 
+			"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
+			"	}); \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 		}
 
 	  /**

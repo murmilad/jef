@@ -23,6 +23,8 @@ import com.technology.jef.server.form.Field.IsActiveListener;
 import com.technology.jef.server.form.Field.IsRequiredListener;
 import com.technology.jef.server.form.Field.IsVisibleListener;
 import com.technology.jef.server.form.FormData.Attribute;
+import com.technology.jef.server.form.parameters.Parameters;
+import com.technology.jef.server.form.parameters.Value;
 
 /**
 * Абстрактный класс для контроллеров интерфейсов
@@ -43,7 +45,7 @@ public abstract class Form {
 		 * @param parameters 
 		 * @throws ServiceException
 		 */
-		public abstract void load(Integer id, Integer groupId, Map<String, String> parameters) throws ServiceException;
+		public abstract void load(Integer id, Integer groupId, Parameters parameters) throws ServiceException;
 
 	
 		/**
@@ -53,11 +55,11 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		protected List<OptionDto> getList(Integer primaryId, String parameterName, Map<String, String> parameters)
+		protected List<OptionDto> getList(Integer primaryId, String parameterName, Parameters parameters)
 				throws ServiceException {
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
-			parameters.put("id", Objects.toString(primaryId, ""));
+			parameters.put("id", new Value("id",Objects.toString(primaryId, "")));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				GetListListener listListener = getFieldsMap().get(parameterName).getGetListListener();
@@ -81,11 +83,11 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		protected  List<OptionDto> getInteractiveList(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
+		protected  List<OptionDto> getInteractiveList(Integer primaryId, String parameterName, Parameters parameters) throws ServiceException {
 
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
-			parameters.put("id", Objects.toString(primaryId, ""));
+			parameters.put("id", new Value("id",Objects.toString(primaryId, "")));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				GetListInteractiveListener listInteractiveListener = getFieldsMap().get(parameterName).getGetListInteractiveListener();
@@ -108,11 +110,11 @@ public abstract class Form {
 		 * @return значение параметра формы
 		 * @throws ServiceException
 		 */
-		protected  String getValue(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
+		protected  String getValue(Integer primaryId, String parameterName, Parameters parameters) throws ServiceException {
 
 			String value = "";
 			
-			parameters.put("id", Objects.toString(primaryId, ""));
+			parameters.put("id", new Value("id",Objects.toString(primaryId, "")));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				GetValueListener getValueListener = getFieldsMap().get(parameterName).getGetValueListener();
@@ -137,11 +139,11 @@ public abstract class Form {
 		 * @throws ServiceException
 		 */
 
-		protected  Boolean isVisible(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
+		protected  Boolean isVisible(Integer primaryId, String parameterName, Parameters parameters) throws ServiceException {
 
 			Boolean isVisible = null;
 			
-			parameters.put("id", Objects.toString(primaryId, ""));
+			parameters.put("id", new Value("id",Objects.toString(primaryId, "")));
 			
 			if (getFieldsMap().containsKey(parameterName)) {
 				IsVisibleListener isVisibleListener = getFieldsMap().get(parameterName).getIsVisibleListener();
@@ -172,10 +174,10 @@ public abstract class Form {
 		 * @return признак активности True активен, False не активен
 		 * @throws ServiceException
 		 */
-		protected  Boolean isActive(Integer primaryId, String parameterName, Map<String, String> parameters) throws ServiceException {
+		protected  Boolean isActive(Integer primaryId, String parameterName, Parameters parameters) throws ServiceException {
 			Boolean isActive = null;
 
-			parameters.put("id", Objects.toString(primaryId, ""));
+			parameters.put("id", new Value("id",Objects.toString(primaryId, "")));
 
 			if (getFieldsMap().containsKey(parameterName)) {
 				IsActiveListener isActiveListener = getFieldsMap().get(parameterName).getIsActiveListener();
@@ -201,34 +203,35 @@ public abstract class Form {
 		 * @return список ошибок
 		 * @throws ServiceException
 		 */
-		protected  List<String> checkParameter(Integer primaryId, Integer secondaryId, String parameterName, Boolean isRequired,
-				Map<String, String> parameters) throws ServiceException {
+		protected  List<String> checkParameter(Integer primaryId, Integer secondaryId, Value parameter,
+				Parameters parameters) throws ServiceException {
 
+			Boolean isRequired = parameter.getIsRequired();
 			List<String> errors = new LinkedList<String>();
 
-			parameters.put("id", Objects.toString(primaryId, ""));
+			parameters.put("id", new Value("id", Objects.toString(primaryId, "")));
 			
-			if (getFieldsMap().containsKey(parameterName)) {
-				CheckListener checkListener = getFieldsMap().get(parameterName).getCheckListener();
+			if (getFieldsMap().containsKey(parameter.getName())) {
+				CheckListener checkListener = getFieldsMap().get(parameter.getName()).getCheckListener();
 				if (checkListener != null) {
-					List<String> localErrors = checkListener.handle(parameterName, parameters);
+					List<String> localErrors = checkListener.handle(parameter.getName(), parameters);
 					if (localErrors != null) {
 						errors = localErrors; 
 					};
 				}
 			}
 
-			if (getFieldsMap().containsKey(parameterName)) {
-				IsRequiredListener isRequiredListener = getFieldsMap().get(parameterName).getIsRequiredListener();
+			if (getFieldsMap().containsKey(parameter.getName())) {
+				IsRequiredListener isRequiredListener = getFieldsMap().get(parameter.getName()).getIsRequiredListener();
 				if (isRequiredListener != null) {
-					Boolean localRequired = (Boolean) isRequiredListener.handle(parameterName, parameters);
+					Boolean localRequired = (Boolean) isRequiredListener.handle(parameter.getName(), parameters);
 					if (localRequired != null) {
 						isRequired = localRequired; 
 					};
 				}
 			}
 
-			if (isRequired && "".equals(parameters.get(parameterName))) {
+			if (isRequired && "".equals(parameters.getValue(parameter.getName()))) {
 				errors.add(CurrentLocale.getInstance().getTextSource().getString("required_parameter"));
 			}
 
@@ -264,7 +267,7 @@ public abstract class Form {
 		 * @return список ошибок
 		 * @throws ServiceException
 		 */
-		public Map<String, List<String>> checkForm(Integer primaryId, Integer secondaryId, Map<String, String> parameters)  throws ServiceException {
+		public Map<String, List<String>> checkForm(Integer primaryId, Integer secondaryId, Parameters parameters)  throws ServiceException {
 			
 			return new HashMap<String, List<String>>();
 		}
@@ -299,13 +302,13 @@ public abstract class Form {
 								value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
 							}
 		
-							this.formData.putValue(interfaceFieldName, value != null ? value.toString() : "");
+							this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, value));
 						} else {
 						
-							this.formData.putValue(interfaceFieldName, fieldValue != null ? fieldValue.toString() : "");
+							this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, fieldValue != null ? fieldValue.toString() : ""));
 						}
 					} else {
-						this.formData.putValue(interfaceFieldName, "");
+						this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName));
 					}
 				} else {
 					throw new ServiceException("Undeclared parameter '" + interfaceFieldName + "' for interface: " + this.getClass());
@@ -334,7 +337,7 @@ public abstract class Form {
 		 * @throws ServiceException
 		 */
 
-		abstract public Integer saveForm(Integer primaryId, Integer secondaryId, Map<String, String> parameters)  throws ServiceException;
+		abstract public Integer saveForm(Integer primaryId, Integer secondaryId, Parameters parameters)  throws ServiceException;
 
 		/**
 		 * Удаление групповой формы
@@ -346,20 +349,20 @@ public abstract class Form {
 		 * @throws ServiceException
 		 */
 
-		public void deleteForm(Integer primaryId, Integer secondaryId, Map<String, String> parametersMap)  throws ServiceException {};
+		public void deleteForm(Integer primaryId, Integer secondaryId, Parameters parametersMap)  throws ServiceException {};
 
-		protected RecordDto mapDaoParameters(Map<String, String> parameters) {
+		protected RecordDto mapDaoParameters(Parameters parameters) {
 
 			return mapDaoParameters(parameters, new RecordDto());
 		}
 
-		protected RecordDto mapDaoParameters(Map<String, String> parameters, RecordDto daoParameters) {
+		protected RecordDto mapDaoParameters(Parameters parameters, RecordDto daoParameters) {
 
 			
 			Map<String,Field> parametersMap = getFieldsMap();
 			for (String name : parametersMap.keySet()) {
-				if (parametersMap.get(name).getFieldName() != null && parameters.get(name) != null) {
-					daoParameters.put(parametersMap.get(name).getFieldName(), parameters.get(name));
+				if (parametersMap.get(name).getFieldName() != null && parameters.getValue(name) != null) {
+					daoParameters.put(parametersMap.get(name).getFieldName(), parameters.getValue(name));
 				}
 			}
 
@@ -373,7 +376,7 @@ public abstract class Form {
 		 * @return результаты проверки данных
 		 * @throws ServiceException
 		 */
-		public Map<String, List<String>> checkInterface(Integer primaryId, Map<String,String> parameters)  throws ServiceException {
+		public Map<String, List<String>> checkInterface(Integer primaryId, Parameters parameters)  throws ServiceException {
 			
 			return new HashMap<String, List<String>>();
 		}
@@ -386,7 +389,7 @@ public abstract class Form {
 		 * @return список идентификаторов групп
 		 * @throws ServiceException
 		 */
-		public List<String> getGroups(Integer primaryId, Map<String, String> parameters)  throws ServiceException {
+		public List<String> getGroups(Integer primaryId, Parameters parameters)  throws ServiceException {
 			
 			return null;
 		}
@@ -399,11 +402,11 @@ public abstract class Form {
 					IsVisibleListener isVisibleListener = fieldsMap.get(isVisibleField).getIsVisibleListener();
 		
 					if (isVisibleListener != null) {
-						fieldsMap.get(isVisibleField).isVisibleListener((String parameterName, Map<String, String> parameters) -> {
+						fieldsMap.get(isVisibleField).isVisibleListener((String parameterName, Parameters parameters) -> {
 							return isVisibleListener.handle(parameterName, parameters) && listener.handle(parameterName, parameters);
 						});
 					} else {
-						fieldsMap.get(isVisibleField).isVisibleListener((String parameterName, Map<String, String> parameters) -> {
+						fieldsMap.get(isVisibleField).isVisibleListener((String parameterName, Parameters parameters) -> {
 							return listener.handle(parameterName, parameters);
 						});
 					}
@@ -420,7 +423,7 @@ public abstract class Form {
 			for (String isRequiredField: fieldsMap.keySet()) {
 				if (isRequiredField.matches(fieldRegex)) {
 		
-					fieldsMap.get(isRequiredField).isRequiredListener((String parameterName, Map<String, String> parameters) -> {
+					fieldsMap.get(isRequiredField).isRequiredListener((String parameterName, Parameters parameters) -> {
 						return listener.handle(parameterName, parameters);
 					});
 				}
@@ -437,7 +440,7 @@ public abstract class Form {
 				if (checkField.matches(fieldRegex)) {
 					CheckListener checkListener = fieldsMap.get(checkField).getCheckListener();
 		
-					fieldsMap.get(checkField).checkListener((String parameterName, Map<String, String> parameters) -> {
+					fieldsMap.get(checkField).checkListener((String parameterName, Parameters parameters) -> {
 
 						List<String> result = new LinkedList<String>();
 						if (checkListener != null) {

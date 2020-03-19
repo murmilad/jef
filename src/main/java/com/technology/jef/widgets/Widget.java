@@ -192,7 +192,7 @@ public abstract class Widget {
 									.replace("${name}", name)
 									.replace("${name_api}", name.replaceAll((String) generator.getAttribute(TagGenerator.Attribute.PREFIX),""))
 									.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))
-								: "$(\"#visible_${name}\").trigger('setValue');".replace("${name}", name)
+								: ""
 					)
 			);
 			
@@ -283,7 +283,12 @@ public abstract class Widget {
 	   */
 		public String getSetValueJS() {
 			
-			return "$('#visible_${child_name}').val(data.value).change();";
+			return 	(" \n" + 
+	"	$('#visible_${child_name}').val(data.value).change(); \n" + 
+	"	$('#visible_${child_name}').bind('change', function(){ \n" + 
+	"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
+	"	}); \n" + 
+	" \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 		}
 
 	  /**
@@ -295,7 +300,11 @@ public abstract class Widget {
 	   */
 		public String getCleanValueJS() {
 			
-			return "$('#visible_${child_name}').val('').change();";
+			return 	(" \n" +
+					"	if ($('#visible_${child_name}').val() !== '') {  \n" + 
+					"		$('#visible_${child_name}').val('').change(); \n" + 
+					"	}  \n" + 
+					" \n");
 		}
 
 

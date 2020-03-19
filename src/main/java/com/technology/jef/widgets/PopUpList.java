@@ -401,9 +401,12 @@ public class PopUpList extends Widget {
 						"		$(\"#visible_${child_name}\").trigger('refresh');  \n" + 
 						"		$(\"#visible_${child_name}\").val(data.value).change(); \n" + 
 						"		$(\"#fake_visible_${child_name}\").val(data.name);  \n" + 
+						"		$('#visible_${child_name}').bind('change', function(){ \n" + 
+						"			$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
+						"		}); \n" + 
 						"	} else { \n" + 
 						"		$(\"#visible_${child_name}\").val(data.value).change(); \n" + 
-						"	} \n");
+						"	} \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 		}
 		
 		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {

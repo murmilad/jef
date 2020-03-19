@@ -31,7 +31,8 @@ import com.technology.jef.server.dto.ParameterDto;
 import com.technology.jef.server.dto.ResultDto;
 import com.technology.jef.server.exceptions.ServiceException;
 import com.technology.jef.server.form.parameters.FormParameters;
-import com.technology.jef.server.form.parameters.Parameter;
+import com.technology.jef.server.form.parameters.Parameters;
+import com.technology.jef.server.form.parameters.Value;
 
 public class Service<F extends FormFactory> {
 
@@ -61,7 +62,7 @@ public class Service<F extends FormFactory> {
 		FormDto fromResult = null;
 
 		Form form = factory.getForm(formApi);
-		List<String> groupIdList = form.getGroups(id, parameters);
+		List<String> groupIdList = form.getGroups(id, stringMapToValueMap(parameters));
 
 		if (groupIdList != null) {
 			List<FormDto> groups = new LinkedList<FormDto>();
@@ -85,17 +86,19 @@ public class Service<F extends FormFactory> {
 
 		FormDto fromResult;
 
+		Parameters valueParameters = stringMapToValueMap(parameters);
+		
 		Form form = factory.getForm(formApi);
-		form.load(primaryId, secondaryId, parameters);
+		form.load(primaryId, secondaryId, valueParameters);
 
-		form.getFormData().putValue("group_id", Objects.toString(secondaryId, ""));
-		form.getFormData().putExtraValues(parameters);
+		form.getFormData().putValue("group_id", new Value("group_id", Objects.toString(secondaryId, "")));
+		form.getFormData().putExtraValues(valueParameters);
 
 		fromResult = new FormDto(SERVICE_STATUS_OK);
 
 		for(String parameterName : form.getFormData().getValues().keySet()) {
 			if (!"form".equals(parameterName)) {
-				fromResult.putParameter(parameterName, new ParameterDto(form.getFormData().getValues().get(parameterName), form.getAttributes(parameterName, primaryId)));
+				fromResult.putParameter(parameterName, new ParameterDto(form.getFormData().getValues().get(parameterName).getValue(), form.getAttributes(parameterName, primaryId)));
 			}
 		}
 
@@ -105,6 +108,16 @@ public class Service<F extends FormFactory> {
 	}
 
 
+
+	private Parameters stringMapToValueMap(Map<String, String> parameters) {
+		Parameters result = new Parameters();
+
+		parameters.keySet().forEach(name -> 
+			result.put(name, new Value(name, parameters.get(name)))
+		);
+		
+		return result;
+	}
 
 	/**
 	 * Сохранение параметров формы
@@ -120,11 +133,11 @@ public class Service<F extends FormFactory> {
 
 		ResultDto result = null;
 
-		Map<String,String> allInputParametersMap = new HashMap<String,String>();
+		Parameters allInputParametersMap = new Parameters();
 		Map<String, FormParameters> formsMap = new HashMap<String, FormParameters>();
 		List<FormParameters> formsList = new LinkedList<FormParameters>();
 
-		Pattern prefixPattern = Pattern.compile("^api_(\\w+?)(?:"+GROUP_SEPARATOR+"(\\w+))?$");
+		Pattern prefixPattern = Pattern.compile("^"+SYSTEM_PARAMETER_PREFIX+"_api_(\\w+?)(?:"+GROUP_SEPARATOR+"(\\w+))?$");
 		Matcher prefixMatcher;
 
 		// создаем карту API по параметрам
@@ -136,12 +149,15 @@ public class Service<F extends FormFactory> {
 			// добавляем в карту API пустой класс параметров 
 			if (prefixMatcher.matches()) {
 				formsMap.put(Objects.toString(value, ""), new FormParameters(Objects.toString(value, "")));
-			} else if (!name.contains("api_") && !name.contains("required_")) {
-				allInputParametersMap.put(name, parameters.get(name));
+			} else if (!name.contains(SYSTEM_PARAMETER_PREFIX + "_parrent_api_") && !name.contains(SYSTEM_PARAMETER_PREFIX + "_api_") && !name.contains(SYSTEM_PARAMETER_PREFIX + "_required_") && !name.contains(SYSTEM_PARAMETER_PREFIX + "_changed_")) {
+				allInputParametersMap.put(name, new Value(name, parameters.get(name), "1".equals(parameters.get(SYSTEM_PARAMETER_PREFIX + "_required_" + name)),  "1".equals(parameters.get(SYSTEM_PARAMETER_PREFIX + "_changed_" + name))));
 			}
 		}
 
-		Pattern apiPattern = Pattern.compile("^(?:(api|parrent_api)_)?(\\w+?)("+GROUP_SEPARATOR+"(\\w+))?$");
+		
+	
+		
+		Pattern apiPattern = Pattern.compile("^(?:"+SYSTEM_PARAMETER_PREFIX+"_(api|parrent_api)_)?(\\w+?)("+GROUP_SEPARATOR+"(\\w+))?$");
 		Matcher apiMatcher;
 
 		// заполняем карту API данными форм по параметрам
@@ -150,7 +166,7 @@ public class Service<F extends FormFactory> {
 			if (apiMatcher.matches()) {
 
 				// Если для текущего параметра есть параметр содержащий API
-				String apiName = parameters.get("api_" + apiMatcher.group(2) + (apiMatcher.group(3) != null ? apiMatcher.group(3) : ""));
+				String apiName = parameters.get(SYSTEM_PARAMETER_PREFIX + "_api_" + apiMatcher.group(2) + (apiMatcher.group(3) != null ? apiMatcher.group(3) : ""));
 				if (apiName != null) { 
 
 					// Имя текущего API
@@ -165,7 +181,7 @@ public class Service<F extends FormFactory> {
 					// Если текущий параметр содержит значение поля формы
 					} else if (apiMatcher.group(1) == null){
 						String groupPrefix = apiMatcher.group(4) != null ? apiMatcher.group(4).replace(currentForm + "_", "") : "";
-						formsMap.get(currentForm).addParameter(apiMatcher.group(2), parameters.get(name), "1".equals(parameters.get("required_" + name)), groupPrefix, allInputParametersMap);
+						formsMap.get(currentForm).addParameter(apiMatcher.group(2), allInputParametersMap.get(name), groupPrefix, allInputParametersMap);
 					}
 				}
 			}
@@ -258,15 +274,15 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 	
-	public ResultDto checkFormData(Integer primaryId, Integer secondaryId, String formApi, List<Parameter> parameters, Map<String, String> checkParametersMap)
+	public ResultDto checkFormData(Integer primaryId, Integer secondaryId, String formApi, List<Value> parameters, Parameters checkParametersMap)
 			throws ServiceException {
 		
 		Form form = factory.getForm(formApi);
 		
 		Map<String,List<String>> parameterErrors = new HashMap<String,List<String>>(); 
 		// Добавляем ошибки связанные с заполнением интерфейса 
-		for (Parameter parameter : parameters) {
-			List<String> result = form.checkParameter(primaryId, secondaryId, parameter.getName(), parameter.getIsRequired(), checkParametersMap);
+		for (Value parameter : parameters) {
+			List<String> result = form.checkParameter(primaryId, secondaryId, parameter, checkParametersMap);
 			if (result != null && result.size() > 0) {
 				parameterErrors.put(parameter.getName(), result);
 			}
@@ -297,7 +313,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public Integer saveFormData(Integer primaryId, Integer secondaryId, String formApi, Map<String, String> saveParametersMap)
+	public Integer saveFormData(Integer primaryId, Integer secondaryId, String formApi, Parameters saveParametersMap)
 			throws ServiceException {
 		
 		Form form = factory.getForm(formApi);
@@ -319,7 +335,7 @@ public class Service<F extends FormFactory> {
 		
 		Form form = factory.getForm(formApi);
 		
-		form.deleteForm(primaryId, secondaryId, parametersMap);
+		form.deleteForm(primaryId, secondaryId, stringMapToValueMap(parametersMap));
 	}
 
 
@@ -341,7 +357,7 @@ public class Service<F extends FormFactory> {
 		
 		Form form = factory.getForm(formApi);
 		
-		return ListItemDto.asList(form.getList(id, parameterName, parameters));
+		return ListItemDto.asList(form.getList(id, parameterName, stringMapToValueMap(parameters)));
 	}
 
 	/**
@@ -362,7 +378,7 @@ public class Service<F extends FormFactory> {
 		Form form = factory.getForm(formApi);
 
 		
-		return ListItemDto.asList(form.getInteractiveList(id, parameterName, parameters));
+		return ListItemDto.asList(form.getInteractiveList(id, parameterName, stringMapToValueMap(parameters)));
 	}
 
 
@@ -383,7 +399,7 @@ public class Service<F extends FormFactory> {
 		
 		Form form = factory.getForm(formApi);
 
-		return form.getValue(id, parameterName, parameters);
+		return form.getValue(id, parameterName, stringMapToValueMap(parameters));
 	}
 
 	/**
@@ -403,7 +419,7 @@ public class Service<F extends FormFactory> {
 		
 		Form form = factory.getForm(formApi);
 
-		return form.isVisible(id, parameterName, parameters);
+		return form.isVisible(id, parameterName, stringMapToValueMap(parameters));
 	}
 
 	/**
@@ -423,7 +439,7 @@ public class Service<F extends FormFactory> {
 		
 		Form form = factory.getForm(formApi);
 		
-		return form.isActive(id, parameterName, parameters);
+		return form.isActive(id, parameterName, stringMapToValueMap(parameters));
 	}
 
 	/**
@@ -437,7 +453,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public ResultDto checkInterface(Integer id, String formApi, Map<String, String> checkParametersMap)
+	public ResultDto checkInterface(Integer id, String formApi, Parameters checkParametersMap)
 			throws ServiceException {
 		
 		Form form = factory.getForm(formApi);
