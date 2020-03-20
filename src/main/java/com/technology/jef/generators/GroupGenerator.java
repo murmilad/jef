@@ -157,14 +157,14 @@ public class GroupGenerator extends TagGenerator {
 	"			$(\"<input/>\", {    \n" + 
 	"				'value': '${api}',     \n" + 
 	"				'type': 'hidden',     \n" + 
-	"				'id': 'api_group_id<NUMBER>',     \n" + 
-	"				'name': 'api_group_id<NUMBER>',     \n" + 
+	"				'id': '${system_prefix}_api_group_id<NUMBER>',     \n" + 
+	"				'name': '${system_prefix}_api_group_id<NUMBER>',     \n" + 
 	"			}).appendTo( \"#place_${multiplie_group_name}\" ); \n" + 
 	"			$(\"<input/>\", {    \n" + 
 	"				'value': '${parrent_api}',     \n" + 
 	"				'type': 'hidden',     \n" + 
-	"				'id': 'parrent_api_group_id<NUMBER>',     \n" + 
-	"				'name': 'parrent_api_group_id<NUMBER>',     \n" + 
+	"				'id': '${system_prefix}_parrent_api_group_id<NUMBER>',     \n" + 
+	"				'name': '${system_prefix}_parrent_api_group_id<NUMBER>',     \n" + 
 	"			}).appendTo( \"#place_${multiplie_group_name}\" ); \n" + 
 	"		count_${multiplie_group_name}--; \n" +
 	"						var parameters = ${value_js};  \n" + 
@@ -179,6 +179,8 @@ public class GroupGenerator extends TagGenerator {
 	.replace("${api}", (String) getAttribute(TagGenerator.Attribute.API))
 	.replace("${parrent_api}", (String) getAttribute(TagGenerator.Attribute.PARRENT_API))
 	.replace("${action}", ACTION_DELETE)
+	.replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX)
+
 	
 			);
 

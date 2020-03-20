@@ -109,7 +109,7 @@ public class Service<F extends FormFactory> {
 
 
 
-	private Parameters stringMapToValueMap(Map<String, String> parameters) {
+	public Parameters stringMapToValueMap(Map<String, String> parameters) {
 		Parameters result = new Parameters();
 
 		parameters.keySet().forEach(name -> 
@@ -181,6 +181,7 @@ public class Service<F extends FormFactory> {
 					// Если текущий параметр содержит значение поля формы
 					} else if (apiMatcher.group(1) == null){
 						String groupPrefix = apiMatcher.group(4) != null ? apiMatcher.group(4).replace(currentForm + "_", "") : "";
+						allInputParametersMap.get(name).setName(apiMatcher.group(2));
 						formsMap.get(currentForm).addParameter(apiMatcher.group(2), allInputParametersMap.get(name), groupPrefix, allInputParametersMap);
 					}
 				}
@@ -208,9 +209,19 @@ public class Service<F extends FormFactory> {
 			operateFormParameters(parrentFormParameters, result, (FormParameters formParameters, ResultDto currentResult) -> {
 					for (String groupPrefix : formParameters.getParameters().keySet()) {
 						String secondaryId = parameters.get("group_id" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
-						currentResult.appendResult(checkFormData(id, secondaryId == null | "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), formParameters.getCurrentApi(), formParameters.getFormParameters(groupPrefix), formParameters.getInputParameters(groupPrefix)), !"".equals(groupPrefix) 
-								? GROUP_SEPARATOR +  formParameters.getCurrentApi() + "_" + groupPrefix
-								: ""
+						currentResult.appendResult(
+								checkFormData(
+									id,
+									secondaryId == null | "".equals(secondaryId) 
+										? null
+										: Integer.parseInt(secondaryId),
+									formParameters.getCurrentApi(),
+									formParameters.getFormParameters(groupPrefix),
+									formParameters.getInputParameters(groupPrefix)
+								),
+								!"".equals(groupPrefix) 
+									? GROUP_SEPARATOR +  formParameters.getCurrentApi() + "_" + groupPrefix
+									: ""
 						);
 					}
 			});

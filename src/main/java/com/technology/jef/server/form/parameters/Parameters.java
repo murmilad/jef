@@ -39,4 +39,8 @@ public class Parameters extends HashMap<String, Value>{
 	public Boolean isRequired(String parameterName) {
 		return this.containsKey(parameterName) ? this.get(parameterName).getIsRequired() : false;
 	}
+
+	public void putValue(String name, String value) {
+		this.put(name, new Value(name, value));
+	}
 }

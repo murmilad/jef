@@ -361,7 +361,7 @@ public abstract class Form {
 			
 			Map<String,Field> parametersMap = getFieldsMap();
 			for (String name : parametersMap.keySet()) {
-				if (parametersMap.get(name).getFieldName() != null && parameters.getValue(name) != null) {
+				if (parametersMap.get(name).getFieldName() != null && parameters.get(name) != null) {
 					daoParameters.put(parametersMap.get(name).getFieldName(), parameters.getValue(name));
 				}
 			}
