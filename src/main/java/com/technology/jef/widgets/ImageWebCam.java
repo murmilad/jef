@@ -25,8 +25,12 @@ public class ImageWebCam extends Image {
 			
 			parrent.add(Tag.Type.IMG, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "img_visible_" + name);
+				 if (!"".equals(generator.getAttribute(TagGenerator.Attribute.DEFAULT_IMAGE))) {
+					 put(Tag.Property.SRC, (String) generator.getAttribute(TagGenerator.Attribute.DEFAULT_IMAGE));
+				 }
 				 put(Tag.Property.NAME, "img_visible_" + name);
-				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
+				 put(Tag.Property.ONERROR, "this.onerror=null; this.src='" + generator.getAttribute(TagGenerator.Attribute.DEFAULT_IMAGE) + "'");
+				 put(Tag.Property.STYLE, "max-width: 100%;");
 			}});
 
 			Tag fieldset = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
@@ -59,7 +63,7 @@ public class ImageWebCam extends Image {
 					"	<img src=\"data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=\" id=\"camera_snapshot_${name}\"><br> \n" + 
 					"	<input style=\"width:200px;\"               id=\"init_camera_button_${name}\"   type=\"button\" value=\"Клиент готов. Включить камеру\" onclick=\"init_camera_${name}()\"> \n" + 
 					"	<input style=\"width:80px;\"                id=\"not_present_camera_button_${name}\"   type=\"button\" value=\"Нет камеры\" onclick=\"not_present_camera_${name}()\"> \n" + 
-					"	<input style=\"display:none; width:300px;\" id=\"take_snapshot_button_${name}\" type=\"button\" value=\"Сделать фото клиента\" onclick=\"take_snapshot_${name}()\">) \n")
+					"	<input style=\"display:none; width:300px;\" id=\"take_snapshot_button_${name}\" type=\"button\" value=\"Сделать фото клиента\" onclick=\"take_snapshot_${name}()\"> \n")
 					.replace("${name}", name),
 				new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "div_submit_data_" + name);
