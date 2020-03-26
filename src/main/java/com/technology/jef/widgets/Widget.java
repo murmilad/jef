@@ -132,9 +132,7 @@ public abstract class Widget {
 			).flatMap(Stream::of).toArray(String[]::new)) {
 				resultElement.add(Tag.Type.SCRIPT,							("    \n" + 
 	"	$('input#${name}').on('lock', function () {   \n" + 
-	"		if (!$('input#${parrent_name}').attr('data-disabled')) {  \n" + 
-	"			$('input#${parrent_name}').trigger('setLocked');  \n" + 
-	"		} \n" + 
+	"		$('input#${parrent_name}').trigger('setLocked');  \n" + 
 	"	});    \n" + 
 	"	$('input#${name}').on('unlock', function () {    \n" + 
 	"		if (!$('input#${parrent_name}').attr('data-disabled')) {  \n" + 
@@ -142,9 +140,7 @@ public abstract class Widget {
 	"		} \n" + 
 	"	});    \n" + 
 	"	$('input#${parrent_name}').on('lock', function () {   \n" + 
-	"		if (!$('input#${name}').attr('data-disabled')) {  \n" + 
-	"			$('input#${name}').trigger('setLocked');  \n" + 
-	"		} \n" + 
+	"		$('input#${name}').trigger('setLocked');  \n" + 
 	"	});    \n" + 
 	"	$('input#${parrent_name}').on('unlock', function () {    \n" + 
 	"		if (!$('input#${name}').attr('data-disabled')) {  \n" + 
@@ -489,7 +485,7 @@ public abstract class Widget {
 						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 				);
 
-				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), getSetActiveJS().concat("if ($('input#${child_name}').attr('data-disabled') !== 'attribute') { $('input#${child_name}').attr('data-disabled', 'interactive') }"), valueJS, "is_active");
+				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), "if ($('input#${child_name}').attr('data-disabled') !== 'attribute') {" + getSetActiveJS().concat("} if ($('input#${child_name}').attr('data-disabled') !== 'attribute') { $('input#${child_name}').attr('data-disabled', 'interactive') }"), valueJS, "is_active");
 			}
 			
 		/**

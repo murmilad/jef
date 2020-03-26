@@ -96,9 +96,9 @@ public class Service<F extends FormFactory> {
 
 		fromResult = new FormDto(SERVICE_STATUS_OK);
 
-		for(String parameterName : form.getFormData().getValues().keySet()) {
+		for(String parameterName : form.getFieldsMap().keySet()) {
 			if (!"form".equals(parameterName)) {
-				fromResult.putParameter(parameterName, new ParameterDto(form.getFormData().getValues().get(parameterName).getValue(), form.getAttributes(parameterName, primaryId)));
+				fromResult.putParameter(parameterName, new ParameterDto(form.getFormData().getValues().containsKey(parameterName) ? form.getFormData().getValues().get(parameterName).getValue() : "", form.getAttributes(parameterName, primaryId)));
 			}
 		}
 

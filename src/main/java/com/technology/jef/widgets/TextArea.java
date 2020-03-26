@@ -42,7 +42,6 @@ public class TextArea extends Widget {
 				.add(Tag.Type.TR)
 				.add(Tag.Type.TD, (String) generator.getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
 					put(Tag.Property.WIDTH, "100%");
-					put(Tag.Property.STYLE, !"".equals(generator.getAttribute(TagGenerator.Attribute.REQUIRED)) ? "color: rgb(170, 0, 0);" : "color: rgb(0, 0, 0);");
 				}});
 			
 			
