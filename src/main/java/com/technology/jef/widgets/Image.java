@@ -23,13 +23,22 @@ public class Image extends Widget {
 
 	@Override
 	public String getSetValueJS() {
-		return 	("	                                                  \n" + 
-	"	$(\"#img_visible_${child_name}\").prop('src', data.value);    \n" + 
-	"	$(\"#visible_${child_name}\").change();    \n" + 
-	"	$(\"input#${child_name}\").val(data.value);  \n" + 
-	"	$('#visible_${child_name}').bind('change', function(){  \n" + 
-	"		$('#${system_prefix}_changed_${child_name}').val('1')  \n" + 
-	"	});  \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
+		return 			("	                                                    \n" + 
+	"	$(\"#img_visible_${child_name}\").prop('src', data.value);      \n" + 
+	"	$(\"input#${child_name}\").val(data.value);    \n" + 
+	"	if (isLoading) {  \n" + 
+	"		$('#visible_${child_name}').bind('change', function(){    \n" + 
+	"			$('#${system_prefix}_changed_${child_name}').val('1')    \n" + 
+	"		});    \n" + 
+	"		$(\"#visible_${child_name}\").change(); \n" +
+	"		$('#visible_${name}').bindFirst('change', function(event){    \n" + 
+	"			onChangeReadOnly${name}(event.delegateTarget);    \n" + 
+	"		});    \n" + 
+	"	} else { \n" + 
+	"		$(\"#visible_${child_name}\").change(); \n" +
+	"	} \n" 
+	)
+	.replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 	}
 
 	@Override
@@ -123,6 +132,7 @@ public class Image extends Widget {
 	"		success : function(data, textStatus, jqXHR) {   \n" + 
 	"			$('#img_visible_${name}').attr('src', data); \n" + 
 	"			$('input#${name}').val(data);     \n" + 
+	"			$('#visible_${name}').change(); \n" + 
 	"		},   \n" + 
 	"		error : function(jqXHR, textStatus, errorThrown) {   \n" + 
 	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);    \n" + 
@@ -130,7 +140,7 @@ public class Image extends Widget {
 	"	    });       \n" + 
 	"	}); \n")
 		.replace("${name}", name));
-		
+
 		return element;
 	}
 
