@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,7 +68,7 @@ public class Service<F extends FormFactory> {
 		if (groupIdList != null) {
 			List<FormDto> groups = new LinkedList<FormDto>();
 			for (String secondaryId: groupIdList) {
-				groups.add(getFormDto(id, "".endsWith(secondaryId) ? null : Integer.parseInt(secondaryId), formApi, parameters));
+				groups.add(getFormDto(id, "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), formApi, parameters));
 			}
 			fromResult = getFormDto(id, null, formApi, parameters);
 			fromResult.setGroups(groups);
@@ -96,7 +97,7 @@ public class Service<F extends FormFactory> {
 
 		fromResult = new FormDto(SERVICE_STATUS_OK);
 
-		for(String parameterName : form.getFieldsMap().keySet()) {
+		for(String parameterName : new HashSet<String>(form.getFieldsMap().keySet()) {{ add("group_id"); }}) {
 			if (!"form".equals(parameterName)) {
 				fromResult.putParameter(parameterName, new ParameterDto(form.getFormData().getValues().containsKey(parameterName) ? form.getFormData().getValues().get(parameterName).getValue() : "", form.getAttributes(parameterName, primaryId)));
 			}

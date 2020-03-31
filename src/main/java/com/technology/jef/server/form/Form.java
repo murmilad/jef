@@ -297,7 +297,7 @@ public abstract class Form {
 						if ((fieldValue == null || !fieldValue.toString().contains(PARAMETER_NAME_VALUE_SEPARATOR)) && matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
 							String value = PARAMETER_NAME_VALUE_SEPARATOR;
 							if (formData.get(matcher.group(1) + "_name") != null) {
-								value = formData.get(parametersMap.get(interfaceFieldName).getFieldName()) +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");
+								value = (fieldValue != null ? fieldValue : "") +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");
 							} else if (formData.get(matcher.group(1) + "_other") != null) {
 								value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
 							}
