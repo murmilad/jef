@@ -204,7 +204,7 @@ public class Service<F extends FormFactory> {
 
 		
 		result = new ResultDto(SERVICE_STATUS_OK);
-
+		Boolean release = true; 
 		// Проверяем параметры формы
 		for (FormParameters parrentFormParameters : formsList) {
 			operateFormParameters(parrentFormParameters, result, (FormParameters formParameters, ResultDto currentResult) -> {
@@ -228,9 +228,11 @@ public class Service<F extends FormFactory> {
 			});
 		}
 
+		release = result.getErrors().getFormErrors().size() == 0 && result.getErrors().getParametersErrors().isEmpty();
+		
 		// Сохраняем параметры формы в случае если нет ошибок на форме
 		List<Integer> newRecordId = new LinkedList<Integer>() {{ add(id); }};
-		if (result.getErrors().getFormErrors().size() == 0 && result.getErrors().getParametersErrors().isEmpty()) {
+		if (release) {
 			for (FormParameters parrentFormParameters : formsList) {
 				operateFormParameters(parrentFormParameters, result, (FormParameters formParameters, ResultDto currentResult) -> {
 						for (String groupPrefix : formParameters.getParameters().keySet()) {
@@ -262,6 +264,7 @@ public class Service<F extends FormFactory> {
 
 		//Добавляем в результат данные о текущем ID
 		result.setId(String.valueOf(newRecordId.get(0)));
+		result.setRelease(release);
 		return result;
 	}		
 

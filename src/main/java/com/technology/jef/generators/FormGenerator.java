@@ -249,16 +249,16 @@ public class FormGenerator extends TagGenerator {
 	"										hasErrors = true;           \n" + 
 	"									});             \n" + 
 	"								}             \n" + 
-	"								if (hasErrors) {           \n" + 
+	"								if (data.release) {           \n" + 
+	"									$('#error').hide();         \n" + 
+	"									$('#${name}').trigger('set', [data]);" +
+	"								} else {          \n" + 
 	"									$('#error').show();         \n" + 
 	"									$(\"#message_overlay_wait_form\").hide();                         \n" + 
 	"			    					$(\"#message_box_overlay_wait_form\").hide();                         \n" +
 	"    								$(\"#message_box_wait_form\").hide();                         \n" +
 	"									window.scrollTo(0, 0);              \n" + 
 	"									$('#${name}').trigger('error', [data]);" +
-	"								} else {          \n" + 
-	"									$('#error').hide();         \n" + 
-	"									$('#${name}').trigger('set', [data]);" +
 	"  								}           \n" + 
 	"						});                           \n" + 
 	"					}                           \n")

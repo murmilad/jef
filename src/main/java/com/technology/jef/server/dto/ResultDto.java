@@ -21,6 +21,7 @@ public class ResultDto  extends StatusDto {
 
 	private FormErrorsDto errors = new FormErrorsDto();
 	private String id;
+	private Boolean release;
 
 	public FormErrorsDto getErrors() {
 		return errors;
@@ -57,6 +58,14 @@ public class ResultDto  extends StatusDto {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Boolean getRelease() {
+		return this.release;
+	}
+
+	public void setRelease(Boolean release) {
+		this.release = release;
 	}
 	
 
