@@ -241,17 +241,18 @@ public abstract class Form {
 		/**
 		 * Метод получения атрибутов параметра формы (видимость, доступность к редактированию)
 		 * @param parameterName наименование параметра на форме
+		 * @param parameters 
 		 * @param id идентификатор анкеты
 		 * @return список атрибутов параметра
 		 * @throws ServiceException
 		 */
-		protected Map<Attribute, Boolean> getAttributes(String parameterName, Integer id) throws ServiceException {
+		protected Map<Attribute, Boolean> getAttributes(String parameterName, Parameters parameters, Integer id) throws ServiceException {
 
 			Map<Attribute, Boolean> attributes = new HashMap<Attribute, Boolean>();
 			if (getFieldsMap().containsKey(parameterName)) {
 				GetAttributesListener getAttributesListener = getFieldsMap().get(parameterName).getGetAttributesListener();
 				if (getAttributesListener != null) {
-					attributes = getAttributesListener.handle(parameterName, id);
+					attributes = getAttributesListener.handle(parameterName, parameters, id);
 				}
 			}
 			

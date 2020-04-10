@@ -99,7 +99,7 @@ public class Service<F extends FormFactory> {
 
 		for(String parameterName : new HashSet<String>(form.getFieldsMap().keySet()) {{ add("group_id"); }}) {
 			if (!"form".equals(parameterName)) {
-				fromResult.putParameter(parameterName, new ParameterDto(form.getFormData().getValues().containsKey(parameterName) ? form.getFormData().getValues().get(parameterName).getValue() : "", form.getAttributes(parameterName, primaryId)));
+				fromResult.putParameter(parameterName, new ParameterDto(form.getFormData().getValues().containsKey(parameterName) ? form.getFormData().getValues().get(parameterName).getValue() : "", form.getAttributes(parameterName, form.getFormData().getValues(), primaryId)));
 			}
 		}
 

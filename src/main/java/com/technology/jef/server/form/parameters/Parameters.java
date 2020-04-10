@@ -16,6 +16,14 @@ public class Parameters extends HashMap<String, Value>{
 		super();
 	}
 
+	public Parameters(Parameters parameters) {
+		this();
+
+		for (String parameterName: parameters.keySet()) {
+			put(parameterName, parameters.get(parameterName));
+		}
+	}
+
 	public Parameters(int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 	}
