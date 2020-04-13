@@ -18,7 +18,22 @@ public class ImageWebCam extends Image {
 	public ViewType getType () {
 		return ViewType.DOUBLE;
 	}
-
+	@Override
+	public String getSetActiveJS() {
+		
+		return 
+		"		if (data.value) { \n " + 
+		"			$('#visible_${child_name}').prop( \"disabled\", false); \n " +
+		"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+		"			$('#div_header_visible_${child_name}').show(); \n " +
+		"			$('#div_submit_data_${child_name}').show(); \n " +
+		"           $(\"#visible_${child_name}\").trigger('refresh');" +
+		"		} else { \n " +
+		"			$('#div_header_visible_${child_name}').hide(); \n " +
+		"			$('#div_submit_data_${child_name}').hide(); \n " +
+		"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
+		"		} \n ";
+	}
 	@Override
 		public Tag assembleTag(String name, TagGenerator generator) {
 			

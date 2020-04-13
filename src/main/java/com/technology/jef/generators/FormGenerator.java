@@ -513,62 +513,61 @@ public class FormGenerator extends TagGenerator {
 		.replace("${multiplie_group_name}", GROUP_SEPARATOR + formApi)
 		.replace("${value_js}", valueJS);
 
-		dom.add(Tag.Type.SCRIPT,			( "\n" +
-	"				var groupInitialParams${api};     \n" + 
-	"				function load_form_data_${api}(data, groupPrefix){     \n" + 
-	"					if (data.status_code === 1) {                         \n" + 
-	"						$.each(data.parameters, function(key, parameter) {                \n" + 
-	"							if (parameter.attributes.READONLY) {                         \n" + 
-	"				 				$('#visible_' + key + groupPrefix).attr('disabled', 'disabled').trigger('refresh');                    \n" + 
-	"				 				$('input#' + key + groupPrefix).attr( \"data-disabled\", 'attribute');                    \n" + 
-	"					 			$(\"#tr_\" + key + groupPrefix).css('color', 'lightgray');                    \n" + 
-	"							};                   \n" + 
-	"							if (parameter.attributes.INVISIBLE) {                         \n" + 
-	"				 				$('input#' + key + groupPrefix).attr( \"data-invisible\", 'attribute');                    \n" + 
-	"					 			$(\"#tr_\" + key + groupPrefix).css('display', 'none');                    \n" + 
-	"							};                   \n" + 
-	"						});                        \n" + 
-	"						$.each(data.parameters, function(key, parameter) {                         \n" + 
-	"							var valueArray = parameter.value.split('${value_separator}');                        \n" + 
-	"							$(\"input#\" + key + groupPrefix).val(valueArray[0]);                         \n" + 
-	"						});                        \n" + 
-	"						$.each(data.parameters, function(key, parameter) {                         \n" + 
-	"							var valueArray = parameter.value.split('${value_separator}');                        \n" + 
-	"							$(\"input#\" + key + groupPrefix).trigger('setValueOnLoad',[{value:valueArray[0], name:(valueArray.length > 1 ? valueArray[1] : '')}]);                \n" + 
-	"						});                 \n" + 
-	"								var hasErrors = false;       \n" + 
-	"								if (data.errors.parametersErrors != null) {                \n" + 
-	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return  a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {           \n" + 
-	"										var name = obj.name;          \n" + 
-	"										var group = obj.group;          \n" + 
-	"										var errors = data.errors.parametersErrors[name];           \n" + 
-	"										$.each( errors, function(index, error) {                    \n" + 
-	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error error_color\");                    \n" + 
-	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                     \n" + 
-	"											hasErrors = true;               \n" + 
-	"										});                 \n" + 
+		dom.add(Tag.Type.SCRIPT,				(" \n" + 
+	"				var groupInitialParams${api};      \n" + 
+	"				function load_form_data_${api}(data, groupPrefix){      \n" + 
+	"					if (data.status_code === 1) {                          \n" + 
+	"						$.each(data.parameters, function(key, parameter) {                 \n" + 
+	"							if (parameter.attributes.READONLY) {                          \n" + 
+	"				 				$('input#' + key + groupPrefix).attr( \"data-disabled\", 'attribute');                     \n" + 
+	"								$('input#' + key + groupPrefix).trigger('setLocked'); \n" + 
+	"							};                    \n" + 
+	"							if (parameter.attributes.INVISIBLE) {                          \n" + 
+	"				 				$('input#' + key + groupPrefix).attr( \"data-invisible\", 'attribute');                     \n" + 
+	"					 			$(\"#tr_\" + key + groupPrefix).css('display', 'none');                     \n" + 
+	"							};                    \n" + 
+	"						});                         \n" + 
+	"						$.each(data.parameters, function(key, parameter) {                          \n" + 
+	"							var valueArray = parameter.value.split('${value_separator}');                         \n" + 
+	"							$(\"input#\" + key + groupPrefix).val(valueArray[0]);                          \n" + 
+	"						});                         \n" + 
+	"						$.each(data.parameters, function(key, parameter) {                          \n" + 
+	"							var valueArray = parameter.value.split('${value_separator}');                         \n" + 
+	"							$(\"input#\" + key + groupPrefix).trigger('setValueOnLoad',[{value:valueArray[0], name:(valueArray.length > 1 ? valueArray[1] : '')}]);                 \n" + 
+	"						});                  \n" + 
+	"								var hasErrors = false;        \n" + 
+	"								if (data.errors.parametersErrors != null) {                 \n" + 
+	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return  a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {            \n" + 
+	"										var name = obj.name;           \n" + 
+	"										var group = obj.group;           \n" + 
+	"										var errors = data.errors.parametersErrors[name];            \n" + 
+	"										$.each( errors, function(index, error) {                     \n" + 
+	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error error_color\");                     \n" + 
+	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                      \n" + 
+	"											hasErrors = true;                \n" + 
+	"										});                  \n" + 
+	"									});                  \n" + 
+	"								}                 \n" + 
+	"								if (data.errors.formErrors != null) {                 \n" + 
+	"									$.each( data.errors.formErrors, function(index, error) {                    \n" + 
+	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                     \n" + 
+	"										hasErrors = true;               \n" + 
 	"									});                 \n" + 
-	"								}                \n" + 
-	"								if (data.errors.formErrors != null) {                \n" + 
-	"									$.each( data.errors.formErrors, function(index, error) {                   \n" + 
-	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                    \n" + 
-	"										hasErrors = true;              \n" + 
-	"									});                \n" + 
-	"								}           \n" + 
-	"								if (hasErrors || $('#error:visible').length > 0) {        \n" + 
-	"									$('#error').show();        \n" + 
-	"								} else {        \n" + 
-	"									$('#error').hide();        \n" + 
-	"								}        \n" + 
-	"					}                 \n" + 
-	"					$.each(data.groups, function(key, parameters) {                         \n" + 
-	"							var currentGroupPrefix = add_${multiplie_group_name}(parameters);                         \n" + 
-	"							load_form_data_${api}(parameters, currentGroupPrefix);  \n" + 
-	"							$( document ).trigger('setListOnLoad_${api}'+currentGroupPrefix);                           \n" + 
-	"					});                        \n" + 
-	"					groupInitialParams${api} = data;     \n" + 
-	"					groupInitialParams${api}.groups = [];     \n" + 
-	"				}     \n")
+	"								}            \n" + 
+	"								if (hasErrors || $('#error:visible').length > 0) {         \n" + 
+	"									$('#error').show();         \n" + 
+	"								} else {         \n" + 
+	"									$('#error').hide();         \n" + 
+	"								}         \n" + 
+	"					}                  \n" + 
+	"					$.each(data.groups, function(key, parameters) {                          \n" + 
+	"							var currentGroupPrefix = add_${multiplie_group_name}(parameters);                          \n" + 
+	"							load_form_data_${api}(parameters, currentGroupPrefix);   \n" + 
+	"							$( document ).trigger('setListOnLoad_${api}'+currentGroupPrefix);                            \n" + 
+	"					});                         \n" + 
+	"					groupInitialParams${api} = data;      \n" + 
+	"					groupInitialParams${api}.groups = [];      \n" + 
+	"				}      \n")
 				.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 				.replace("${service}", (String) getParrent().getAttribute(TagGenerator.Attribute.SERVICE))				
 				.replace("${api}",  formApi)
