@@ -485,7 +485,19 @@ public abstract class Widget {
 						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 				);
 
-				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), "if ($('input#${child_name}').attr('data-disabled') !== 'attribute') {" + getSetActiveJS().concat("} if ($('input#${child_name}').attr('data-disabled') !== 'attribute') { $('input#${child_name}').attr('data-disabled', 'interactive') }"), valueJS, "is_active");
+				return asyncRequestValueJS(currentGenerator, parrentGenerator, getSetInactiveJS(), 
+							(" \n" + 
+							"	if ($('input#${child_name}').attr('data-disabled') !== 'attribute') { \n" + 
+							"		${set_active_js} \n" + 
+							"		if (data.value) { \n" + 
+							"			$('input#${child_name}').removeAttr('data-disabled');  \n" + 
+							"		} else { \n" + 
+							"			$('input#${child_name}').attr('data-disabled', 'interactive'); \n" + 
+							"		} \n" + 
+							"	} \n").replace("${set_active_js}", getSetActiveJS())
+					, valueJS
+					, "is_active"
+				) ;
 			}
 			
 		/**
