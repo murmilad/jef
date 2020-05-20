@@ -26,7 +26,7 @@ public class AutoCompleteCompact extends AutoCompleteEditable {
 			String caption = ((String) generator.getAttribute(TagGenerator.Attribute.NAME))
 					.replace("\\n", "<br>");
 			
-			input.getParrent().add(Tag.Type.DIV, caption , new HashMap<Tag.Property, String>(){{
+			input.getParrent().getParrent().add(Tag.Type.DIV, caption , new HashMap<Tag.Property, String>(){{
 				put(Tag.Property.FOR,"visible_" + generator.getAttribute(TagGenerator.Attribute.ID) + generator.getAttribute(TagGenerator.Attribute.PREFIX)); 
 			}});		
 			return input;

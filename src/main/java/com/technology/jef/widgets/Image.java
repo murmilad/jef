@@ -42,10 +42,10 @@ public class Image extends Widget {
 	"	$(\"#img_visible_${child_name}\").prop('src', data.value);      \n" + 
 	"	$(\"input#${child_name}\").val(data.value);    \n" + 
 	"	if (isLoading) {  \n" + 
+	"		$(\"#visible_${child_name}\").change(); \n" +
 	"		$('#visible_${child_name}').bind('change', function(){    \n" + 
 	"			$('#${system_prefix}_changed_${child_name}').val('1')    \n" + 
 	"		});    \n" + 
-	"		$(\"#visible_${child_name}\").change(); \n" +
 	"		$('#visible_${name}').bindFirst('change', function(event){    \n" + 
 	"			onChangeReadOnly${name}(event.delegateTarget);    \n" + 
 	"		});    \n" + 
