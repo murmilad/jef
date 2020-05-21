@@ -107,15 +107,15 @@ public abstract class Widget {
 			}});
 			
 			Tag resultElement = assembleTag(name, generator);
-			resultElement.add(Tag.Type.SCRIPT,							("    \n" + 
-	"	$('input#${name}').on('setLocked', function () {   \n" + 
-	"		var data = {value: 0};    \n" + 
-	"		${set_active_js}    \n" + 
-	"	});    \n" + 
-	"	$('input#${name}').on('setUnlocked', function () {    \n" + 
-	"		var data = {value: 1};    \n" + 
-	"		${set_active_js}  \n" + 
-	"	});    \n")
+			resultElement.add(Tag.Type.SCRIPT,								("     \n" + 
+	"	$('input#${name}').on('setLocked', function () {    \n" + 
+	"			var data = {value: 0};     \n" + 
+	"			${set_active_js}     \n" + 
+	"	});     \n" + 
+	"	$('input#${name}').on('setUnlocked', function () {     \n" + 
+	"			var data = {value: 1};     \n" + 
+	"			${set_active_js}   \n" + 
+	"	});     \n")
 				.replace("${set_active_js}", getSetActiveJS().replace("${child_name}", name))
 				.replace("${name}", name)
 			); 
@@ -140,15 +140,19 @@ public abstract class Widget {
 	"		} \n" + 
 	"	});    \n" + 
 	"	$('input#${parrent_name}').on('lock', function () {   \n" + 
+	"		$('input#${parrent_name}').trigger('setLocked');  \n" + 
 	"		$('input#${name}').trigger('setLocked');  \n" + 
 	"	});    \n" + 
 	"	$('input#${parrent_name}').on('unlock', function () {    \n" + 
+	"		if (!$('input#${parrent_name}').attr('data-disabled')) {  \n" + 
+	"			$('input#${parrent_name}').trigger('setUnlocked');  \n" + 
+	"		} \n" + 
 	"		if (!$('input#${name}').attr('data-disabled')) {  \n" + 
 	"			$('input#${name}').trigger('setUnlocked');  \n" + 
 	"		} \n" + 
 	"	});    \n")
 					.replace("${set_active_js}", getSetActiveJS().replace("${child_name}", name))
-					.replace("${parrent_name}", parrentName)
+					.replace("${parrent_name}", parrentName + (String) generator.getAttribute(TagGenerator.Attribute.PREFIX))
 					.replace("${name}", name)
 				); 
 				
@@ -158,7 +162,7 @@ public abstract class Widget {
 					"		var isLoading = true;      \n" + 
 					"		${setValueJS} \n" + 
 					"		$(\"input#${name}\").bind(\"cleanValue\", function(){ \n" + 
-					"			if (formsWaitedToLoad === 0) { \n" + 
+					"			if (!isFormLoading) { \n" + 
 					"				${cleanValueJS} \n" +
 					"			}	\n " +		
 					"		}); \n" + 

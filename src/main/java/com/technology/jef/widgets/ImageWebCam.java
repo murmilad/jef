@@ -45,7 +45,7 @@ public class ImageWebCam extends Image {
 				 }
 				 put(Tag.Property.NAME, "img_visible_" + name);
 				 put(Tag.Property.ONERROR, "this.onerror=null; this.src='" + generator.getAttribute(TagGenerator.Attribute.DEFAULT_IMAGE) + "'");
-				 put(Tag.Property.STYLE, "max-width: 100%;");
+				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
 			}});
 
 			Tag fieldset = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{

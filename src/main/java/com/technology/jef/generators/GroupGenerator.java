@@ -130,6 +130,7 @@ public class GroupGenerator extends TagGenerator {
 			Tag buttonDel = dom.add(Tag.Type.DIV,
 				new HashMap<Tag.Property, String>(){{
 					 put(Tag.Property.STYLE, "width: 100%; display: inline-block;");
+					 put(Tag.Property.CLASS, "div_interface_element_horizontal interface_element_horizontal");
 				}}).add(Tag.Type.DIV,
 						new HashMap<Tag.Property, String>(){{
 						put(Tag.Property.STYLE, "position:relative; width: 100%;text-align: left; display: block;");

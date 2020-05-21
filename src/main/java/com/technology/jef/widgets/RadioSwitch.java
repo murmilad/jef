@@ -142,11 +142,13 @@ public class RadioSwitch extends List {
 		return "		if (data.value) { \n "
 				+ "			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n "
 				+ "				$( element ).prop( \"disabled\", false); \n	" 
+				+ "           $( element ).trigger('refresh'); \n"
 				+ "			});                                           \n "
 				+ "			$(\"#tr_${child_name}\" ).css('color', 'black'); \n " 
 				+ "		} else {                                                \n "
 				+ "			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n "
 				+ "				$( element ).prop( \"disabled\", true); \n	" 
+				+ "             $( element ).trigger('refresh'); \n"
 				+ "			});                                         \n "
 				+ "			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " 
 				+ "		}                                                \n ";
