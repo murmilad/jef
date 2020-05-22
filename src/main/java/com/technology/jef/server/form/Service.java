@@ -240,9 +240,11 @@ public class Service<F extends FormFactory> {
 							String secondaryId = parameters.get("group_id" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
 							String action = parameters.get("action" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
 							if (ACTION_DELETE.equals(action)) {
-								deleteFormData(currentPrimaryId, secondaryId == null | "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), formParameters.getCurrentApi(), parameters);
+								if (secondaryId != null && !"".equals(secondaryId)) {
+									deleteFormData(currentPrimaryId, Integer.parseInt(secondaryId), formParameters.getCurrentApi(), parameters);
+								}
 							} else {
-								newRecordId.set(0,  saveFormData(currentPrimaryId, secondaryId == null | "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), formParameters.getCurrentApi(), formParameters.getInputParameters(groupPrefix)));
+								newRecordId.set(0,  saveFormData(currentPrimaryId, (secondaryId == null || "".equals(secondaryId)) ? null : Integer.parseInt(secondaryId), formParameters.getCurrentApi(), formParameters.getInputParameters(groupPrefix)));
 							}
 						}
 				});

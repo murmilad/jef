@@ -60,6 +60,8 @@ public class ImageWebCam extends Image {
 				 put(Tag.Property.TYPE, "file");
 				 put(Tag.Property.STYLE, "width:100%;");
 				 put(Tag.Property.ACCEPT, "image/jpg,image/jpeg,image/gif,image/bmp");
+				 put(Tag.Property.DATA_FILEBROWSETEXT, CurrentLocale.getInstance().getTextSource().getString("file_browse_text"));
+				 put(Tag.Property.DATA_FILEPLACEHOLDER, CurrentLocale.getInstance().getTextSource().getString("file_placeholder"));
 			}});
 
 			

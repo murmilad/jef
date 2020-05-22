@@ -27,6 +27,8 @@ public class ReadOnly extends Text {
 			Tag inputText = super.assembleTag(name, generator);
 			
 			inputText.setProperty(Tag.Property.DISABLED, "disabled");
+			inputText.add(Tag.Type.SCRIPT, "$('input#" + name + "').attr('data-disabled', 'attribute')");
+			
 			
 			return inputText;
 		}

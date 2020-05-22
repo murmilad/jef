@@ -153,7 +153,6 @@ public class AutoCompleteAddress extends Widget {
 	"					onSearchError: function (query, jqXHR, textStatus, errorThrown) {    \n" + 
 	"						$('#background_overlay_wait_${name}').hide();    \n" + 
 	"						$('#message_box_wait_${name}').hide();    \n" + 
-	"						$(\"input#${name}\").trigger('unlock');               \n" + 
 	"						showError(\"Error: \" + errorThrown, jqXHR.responseText + 'Parameters:' + query + '<br><br>');      \n" + 
 	"					},    \n" + 
 	"					transformResult: function(response) {       \n" + 
@@ -200,12 +199,10 @@ public class AutoCompleteAddress extends Widget {
 	"						params['parameters'] += '${parameter_separator}' + ${value_js};                      \n" + 
 	"						$('#background_overlay_wait_${name}').show();      \n" + 
 	"						$('#message_box_wait_${name}').show();      \n" + 
-	"						$(\"input#${name}\").trigger('lock');               \n" + 
 	"					},      \n" + 
 	"					onSearchComplete: function (query, suggestions) {      \n" + 
 	"						$('#background_overlay_wait_${name}').hide();      \n" + 
 	"						$('#message_box_wait_${name}').hide();      \n" + 
-	"						$(\"input#${name}\").trigger('unlock');               \n" + 
 	"						if (suggestions.length==0){      \n" + 
 	"							// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение      \n" + 
 	"							$('input#${name}').val('|'+$('#visible_${name}').val());      \n" + 

@@ -14,8 +14,6 @@
 
 		var opt = $.extend({
 			idSuffix: '-styler',
-			filePlaceholder: 'Please, select a file',
-			browseText: 'Choose...',
 			selectVisibleOptions: 0,
 			singleSelectzIndex: '100',
 			selectSmartPositioning: true
@@ -181,8 +179,8 @@
 				el.css({position: 'absolute', top: '0', right: '0', width: '100%', height: '100%', opacity: 0}).each(function() {
 					if (el.parent('div.jq-file').length < 1) {
 						var file = $('<div' + id + ' class="jq-file' + cl + '" style="display: inline-block; position: relative; overflow: hidden"></div>');
-						var name = $('<div class="jq-file__name">' + opt.filePlaceholder + '</div>').appendTo(file);
-						var browse = $('<div class="jq-file__browse">' + opt.browseText + '</div>').appendTo(file);
+						var name = $('<div class="jq-file__name">' + (el.attr('data-filePlaceholder') ? el.attr('data-filePlaceholder') : 'Please, select a file') + '</div>').appendTo(file);
+						var browse = $('<div class="jq-file__browse">' + (el.attr('data-fileBrowseText') ? el.attr('data-fileBrowseText') :  'Choose...') + '</div>').appendTo(file);
 						el.after(file);
 						file.append(el);
 						if (el.is(':disabled')) file.addClass('disabled');

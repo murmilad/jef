@@ -37,7 +37,7 @@ public class InterfaceGenerator extends TagGenerator {
 		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.REL, "stylesheet");
 		     put(Tag.Property.TYPE, "text/css");
-		     put(Tag.Property.HREF, "css/jquery.formstyler.css?v=2.0.0");
+		     put(Tag.Property.HREF, "css/jquery.formstyler.css?no_cache=" + new Random().nextInt(10000));
 		}});
 
 		if (!"".equals((String) getAttribute(TagGenerator.Attribute.NAME))) {
@@ -45,14 +45,14 @@ public class InterfaceGenerator extends TagGenerator {
 			head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 			     put(Tag.Property.REL, "stylesheet");
 			     put(Tag.Property.TYPE, "text/css");
-			     put(Tag.Property.HREF, "css/" + (!"".equals(styleCSS) ? styleCSS : "default_scheme.css"));
+			     put(Tag.Property.HREF, "css/" + (!"".equals(styleCSS) ? styleCSS : "default_scheme.css") + "?no_cache=" + new Random().nextInt(10000));
 			}});
 		}
 
 		head.add(Tag.Type.LINK, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.REL, "stylesheet");
 		     put(Tag.Property.TYPE, "text/css");
-		     put(Tag.Property.HREF, "css/jef.css?v=1.1.2");
+		     put(Tag.Property.HREF, "css/jef.css?no_cache=" + new Random().nextInt(10000));
 		}});
 
 		head.add(Tag.Type.SCRIPT, 	("	$.ajaxSetup({scriptCharset: \"utf-8\" , contentType: \"application/json; charset=utf-8\"});   \n" + 
@@ -84,7 +84,7 @@ public class InterfaceGenerator extends TagGenerator {
 		}});
 		head.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.TYPE, "text/javascript");
-		     put(Tag.Property.SRC, "js/jquery.autocomplete.js?v=1");
+		     put(Tag.Property.SRC, "js/jquery.autocomplete.js?no_cache=" + new Random().nextInt(10000));
 		}});
 		
 		head.add(Tag.Type.SCRIPT, 
@@ -178,7 +178,7 @@ public class InterfaceGenerator extends TagGenerator {
 
 			new HashMap<Tag.Property, String>(){{
 		    put(Tag.Property.TYPE, "text/javascript");
-		    put(Tag.Property.SRC, "js/jquery.formstyler.js?v=2.0.0");
+		    put(Tag.Property.SRC, "js/jquery.formstyler.js?no_cache=" + new Random().nextInt(10000));
 		}});
 		
 		Tag body = dom.add(Tag.Type.BODY, new HashMap<Tag.Property, String>(){{
