@@ -57,7 +57,7 @@ public class RadioSwitch extends List {
 					{
 						put(Tag.Property.ID, "visible_" + name);
 						put(Tag.Property.NAME, "visible_" + name);
-						put(Tag.Property.STYLE, "display: table-row;");
+						put(Tag.Property.STYLE, "display: table-cell; border-width: 1px;");
 					}
 				});
 

@@ -39,6 +39,7 @@ public class RadioSwitchShort extends RadioSwitch {
 							put(Tag.Property.ID, "visible_" + name);
 							 put(Tag.Property.NAME, "visible_" + name);
 							 put(Tag.Property.STYLE, "display: table-row;");
+							put(Tag.Property.STYLE, "border-width: 1px; display: table-cell;");
 					}});			
 
 			return elementInput;

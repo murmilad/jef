@@ -78,6 +78,7 @@ public class CheckBoxList extends RadioSwitch {
 							 put(Tag.Property.CLASS, "styled widgets_height");
 							put(Tag.Property.ID, "visible_" + name);
 							put(Tag.Property.NAME, "visible_" + name);
+							put(Tag.Property.STYLE, "display: table-cell; border-width: 1px;");
 					}});
 
 			mainInput.add(Tag.Type.LINK, CurrentLocale.getInstance().getTextSource().getString("cleanup"), new HashMap<Tag.Property, String>(){{

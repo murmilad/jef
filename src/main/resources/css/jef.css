@@ -25,6 +25,8 @@
 /* Elements */
 
 .error {
+	border-style: solid;
+    border-width: 1px;
 }
 
 .div_interface_element_horizontal {
