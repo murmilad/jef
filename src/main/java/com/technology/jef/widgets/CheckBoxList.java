@@ -171,29 +171,36 @@ public class CheckBoxList extends RadioSwitch {
 
 			@Override
 			public String getSetValueJS() {
-				return  				("	if (isLoading) {   \n" + 
-	"		$(\"#visible_${child_name}\").bind('setValue', function(){     \n" + 
-	"			$('input#${child_name}').val(data.value);    \n" + 
-	"			data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {   \n" + 
-	"				$('#visible_${child_name}' + currentValue).click();    \n" + 
-	"				$('#visible_${child_name}' + currentValue).prop('checked', true).trigger('refresh');     \n" + 
-	"				$('#visible_${child_name}' + currentValue).change();    \n" + 
-	"				$(\"#visible_${child_name}\" + currentValue).trigger('refresh');     \n" + 
-	"			});   \n" + 
-	"			$('#visible_${child_name}').bind('change', function(){ \n" + 
-	"				$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
-	"			}); \n" + 
-	"			$(\"#visible_${child_name}\").unbind('setValue');     \n" + 
-	"		});     \n" + 
-	"	} else {  \n" + 
-	"	$('input#${child_name}').val(data.value);    \n" + 
-	"		data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {   \n" + 
-	"			$('#visible_${child_name}' + currentValue).click();    \n" + 
-	"			$('#visible_${child_name}' + currentValue).prop('checked', true).trigger('refresh');     \n" + 
-	"			$('#visible_${child_name}' + currentValue).change();    \n" + 
-	"			$(\"#visible_${child_name}\" + currentValue).trigger('refresh');     \n" + 
-	"		});   \n" + 
-	"	}  \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX)
+				return  					("	if (isLoading) {    \n" + 
+	"		$(\"#visible_${child_name}\").bind('setValue', function(){      \n" + 
+	"			$('input#${child_name}').val(data.value);     \n" + 
+	"			data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {    \n" + 
+	"				$('#visible_${child_name}' + currentValue).click();     \n" + 
+	"				$('#visible_${child_name}' + currentValue).prop('checked', true).trigger('refresh');      \n" + 
+	"				$('#visible_${child_name}' + currentValue).change();     \n" + 
+	"				$(\"#visible_${child_name}\" + currentValue).trigger('refresh');      \n" + 
+	"			});    \n" + 
+	"			$('#visible_${child_name}').bind('change', function(){  \n" + 
+	"				$('#${system_prefix}_changed_${child_name}').val('1')  \n" + 
+	"			});  \n" + 
+	"			$(\"#visible_${child_name}\").unbind('setValue');      \n" + 
+	"		});      \n" + 
+	"	} else {   \n" + 
+	"	$('input#${child_name}').val(data.value);     \n" + 
+	"		data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {    \n" + 
+	"			if ($(\"#visible_${child_name}\" + data.value).attr('disabled')) {  \n" + 
+	"				$(\"input#${child_name}\").trigger('setUnlocked')   \n" + 
+	"	 			$('#visible_${child_name}' + currentValue).click();     \n" + 
+	"				$(\"input#${child_name}\").trigger('setLocked')  \n" + 
+	"			} else {  \n" + 
+	"	 			$('#visible_${child_name}' + currentValue).click();     \n" + 
+	"			}  \n" + 
+	"			$('#visible_${child_name}' + currentValue).prop('checked', true).trigger('refresh');      \n" + 
+	"			$('#visible_${child_name}' + currentValue).change();     \n" + 
+	"			$(\"#visible_${child_name}\" + currentValue).trigger('refresh');      \n" + 
+	"		});    \n" + 
+	"	}   \n")
+				.replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX)
 				.replace("${list_separator}", LIST_SEPARATOR);
 			}
 
