@@ -178,7 +178,7 @@
 
             // Only set width if it was provided:
             if (options.width !== 'auto') {
-                container.css('width', options.width);
+                container.css('min-width', options.width);
             }
 
             // Listen for mouse over event on suggestions list:
@@ -260,7 +260,7 @@
             // Adjust height, width and z-index:
             $(that.suggestionsContainer).css({
                 'max-height': options.maxHeight + 'px',
-                'width': options.width + 'px',
+                'min-width': options.width + 'px',
                 'z-index': options.zIndex
             });
 
@@ -345,7 +345,7 @@
             }
 
             if (that.options.width === 'auto') {
-                styles.width = that.el.outerWidth() + 'px';
+                styles['min-width'] = that.el.outerWidth() + 'px';
             }
 
             $container.css(styles);
@@ -737,7 +737,7 @@
                     container.css('width', ''); // flex
                     container.css('min-width', '89px'); // flex
                 }else {
-                    container.css('width', width > 0 ? width : 300);
+                    container.css('min-width', width > 0 ? width : 300);
                 }
             } else if(options.width === 'flex') {
                 // Trust the source! Unset the width property so it will be the max length
