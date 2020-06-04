@@ -67,7 +67,7 @@ public class AutoCompleteAddress extends Widget {
 	"			$('#visible_${name}').on('input', function () {                            \n" + 
 	"				// ручной ввод без выбора из списка                            \n" + 
 	"				if ($(\"#visible_${name}\").val()){                            \n" + 
-	"					$(\"#visible_\"+\"${name}\").addClass('warning');                            \n" + 
+	"					$(\"#visible_\"+\"${name}\").addClass('warning_color');                            \n" + 
 	"					$(\"#visible_\"+\"${name}\").attr('title', '${couldnt_find}');                            \n" + 
 	"					if (\"visible_${name}\".indexOf('house')!==-1){ // номер дома без fias_code - получаем общегородской индекс                            \n" + 
 	"						ajax({                            \n" + 
@@ -121,7 +121,7 @@ public class AutoCompleteAddress extends Widget {
 	"							// ставим выбранное значение в hidden поле                            \n" + 
 	"						$('input#${name}').val((suggestion.data||'')+'|'+(suggestion.name||'')); // значение через разделитель                            \n" + 
 	"						$('#visible_${name}').val(suggestion.name).change();                             \n" + 
-	"						$('#visible_${name}').removeClass('warning');                            \n" + 
+	"						$('#visible_${name}').removeClass('warning_color');                            \n" + 
 	"						$('#visible_${name}').attr('title', '');                            \n" + 
 	"						if (\"visible_${name}\".indexOf('region_code')!==-1){                            \n" + 
 	"								// для регион фед значения в город ставим значение региона                            \n" + 
@@ -250,7 +250,7 @@ public class AutoCompleteAddress extends Widget {
 //				"			$.each(list.split(','), function(i, name){  \n" + 
 //				"				$(\"#\"+name+group_postfix).val('');  \n" + 
 //				"				$(\"#visible_\"+name+group_postfix).val('');  \n" + 
-//				"				$(\"#visible_\"+name+group_postfix).removeClass('warning');  \n" + 
+//				"				$(\"#visible_\"+name+group_postfix).removeClass('warning_color');  \n" + 
 //				"			}); \n" + 
 //				"		}")
 //					.replace("${children_list}", String.join(",", ((String[])generator.getAttribute(TagGenerator.Attribute.AJAX_VALUE_CHILD))))

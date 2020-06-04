@@ -22,6 +22,7 @@ public class SerializeConstant {
    */
   public static final String PARAMETER_NAME_VALUE_SEPARATOR = ":i:";
 
+  
   /**
    * Разделитель между параметром и группой
    * 
@@ -32,7 +33,7 @@ public class SerializeConstant {
    * Разделитель между элементами списка, содержащегося в параметре
    * 
    */
-  public static final String LIST_SEPARATOR = "|";
+  public static final String LIST_SEPARATOR = ":l:";
   
   /**
    * Разделитель между кодом и именем в адресе ФИАС

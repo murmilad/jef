@@ -106,8 +106,8 @@ public class WidgetFactory {
 		case AUTO_COMPLETE_EDITABLE:
 			widget = new AutoCompleteEditable();
 			break;
-		case AUTO_COMPLETE_COMPACT:
-			widget = new AutoCompleteCompact();
+		case AUTO_COMPLETE_EDITABLE_COMPACT:
+			widget = new AutoCompleteEditableCompact();
 			break;
 		case AUTO_COMPLETE_ADDRESS:
 			widget = new AutoCompleteAddress();

@@ -68,29 +68,30 @@ public class TabsGenerator extends TagGenerator {
 	public void onEndElement() {
 		if (firstTabFormId != null) {
 			dom.add(Tag.Type.SCRIPT, 
-									("				$( document ).ready(function() {                          \n" + 
-	"			            		$(\"#message_box_wait_tab\").show(); \n" + 
+											("				$( document ).ready(function() {   \n" + 
+	"					setTimeout(function(){ // IE support \n" + 
 	"						loadForm(uri_params['form_id'] || '${form}'); \n" + 
-	"				});    \n" + 
-	"				function loadForm(formId) {    \n" + 
-	"			            $(\"#message_box_wait_tab\").show();                                    \n" + 
-	"						$('.tab').removeClass('current first_color');   \n" + 
-	"						$('.tab').addClass('second_color');   \n" + 
-	"						$( 'div[data-form-id=\"'+formId+'\"]' ).removeClass('second_color');   \n" + 
-	"						$( 'div[data-form-id=\"'+formId+'\"]' ).addClass('current first_color');   \n" + 
-	"					$.ajax({         \n" + 
-	"				       	url: formId + '.html?no_cache=' + Math.floor(Math.random() * 10000),                                 \n" + 
-	"						data: uri_params,                                \n" + 
-	"					       type: 'get',                                 \n" + 
-	"					       dataType: 'text',                                 \n" + 
-	"					}).done(function(data){         \n" + 
-	"						$(\"#form_container\").empty();             \n" + 
-	"						$(\"#form_container\").append(data);             \n" + 
-	"				           	$(\"#message_box_wait_tab\").hide();                                    \n" + 
-	"					}).fail(function(jqXHR, textStatus, errorThrown){         \n" + 
-	"						showError(\"Error: \" + errorThrown, jqXHR.responseText);         \n" + 
-	"					});         \n" + 
-	"				}    \n")
+	"					}, 300); \n" + 
+	"				});      \n" + 
+	"				function loadForm(formId) {      \n" + 
+	"			            $(\"#message_box_wait_tab\").show();                                      \n" + 
+	"						$('.tab').removeClass('current first_color');     \n" + 
+	"						$('.tab').addClass('second_color');     \n" + 
+	"						$( 'div[data-form-id=\"'+formId+'\"]' ).removeClass('second_color');     \n" + 
+	"						$( 'div[data-form-id=\"'+formId+'\"]' ).addClass('current first_color');     \n" + 
+	"					$.ajax({           \n" + 
+	"				       	url: formId + '.html?no_cache=' + Math.floor(Math.random() * 10000),                                   \n" + 
+	"						data: uri_params,                                  \n" + 
+	"					       type: 'get',                                   \n" + 
+	"					       dataType: 'text',                                   \n" + 
+	"					}).done(function(data){           \n" + 
+	"						$(\"#form_container\").empty();               \n" + 
+	"						$(\"#form_container\").append(data);               \n" + 
+	"				           	$(\"#message_box_wait_tab\").hide();                                      \n" + 
+	"					}).fail(function(jqXHR, textStatus, errorThrown){           \n" + 
+	"						showError(\"Error: \" + errorThrown, jqXHR.responseText);           \n" + 
+	"					});           \n" + 
+	"				}      \n")
 					.replace("${form}", firstTabFormId)
 			);
 		}

@@ -100,11 +100,12 @@ public class CheckBoxList extends RadioSwitch {
 					"		$(\"#visible_${name}\").trigger('refresh'); \n" +
 					"		$(\":input[name^='visible_${name}']\").each( function(index, element){ \n" + 
 					"			if ($( this ).prop(\"checked\")){ \n" + 
-					"				$(\"input#${name}\").val($(\"input#${name}\").val() + ($(\"input#${name}\").val()? \"|\" : \"\") + $( this ).attr('value')); \n" + 
+					"				$(\"input#${name}\").val($(\"input#${name}\").val() + ($(\"input#${name}\").val()? \"${list_separator}\" : \"\") + $( this ).attr('value')); \n" + 
 					"			} \n" + 
 					"		}); \n" + 
 					"	} \n")
-					.replace("${name}", name));
+					.replace("${name}", name)
+					.replace("${list_separator}", LIST_SEPARATOR));
 			return element;
 		}
 		
