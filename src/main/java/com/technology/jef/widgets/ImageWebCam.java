@@ -20,7 +20,7 @@ public class ImageWebCam extends Image {
 	}
 	@Override
 	public String getSetActiveJS() {
-		
+		//language=JavaScript
 		return 
 		"		if (data.value) { \n " + 
 		"			$('#visible_${child_name}').prop( \"disabled\", false); \n " +
@@ -47,7 +47,33 @@ public class ImageWebCam extends Image {
 				 put(Tag.Property.ONERROR, "this.onerror=null; this.src='" + generator.getAttribute(TagGenerator.Attribute.DEFAULT_IMAGE) + "'");
 				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
 			}});
-
+			// слой для ввывода информации об ошибках в фото
+			parrent.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
+				put(Tag.Property.ID, "recognize_message_" + name);
+			}});
+			// функция вызывается при изменении картики, для вывода результат проверки фото, вызывается колбэком после завершения проверок
+			//language=JavaScript
+			parrent.add(Tag.Type.SCRIPT,("function checkImg(result){\n" +
+					"                var message='';\n" +
+					"                if (result.indexOf(-1) != -1){\n" +
+					"                    message = \"<span style='background-color:yellow'>Предупреждение: изображение слишком темное</span>\"\n" +
+					"                }\n" +
+					"                if (result.indexOf(-2)!= -1){\n" +
+					"                    message = \"<span style='background-color:yellow'>Предупреждение: изображение слишком светлое</span>\"\n" +
+					"                }\n" +
+					"                if (result.indexOf(-3)!= -1){\n" +
+					"                    message += \"<br><span style='background-color:red;color:white;'>Ошибка: На изображении не обнаружено лицо человека, необходимо сделать новое фото</span>\";\n" +
+					"                    $('#visible_${name}').val('');\n" +
+					"                     $('#${name}').val('');\n" +
+					"                }\n" +
+					"                if (result.indexOf(-4)!= -1){\n" +
+					"                    message += \"<br><span style='background-color:red;color:white;'>Ошибка: На изображении обнаружено несколько лиц, необходимо сделать новое фото</span>\";\n" +
+					"                    $('#visible_${name}').val('');\n" +
+					"                    $('#${name}').val('');\n" +
+					"                }\n" +
+					"                document.getElementById('recognize_message_${name}').innerHTML = message;\n" +
+					"            }\n"
+			).replace("${name}", name));
 			Tag fieldset = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "div_header_visible_" + name);
 				 put(Tag.Property.NAME, "div_header_visible_" + name);
@@ -62,6 +88,8 @@ public class ImageWebCam extends Image {
 				 put(Tag.Property.ACCEPT, "image/jpg,image/jpeg,image/gif,image/bmp");
 				 put(Tag.Property.DATA_FILEBROWSETEXT, CurrentLocale.getInstance().getTextSource().getString("file_browse_text"));
 				 put(Tag.Property.DATA_FILEPLACEHOLDER, CurrentLocale.getInstance().getTextSource().getString("file_placeholder"));
+				 // сделано через эвент выше
+				// put(Tag.Property.CHANGE, CurrentLocale.getInstance().getTextSource().getString("file_placeholder"));
 			}});
 
 			
@@ -76,7 +104,8 @@ public class ImageWebCam extends Image {
 			}});
 
 			parrent.add(Tag.Type.DIV, 	(
-					"	<script src=\"js/webcam.min.js\"></script> \n" + 
+					"	<script src=\"js/webcam.min.js\"></script> \n" +
+					"	<script src=\"js/main.bundle.js\"></script>"+
 					"	<img src=\"data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=\" id=\"camera_snapshot_${name}\"><br> \n" + 
 					"	<input style=\"width:200px;\"               id=\"init_camera_button_${name}\"   type=\"button\" value=\"Клиент готов. Включить камеру\" onclick=\"init_camera_${name}()\"> \n" + 
 					"	<input style=\"width:80px;\"                id=\"not_present_camera_button_${name}\"   type=\"button\" value=\"Нет камеры\" onclick=\"not_present_camera_${name}()\"> \n" + 
@@ -86,7 +115,7 @@ public class ImageWebCam extends Image {
 				 put(Tag.Property.ID, "div_submit_data_" + name);
 				 put(Tag.Property.NAME, "div_submit_data_" + name);
 			}});
-
+			//language=JavaScript
 			parrent.add(Tag.Type.SCRIPT, 	(" \n" + 
 	"  var field_name_${name} = '#img_visible_${name}'; \n" + 
 	"                        var name_${name} = '#${name}' \n" + 
@@ -147,7 +176,8 @@ public class ImageWebCam extends Image {
 	"                function take_snapshot_${name}() { \n" + 
 	"                    Webcam.snap( function(data_uri) { \n" + 
 	"                       $('#camera_snapshot_${name}').attr(\"src\", data_uri); // подменяем картику на фото с камеры \n" + 
-	"                       $(name_${name}).val(data_uri);                       // записываем в поле для передачи серверу \n" + 
+	"                       $(name_${name}).val(data_uri);                        // записываем в поле для передачи серверу \n" +
+	"                       checkPhoto('img_visible_{$name}',checkImg);"+
 	"                    } ); \n" + 
 	"                    Webcam.reset(); \n" + 
 

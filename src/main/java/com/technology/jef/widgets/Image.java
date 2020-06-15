@@ -140,7 +140,7 @@ public class Image extends Widget {
 	"					var reader = new FileReader();     \n" + 
 	"					reader.onload = function(e) {     \n" + 
 	"						$('#img_visible_${name}').attr('src', e.target.result);     \n" + 
-	"						$('input#${name}').val(e.target.result);     \n" + 
+	"						$('input#${name}').val(e.target.result);     \n" +
 	"					}     \n" + 
 	"					reader.readAsDataURL(data.files[0]);     \n" + 
 	"					return false;    \n" + 
