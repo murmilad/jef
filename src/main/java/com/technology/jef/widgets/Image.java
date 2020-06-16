@@ -24,9 +24,11 @@ public class Image extends Widget {
 		"			$('#visible_${child_name}').prop( \"disabled\", false); \n " +
 		"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
 		"			$('#div_header_visible${child_name}').show(); \n " +
+		"			$('#div_submit_data_${child_name}').show(); \n " +
 		"           $(\"#visible_${child_name}\").trigger('refresh');" +
 		"		} else { \n " +
 		"			$('#div_header_visible${child_name}').hide(); \n " +
+		"			$('#div_submit_data_${child_name}').hide(); \n " +
 		"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
 		"		} \n ";
 	}
@@ -86,12 +88,18 @@ public class Image extends Widget {
 				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
 			}});
 			
-			input.add(Tag.Type.FONT, (String) generator.getAttribute(TagGenerator.Attribute.HINT), new HashMap<Tag.Property, String>(){{
+			Tag submit =  input.add(Tag.Type.DIV,
+				new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.ID, "div_submit_data_" + name);
+				 put(Tag.Property.NAME, "div_submit_data_" + name);
+			}});
+
+			submit.add(Tag.Type.FONT, (String) generator.getAttribute(TagGenerator.Attribute.HINT), new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.TYPE, "text");
 				 put(Tag.Property.CLASS, "interface_hint");
 			}});
 
-			input = input.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+			input = submit.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.TYPE, "file");

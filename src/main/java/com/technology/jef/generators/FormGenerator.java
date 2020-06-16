@@ -415,13 +415,14 @@ public class FormGenerator extends TagGenerator {
 	"						var parameters = ${value_js};   \n" + 
 	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};   \n" + 
 	"						setButtonVisiblity('button_add', '${multiplie_group_name}', parameters);    \n" + 
-	"						setButtonVisiblity('button_del', groupPrefix, parameters);    \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").hide();         \n" + 
 	"    	      					$(\"#message_box_wait_${multiplie_group_name}\").hide();         \n" + 
 	"						$( document ).bind('setListOnLoad_${group_api}' + groupPrefix, function() {       \n" + 
 	"							var parameters = ${value_js};   \n" + 
 	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};   \n" + 
+	"							$(\"input[id$='\" + groupPrefix + \"'][type='hidden']\").each(function(e) {parameters += (parameters ? '${parameter_separator}' : '') + $( this ).attr('id').replace(groupPrefix, '') + '${value_separator}' + $( this ).val(); });\n" + 
 	"							setButtonVisiblity('button_add', '${multiplie_group_name}', parameters);    \n" + 
+	"							setButtonVisiblity('button_del', groupPrefix, parameters);    \n" + 
 	"						});       \n" + 
 	"						return groupPrefix;       \n" + 
 	"					} \n" + 

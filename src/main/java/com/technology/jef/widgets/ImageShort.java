@@ -38,12 +38,18 @@ public class ImageShort extends Image {
 				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
 			}});
 			
-			parrent.add(Tag.Type.FONT, "<br>" + (String) generator.getAttribute(TagGenerator.Attribute.HINT), new HashMap<Tag.Property, String>(){{
+			Tag submit =  input.add(Tag.Type.DIV,
+					new HashMap<Tag.Property, String>(){{
+					 put(Tag.Property.ID, "div_submit_data_" + name);
+					 put(Tag.Property.NAME, "div_submit_data_" + name);
+				}});
+			
+			submit.add(Tag.Type.FONT, "<br>" + (String) generator.getAttribute(TagGenerator.Attribute.HINT), new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.TYPE, "text");
 				 put(Tag.Property.CLASS, "interface_hint");
 			}});
 
-			input = input.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+			input = submit.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.TYPE, "file");

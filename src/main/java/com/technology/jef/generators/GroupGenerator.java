@@ -232,7 +232,7 @@ public class GroupGenerator extends TagGenerator {
 			multilineParrentDOM.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "message_box_wait_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.NAME, "message_box_wait");
-				 put(Tag.Property.CLASS, "message_box_wait messages_border second_color");
+				 put(Tag.Property.CLASS, "message_box_wait messages_border messages_color");
 			}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("wait"), new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "message_overlay_wait");
 				 put(Tag.Property.CLASS, "message_overlay_wait messages_color");
