@@ -177,7 +177,7 @@ public class ImageWebCam extends Image {
 	"                    Webcam.snap( function(data_uri) { \n" + 
 	"                       $('#camera_snapshot_${name}').attr(\"src\", data_uri); // подменяем картику на фото с камеры \n" + 
 	"                       $(name_${name}).val(data_uri);                        // записываем в поле для передачи серверу \n" +
-	"                       checkPhoto('img_visible_{$name}',checkImg);"+
+	"                       checkPhoto('img_visible_${name}',checkImg);"+
 	"                    } ); \n" + 
 	"                    Webcam.reset(); \n" + 
 
@@ -191,5 +191,59 @@ public class ImageWebCam extends Image {
 
 			return input;
 		}
+	@Override
+	protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
 
+		parrent.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
+			put(Tag.Property.TYPE, "text/javascript");
+			put(Tag.Property.SRC, "js/jquery.ui.widget.js");
+		}});
+
+		parrent.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
+			put(Tag.Property.TYPE, "text/javascript");
+			put(Tag.Property.SRC, "js/jquery.iframe-transport.js");
+		}});
+
+		parrent.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
+			put(Tag.Property.TYPE, "text/javascript");
+			put(Tag.Property.SRC, "js/jquery.fileupload.js");
+		}});
+
+		parrent.add(Tag.Type.SCRIPT, 																("         \n" +
+				"	$(function () {       \n" +
+				"	    $('#visible_${name}').fileupload({    \n" +
+				"		type: 'POST',   \n" +
+				"		dataType: 'text',   \n" +
+				"		paramName: 'file',    \n" +
+				"		cache : false,   \n" +
+				"		contentType : false,   \n" +
+				"		processData : false,  \n" +
+				"	    submit: function (e, data) {       \n" +
+				"			if ( window.FileReader) {     \n" +
+				"				if (data.files && data.files[0]) {     \n" +
+				"					var reader = new FileReader();     \n" +
+				"					reader.onload = function(e) {     \n" +
+				"						$('#img_visible_${name}').attr('src', e.target.result);     \n" +
+				"						$('input#${name}').val(e.target.result);     \n" +
+				"						checkPhoto('img_visible_${name}',checkImg);  \n"+
+				"					}     \n" +
+				"					reader.readAsDataURL(data.files[0]);     \n" +
+				"					return false;    \n" +
+				"				}     \n" +
+				"			}     \n" +
+				"	        },       \n" +
+				"		success : function(data, textStatus, jqXHR) {   \n" +
+				"			$('#img_visible_${name}').attr('src', data); \n" +
+				"			$('input#${name}').val(data);     \n" +
+				"			$('#visible_${name}').change(); \n" +
+				"		},   \n" +
+				"		error : function(jqXHR, textStatus, errorThrown) {   \n" +
+				"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);    \n" +
+				"		}   \n" +
+				"	    });       \n" +
+				"	}); \n")
+				.replace("${name}", name));
+
+		return element;
+	}
 }
