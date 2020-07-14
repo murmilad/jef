@@ -100,6 +100,9 @@ public class WidgetFactory {
 		case DADATA:
 			widget = new DaData();
 			break;
+		case DADATAJOB:
+			widget = new DaDataJob();
+			break;
 		case AUTO_COMPLETE:
 			widget = new AutoComplete();
 			break;

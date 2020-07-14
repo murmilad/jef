@@ -59,9 +59,9 @@ public class DaData extends Widget {
 	"  							          	 var token = 'Token ' + dadata_key;   \n" + 
 	"								         $.ajax({    \n" + 
 	"										method : 'POST', \n" + 
-	"						                            url: 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address', \n" + 
+	"						                            url: dadata_url, \n" +
 	"						                            headers:{ \n" + 
-	"						                                    'Authorization': 'Token c7378c4d36c4de5c14bf879b4fbb742aec61e37b', \n" + 
+	"						                                    'Authorization': token, \n" +
 	"						                                    'Content-Type' :'application/json', \n" + 
 	"       						                             'Accept': 'application/json' \n" + 
 	"										}, \n" + 
