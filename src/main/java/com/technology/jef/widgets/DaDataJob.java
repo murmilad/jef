@@ -111,12 +111,13 @@ public class DaDataJob extends com.technology.jef.widgets.Widget {
 	"																	$(\"#visible_job_house\").val(suggestion.data.address.data.house);\n" +
 	"																	if (suggestion.data.address.data.house_fias_id>'') $(\"#job_house\").val(suggestion.data.address.data.house_fias_id+'|'+suggestion.data.address.data.house);\n" +
 	"																	else $(\"#job_house\").val('');\n" +
-	"																	$(\"#visible_job_block\").val(suggestion.data.address.data.block);\n" +
-	"																	$(\"#job_block\").val(suggestion.data.address.data.block);\n" +
+	"																	$(\"#visible_job_section\").val(suggestion.data.address.data.block);\n" +
+	"																	$(\"#job_section\").val(suggestion.data.address.data.block);\n" +
 	"																	$(\"#visible_job_building\").val('');\n" +
 	"																	$(\"#job_building\").val('');\n" +
 	"																	$(\"#visible_job_apartment\").val(suggestion.data.address.data.flat);\n" +
 	"																	$(\"#job_apartment\").val(suggestion.data.address.data.flat);\n" +
+
 	"																	} \n" +
 	"															},    \n" +
 	"															formatResult: function(suggestion, currentValue) {\n" +
