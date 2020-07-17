@@ -191,78 +191,79 @@ public class FormGenerator extends TagGenerator {
 		String valueJS = Widget.getValueJS(new String[] {}, "");
 		// При нажатии клавиши Enter вызываем нажатие кноеки "Далее"
 		buttonsRow.add(Tag.Type.SCRIPT, 
-															("				$( document ).ready(function() {                    \n" + 
-	"					$(\":input\").keypress(function (e) {                    \n" + 
-	"					      if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {                    \n" + 
-	"					          $(\"#submit_button:visible\").click();                    \n" + 
-	"					          return false;                    \n" + 
-	"					      } else {                    \n" + 
-	"					          return true;                    \n" + 
-	"					      }                    \n" + 
-	"					});                    \n" + 
-	"					$(\"#submit_button\").on(\"click\", function(event){  \n" + 
-	"						setForm();  \n" + 
-	"					});  \n" + 
-	"				});                  \n" + 
-	"					function setForm() {                   \n" + 
-	"						var field_values = [];     \n" + 
-	"						var globalIndex;     \n" + 
-	"						$('input[type=\"hidden\"][name^=\"${system_prefix}_required_\"], input[type=\"hidden\"][name^=\"${system_prefix}_parrent_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_changed_\"]').each( function(index, element){                   \n" + 
-	"							field_values[index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                   \n" + 
-	"							globalIndex = index;     \n" + 
-	"						});                   \n" + 
-	"						$('input[type=\"hidden\"]').not('[name^=\"${system_prefix}_required_\"], [name^=\"${system_prefix}_parrent_api_\"], [name^=\"${system_prefix}_api_\"], [name^=\"${system_prefix}_changed_\"]').each( function(index, element){                   \n" + 
-	"							field_values[globalIndex + index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                   \n" + 
-	"						}); \n" + 
-	"						$(\"#message_overlay_wait_form\").show();                          \n" + 
-	"    					$(\"#message_box_overlay_wait_form\").show();                          \n" + 
-	"    					$(\"#message_box_wait_form\").show();                          \n" + 
-	"						isFormLoading = true; \n " +
-	"						$(\"[id^='visible_']\").each(function(index, item){             \n" + 
-	"							$(this).parent().children('').removeClass(\"error error_color\");             \n" + 
-	"						});             \n" + 
-	" 						ajax({                          \n" + 
-	"					       	url: '${service}set',                          \n" + 
-	"							data: {                          \n" + 
-	"								parameters: field_values.join('${parameter_separator}') + '${parameter_separator}' + ${value_js},                          \n" + 
-	"							},                         \n" + 
-	"						       type: 'post',                          \n" + 
-	"						       dataType: 'json',                          \n" + 
-	"				            		contentType: 'application/x-www-form-urlencoded',                          \n" + 
-	"						}, function (data) {             \n" + 
-	"								var hasErrors = false;                 \n" + 
-	"								$(\"#error_list\").empty();               \n" + 
-	"								if (data.errors.parametersErrors != null) {          \n" + 
-	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {        \n" + 
-	"										var name = obj.name;       \n" + 
-	"										var group = obj.group;       \n" + 
-	"										var errors = data.errors.parametersErrors[name];        \n" + 
-	"										$.each( errors, function(index, error) {                 \n" + 
-	"											$(\"#visible_\" + name).parent().children('').addClass(\"error error_color\");                 \n" + 
-	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                  \n" + 
-	"											hasErrors = true;            \n" + 
-	"										});              \n" + 
-	"									});              \n" + 
-	"								}              \n" + 
-	"								if (data.errors.formErrors != null) {              \n" + 
-	"									$.each( data.errors.formErrors, function(index, error) {                 \n" + 
-	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                  \n" + 
-	"										hasErrors = true;            \n" + 
-	"									});              \n" + 
-	"								}              \n" + 
-	"								if (data.release) {            \n" + 
-	"									$('#error').hide();          \n" + 
-	"									$('#${name}').trigger('set', [data]);								} else {           \n" + 
-	"									$('#error').show();          \n" + 
-	"									window.scrollTo(0, 0);               \n" + 
-	"									$('#${name}').trigger('error', [data]); \n"+
-	" 									isFormLoading = false;     \n" + 
-	"									$(\"#message_overlay_wait_form\").hide();                            \n" + 
-	"				    				$(\"#message_box_overlay_wait_form\").hide();                            \n" + 
-	"	    							$(\"#message_box_wait_form\").hide();                            \n" + 
-	" 								}            \n" + 
-	"						});                            \n" + 
-	"					}                            \n")
+																("				$( document ).ready(function() {                     \n" + 
+	"					$(\":input\").keypress(function (e) {                     \n" + 
+	"					      if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {                     \n" + 
+	"					          $(\"#submit_button:visible\").click();                     \n" + 
+	"					          return false;                     \n" + 
+	"					      } else {                     \n" + 
+	"					          return true;                     \n" + 
+	"					      }                     \n" + 
+	"					});                     \n" + 
+	"					$(\"#submit_button\").on(\"click\", function(event){   \n" + 
+	"						setForm();   \n" + 
+	"					});   \n" + 
+	"				});                   \n" + 
+	"					function setForm() {                    \n" + 
+	"						var field_values = [];      \n" + 
+	"						var globalIndex;      \n" + 
+	"						$('input[type=\"hidden\"][name^=\"${system_prefix}_required_\"], input[type=\"hidden\"][name^=\"${system_prefix}_parrent_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_changed_\"]').each( function(index, element){                    \n" + 
+	"							field_values[index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                    \n" + 
+	"							globalIndex = index;      \n" + 
+	"						});                    \n" + 
+	"						$('input[type=\"hidden\"]').not('[name^=\"${system_prefix}_required_\"], [name^=\"${system_prefix}_parrent_api_\"], [name^=\"${system_prefix}_api_\"], [name^=\"${system_prefix}_changed_\"]').each( function(index, element){                    \n" + 
+	"							field_values[globalIndex + index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                    \n" + 
+	"						});  \n" + 
+	"						$(\"#message_overlay_wait_form\").show();                           \n" + 
+	"    					$(\"#message_box_overlay_wait_form\").show();                           \n" + 
+	"    					$(\"#message_box_wait_form\").show();                           \n" + 
+	"						isFormLoading = true;  \n" + 
+	" 						$(\"[id^='visible_']\").each(function(index, item){              \n" + 
+	"							$(this).parent().children('').removeClass(\"error error_color\");              \n" + 
+	"						});              \n" + 
+	" 						ajax({                           \n" + 
+	"					       	url: '${service}set',                           \n" + 
+	"							data: {                           \n" + 
+	"								parameters: field_values.join('${parameter_separator}') + '${parameter_separator}' + ${value_js},                           \n" + 
+	"							},                          \n" + 
+	"						       type: 'post',                           \n" + 
+	"						       dataType: 'json',                           \n" + 
+	"				            		contentType: 'application/x-www-form-urlencoded',                           \n" + 
+	"						}, function (data) {              \n" + 
+	"								var hasErrors = false;                  \n" + 
+	"								$(\"#error_list\").empty();                \n" + 
+	"								if (data.errors.parametersErrors != null) {           \n" + 
+	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {         \n" + 
+	"										var name = obj.name;        \n" + 
+	"										var group = obj.group;        \n" + 
+	"										var errors = data.errors.parametersErrors[name];         \n" + 
+	"										$.each( errors, function(index, error) {                  \n" + 
+	"											$(\"#visible_\" + name).parent().children('').addClass(\"error error_color\"); \n" + 
+	"											var header = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html();                  \n" + 
+	"											$(\"<li/>\", {html: header.charAt(1).toUpperCase() + header.slice(2).toLowerCase() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                   \n" + 
+	"											hasErrors = true;             \n" + 
+	"										});               \n" + 
+	"									});               \n" + 
+	"								}               \n" + 
+	"								if (data.errors.formErrors != null) {               \n" + 
+	"									$.each( data.errors.formErrors, function(index, error) {                  \n" + 
+	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                   \n" + 
+	"										hasErrors = true;             \n" + 
+	"									});               \n" + 
+	"								}               \n" + 
+	"								if (data.release) {             \n" + 
+	"									$('#error').hide();           \n" + 
+	"									$('#${name}').trigger('set', [data]);								} else {            \n" + 
+	"									$('#error').show();           \n" + 
+	"									window.scrollTo(0, 0);                \n" + 
+	"									$('#${name}').trigger('error', [data]);  \n" + 
+	" 									isFormLoading = false;      \n" + 
+	"									$(\"#message_overlay_wait_form\").hide();                             \n" + 
+	"				    				$(\"#message_box_overlay_wait_form\").hide();                             \n" + 
+	"	    							$(\"#message_box_wait_form\").hide();                             \n" + 
+	" 								}             \n" + 
+	"						});                             \n" + 
+	"					}                             \n")
 							.replace("${name}", (String) getAttribute(TagGenerator.Attribute.ID))
 							.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 							.replace("${parameter_separator}", PARAMETER_SEPARATOR)
@@ -538,7 +539,8 @@ public class FormGenerator extends TagGenerator {
 	"										var errors = data.errors.parametersErrors[name];            \n" + 
 	"										$.each( errors, function(index, error) {                     \n" + 
 	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error error_color\");                     \n" + 
-	"											$(\"<li/>\", {html: group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                      \n" + 
+	"											var header = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html();                  \n" + 
+	"											$(\"<li/>\", {html: header.charAt(1).toUpperCase() + header.slice(2).toLowerCase() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                   \n" + 
 	"											hasErrors = true;                \n" + 
 	"										});                  \n" + 
 	"									});                  \n" + 
