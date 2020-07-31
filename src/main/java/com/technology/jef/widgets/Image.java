@@ -156,9 +156,9 @@ public class Image extends Widget {
 	"			}     \n" + 
 	"	        },       \n" + 
 	"		success : function(data, textStatus, jqXHR) {   \n" + 
-	"			$('#img_visible_${name}').attr('src', data); \n" + 
-	"			$('input#${name}').val(data);     \n" + 
-	"			$('#visible_${name}').change(); \n" + 
+	"			$('#visible_${name}').change(); \n" +
+	"			$('#img_visible_${name}').attr('src', data); \n" +
+	"			$('input#${name}').attr('value', data);     \n" +
 	"		},   \n" + 
 	"		error : function(jqXHR, textStatus, errorThrown) {   \n" + 
 	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);    \n" + 

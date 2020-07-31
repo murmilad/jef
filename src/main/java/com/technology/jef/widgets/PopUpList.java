@@ -104,12 +104,13 @@ public class PopUpList extends Widget {
 			);
 			
 			String ignoreEmptyJS = 
-					("			if ((valueJS).match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)) {\n" + 
+					("			if ((valueJS).match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)) {\n" + 
 							"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 							"							return; \n" + 
 							"						} \n")
 							.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 							.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+							.replace("${fias_code_name_separator}", "\\" + FIAS_CODE_NAME_SEPARATOR)
 							.replace("${child_name}", currentGenerator.getAttribute(TagGenerator.Attribute.ID) + prefix);
 
 			if (!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX))) {
@@ -135,8 +136,6 @@ public class PopUpList extends Widget {
 	"						$(\"#background_overlay_wait_${parrent_name}\").show();            \n" + 
 	"		            	$(\"#message_box_wait_${parrent_name}\").show();            \n" + 
 	"						$(\"input#${parrent_name}\").trigger('lock');          \n" + 
-	"						$(\"#visible_${parrent_name}\").attr('disabled', 'disabled').trigger('refresh');            \n" + 
-	"						$(\"#visible_${parrent_name}\").trigger('refresh');            \n" + 
 	"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {            \n" + 
 	"							ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;            \n" + 
 	"						}            \n" + 
@@ -204,9 +203,6 @@ public class PopUpList extends Widget {
 	"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];            \n" + 
 	"								$(\"#visible_${child_name}\").trigger('set_find_result');            \n" + 
 	"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {            \n" + 
-	"									if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {    \n" + 
-	"										$(\"#visible_${parrent_name}\").removeAttr('disabled');    \n" + 
-	"									}    \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');            \n" + 
 	"									$(\"#background_overlay_wait_${parrent_name}\").hide();            \n" + 
 	"            						$(\"#message_box_wait_${parrent_name}\").hide();            \n" + 

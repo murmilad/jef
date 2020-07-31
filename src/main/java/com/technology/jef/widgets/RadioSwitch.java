@@ -1,5 +1,6 @@
 package com.technology.jef.widgets;
 
+import static com.technology.jef.server.serialize.SerializeConstant.FIAS_CODE_NAME_SEPARATOR;
 import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_NAME_VALUE_SEPARATOR;
 import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_SEPARATOR;
 import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAMETER_PREFIX;
@@ -278,15 +279,13 @@ public class RadioSwitch extends List {
 		String bodyJS = 	("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){             \n" + 
 	"						var valueJS = ${value_js};   \n" + 
 	"						$(\"input#${child_name}\").trigger('cleanValue');         \n" + 
-	"						if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)){ return };             \n" + 
+	"						if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)){ return };             \n" + 
 	"						var value = $(\"#visible_${child_name}\").val();   \n" + 
 	"						$(\"#visible_${child_name}\").empty();             \n" + 
 	"						$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
 	"						$(\"#background_overlay_wait_${parrent_name}\").show();             \n" + 
 	"	            		$(\"#message_box_wait_${parrent_name}\").show();             \n" + 
 	"						$(\"input#${parrent_name}\").trigger('lock');         \n" + 
-	"						$(\"#visible_${parrent_name}\").attr('disabled', 'disabled').trigger('refresh');             \n" + 
-	"						$(\"#visible_${parrent_name}\").trigger('refresh');             \n" + 
 	"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {             \n" + 
 	"							ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;             \n" + 
 	"						}             \n" + 
@@ -335,9 +334,6 @@ public class RadioSwitch extends List {
 	"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];             \n" + 
 	"								$(\"#visible_${child_name}\").trigger('set_find_result');             \n" + 
 	"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {             \n" + 
-	"									if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {       \n" + 
-	"										$(\"#visible_${parrent_name}\").removeAttr('disabled');       \n" + 
-	"									}       \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');             \n" + 
 	"									$(\"#background_overlay_wait_${parrent_name}\").hide();             \n" + 
 	"		      	      				$(\"#message_box_wait_${parrent_name}\").hide();             \n" + 
@@ -357,6 +353,7 @@ public class RadioSwitch extends List {
 	"					}             \n")
 						.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 						.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+						.replace("${fias_code_name_separator}", "\\" + FIAS_CODE_NAME_SEPARATOR)
 						.replace("${force_ajax}",
 								!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX))
 										? ("(^|:p:)(?!" + ((String) currentGenerator

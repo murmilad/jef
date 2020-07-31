@@ -61,16 +61,6 @@ public class AutoCompleteEditable extends Widget {
 
 			parrent.add(Tag.Type.SCRIPT, 
 																					("                             \n" + 
-	"			$(document).ready(function() {              \n" + 
-	"				if ($._data( $(\"#visible_${name}\")[0], \"events\" ).change) {              \n" + 
-	"					jQuery.map(jQuery.grep($._data( $(\"#visible_${name}\")[0], \"events\" ).change, function( a ) {               \n" + 
-	"						return a.handler.toString().indexOf('onChange') >= 0;               \n" + 
-	"					}), function( a ) {               \n" + 
-	"						$('#visible_${name}').bind('autoCompleteChange', a.handler);               \n" + 
-	"						$('#visible_${name}').unbind('change', a.handler)               \n" + 
-	"					});               \n" + 
-	"				}           \n" + 
-	"			});       \n" + 
 	"			$('#visible_${name}').autocomplete({                             \n" + 
 	"					serviceUrl: '${service}get_list${interactive}',               \n" + 
 	"					type: 'POST',               \n" + 
@@ -293,38 +283,6 @@ public class AutoCompleteEditable extends Widget {
 					return bodyJS;
 				}
 				
-				/**
-			   * Метод возвращает функционал влияющий на значение элемента 
-			   * 
-			   * @return код JavaScript
-			   */
-				public String getValueConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
-					String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
-					String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
-					String valueJS = getValueJS((String[])currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT), prefix);
-					String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
-
-					// Вызываем функцию связи в событиях родительского элемента
-					// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
-					currentGenerator.getDom().add(Tag.Type.SCRIPT,
-							(
-							" $(\"#visible_${parrent_name}\").bind('change', function(){\n" +
-							"		onChange${parrent_name}_${child_name}_ct_ajax_value(this);\n" +
-							" }); \n")
-							.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
-							.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
-					);
-
-					
-					String bodyJS =
-							("		function onChange${parrent_name}_${child_name}_ct_ajax_value(${parrent_name}List){      \n" + 
-							"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
-							"		}      \n")
-					.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
-					.replace("${child_name}", name);
-
-					return bodyJS;
-				}
 
 
 }

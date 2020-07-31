@@ -159,29 +159,30 @@ public abstract class Widget {
 				
 			}
 			
-			resultElement.add(Tag.Type.SCRIPT,			("	$(\"input#${name}\").bind(\"setValueOnLoad\", function (event, data) {      \n" + 
-					"		var isLoading = true;      \n" + 
-					"		${setValueJS} \n" + 
-					"		$(\"input#${name}\").bind(\"cleanValue\", function(){ \n" + 
-					"			if (!isFormLoading) { \n" + 
-					"				${cleanValueJS} \n" +
-					"			}	\n " +		
-					"		}); \n" + 
-					"		$(\"input#${name}\").unbind(\"setValueOnLoad\");   \n" + 
-					"	});      \n" + 
-					"	$( document ).bind('setListOnLoad_${api}${prefix}', function() {      \n" + 
-					"		${setItemsJS}     \n" + 
-					"	});      \n" + 
-					"	function onChangeReadOnly${name}(current){       \n" + 
-					"		if (typeof current.value != 'undefined'){  \n" + 
-					"			$('input#${name}').val(current.value || $( current ).attr('value') || $( current ).prop('value') );       //IE9 support\n" + 
-					"		}  \n" + 
-					"	}       \n" + 
-					"	function onKeyDownReadOnly${name}(current){       \n" + 
-					"		if(window.event.keyCode == 13){       \n" + 
-					"			$('#visible_${name}').val($( current ).attr('value') || $( current ).prop('value')).change();       //IE9 support\n" + 
-					"		}       \n" + 
-					"	}       \n")
+			resultElement.add(Tag.Type.SCRIPT,				("	$(\"input#${name}\").bind(\"setValueOnLoad\", function (event, data) {       \n" + 
+	"		var isLoading = true;       \n" + 
+	"		${setValueJS}  \n" + 
+	"		$(\"input#${name}\").bind(\"cleanValue\", function(){  \n" + 
+	"			if (!isFormLoading) {  \n" + 
+	"				${cleanValueJS}  \n" + 
+	"			}	 \n" + 
+	" 		});  \n" + 
+	"		$(\"input#${name}\").unbind(\"setValueOnLoad\");    \n" + 
+	"	});       \n" + 
+	"	$( document ).bind('setListOnLoad_${api}${prefix}', function() {       \n" + 
+	"		${setItemsJS}      \n" + 
+	"	});       \n" + 
+	"	function onChangeReadOnly${name}(current){        \n" + 
+	"		if (typeof current.value != 'undefined'){   \n" + 
+	"			$('input#${name}').val(current.value || $( current ).attr('value') || $( current ).prop('value') );       //IE9 support \n" + 
+	"		}   \n" + 
+	"	}        \n" + 
+	"	function onKeyDownReadOnly${name}(current){        \n" + 
+	"		if(window.event.keyCode == 13){ \n" + 
+	"			$('#visible_${name}').trigger('press_enter', [current]);        \n" + 
+	"			$('#visible_${name}').val($( current ).attr('value') || $( current ).prop('value')).change();       //IE9 support \n" + 
+	"		}        \n" + 
+	"	}        \n")
 					.replace("${cleanValueJS}", this.getCleanValueJS().replace("${child_name}", name))
 					.replace("${setValueJS}", this.getSetValueJS().replace("${child_name}", name))
 					.replace("${name}", name)
@@ -377,7 +378,7 @@ public abstract class Widget {
 				String valueJS = getValueJS((String[])currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_VISIBLE_PARRENT), prefix);
 //TODO Нужно убрать блок	ignoreEmptyJS создав евент выключения видимости поля но учесть при этом отчистку списочных полей	
 				String ignoreEmptyJS =
-						("			if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)) {\n" + 
+						("			if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)) {\n" + 
 								"				$('#tr_${child_name}').css(\"display\", 'none');\n" + 
 								"				${clean_value_js}\n" + 
 								"				$('input#${child_name}').attr('invisible', true);\n" + 
@@ -387,6 +388,7 @@ public abstract class Widget {
 								.replace("${clean_value_js}", getCleanValueJS())
 								.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 								.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+								.replace("${fias_code_name_separator}", "\\" + FIAS_CODE_NAME_SEPARATOR)
 								.replace("${value_js}", valueJS)
 								.replace("${child_name}", currentGenerator.getAttribute(TagGenerator.Attribute.ID) + prefix);
 
@@ -397,65 +399,60 @@ public abstract class Widget {
 				}
 				
 				String bodyJS = 
-								("				function onChange${parrent_name}_${child_name}_ct_ajax_visible(${parrent_name}List){        \n" + 
-							"					var valueJS = ${value_js};     \n" + 
-							"					${ignore_empty_js}         \n" + 
-							"					$('input#${child_name}').attr('invisible', true);        \n" + 
-							"					$(\"#visible_${parrent_name}\").attr('disabled', 'disabled').trigger('refresh');        \n" + 
-							"					$(\"#visible_${parrent_name}\").trigger('refresh');        \n" + 
-							"					$(\"#background_overlay_wait_${parrent_name}\").show();        \n" + 
-							"	            	$(\"#message_box_wait_${parrent_name}\").show();        \n" + 
-							"					$(\"input#${parrent_name}\").trigger('lock');         \n" + 
-							"					if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {        \n" + 
-							"						ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;        \n" + 
-							"					}					++ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];        \n" + 
-							"					if (!ajax_is_child_blocked${prefix}[\"${child_name}\"]) {    \n" + 
-							"						ajax_is_child_blocked${prefix}[\"${child_name}\"] = 0;    \n" + 
-							"					}    \n" + 
-							"					++ajax_is_child_blocked${prefix}[\"${child_name}\"];    \n" + 
-							"					ajax({        \n" + 
-							"			            	url: '${service}get_is_visible_interactive',        \n" + 
-							"						data: {        \n" + 
-							"							parameter_name:'${child_name_api}',        \n" + 
-							"							form_api: '${api}',        \n" + 
-							"							parameters: ${value_js},        \n" + 
-							"							rnd: Math.floor(Math.random() * 10000),        \n" + 
-							"						},       \n" + 
-							"				            type: 'post',        \n" + 
-							"				            dataType: 'json',        \n" + 
-							"				            contentType: 'application/x-www-form-urlencoded',        \n" + 
-							"						}, function (data) {  \n" + 
-							"								if (data.value) {        \n" + 
-							"									if ((document.getElementById && !document.all) || window.opera)        \n" + 
-							"										$('#tr_${child_name}').css(\"display\",'table-row');        \n" + 
-							"									else        \n" + 
-							"										$('#tr_${child_name}').css(\"display\",'inline');        \n" + 
-							"										$('input#${child_name}').attr('invisible', false);        \n" + 
-							"								} else {        \n" + 
-							"									$('#tr_${child_name}').css(\"display\", 'none');        \n" + 
-							"									${clean_value_js}        \n" + 
-							"									$('input#${child_name}').attr('invisible', true);        \n" + 
-							"								}        \n" + 
-							"							$('#tr_${child_name}').trigger('refresh');        \n" + 
-							"							--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];   \n" + 
-							"							$(\"#visible_${child_name}\").trigger(\"set_find_result\");        \n" + 
-							"							if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {        \n" + 
-							"								$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');  \n" + 
-							"								if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {  \n" + 
-							"									$(\"#visible_${parrent_name}\").removeAttr('disabled');  \n" + 
-							"								}  \n" + 
-							"								$(\"#background_overlay_wait_${parrent_name}\").hide();        \n" + 
-							"	            				$(\"#message_box_wait_${parrent_name}\").hide();        \n" + 
-							"								$(\"input#${parrent_name}\").trigger('unlock');         \n" + 
-							"							}        \n" + 
-							"							--ajax_is_child_blocked${prefix}[\"${child_name}\"]; \n" + 
-							"							if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) { \n" + 
-							"            							$(\"#visible_${child_name}\").trigger( 'on_child_unblocked'); \n" + 
-							"							} \n" + 
-							"							$(\"#visible_${parrent_name}\").trigger('refresh');        \n" + 
-							"							$(\"#visible_${child_name}\").trigger('refresh');        \n" + 
-							"					});        \n" + 
-							"				}        \n")
+									("				function onChange${parrent_name}_${child_name}_ct_ajax_visible(${parrent_name}List){         \n" + 
+	"					var valueJS = ${value_js};      \n" + 
+	"					${ignore_empty_js}          \n" + 
+	"					$('input#${child_name}').attr('invisible', true);         \n" + 
+	"					$(\"#background_overlay_wait_${parrent_name}\").show();         \n" + 
+	"	            	$(\"#message_box_wait_${parrent_name}\").show();         \n" + 
+	"					$(\"input#${parrent_name}\").trigger('lock');          \n" + 
+	"					if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {         \n" + 
+	"						ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;         \n" + 
+	"					}					++ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];         \n" + 
+	"					if (!ajax_is_child_blocked${prefix}[\"${child_name}\"]) {     \n" + 
+	"						ajax_is_child_blocked${prefix}[\"${child_name}\"] = 0;     \n" + 
+	"					}     \n" + 
+	"					++ajax_is_child_blocked${prefix}[\"${child_name}\"];     \n" + 
+	"					ajax({         \n" + 
+	"			            	url: '${service}get_is_visible_interactive',         \n" + 
+	"						data: {         \n" + 
+	"							parameter_name:'${child_name_api}',         \n" + 
+	"							form_api: '${api}',         \n" + 
+	"							parameters: ${value_js},         \n" + 
+	"							rnd: Math.floor(Math.random() * 10000),         \n" + 
+	"						},        \n" + 
+	"				            type: 'post',         \n" + 
+	"				            dataType: 'json',         \n" + 
+	"				            contentType: 'application/x-www-form-urlencoded',         \n" + 
+	"						}, function (data) {   \n" + 
+	"								if (data.value) {         \n" + 
+	"									if ((document.getElementById && !document.all) || window.opera)         \n" + 
+	"										$('#tr_${child_name}').css(\"display\",'table-row');         \n" + 
+	"									else         \n" + 
+	"										$('#tr_${child_name}').css(\"display\",'inline');         \n" + 
+	"										$('input#${child_name}').attr('invisible', false);         \n" + 
+	"								} else {         \n" + 
+	"									$('#tr_${child_name}').css(\"display\", 'none');         \n" + 
+	"									${clean_value_js}         \n" + 
+	"									$('input#${child_name}').attr('invisible', true);         \n" + 
+	"								}         \n" + 
+	"							$('#tr_${child_name}').trigger('refresh');         \n" + 
+	"							--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];    \n" + 
+	"							$(\"#visible_${child_name}\").trigger(\"set_find_result\");         \n" + 
+	"							if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {         \n" + 
+	"								$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');   \n" + 
+	"								$(\"#background_overlay_wait_${parrent_name}\").hide();         \n" + 
+	"	            				$(\"#message_box_wait_${parrent_name}\").hide();         \n" + 
+	"								$(\"input#${parrent_name}\").trigger('unlock');          \n" + 
+	"							}         \n" + 
+	"							--ajax_is_child_blocked${prefix}[\"${child_name}\"];  \n" + 
+	"							if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {  \n" + 
+	"            							$(\"#visible_${child_name}\").trigger( 'on_child_unblocked');  \n" + 
+	"							}  \n" + 
+	"							$(\"#visible_${parrent_name}\").trigger('refresh');         \n" + 
+	"							$(\"#visible_${child_name}\").trigger('refresh');         \n" + 
+	"					});         \n" + 
+	"				}         \n")
 							.replace("${clean_value_js}", getCleanValueJS())
 							.replace("${handler}", handler)
 							.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
@@ -517,10 +514,14 @@ public abstract class Widget {
 			// Вызываем функцию связи в событиях родительского элемента
 			// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
 			currentGenerator.getDom().add(Tag.Type.SCRIPT,
-					(
-					" $(\"#visible_${parrent_name}\").bind('change', function(){\n" +
-					"		onChange${parrent_name}_${child_name}_ct_ajax_value(this);\n" +
-					" }); \n")
+						(" \n" + 
+
+	" $(\"#visible_${parrent_name}\").bind('change', function(){ \n" + 
+	"	if (!window.isFormLoading) {  // dont call change connected value when form is load \n" + 
+	"		$(\"input#${child_name}\").trigger('cleanValue');  \n" + 
+	"		onChange${parrent_name}_${child_name}_ct_ajax_value(this); \n" + 
+	"	} \n" + 
+	" });  \n")
 					.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
 					.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 			);
@@ -536,11 +537,8 @@ public abstract class Widget {
 								("					function onChange${parrent_name}_${child_name}_ct_ajax_${request_type}(${parrent_name}List){      \n" + 
 				"						var valueJS = ${value_js};    \n" + 
 				"						var isLoading = false;    \n" + 
-				"						if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)){ return };           \n" + 
-				"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
+				"						if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)){ return };           \n" + 
 				"						$(\"#visible_${child_name}\").trigger('refresh');      \n" + 
-				"						$(\"#visible_${parrent_name}\").attr('disabled', 'disabled').trigger('refresh');      \n" + 
-				"						$(\"#visible_${parrent_name}\").trigger('refresh');      \n" + 
 				"						$(\"#background_overlay_wait_${parrent_name}\").show();      \n" + 
 				"		            	$(\"#message_box_wait_${parrent_name}\").show();      \n" + 
 				"						$(\"input#${parrent_name}\").trigger('lock');         \n" + 
@@ -598,9 +596,6 @@ public abstract class Widget {
 				"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];      \n" + 
 				"								$(\"#visible_${child_name}\").trigger('set_find_result');      \n" + 
 				"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {      \n" + 
-				"									if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {  \n" + 
-				"										$(\"#visible_${parrent_name}\").removeAttr('disabled');  \n" + 
-				"									}  \n" + 
 				"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');      \n" + 
 				"									$(\"#background_overlay_wait_${parrent_name}\").hide();      \n" + 
 				"		            				$(\"#message_box_wait_${parrent_name}\").hide();      \n" + 
@@ -618,6 +613,7 @@ public abstract class Widget {
 				" }      \n")
 			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+			.replace("${fias_code_name_separator}", "\\" + FIAS_CODE_NAME_SEPARATOR)
 			.replace("${force_ajax}", !"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)) ? ("(^|:p:)(?!" + ((String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + ")\\w*") : "")
 			.replace("${clean_value_js}", initValueJS)
 			.replace("${set_value_js}", setValueJS)

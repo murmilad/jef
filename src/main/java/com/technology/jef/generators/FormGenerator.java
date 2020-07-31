@@ -217,7 +217,7 @@ public class FormGenerator extends TagGenerator {
 	"						$(\"#message_overlay_wait_form\").show();                           \n" + 
 	"    					$(\"#message_box_overlay_wait_form\").show();                           \n" + 
 	"    					$(\"#message_box_wait_form\").show();                           \n" + 
-	"						isFormLoading = true;  \n" + 
+	"						window.isFormLoading = true;  \n" + 
 	" 						$(\"[id^='visible_']\").each(function(index, item){              \n" + 
 	"							$(this).parent().children('').removeClass(\"error error_color\");              \n" + 
 	"						});              \n" + 
@@ -257,7 +257,7 @@ public class FormGenerator extends TagGenerator {
 	"									$('#error').show();           \n" + 
 	"									window.scrollTo(0, 0);                \n" + 
 	"									$('#${name}').trigger('error', [data]);  \n" + 
-	" 									isFormLoading = false;      \n" + 
+	" 									window.isFormLoading = false;      \n" + 
 	"									$(\"#message_overlay_wait_form\").hide();                             \n" + 
 	"				    				$(\"#message_box_overlay_wait_form\").hide();                             \n" + 
 	"	    							$(\"#message_box_wait_form\").hide();                             \n" + 
@@ -579,19 +579,19 @@ public class FormGenerator extends TagGenerator {
 			}
 		}
 		dom.add(Tag.Type.SCRIPT,					("  \n" + 
-	" 		var isFormLoading = true;     \n" + 
+	" 		window.isFormLoading = true;     \n" + 
 	"		$( document ).ready(function() {       \n" + 
 	"				$(\"#message_box_wait_form\").show();       \n" + 
 	"				getJSON( \"${service}\" + \"check\", {no_cache: Math.floor(Math.random() * 10000)}, function( data ) {});    \n" + 
 	"				${service_call_js}		      \n" + 
 	"				if (window.ajaxRequestStack.length == 0){ \n" + 
-	" 					isFormLoading = false;     \n" + 
+	" 					window.isFormLoading = false;     \n" + 
 	"					$(\"#message_overlay_wait_form\").hide();                            \n" + 
 	"				    	$(\"#message_box_overlay_wait_form\").hide();                            \n" + 
 	"   					$(\"#message_box_wait_form\").hide();                            \n" + 
 	"				} else { \n" + 
 	"					$( document ).on('allRequestsReleased', function(){   \n" + 
-	" 						isFormLoading = false;     \n" + 
+	" 						window.isFormLoading = false;     \n" + 
 	"						$(\"#message_overlay_wait_form\").hide();                            \n" + 
 	"				    		$(\"#message_box_overlay_wait_form\").hide();                            \n" + 
 	"	    					$(\"#message_box_wait_form\").hide();                            \n" + 

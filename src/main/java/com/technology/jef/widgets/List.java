@@ -115,7 +115,7 @@ public class List extends Widget {
 					("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){           \n" + 
 			"						var valueJS = ${value_js}; \n" + 
 			"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
-			"						if (valueJS.match(/${force_ajax}${value_separator}(none)?(${parameter_separator}|$)/)){ return };           \n" + 
+			"						if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)){ return };           \n" + 
 			"						$(\"#visible_${child_name}\").unbind(\"focusin\");          \n" + 
 			"						$(\"#visible_${child_name}\").focusin( function() {          \n" + 
 			"							var value = $(\"#visible_${child_name}\").val(); \n" + 
@@ -125,10 +125,6 @@ public class List extends Widget {
 			"							$(\"#background_overlay_wait_${parrent_name}\").show();           \n" + 
 			"            				$(\"#message_box_wait_${parrent_name}\").show();           \n" + 
 			"							$(\"input#${parrent_name}\").trigger('lock');         \n" + 
-			"							$(\"#visible_${parrent_name}\").attr('disabled', 'disabled').trigger('refresh');           \n" + 
-			"							$(\"#visible_${parrent_name}\").addClass(\"second_color\");        \n" + 
-			"							$(\"#visible_${parrent_name}\").removeClass(\"first_text_color\");        \n" + 
-			"							$(\"#visible_${parrent_name}\").trigger('refresh');           \n" + 
 			"							if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {           \n" + 
 			"								ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;           \n" + 
 			"							}           \n" + 
@@ -178,10 +174,6 @@ public class List extends Widget {
 			"									--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];           \n" + 
 			"									$(\"#visible_${child_name}\").trigger('set_find_result');           \n" + 
 			"									if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {           \n" + 
-			"										if (!$(\"#${parrent_name}\" ).attr('data-disabled')) {     \n" + 
-			"											$(\"#visible_${parrent_name}\").removeAttr('disabled');     \n" + 
-			"											$(\"#visible_${parrent_name}\").removeClass(\"second_color\");        \n" + 
-			"										}     \n" + 
 			"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');           \n" + 
 			"										$(\"#background_overlay_wait_${parrent_name}\").hide();           \n" + 
 			"					      	      		$(\"#message_box_wait_${parrent_name}\").hide();           \n" + 
@@ -202,6 +194,7 @@ public class List extends Widget {
 			.replace("${loading}", CurrentLocale.getInstance().getTextSource().getString("loading"))
 			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+			.replace("${fias_code_name_separator}", "\\" + FIAS_CODE_NAME_SEPARATOR)
 			.replace("${force_ajax}", !"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)) ? ("(^|:p:)(?!" + ((String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + ")\\w*") : "")
 			.replace("${value_js}", valueJS)
 			.replace("${list_item_js}", getListItemJS().replace("${name}", name))

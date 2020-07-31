@@ -23,11 +23,9 @@ public class ImageWebCam extends Image {
 		//language=JavaScript
 		return 
 		"		if (data.value) { \n " + 
-		"			$('#visible_${child_name}').prop( \"disabled\", false); \n " +
 		"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
 		"			$('#div_header_visible_${child_name}').show(); \n " +
 		"			$('#div_submit_data_${child_name}').show(); \n " +
-		"           $(\"#visible_${child_name}\").trigger('refresh');" +
 		"		} else { \n " +
 		"			$('#div_header_visible_${child_name}').hide(); \n " +
 		"			$('#div_submit_data_${child_name}').hide(); \n " +
@@ -86,6 +84,7 @@ public class ImageWebCam extends Image {
 				 put(Tag.Property.TYPE, "file");
 				 put(Tag.Property.STYLE, "width:100%;");
 				 put(Tag.Property.ACCEPT, "image/jpg,image/jpeg,image/gif,image/bmp");
+				 put(Tag.Property.DATA_URL, (String) generator.getAttribute(TagGenerator.Attribute.SERVICE) + "image_to_base64");
 				 put(Tag.Property.DATA_FILEBROWSETEXT, CurrentLocale.getInstance().getTextSource().getString("file_browse_text"));
 				 put(Tag.Property.DATA_FILEPLACEHOLDER, CurrentLocale.getInstance().getTextSource().getString("file_placeholder"));
 				 // сделано через эвент выше
@@ -233,9 +232,9 @@ public class ImageWebCam extends Image {
 				"			}     \n" +
 				"	        },       \n" +
 				"		success : function(data, textStatus, jqXHR) {   \n" +
-				"			$('#img_visible_${name}').attr('src', data); \n" +
-				"			$('input#${name}').val(data);     \n" +
 				"			$('#visible_${name}').change(); \n" +
+				"			$('#img_visible_${name}').attr('src', data); \n" +
+				"			$('input#${name}').attr('value', data);     \n" +
 				"		},   \n" +
 				"		error : function(jqXHR, textStatus, errorThrown) {   \n" +
 				"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);    \n" +

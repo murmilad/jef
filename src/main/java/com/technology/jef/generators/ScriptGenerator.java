@@ -20,7 +20,9 @@ public class ScriptGenerator extends TagGenerator {
 
 		Tag script;
 		if (hasAttribute(TagGenerator.Attribute.TYPE)) {
-			script = dom.add(Tag.Type.SCRIPT, "$( \"#"+ dom.getProperty(Tag.Property.NAME) + "\" ).on( \"" + getAttribute(TagGenerator.Attribute.TYPE) + "\", function(event, data) { \n");
+			script = dom.add(Tag.Type.SCRIPT, "$( \"#"+ dom.getProperty(Tag.Property.NAME) + "\" ).bind( \"" + 
+					((String) getAttribute(TagGenerator.Attribute.TYPE)).replaceAll(",", " ")
+					+ "\", function(event, data) { \n");
 			hasEvent = true;
 		} else {
 			script = dom.add(Tag.Type.SCRIPT, "");
