@@ -389,6 +389,7 @@ public class FormGenerator extends TagGenerator {
 	"						}, 100);       \n" + 
 	"					});        \n" + 
 	"					function add_${multiplie_group_name}() {        \n" + 
+	"						window.isFormLoading = true;  \n" + 
 	"						var groupPrefix = \"${multiplie_group_name}_\" + number_${multiplie_group_name};       \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").show();          \n" + 
 	"						$(\"#message_box_wait_${multiplie_group_name}\").show();          \n" + 
@@ -424,7 +425,8 @@ public class FormGenerator extends TagGenerator {
 	"							$(\"input[id$='\" + groupPrefix + \"'][type='hidden']\").each(function(e) {parameters += (parameters ? '${parameter_separator}' : '') + $( this ).attr('id').replace(groupPrefix, '') + '${value_separator}' + $( this ).val(); });\n" + 
 	"							setButtonVisiblity('button_add', '${multiplie_group_name}', parameters);    \n" + 
 	"							setButtonVisiblity('button_del', groupPrefix, parameters);    \n" + 
-	"						});       \n" + 
+	"						});       \n" +
+	"						bindIsFormLoading(); \n" +			
 	"						return groupPrefix;       \n" + 
 	"					} \n" + 
 	"					$( document ).ready(function(){ \n" + 
@@ -584,20 +586,7 @@ public class FormGenerator extends TagGenerator {
 	"				$(\"#message_box_wait_form\").show();       \n" + 
 	"				getJSON( \"${service}\" + \"check\", {no_cache: Math.floor(Math.random() * 10000)}, function( data ) {});    \n" + 
 	"				${service_call_js}		      \n" + 
-	"				if (window.ajaxRequestStack.length == 0){ \n" + 
-	" 					window.isFormLoading = false;     \n" + 
-	"					$(\"#message_overlay_wait_form\").hide();                            \n" + 
-	"				    	$(\"#message_box_overlay_wait_form\").hide();                            \n" + 
-	"   					$(\"#message_box_wait_form\").hide();                            \n" + 
-	"				} else { \n" + 
-	"					$( document ).on('allRequestsReleased', function(){   \n" + 
-	" 						window.isFormLoading = false;     \n" + 
-	"						$(\"#message_overlay_wait_form\").hide();                            \n" + 
-	"				    		$(\"#message_box_overlay_wait_form\").hide();                            \n" + 
-	"	    					$(\"#message_box_wait_form\").hide();                            \n" + 
-	"						$( document ).unbind('allRequestsReleased');   \n" + 
-	"					});  \n" + 
-	"				} \n" + 
+	"				bindIsFormLoading(); \n" + 
 	"       	});   \n")
 			.replace("${service}",  ((String) getParrent().getAttribute(TagGenerator.Attribute.SERVICE)).replaceAll("/\\w+/$", "/seseion/"))
 			.replace("${service_call_js}", serviceCallJS)

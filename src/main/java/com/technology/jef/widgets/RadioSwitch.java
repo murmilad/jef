@@ -79,30 +79,29 @@ public class RadioSwitch extends List {
 
 	@Override
 	String getListItemJS() {
-		return 	("		$.each(data.data, function(key, val) {   \n" + 
-	"			var visible_name = 'visible_${name}' + val.id;   \n" + 
-	"			$(\"<input/>\", {   \n" + 
-	"				'value': val.id,    \n" + 
-	"				'checked': val.value,    \n" + 
-	"				'type': 'radio',    \n" + 
-	"				'id': visible_name,    \n" + 
-	"				'name': 'visible_${name}',    \n" + 
-	"				'disabled' : $('input#${name}').attr('data-disabled') ? 'disabled' : false ," + 
+		return 		("		$.each(data.data, function(key, val) {    \n" + 
+	"			var visible_name = 'visible_${name}' + val.id;    \n" + 
+	"			$(\"<input/>\", {    \n" + 
+	"				'value': val.id,     \n" + 
+	"				'checked': val.value,     \n" + 
+	"				'type': 'radio',     \n" + 
+	"				'id': visible_name,     \n" + 
+	"				'name': 'visible_${name}',     \n" + 
+	"				'disabled' : $('input#${name}').attr('data-disabled') ? 'disabled' : false ,			}).appendTo(\"#visible_${name}\");    \n" + 
+	"			$(\"<label/>\", {     \n" + 
+	"				style: 'margin:3px;',     \n" + 
+	"				html: val.name,     \n" + 
+	"				'for': visible_name,     \n" + 
 	"			}).appendTo(\"#visible_${name}\");   \n" + 
-	"			$(\"<label/>\", {    \n" + 
-	"				style: 'margin:3px;',    \n" + 
-	"				html: val.name,    \n" + 
-	"				'for': visible_name,    \n" + 
-	"			}).appendTo(\"#visible_${name}\");  \n" + 
 	"			$('#' + visible_name).bindFirst('click', function(event){ \n" + 
-	"				onChangeReadOnly${name}(event.delegateTarget); \n" + 
-	"			}); \n" + 
-	"			$('#' + visible_name).bindFirst('change', function(event){ \n" + 
-	"				onChangeReadOnly${name}(event.delegateTarget); \n" + 
-	"			}); \n" + 
-	"           $(\"#visible_${name}\" + val.id).styler({}); \n" +
-	"		});   \n" + 
-	"				  \n");
+	"				onChangeReadOnly${name}(event.delegateTarget);  \n" + 
+	"			});  \n" + 
+	"			$('#' + visible_name).bindFirst('change', function(event){  \n" + 
+	"				onChangeReadOnly${name}(event.delegateTarget);  \n" + 
+	"			});  \n" + 
+	"           $(\"#visible_${name}\" + val.id).styler({});  \n" + 
+	"		});    \n")
+	;
 //TODO Добавить возможность вызова привязанных событий при выборе каждого элемента 
 	}
 
@@ -140,19 +139,23 @@ public class RadioSwitch extends List {
 	@Override
 	public String getSetActiveJS() {
 
-		return "		if (data.value) { \n "
-				+ "			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n "
-				+ "				$( element ).prop( \"disabled\", false); \n	" 
-				+ "           $( element ).trigger('refresh'); \n"
-				+ "			});                                           \n "
-				+ "			$(\"#tr_${child_name}\" ).css('color', 'black'); \n " 
-				+ "		} else {                                                \n "
-				+ "			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n "
-				+ "				$( element ).prop( \"disabled\", true); \n	" 
-				+ "             $( element ).trigger('refresh'); \n"
-				+ "			});                                         \n "
-				+ "			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " 
-				+ "		}                                                \n ";
+		return 	(" \n" + 
+	"		if (data.value) {  \n" + 
+	" 			$( \"[name='visible_${child_name}']\" ).each(function( index, element) {  \n" + 
+	" 				$( element ).prop( \"disabled\", false);  \n" + 
+	"	           $( element ).trigger('refresh');  \n" + 
+	"			}); \n" + 
+	"			if ($('input#${child_name}').val()) { //ie9 support                                           \n" + 
+	" 				$('#visible_${child_name}' + $('input#${child_name}').val()).prop('checked', true).trigger('refresh');   \n" + 
+	"				$(\"#tr_${child_name}\" ).css('color', 'black'); \n" + 
+	"			}  \n" + 
+	" 		} else {                                                 \n" + 
+	" 			$( \"[name='visible_${child_name}']\" ).each(function( index, element) {  \n" + 
+	" 				$( element ).prop( \"disabled\", true);  \n" + 
+	"	             $( element ).trigger('refresh');  \n" + 
+	"			});                                          \n" + 
+	" 			$(\"#tr_${child_name}\" ).css('color', 'lightgray');  \n" + 
+	" 		}                                                 \n");
 	}
 
 	@Override
@@ -169,7 +172,7 @@ public class RadioSwitch extends List {
 		return 		("	if (isLoading) {                                                   \n" + 
 	"		$(\"#visible_${child_name}\").bind('setValue', function(){      \n" + 
 	"			$(\"#visible_${child_name}\" + data.value).click();     \n" + 
-	"			$(\"#visible_${child_name}\" + data.value).attr('checked',true).trigger('refresh');     \n" + 
+	"			$(\"#visible_${child_name}\" + data.value).prop('checked',true).trigger('refresh');     \n" + 
 	"			$(\"#visible_${child_name}\").change();     \n" + 
 	"			$(\"input#${child_name}\").val(data.value);   \n" + 
 	"			$('#visible_${child_name}').bind('change', function(){   \n" + 
@@ -185,7 +188,7 @@ public class RadioSwitch extends List {
 	"		} else { \n" + 
 	" 			$(\"#visible_${child_name}\" + data.value).click();           \n" + 
 	"		} \n" + 
-	" 		$(\"#visible_${child_name}\" + data.value).attr('checked',true).trigger('refresh');     \n" + 
+	" 		$(\"#visible_${child_name}\" + data.value).prop('checked',true).trigger('refresh');     \n" + 
 	"		$(\"#visible_${child_name}\").change();     \n" + 
 	"		$(\"input#${child_name}\").val(data.value);     \n" + 
 	"	}                                              \n")
