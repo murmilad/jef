@@ -145,9 +145,9 @@ public class RadioSwitch extends List {
 	" 				$( element ).prop( \"disabled\", false);  \n" + 
 	"	           $( element ).trigger('refresh');  \n" + 
 	"			}); \n" + 
+	"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n" + 
 	"			if ($('input#${child_name}').val()) { //ie9 support                                           \n" + 
 	" 				$('#visible_${child_name}' + $('input#${child_name}').val()).prop('checked', true).trigger('refresh');   \n" + 
-	"				$(\"#tr_${child_name}\" ).css('color', 'black'); \n" + 
 	"			}  \n" + 
 	" 		} else {                                                 \n" + 
 	" 			$( \"[name='visible_${child_name}']\" ).each(function( index, element) {  \n" + 

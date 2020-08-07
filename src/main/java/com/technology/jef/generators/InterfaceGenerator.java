@@ -186,10 +186,8 @@ public class InterfaceGenerator extends TagGenerator {
 	"		} else {  \n" + 
 	"			window.ajaxXNR[pooledParameters].done(function(data){           \n" + 
 	"				operateResult(data, callback);        \n" + 
-	"				releaseRequest(currentAjaxRequest);        \n" + 
 	"			}).fail(function(jqXHR, textStatus, errorThrown){           \n" + 
 	"				showError(\"Error: \" + errorThrown, jqXHR.responseText);           \n" + 
-	"				releaseRequest(currentAjaxRequest);        \n" + 
 	"			});  \n" + 
 	"		}          \n" + 
 	"	}           \n" + 

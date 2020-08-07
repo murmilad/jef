@@ -8,6 +8,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -235,7 +238,10 @@ public class Service<F extends FormFactory> {
 		if (release) {
 			for (FormParameters parrentFormParameters : formsList) {
 				operateFormParameters(parrentFormParameters, result, (FormParameters formParameters, ResultDto currentResult) -> {
-						for (String groupPrefix : formParameters.getParameters().keySet()) {
+						for (String groupPrefix :  
+								formParameters.getParameters().keySet().stream()
+								.sorted((f1, f2) -> f2.compareTo(f1)).collect(Collectors.toList())
+						) {
 							Integer currentPrimaryId = newRecordId.get(0);
 							String secondaryId = parameters.get("group_id" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
 							String action = parameters.get("action" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
