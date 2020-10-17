@@ -121,20 +121,10 @@ public class InterfaceGenerator extends TagGenerator {
 	"		$(\"#message_header_error\").html(header);              \n" + 
 	"		$(\"#message_body_error\").html(message);              \n" + 
 	"	}               \n" + 
-	"	function deleteAllCookies() {             \n" + 
-	"	    var cookies = document.cookie.split(\";\");             \n" + 
-	"	    for (var i = 0; i < cookies.length; i++) {             \n" + 
-	"	        var cookie = cookies[i];             \n" + 
-	"	        var eqPos = cookie.indexOf(\"=\");             \n" + 
-	"	        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;             \n" + 
-	"	        document.cookie = name + \"=;expires=Thu, 01 Jan 1970 00:00:00 GMT\";             \n" + 
-	"	    }             \n" + 
-	"	}             \n" + 
 	"	function operateResult (result, callback) {            \n" + 
 	"		if (result.status_code == 2) {            \n" + 
 	"			if (result.error.error_code == 2) {            \n" + 
-	"				window.location.replace(\"/?_auth=logout\");            \n" + 
-	"				deleteAllCookies();            \n" + 
+	"				window.logout(document);            \n" + 
 	"			} else {            \n" + 
 	"				showError(result.error.error_description, result.error.error_message);            \n" + 
 	"			}            \n" + 

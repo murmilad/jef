@@ -52,22 +52,19 @@ public class ImageWebCam extends Image {
 			// функция вызывается при изменении картики, для вывода результат проверки фото, вызывается колбэком после завершения проверок
 			//language=JavaScript
 			parrent.add(Tag.Type.SCRIPT,("function checkImg(result){\n" +
+					"				$('#message_overlay_wait_form').hide();\n" +
 					"                var message='';\n" +
 					"                if (result.indexOf(-1) != -1){\n" +
 					"                    message = \"<span style='background-color:yellow'>Предупреждение: изображение слишком темное</span>\"\n" +
 					"                }\n" +
 					"                if (result.indexOf(-2)!= -1){\n" +
-					"                    message = \"<span style='background-color:yellow'>Предупреждение: изображение слишком светлое</span>\"\n" +
+					"                    message = \"<span style='background-color:yellow'>Предупреждение: изображение пересвечено</span>\"\n" +
 					"                }\n" +
 					"                if (result.indexOf(-3)!= -1){\n" +
-					"                    message += \"<br><span style='background-color:red;color:white;'>Ошибка: На изображении не обнаружено лицо человека, необходимо сделать новое фото</span>\";\n" +
-					"                    $('#visible_${name}').val('');\n" +
-					"                     $('#${name}').val('');\n" +
+					"                    message += \"<br><span style='background-color:yellow;'>Предупреждение: На изображении не обнаружено лицо человека, при необходимости сделайте новое фото</span>\";\n" +
 					"                }\n" +
 					"                if (result.indexOf(-4)!= -1){\n" +
-					"                    message += \"<br><span style='background-color:red;color:white;'>Ошибка: На изображении обнаружено несколько лиц, необходимо сделать новое фото</span>\";\n" +
-					"                    $('#visible_${name}').val('');\n" +
-					"                    $('#${name}').val('');\n" +
+					"                    message += \"<br><span style='background-color:yellow;'>Предупреждение: На изображении обнаружено несколько лиц, необходимо сделать новое фото</span>\";\n" +
 					"                }\n" +
 					"                document.getElementById('recognize_message_${name}').innerHTML = message;\n" +
 					"            }\n"
@@ -176,6 +173,7 @@ public class ImageWebCam extends Image {
 	"                    Webcam.snap( function(data_uri) { \n" + 
 	"                       $('#camera_snapshot_${name}').attr(\"src\", data_uri); // подменяем картику на фото с камеры \n" + 
 	"                       $(name_${name}).val(data_uri);                        // записываем в поле для передачи серверу \n" +
+	"						$('#message_overlay_wait_form').show();\n" +
 	"                       checkPhoto('img_visible_${name}',checkImg);"+
 	"                    } ); \n" + 
 	"                    Webcam.reset(); \n" + 
@@ -224,6 +222,7 @@ public class ImageWebCam extends Image {
 				"					reader.onload = function(e) {     \n" +
 				"						$('#img_visible_${name}').attr('src', e.target.result);     \n" +
 				"						$('input#${name}').val(e.target.result);     \n" +
+				"						$('#message_overlay_wait_form').show();" +
 				"						checkPhoto('img_visible_${name}',checkImg);  \n"+
 				"					}     \n" +
 				"					reader.readAsDataURL(data.files[0]);     \n" +

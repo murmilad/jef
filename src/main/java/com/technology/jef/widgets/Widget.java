@@ -169,7 +169,7 @@ public abstract class Widget {
 	" 		});  \n" + 
 	"		$(\"input#${name}\").unbind(\"setValueOnLoad\");    \n" + 
 	"	});       \n" + 
-	"	$( document ).bind('setListOnLoad_${api}${prefix}', function() {       \n" + 
+	"	$( '#form_id' ).bind('setListOnLoad_${api}${prefix}', function() {       \n" + 
 	"		${setItemsJS}      \n" + 
 	"	});       \n" + 
 	"	function onChangeReadOnly${name}(current){        \n" + 

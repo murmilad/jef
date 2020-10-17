@@ -36,7 +36,7 @@ public abstract class Form {
 	   /**
 	   * Данные формы, загруженные из БД
 	   */
-		private FormData formData = new FormData();
+		private com.technology.jef.server.form.FormData formData = new com.technology.jef.server.form.FormData();
 	
 		/**
 		 * Метод загрузки данных формы из БД для групповых форм
@@ -231,7 +231,7 @@ public abstract class Form {
 				}
 			}
 
-			if (isRequired && "".equals(parameters.getValue(parameter.getName()))) {
+			if (isRequired && ("".equals(parameters.getValue(parameter.getName())) || "|".equals(parameters.getValue(parameter.getName())))) {
 				errors.add(CurrentLocale.getInstance().getTextSource().getString("required_parameter"));
 			}
 
@@ -279,7 +279,7 @@ public abstract class Form {
 	   */
 		abstract public Map<String, Field> getFieldsMap(); 
 
-		public FormData getFormData() {
+		public com.technology.jef.server.form.FormData getFormData() {
 			return formData;
 		}
 

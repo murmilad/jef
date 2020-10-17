@@ -547,4 +547,26 @@ public class Service<F extends FormFactory> {
         }
 
 	}
+	
+	/**
+	 * Десериализация объектов
+	 * 
+	 * @param list сериализованный Map
+	 * @return десериализованный Map
+	 */
+	
+	public static Map<String,String> listToMap(String list) {
+		Map<String,String> parametersMap = new HashMap<String,String>();
+		
+		for (String parameter: list.split(PARAMETER_SEPARATOR)) {
+			Pattern pattern = Pattern.compile("(.*)"+PARAMETER_NAME_VALUE_SEPARATOR+"(.*)");
+			Matcher matcher = pattern.matcher(parameter);
+			if (matcher.matches()) {
+				parametersMap.put(matcher.group(1), matcher.group(2));
+			}
+		}
+		return parametersMap;
+		
+	}
+
 }

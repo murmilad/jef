@@ -49,7 +49,10 @@ public class CheckBox extends Widget {
 	@Override
 	public String getCleanValueJS() {
 		
-		return "$('#visible_${child_name}').prop('checked', false);";
+		return 	(" \n" + 
+	"	$('#visible_${child_name}').prop('checked', false); \n" + 
+	"	$('input#${child_name}').val(0); \n")
+	;
 	}
 
 	@Override

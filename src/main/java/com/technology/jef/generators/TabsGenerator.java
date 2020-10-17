@@ -68,30 +68,48 @@ public class TabsGenerator extends TagGenerator {
 	public void onEndElement() {
 		if (firstTabFormId != null) {
 			dom.add(Tag.Type.SCRIPT, 
-											("				$( document ).ready(function() {   \n" + 
-	"					setTimeout(function(){ // IE support \n" + 
-	"						loadForm(uri_params['form_id'] || '${form}'); \n" + 
-	"					}, 300); \n" + 
-	"				});      \n" + 
-	"				function loadForm(formId) {      \n" + 
-	"			            $(\"#message_box_wait_tab\").show();                                      \n" + 
-	"						$('.tab').removeClass('current first_color');     \n" + 
-	"						$('.tab').addClass('second_color');     \n" + 
-	"						$( 'div[data-form-id=\"'+formId+'\"]' ).removeClass('second_color');     \n" + 
-	"						$( 'div[data-form-id=\"'+formId+'\"]' ).addClass('current first_color');     \n" + 
-	"					$.ajax({           \n" + 
-	"				       	url: formId + '.html?no_cache=' + Math.floor(Math.random() * 10000),                                   \n" + 
-	"						data: uri_params,                                  \n" + 
-	"					       type: 'get',                                   \n" + 
-	"					       dataType: 'text',                                   \n" + 
-	"					}).done(function(data){           \n" + 
-	"						$(\"#form_container\").empty();               \n" + 
-	"						$(\"#form_container\").append(data);               \n" + 
-	"				           	$(\"#message_box_wait_tab\").hide();                                      \n" + 
-	"					}).fail(function(jqXHR, textStatus, errorThrown){           \n" + 
-	"						showError(\"Error: \" + errorThrown, jqXHR.responseText);           \n" + 
-	"					});           \n" + 
-	"				}      \n")
+															("				$( document ).ready(function() {       \n" + 
+	"					setTimeout(function(){ // IE support     \n" + 
+	"						loadForm(uri_params['form_id'] || '${form}');     \n" + 
+	"					}, 300);     \n" + 
+	"				});    \n" + 
+	"				window.resourcesStack = [];          \n" + 
+	"				function loadForm(formId) {          \n" + 
+	"			            $(\"#message_box_wait_tab\").show();                                          \n" + 
+	"						$('.tab').removeClass('current first_color');         \n" + 
+	"						$('.tab').addClass('second_color');         \n" + 
+	"						$( 'div[data-form-id=\"'+formId+'\"]' ).removeClass('second_color');         \n" + 
+	"						$( 'div[data-form-id=\"'+formId+'\"]' ).addClass('current first_color');         \n" + 
+	"					$.ajax({               \n" + 
+	"				       	url: formId + '.html?no_cache=' + Math.floor(Math.random() * 10000),                                       \n" + 
+	"						data: uri_params,                                      \n" + 
+	"					       type: 'get',                                       \n" + 
+	"					       dataType: 'text',                                       \n" + 
+	"					}).done(function(data){               \n" + 
+	"						$(\"#form_container\").empty();         \n" + 
+	"						var resourcesRegExp = /<\\s*script\\s+src\\s*=\\s*['\"](.+?)\\.js/g;    \n" + 
+	"						var resourcesRegExpResult;    \n" + 
+	"						var filtredData = data;    \n" + 
+	"						while((resourcesRegExpResult = resourcesRegExp.exec(data)) !== null) {   \n" + 
+	"							if ($.inArray(resourcesRegExpResult[1], window.resourcesStack) > -1) {   \n" + 
+	"								var replace = '<\\\\s*script\\\\s+src\\\\s*=\\\\s*[\\'\"]' + resourcesRegExpResult[1] + '\\\\.js.*?[\\'\"]\\\\s*>\\\\s*?</script>';  \n" + 
+	"								var re = new RegExp(replace,\"g\");  \n" + 
+	"								filtredData = filtredData.replace(re, '');   \n" + 
+	"								replace = 'src\\\\s*=\\\\s*[\\'\"]' + resourcesRegExpResult[1] + '\\\\.js.*?[\\'\"]';  \n" + 
+	"								re = new RegExp(replace,\"g\");  \n" + 
+	"								filtredData = filtredData.replace(re, '');   \n" + 
+	"							} else { \n" + 
+	"								if (resourcesRegExpResult[1].indexOf(formId) < 0) {   \n" + 
+	"									window.resourcesStack.push(resourcesRegExpResult[1])   \n" + 
+	"								} \n" + 
+	"							}    \n" + 
+	"						}    \n" + 
+	"						$(\"#form_container\").append(filtredData);                   \n" + 
+	"				           	$(\"#message_box_wait_tab\").hide();                                          \n" + 
+	"					}).fail(function(jqXHR, textStatus, errorThrown){               \n" + 
+	"						showError(\"Error: \" + errorThrown, jqXHR.responseText);               \n" + 
+	"					});               \n" + 
+	"				}          \n")
 					.replace("${form}", firstTabFormId)
 			);
 		}

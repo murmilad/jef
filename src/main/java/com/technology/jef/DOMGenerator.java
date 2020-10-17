@@ -179,7 +179,7 @@ public class DOMGenerator {
 	        }
 //		}
 		
-	    setHtml("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">" 
+	    setHtml("<!DOCTYPE HTML>" 
 	    		+ domPath.firstElement().getHTML());
 		setJs(domPath.firstElement().getJS());
 	}

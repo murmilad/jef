@@ -83,8 +83,8 @@ public class DaDataJob extends com.technology.jef.widgets.Widget {
 	"																	// в hidden пишем тип организации\n" +
 	"																	$('#${name}').val(suggestion.data.type);\n" +
 	"																	if(suggestion.data.type ==='LEGAL'){\n"+
-	"																			$(\"#job_legal_name\").val(suggestion.data.name.short_with_opf.replace(/\"/g,''));\n" +
-	"																			$(\"#visible_job_legal_name\").val(suggestion.data.name.short_with_opf.replace(/\"/g,''));\n"+
+	"																			$(\"#job_legal_name\").val((suggestion.data.name.short_with_opf||suggestion.data.name.full_with_opf).replace(/\"/g,''));\n" +
+	"																			$(\"#visible_job_legal_name\").val((suggestion.data.name.short_with_opf||suggestion.data.name.full_with_opf).replace(/\"/g,''));\n"+
 	"																	}else if(suggestion.data.type ==='INDIVIDUAL'){\n"+
 	"																			$(\"#job_legal_name\").val(suggestion.data.name.full.replace(/\"/g,''));\n" +
 	"																			$(\"#visible_job_legal_name\").val(suggestion.data.name.full.replace(/\"/g,''));\n"+
