@@ -517,10 +517,8 @@ public abstract class Widget {
 						(" \n" + 
 
 	" $(\"#visible_${parrent_name}\").bind('change', function(){ \n" + 
-	"	if (!window.isFormLoading) {  // dont call change connected value when form is load \n" + 
 	"		$(\"input#${child_name}\").trigger('cleanValue');  \n" + 
 	"		onChange${parrent_name}_${child_name}_ct_ajax_value(this); \n" + 
-	"	} \n" + 
 	" });  \n")
 					.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
 					.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
