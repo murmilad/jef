@@ -188,7 +188,7 @@ public class FormGenerator extends TagGenerator {
 		}});
 
 		//TODO предусматреть внедрение JS из XML при нажатии кнопки "Далее" 
-		String valueJS = Widget.getValueJS(new String[] {}, "");
+		String valueJS = Widget.getValueJS(null, "", null);
 		// При нажатии клавиши Enter вызываем нажатие кноеки "Далее"
 		buttonsRow.add(Tag.Type.SCRIPT, 
 																("				$( document ).ready(function() {                     \n" + 
@@ -419,13 +419,18 @@ public class FormGenerator extends TagGenerator {
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").hide();          \n" + 
 	"    	      					$(\"#message_box_wait_${multiplie_group_name}\").hide();          \n" + 
 	"						bindIsFormLoading();  \n" + 
+	"						var parameters = ${value_js};    \n" + 
+	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};    \n" + 
+	"						$(\"input[id$='\" + groupPrefix + \"'][type='hidden']\").each(function(e) {parameters += (parameters ? '${parameter_separator}' : '') + $( this ).attr('id').replace(groupPrefix, '') + '${value_separator}' + $( this ).val(); }); \n" + 
 	"						if(!window.isFormLoading) {        \n" + 
-	"							var parameters = ${value_js};    \n" + 
-	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};    \n" + 
-	"							$(\"input[id$='\" + groupPrefix + \"'][type='hidden']\").each(function(e) {parameters += (parameters ? '${parameter_separator}' : '') + $( this ).attr('id').replace(groupPrefix, '') + '${value_separator}' + $( this ).val(); }); \n" + 
 	"							setButtonVisiblity('button_add', '${multiplie_group_name}', parameters);     \n" + 
-	"							setButtonVisiblity('button_del', groupPrefix, parameters);     \n" + 
 	"						}        \n" + 
+	"						$('#form_id').bind('setListOnLoad_${group_api}' + groupPrefix, function() {       \n" + 
+	"							var parameters = ${value_js};   \n" + 
+	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};   \n" + 
+	"							$(\"input[id$='\" + groupPrefix + \"'][type='hidden']\").each(function(e) {parameters += (parameters ? '${parameter_separator}' : '') + $( this ).attr('id').replace(groupPrefix, '') + '${value_separator}' + $( this ).val(); });\n" + 
+	"							setButtonVisiblity('button_del', groupPrefix, parameters);    \n" + 
+	"						});       \n" +
 	"						return groupPrefix;        \n" + 
 	"					}  \n" + 
 	"					$( document ).ready(function(){  \n" + 
@@ -457,7 +462,7 @@ public class FormGenerator extends TagGenerator {
 	"					}      \n")
 					.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 					.replace("${parameter_separator}", PARAMETER_SEPARATOR)
-					.replace("${value_js}", Widget.getValueJS(new String[0], ""))
+					.replace("${value_js}", Widget.getValueJS(null, "", null))
 					.replace("${service}", (String) getAttribute(TagGenerator.Attribute.SERVICE))
 					.replace("${multiplie_group_name}", GROUP_SEPARATOR + (String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))
 					.replace("${encoded_tag}", new String(encodedHTML))
@@ -569,7 +574,6 @@ public class FormGenerator extends TagGenerator {
 	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};    \n" + 
 	"							$(\"input[id$='\" + currentGroupPrefix + \"'][type='hidden']\").each(function(e) {parameters += (parameters ? '${parameter_separator}' : '') + $( this ).attr('id').replace(currentGroupPrefix, '') + '${value_separator}' + $( this ).val(); }); \n" + 
 	"							setButtonVisiblity('button_add', '${multiplie_group_name}', parameters);     \n" + 
-	"							setButtonVisiblity('button_del', currentGroupPrefix, parameters);     \n" + 
 	"					}                      \n" + 
 	"					groupInitialParams${api} = data;       \n" + 
 	"					groupInitialParams${api}.groups = [];       \n" + 

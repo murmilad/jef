@@ -81,7 +81,7 @@ public class PopUpList extends Widget {
 		public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
 			String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 			String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
-			String valueJS = getValueJS((String[])currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT), prefix);
+			String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
 			String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
 
 			// Вызываем функцию связи в событиях родительского элемента
@@ -114,9 +114,9 @@ public class PopUpList extends Widget {
 							.replace("${child_name}", currentGenerator.getAttribute(TagGenerator.Attribute.ID) + prefix);
 
 			if (!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX))) {
-				ignoreEmptyJS = ignoreEmptyJS.replace("${force_ajax}", "(^|:p:)(?!" + ((String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + "\\w*)");
+				ignoreEmptyJS = ignoreEmptyJS.replace("${force_ajax}", "(^|:p:)(?!"+((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))+"|" + ((String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + "\\w*)");
 			} else {
-				ignoreEmptyJS = ignoreEmptyJS.replace("${force_ajax}", "");
+				ignoreEmptyJS = ignoreEmptyJS.replace("${force_ajax}", "(^|:p:)(?!"+((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))+"\\w*)");
 			}
 
 			String bodyJS = 
@@ -277,7 +277,7 @@ public class PopUpList extends Widget {
 		
 		public String getSetItemsJS() {
 
-			String valueJS = getValueJS(new String[] {} , "");
+			String valueJS = getValueJS(null , "", null);
 			
 			return 			("	$(\"#fake_visible_${name}\").on('click', function() {     \n" + 
 					"						var previous_text = $(\"#fake_visible_${name}\").val();           \n" + 

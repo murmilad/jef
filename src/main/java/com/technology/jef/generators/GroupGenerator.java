@@ -175,7 +175,7 @@ public class GroupGenerator extends TagGenerator {
 	"}); \n")
 	.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 	.replace("${parameter_separator}", PARAMETER_SEPARATOR)
-	.replace("${value_js}", Widget.getValueJS(new String[0], ""))
+	.replace("${value_js}", Widget.getValueJS(null, "", null))
 	.replace("${multiplie_group_name}", GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API))
 	.replace("${api}", (String) getAttribute(TagGenerator.Attribute.API))
 	.replace("${parrent_api}", (String) getAttribute(TagGenerator.Attribute.PARRENT_API))

@@ -97,7 +97,7 @@ public class List extends Widget {
 		public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
 			String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 			String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
-			String valueJS = getValueJS((String[])currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT), prefix);
+			String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
 			String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
 
 			// Вызываем функцию связи в событиях родительского элемента
@@ -195,7 +195,10 @@ public class List extends Widget {
 			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 			.replace("${fias_code_name_separator}", "\\" + FIAS_CODE_NAME_SEPARATOR)
-			.replace("${force_ajax}", !"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)) ? ("(^|:p:)(?!" + ((String) currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + ")\\w*") : "")
+			.replace("${force_ajax}", !"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX)) 
+					? ("(^|:p:)(?!${child_name_api}|" + ((String) currentGenerator
+							.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + ")\\w*")
+					: "(^|:p:)(?!${child_name_api})\\w*")
 			.replace("${value_js}", valueJS)
 			.replace("${list_item_js}", getListItemJS().replace("${name}", name))
 			.replace("${handler}", handler)
@@ -246,7 +249,7 @@ public class List extends Widget {
 	   */
 		public String getSetItemsJS() {
 
-			String valueJS = getValueJS(new String[] {} , "");
+			String valueJS = getValueJS(null , "", null);
 			
 			return 			("	$(\"#visible_${name}\").focusin( function() {     \n" + 
 							"			$(\"#background_overlay_wait_${name}\").show();        \n" + 

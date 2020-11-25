@@ -108,7 +108,7 @@ public class RadioSwitch extends List {
 	@Override
 	public String getSetItemsJS() {
 
-		String valueJS = getValueJS(new String[] {} , "");
+		String valueJS = getValueJS(null , "", null);
 
 		return 	("			$(\"#background_overlay_wait_${name}\").show();          \n" + 
 	"			$(\"#message_box_wait_${name}\").show();          \n" + 
@@ -258,8 +258,7 @@ public class RadioSwitch extends List {
 	public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
 		String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 		String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
-		String valueJS = getValueJS((String[]) currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT),
-				prefix);
+		String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
 		String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
 
 		String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_list(this);")
@@ -359,9 +358,9 @@ public class RadioSwitch extends List {
 						.replace("${fias_code_name_separator}", "\\" + FIAS_CODE_NAME_SEPARATOR)
 						.replace("${force_ajax}",
 								!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.FORCE_AJAX))
-										? ("(^|:p:)(?!" + ((String) currentGenerator
+										? ("(^|:p:)(?!${child_name_api}|" + ((String) currentGenerator
 												.getAttribute(TagGenerator.Attribute.FORCE_AJAX)).replace(",", "|") + ")\\w*")
-										: "")
+										: "(^|:p:)(?!${child_name_api})\\w*")
 						.replace("${value_js}", valueJS)
 						.replace("${list_item_js}", getListItemJS().replace("${name}", name))
 						.replace("${handler}", handler)

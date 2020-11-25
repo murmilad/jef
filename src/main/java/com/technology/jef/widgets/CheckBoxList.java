@@ -27,7 +27,7 @@ public class CheckBoxList extends RadioSwitch {
 		@Override
 		public String getSetItemsJS() {
 			
-			String valueJS = getValueJS(new String[] {} , "");
+			String valueJS = getValueJS(null , "", null);
 			
 			return 					("			$(\"#background_overlay_wait_${name}\").show();          \n" + 
 	"			$(\"#message_box_wait_${name}\").show();          \n" + 

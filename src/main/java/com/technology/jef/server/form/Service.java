@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -547,6 +548,19 @@ public class Service<F extends FormFactory> {
         }
 
 	}
+
+	/**
+	 * Преобразование картинки в base64URI в бинарные данные. Необходимо для реализации сервиса поддержки виджета  в IE<10
+	 * 
+	 * @param inputStream Поток картинки
+	 * @return Строка base64URI
+	 * @throws ServiceException
+	 */
+	
+	public byte[] base64ToImage(String inputStream) throws ServiceException {
+		return Base64.getDecoder().decode(inputStream);
+	}
+
 	
 	/**
 	 * Десериализация объектов

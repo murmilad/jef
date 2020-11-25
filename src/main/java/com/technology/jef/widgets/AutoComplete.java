@@ -55,7 +55,7 @@ public class AutoComplete extends Widget {
 
 			String prefix = (String) generator.getAttribute(TagGenerator.Attribute.PREFIX);
 			String nameAPI = name.replace(prefix, "");
-			String valueJS = getValueJS(ajax_parrent_list, prefix);
+			String valueJS = getValueJS(generator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
 
 
 			parrent.add(Tag.Type.SCRIPT, 
@@ -111,10 +111,8 @@ public class AutoComplete extends Widget {
 	"						if ($('#message_box_wait_${name}').is(\":visible\")){ // не вызывать поиск пока выполняется этот же запрос                               \n" + 
 	"							return false;                               \n" + 
 	"						}                               \n" + 
-	"						// динам параметры для формирования GET к ajax - сам запрос                       \n" + 
-	"						params['parameters']='${name_api}${value_separator}' + ($('#visible_${name_api}${prefix}').val() == '---' ? '' : $('#visible_${name_api}${prefix}').val());                    \n" + 
 	"						// модифицируем params чтобы передать реальные значения параметров - parent                      \n" + 
-	"						params['parameters'] += '${parameter_separator}' + ${value_js};           \n" + 
+	"						params['parameters'] = (${value_js}).replace('${name_api}${value_separator}---${parameter_separator}', '${name_api}${value_separator}${parameter_separator}');           \n" + 
 	"						$('#background_overlay_wait_${name}').show();       \n" + 
 	"						$('#message_box_wait_${name}').show();       \n" + 
 	"					},                       \n" + 
@@ -213,7 +211,7 @@ public class AutoComplete extends Widget {
 				public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
 					String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 					String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
-					String valueJS = getValueJS((String[])currentGenerator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT), prefix);
+					String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
 					String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
 
 					// Вызываем функцию связи в событиях родительского элемента
