@@ -80,7 +80,7 @@ public class ImageWebCam extends Image {
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.TYPE, "file");
 				 put(Tag.Property.STYLE, "width:100%;");
-				 put(Tag.Property.ACCEPT, "image/jpg,image/jpeg,image/gif,image/bmp");
+				 put(Tag.Property.ACCEPT, !"".equals(generator.getAttribute(TagGenerator.Attribute.ACCEPT)) ? (String) generator.getAttribute(TagGenerator.Attribute.ACCEPT) : "image/jpg,image/jpeg,image/gif,image/bmp");
 				 put(Tag.Property.DATA_URL, (String) generator.getAttribute(TagGenerator.Attribute.SERVICE) + "image_to_base64");
 				 put(Tag.Property.DATA_FILEBROWSETEXT, CurrentLocale.getInstance().getTextSource().getString("file_browse_text"));
 				 put(Tag.Property.DATA_FILEPLACEHOLDER, CurrentLocale.getInstance().getTextSource().getString("file_placeholder"));
@@ -173,8 +173,10 @@ public class ImageWebCam extends Image {
 	"                    Webcam.snap( function(data_uri) { \n" + 
 	"                       $('#camera_snapshot_${name}').attr(\"src\", data_uri); // подменяем картику на фото с камеры \n" + 
 	"                       $(name_${name}).val(data_uri);                        // записываем в поле для передачи серверу \n" +
-	"						$('#message_overlay_wait_form').show();\n" +
-	"                       checkPhoto('img_visible_${name}',checkImg);"+
+	"                       if (data_uri.match(/data:image\\/[a-zA-Z]*;base64,/i)){"+
+	"							$('#message_overlay_wait_form').show();\n" +
+	"                       	checkPhoto('img_visible_${name}',checkImg);"+
+	"                       }"+
 	"                    } ); \n" + 
 	"                    Webcam.reset(); \n" + 
 
@@ -222,8 +224,10 @@ public class ImageWebCam extends Image {
 				"					reader.onload = function(e) {     \n" +
 				"						$('#img_visible_${name}').attr('src', e.target.result);     \n" +
 				"						$('input#${name}').val(e.target.result);     \n" +
-				"						$('#message_overlay_wait_form').show();" +
-				"						checkPhoto('img_visible_${name}',checkImg);  \n"+
+				"                       if (e.target.result.match(/data:image\\/[a-zA-Z]*;base64,/i)){"+
+				"							$('#message_overlay_wait_form').show();" +
+				"							checkPhoto('img_visible_${name}',checkImg);  \n"+
+				"						}     \n" +
 				"					}     \n" +
 				"					reader.readAsDataURL(data.files[0]);     \n" +
 				"					return false;    \n" +

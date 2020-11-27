@@ -124,6 +124,9 @@ public class WidgetFactory {
 		case FILE:
 			widget = new File();
 			break;
+		case FILE_SHORT:
+			widget = new FileShort();
+			break;			
 		case IMAGE_SHORT:
 			widget = new ImageShort();
 			break;

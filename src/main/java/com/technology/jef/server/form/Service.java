@@ -524,29 +524,24 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 	
-	public String imageToBase64(InputStream inputStream) throws ServiceException {
-        try {
-        	ImageInputStream imageStream = ImageIO.createImageInputStream(inputStream);
-        	Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(imageStream);
+	public String imageToBase64(InputStream inputStream, String mimeType) throws ServiceException {
+		try {
+		    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		    int nRead;
+		    byte[] data = new byte[1024];
+		    while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+		        buffer.write(data, 0, nRead);
+		    }
+		 
+		    buffer.flush();
 
-        	if (imageReaders.hasNext()) {
-        	    ImageReader reader = (ImageReader) imageReaders.next();
-        	    reader.setInput(imageStream);
-        	    BufferedImage bufferedImage = reader.read(0);
-        	    String formatName = reader.getFormatName();
-        	    ByteArrayOutputStream byteaOutput = new ByteArrayOutputStream();
-        	    Base64OutputStream base64Output = new Base64OutputStream(byteaOutput);
-        	    ImageIO.write(bufferedImage, formatName, base64Output);
-        	    String base64 = new String(byteaOutput.toByteArray());
+		    String encoded = Base64.getEncoder().encodeToString(buffer.toByteArray());
 
-        	    return "data:image/" + reader.getFormatName().toLowerCase() + ";base64," + base64.replaceAll("[\\r\\n]", "");
-        	}
-        	return "";
-        	
-        } catch(IOException e) {
+    	    return "data:" + mimeType + ";base64," + encoded;
+		} catch (IOException e) {
         	throw new ServiceException(e.getMessage(),e);
-        }
-
+		}
+	    
 	}
 
 	/**
