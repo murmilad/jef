@@ -170,8 +170,8 @@ public class GroupGenerator extends TagGenerator {
 	"		count_${multiplie_group_name}--; \n" +
 	"						var parameters = ${value_js};  \n" + 
 	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};  \n" + 
-	"						setButtonVisiblity('button_add', '${multiplie_group_name}', parameters);   \n" + 
-	"						setButtonVisiblity('button_del', groupPrefix, parameters);   \n" + 
+	"						setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);   \n" + 
+	"						setButtonVisiblity${multiplie_group_name}('button_del', groupPrefix, parameters);   \n" + 
 	"}); \n")
 	.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 	.replace("${parameter_separator}", PARAMETER_SEPARATOR)
