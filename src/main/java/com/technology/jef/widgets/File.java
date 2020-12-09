@@ -47,7 +47,7 @@ public class File extends Widget {
 	"		$('#download_visible_${child_name}').hide();   \n" + 
 	"		$('#img_visible_${child_name}').attr('src', data.value);   \n" + 
 	"	} else {   \n" + 
-	"		$('#download_button_${child_name}').attr('style', 'download_button download_button_'+fileTypeMatcher[2]);   \n" + 
+	"		$('#download_button_${child_name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);   \n" + 
 	"		$('#download_visible_${child_name}').show();   \n" + 
 	"		$('#img_visible_${child_name}').hide();   \n" + 
 	"		$('#base64_visible_${child_name}').val(data.value);   \n" + 
@@ -181,7 +181,7 @@ public class File extends Widget {
 	"							$('#download_visible_${name}').hide(); \n" + 
 	"							$('#img_visible_${name}').attr('src', e.target.result); \n" + 
 	"						} else { \n" + 
-	"							$('#download_button_${name}').attr('style', 'download_button download_button_'+fileTypeMatcher[2]); \n" + 
+	"							$('#download_button_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]); \n" + 
 	"							$('#download_visible_${name}').show(); \n" + 
 	"							$('#img_visible_${name}').hide(); \n" + 
 	"							$('#base64_visible_${name}').val(e.target.result); \n" + 

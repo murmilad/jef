@@ -113,6 +113,7 @@ public class List extends Widget {
 			
 			String bodyJS =
 					("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){           \n" + 
+			"					if (!ajax_is_parrent_blocked${prefix}[\"${child_name}\"]) { // прерывание циклических зависимостей  \n" + 
 			"						var valueJS = ${value_js}; \n" + 
 			"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 			"						if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)){ return };           \n" + 
@@ -190,7 +191,8 @@ public class List extends Widget {
 			"									}   \n" + 
 			"							});          \n" + 
 			"						});          \n" + 
-			"					}           \n")
+			"					}          \n" + 
+			"				}           \n")
 			.replace("${loading}", CurrentLocale.getInstance().getTextSource().getString("loading"))
 			.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
