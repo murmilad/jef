@@ -82,19 +82,24 @@ public class DaData extends Widget {
 	"															onSelect: function (suggestion) {    \n" + 
 	"							                                    var region_composite_name = suggestion.data.region?suggestion.data.region+' '+suggestion.data.region_type:'';    \n" + 
 	"																$(\"#visible_${name}_region_code${group_prefix}\").val(region_composite_name);    \n" + 
+	"																$(\"#visible_${name}_region_code${group_prefix}\").removeClass('warning_color');    \n" + 
 	"																$(\"input#${name}_region_code${group_prefix}\").val((suggestion.data.region_fias_id||'')+'|'+(region_composite_name||''));    \n" + 
 	"																$(\"#visible_${name}_district_code${group_prefix}\").val(suggestion.data.area_with_type);    \n" + 
+	"																$(\"#visible_${name}_district_code${group_prefix}\").removeClass('warning_color');    \n" + 
 	"																$(\"input#${name}_district_code${group_prefix}\").val((suggestion.data.area_fias_id||'')+'|'+(suggestion.data.area_with_type||''));    \n" + 
 	"							                                    var city_composite_name = suggestion.data.city?suggestion.data.city+' '+suggestion.data.city_type:'';    \n" + 
 	"																$(\"#visible_${name}_city_code${group_prefix}\").val(city_composite_name);    \n" + 
+	"																$(\"#visible_${name}_city_code${group_prefix}\").removeClass('warning_color');    \n" + 
 	"																$(\"input#${name}_city_code${group_prefix}\").val((suggestion.data.city_fias_id||'')+'|'+(city_composite_name||''));    \n" + 
 	"							                                    var settlement_composite_name = suggestion.data.settlement?suggestion.data.settlement+' '+suggestion.data.settlement_type:'';    \n" + 
 	"																$(\"#visible_${name}_settlement_code${group_prefix}\").val(settlement_composite_name);    \n" + 
+	"																$(\"#visible_${name}_settlement_code${group_prefix}\").removeClass('warning_color');    \n" + 
 	"																$(\"input#${name}_settlement_code${group_prefix}\").val((suggestion.data.settlement_fias_id||'')+'|'+(settlement_composite_name||''));    \n" + 
 	"																$(\"#visible_${name}_post_index${group_prefix}\").val(suggestion.data.postal_code);    \n" + 
 	"																$(\"input#${name}_post_index${group_prefix}\").val(suggestion.data.postal_code);    \n" + 
 	"							                                    var street_composite_name = suggestion.data.street?suggestion.data.street+' '+suggestion.data.street_type:'';    \n" + 
 	"																$(\"#visible_${name}_street_code${group_prefix}\").val(street_composite_name);    \n" + 
+	"																$(\"#visible_${name}_street_code${group_prefix}\").removeClass('warning_color');    \n" + 
 	"																$(\"input#${name}_street_code${group_prefix}\").val((suggestion.data.street_fias_id||'')+'|'+(street_composite_name||''));    \n" + 
 	"																$(\"#visible_${name}_apartment${group_prefix}\").val(suggestion.data.flat);    \n" + 
 	"																$(\"input#${name}_apartment${group_prefix}\").val(suggestion.data.flat);    \n" + 
@@ -134,16 +139,19 @@ public class DaData extends Widget {
 	"																	case '${property}':    \n" + 
 	"																	default:    \n" + 
 	"																		$(\"#visible_${name}_house${group_prefix}\").val(suggestion.data.house);    \n" + 
+	"																		$(\"#visible_${name}_house${group_prefix}\").removeClass('warning_color');    \n" + 
 	"																		$(\"input#${name}_house${group_prefix}\").val((suggestion.data.house_fias_id||'')+'|'+(suggestion.data.house||''));    \n" + 
 	"																		break;    \n" + 
 	"																	case '${corpus}':    \n" + 
 	"																		$(\"#visible_${name}_house${group_prefix}\").val('');    \n" + 
+	"																		$(\"#visible_${name}_house${group_prefix}\").removeClass('warning_color');    \n" + 
 	"																		$(\"input#${name}_house${group_prefix}\").val((suggestion.data.house_fias_id||'')+'|');    \n" + 
 	"																		$(\"#visible_${name}_section${group_prefix}\").val(suggestion.data.house);    \n" + 
 	"																		$(\"input#${name}_section${group_prefix}\").val(suggestion.data.house);    \n" + 
 	"																		break;    \n" + 
 	"																	case '${building}':    \n" + 
 	"																		$(\"#visible_${name}_house${group_prefix}\").val('');    \n" + 
+	"																		$(\"#visible_${name}_house${group_prefix}\").removeClass('warning_color');    \n" + 
 	"																		$(\"input#${name}_house${group_prefix}\").val((suggestion.data.house_fias_id||'')+'|');    \n" + 
 	"																		$(\"#visible_${name}_building${group_prefix}\").val(suggestion.data.house);    \n" + 
 	"																		$(\"input#${name}_building${group_prefix}\").val(suggestion.data.house);    \n" + 
