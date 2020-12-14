@@ -112,7 +112,7 @@ public class AutoCompleteEditable extends Widget {
 	"									suggestions: $.map(response.data, function(dataItem) {               \n" + 
 	"										var index = dataItem.name.toLowerCase().indexOf(query.toLowerCase());                  \n" + 
 	"										var visible_name =  index >= 0 ? dataItem.name.substr(0, index) + '<b>' + query + '</b>' + dataItem.name.substr(index+query.length, dataItem.name.length) : dataItem.name;                  \n" + 
-	"										return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name};                                \n" + 
+	"										return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name, disabled: dataItem.disabled};                                \n" + 
 	"									})                             \n" + 
 	"						};              \n" + 
 	"					},              \n" + 
@@ -137,7 +137,11 @@ public class AutoCompleteEditable extends Widget {
 	"						}             \n" + 
 	"					} ,           \n" + 
 	"					formatResult:function (suggestion, currentValue) {                   \n" + 
-	"						return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"' > \" + suggestion.html + \"</div>\";                   \n" + 
+	"						if (suggestion.disabled) {  \n" + 
+	"							return \"<div style='color:gray;' > \" + suggestion.html + \"</div>\";  \n" + 
+	"						} else {  \n" + 
+	"							return \"<div data-field='${name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"' > \" + suggestion.html + \"</div>\";                   \n" + 
+	"						}  \n" + 
 	"					},                                   \n" + 
 	"			});                             \n")
 						.replace("${prefix}", (String) generator.getAttribute(TagGenerator.Attribute.PREFIX))
