@@ -39,16 +39,6 @@ public class TabsGenerator extends TagGenerator {
 		}});
 
 
-		form.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.ID, "message_box_wait_tab");
-			 put(Tag.Property.NAME, "message_box_wait");
-			 put(Tag.Property.CLASS, "message_box_loading background_color");
-			 put(Tag.Property.STYLE, "display: none;");
-		}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.NAME, "message_overlay_wait");
-			 put(Tag.Property.CLASS, "message_overlay_loading");
-		}});
-
 		addHandler(TagGenerator.Name.TAB, new Handler() {
 
 			@Override
@@ -68,49 +58,70 @@ public class TabsGenerator extends TagGenerator {
 	public void onEndElement() {
 		if (firstTabFormId != null) {
 			dom.add(Tag.Type.SCRIPT, 
-															("				$( document ).ready(function() {       \n" + 
-	"					setTimeout(function(){ // IE support     \n" + 
-	"						loadForm(uri_params['form_id'] || '${form}');     \n" + 
-	"					}, 300);     \n" + 
-	"				});    \n" + 
-	"				window.resourcesStack = [];          \n" + 
-	"				function loadForm(formId) {          \n" + 
-	"			            $(\"#message_box_wait_tab\").show();                                          \n" + 
-	"						$('.tab').removeClass('current first_color');         \n" + 
-	"						$('.tab').addClass('second_color');         \n" + 
-	"						$( 'div[data-form-id=\"'+formId+'\"]' ).removeClass('second_color');         \n" + 
-	"						$( 'div[data-form-id=\"'+formId+'\"]' ).addClass('current first_color');         \n" + 
-	"					$.ajax({               \n" + 
-	"				       	url: formId + '.html?no_cache=' + Math.floor(Math.random() * 10000),                                       \n" + 
-	"						data: uri_params,                                      \n" + 
-	"					       type: 'get',                                       \n" + 
-	"					       dataType: 'text',                                       \n" + 
-	"					}).done(function(data){               \n" + 
-	"						$(\"#form_container\").empty();         \n" + 
-	"						var resourcesRegExp = /<\\s*script\\s+src\\s*=\\s*['\"](.+?)\\.js/g;    \n" + 
-	"						var resourcesRegExpResult;    \n" + 
-	"						var filtredData = data;    \n" + 
-	"						while((resourcesRegExpResult = resourcesRegExp.exec(data)) !== null) {   \n" + 
-	"							if ($.inArray(resourcesRegExpResult[1], window.resourcesStack) > -1) {   \n" + 
+																("				$( document ).ready(function() {        \n" + 
+	"					setTimeout(function(){ // IE support      \n" + 
+	"						loadForm(uri_params['form_id'] || '${form}');      \n" + 
+	"					}, 300);      \n" + 
+	"				});     \n" + 
+	"				window.resourcesStack = ['js/jef'];  //already loaded js 'js/jef.js'         \n" + 
+	"				function loadForm(formId) {           \n" + 
+	"			            $(\"#background_overlay_load_tab\").show();                                           \n" + 
+	"			            $(\"#message_box_wait_tab\").show();                                           \n" + 
+	"			            $(\"#message_box_wait_tab_load\").show();                                           \n" + 
+	"						$('.tab').removeClass('current first_color');          \n" + 
+	"						$('.tab').addClass('second_color');          \n" + 
+	"						$( 'div[data-form-id=\"'+formId+'\"]' ).removeClass('second_color');          \n" + 
+	"						$( 'div[data-form-id=\"'+formId+'\"]' ).addClass('current first_color');          \n" + 
+	"					$.ajax({                \n" + 
+	"				       	url: formId + '.html?no_cache=' + Math.floor(Math.random() * 10000),                                        \n" + 
+	"						data: uri_params,                                       \n" + 
+	"					       type: 'get',                                        \n" + 
+	"					       dataType: 'text',                                        \n" + 
+	"					}).done(function(data){                \n" + 
+	"						$(\"#form_container\").empty();          \n" +
+	"		$('<div />', { \n" + 
+	"		    'class': 'background_overlay_form_loading background_color', \n" + 
+	"		    'id': 'background_overlay_load_tab', \n" + 
+	"		    'name': 'background_overlay_load_tab' \n" + 
+	"		}).appendTo('#form_container'); \n" +
+	"		var $box = $('<div />', { \n" + 
+	"		    'class': 'message_overlay_form_loading', \n" + 
+	"		    'id': 'message_box_wait_tab', \n" + 
+	"		    'name': 'message_box_wait_tab' \n" + 
+	"		}).appendTo('#form_container'); \n" +
+	"		$('<div />', { \n" + 
+	"		    'class': 'message_box_form_loading messages_border messages_color', \n" + 
+	"		    'id': 'message_box_wait_tab_load', \n" + 
+	"		    'name': 'message_box_wait_tab_load', \n" + 
+	"		    'text': '${loading}', \n" + 
+	"		}).appendTo($box); \n" +
+	"		var resourcesRegExp = /<\\s*script\\s+src\\s*=\\s*['\"](.+?)\\.js/g;     \n" + 
+	"						var resourcesRegExpResult;     \n" + 
+	"						var filtredData = data;     \n" + 
+	"						while((resourcesRegExpResult = resourcesRegExp.exec(data)) !== null) {    \n" + 
+	"							if ($.inArray(resourcesRegExpResult[1], window.resourcesStack) > -1) {    \n" + 
 	"								var replace = '<\\\\s*script\\\\s+src\\\\s*=\\\\s*[\\'\"]' + resourcesRegExpResult[1] + '\\\\.js.*?[\\'\"]\\\\s*>\\\\s*?</script>';  \n" + 
-	"								var re = new RegExp(replace,\"g\");  \n" + 
-	"								filtredData = filtredData.replace(re, '');   \n" + 
+	"								var re = new RegExp(replace,\"g\");   \n" + 
+	"								filtredData = filtredData.replace(re, '');    \n" + 
 	"								replace = 'src\\\\s*=\\\\s*[\\'\"]' + resourcesRegExpResult[1] + '\\\\.js.*?[\\'\"]';  \n" + 
-	"								re = new RegExp(replace,\"g\");  \n" + 
-	"								filtredData = filtredData.replace(re, '');   \n" + 
-	"							} else { \n" + 
-	"								if (resourcesRegExpResult[1].indexOf(formId) < 0) {   \n" + 
-	"									window.resourcesStack.push(resourcesRegExpResult[1])   \n" + 
-	"								} \n" + 
-	"							}    \n" + 
-	"						}    \n" + 
-	"						$(\"#form_container\").append(filtredData);                   \n" + 
-	"				           	$(\"#message_box_wait_tab\").hide();                                          \n" + 
-	"					}).fail(function(jqXHR, textStatus, errorThrown){               \n" + 
-	"						showError(\"Error: \" + errorThrown, jqXHR.responseText);               \n" + 
-	"					});               \n" + 
-	"				}          \n")
+	"								re = new RegExp(replace,\"g\");   \n" + 
+	"								filtredData = filtredData.replace(re, '');    \n" + 
+	"							} else {  \n" + 
+	"								if (resourcesRegExpResult[1].indexOf(formId) < 0) {    \n" + 
+	"									window.resourcesStack.push(resourcesRegExpResult[1])    \n" + 
+	"								}  \n" + 
+	"							}     \n" + 
+	"						}     \n" + 
+	"						$(\"#form_container\").append(filtredData);                    \n" + 
+	"			            $(\"#background_overlay_load_tab\").hide();                                           \n" + 
+	"			            $(\"#message_box_wait_tab\").hide();                                           \n" + 
+	"			            $(\"#message_box_wait_tab_load\").hide();                                           \n" + 
+	"					}).fail(function(jqXHR, textStatus, errorThrown){                \n" + 
+	"						showError(\"Error: \" + errorThrown, jqXHR.responseText);                \n" + 
+	"					});                \n" + 
+	"				}           \n")
 					.replace("${form}", firstTabFormId)
+					.replace("${loading}", CurrentLocale.getInstance().getTextSource().getString("loading"))
 			);
 		}
 	}

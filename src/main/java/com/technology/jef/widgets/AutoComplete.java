@@ -91,6 +91,7 @@ public class AutoComplete extends Widget {
 	"					onSearchError: function (query, jqXHR, textStatus, errorThrown) {     \n" + 
 	"						$('#background_overlay_wait_${name}').hide();     \n" + 
 	"						$('#message_box_wait_${name}').hide();     \n" + 
+	"						$('#is_loading').val('0'); \n" +  
 	"						showError(\"Error: \" + errorThrown, jqXHR.responseText + 'Parameters:' + query + '<br><br>');       \n" + 
 	"					},     \n" + 
 	"					transformResult: function(response) {        \n" + 
@@ -115,10 +116,12 @@ public class AutoComplete extends Widget {
 	"						params['parameters'] = (${value_js}).replace('${name_api}${value_separator}---${parameter_separator}', '${name_api}${value_separator}${parameter_separator}');           \n" + 
 	"						$('#background_overlay_wait_${name}').show();       \n" + 
 	"						$('#message_box_wait_${name}').show();       \n" + 
+	"						$('#is_loading').val('1'); \n" +  
 	"					},                       \n" + 
 	"					onSearchComplete: function (query, suggestions) {       \n" + 
 	"						$('#background_overlay_wait_${name}').hide();       \n" + 
 	"						$('#message_box_wait_${name}').hide();       \n" + 
+	"						$('#is_loading').val('0'); \n" +  
 	"						if (suggestions.length==0){       \n" + 
 	"							// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение       \n" + 
 	"							$('input#${name}').val('');          \n" + 

@@ -377,11 +377,17 @@ public class Service<F extends FormFactory> {
 	public List<ListItemDto> getListData(Integer id, String formApi, String parameterName, Map<String, String> parameters)
 			throws ServiceException {
 		
+		List<ListItemDto> result = new LinkedList<ListItemDto>();
 		
+		for (String api : formApi.split(",")) {
+			Form form = factory.getForm(api);
+			for (ListItemDto item : ListItemDto.asList(form.getList(id, parameterName, stringMapToValueMap(parameters)))) {
+				result.add(item);
+			}
+			
+		}
 		
-		Form form = factory.getForm(formApi);
-		
-		return ListItemDto.asList(form.getList(id, parameterName, stringMapToValueMap(parameters)));
+		return result;
 	}
 
 	/**
@@ -397,12 +403,17 @@ public class Service<F extends FormFactory> {
 
 	public List<ListItemDto> getInteractiveListData(Integer id, String formApi, String parameterName, Map<String, String> parameters) throws ServiceException {
 
+		List<ListItemDto> result = new LinkedList<ListItemDto>();
 		
+		for (String api : formApi.split(",")) {
+			Form form = factory.getForm(api);
+			for (ListItemDto item : ListItemDto.asList(form.getInteractiveList(id, parameterName, stringMapToValueMap(parameters)))) {
+				result.add(item);
+			}
+			
+		}
 		
-		Form form = factory.getForm(formApi);
-
-		
-		return ListItemDto.asList(form.getInteractiveList(id, parameterName, stringMapToValueMap(parameters)));
+		return result;
 	}
 
 

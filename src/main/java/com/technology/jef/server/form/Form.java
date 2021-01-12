@@ -323,7 +323,9 @@ public abstract class Form {
 		public static String getItemOrSpace (String data, Integer index) {
 			String result = "";
 			if (data != null && !"".equals(data) && !FIAS_CODE_NAME_SEPARATOR.equals(data)) {
-				result = data.split("\\" + FIAS_CODE_NAME_SEPARATOR)[index];
+				result = data.split("\\" + FIAS_CODE_NAME_SEPARATOR).length < index+1
+						? ""
+						: data.split("\\" + FIAS_CODE_NAME_SEPARATOR)[index];
 			}
 			return result;
 		}

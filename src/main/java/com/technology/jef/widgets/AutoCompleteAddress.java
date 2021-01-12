@@ -82,8 +82,10 @@ public class AutoCompleteAddress extends Widget {
 	"					        dataType: 'json',                          \n" + 
 	"				           	contentType: 'application/x-www-form-urlencoded',                          \n" + 
 	"						}, function (response) {               \n" + 
-	"								$('input#${address_prefix}'+'post_index${prefix}').val(response.value);                             \n" + 
-	"								$('#visible_'+'${address_prefix}'+'post_index${prefix}').val(response.value);                             \n" + 
+	"								if (response.value) {                             \n" + 
+	"									$('input#${address_prefix}'+'post_index${prefix}').val(response.value);                             \n" + 
+	"									$('#visible_'+'${address_prefix}'+'post_index${prefix}').val(response.value);                             \n" + 
+	"								}                             \n" + 
 	"						});                             \n" + 
 	"					}                             \n" + 
 	"				}                             \n" + 
@@ -133,6 +135,7 @@ public class AutoCompleteAddress extends Widget {
 	"						$('#background_overlay_wait_${name}').hide();     \n" + 
 	"						$('#message_box_wait_${name}').hide();     \n" + 
 	"						showError(\"Error: \" + errorThrown, jqXHR.responseText + 'Parameters:' + query + '<br><br>');       \n" + 
+	"						$('#is_loading').val('0'); \n" +  
 	"					},     \n" + 
 	"					transformResult: function(response) {        \n" + 
 	"						var query = $('#visible_${name_api}${prefix}').val();                           \n" + 
@@ -176,10 +179,12 @@ public class AutoCompleteAddress extends Widget {
 	"						params['parameters'] = (${value_js}).replace('${name_api}${value_separator}|', '${name_api}${value_separator}');                       \n" + 
 	"						$('#background_overlay_wait_${name}').show();       \n" + 
 	"						$('#message_box_wait_${name}').show();       \n" + 
+	"						$('#is_loading').val('1'); \n" +  
 	"					},       \n" + 
 	"					onSearchComplete: function (query, suggestions) {       \n" + 
 	"						$('#background_overlay_wait_${name}').hide();       \n" + 
 	"						$('#message_box_wait_${name}').hide();       \n" + 
+	"						$('#is_loading').val('0'); \n" +  
 	"						if (suggestions.length==0){       \n" + 
 	"							// ничего не нашли - очищаем значение в hidden поле и оставляем введенное пользователем значение       \n" + 
 	"							$('input#${name}').val('|'+$('#visible_${name}').val());       \n" + 

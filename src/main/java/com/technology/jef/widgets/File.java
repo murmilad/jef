@@ -42,12 +42,13 @@ public class File extends Widget {
 	public String getSetValueJS() {
 		return 					("	                                                      \n" + 
 	"	var fileTypeMatcher = data.value.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);    \n" + 
-	"	if (!fileTypeMatcher || fileTypeMatcher[1] == 'image') {         \n" + 
+	"	if (!fileTypeMatcher || fileTypeMatcher[1] == 'image' && fileTypeMatcher[2] != 'tiff') {         \n" + 
 	"		$('#img_visible_${child_name}').show();   \n" + 
 	"		$('#download_visible_${child_name}').hide();   \n" + 
 	"		$('#img_visible_${child_name}').attr('src', data.value);   \n" + 
 	"	} else {   \n" + 
 	"		$('#download_button_${child_name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);   \n" + 
+	"		$('#download_button_div_${child_name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);   \n" + 
 	"		$('#download_visible_${child_name}').show();   \n" + 
 	"		$('#img_visible_${child_name}').hide();   \n" + 
 	"		$('#base64_visible_${child_name}').val(data.value);   \n" + 
@@ -109,11 +110,14 @@ public class File extends Widget {
 				 put(Tag.Property.ID, "base64_visible_" + name);
 				 put(Tag.Property.NAME, "base64");
 			}});
-			downloadForm.add(Tag.Type.A, CurrentLocale.getInstance().getTextSource().getString("download"), new HashMap<Tag.Property, String>(){{
+			downloadForm.add(Tag.Type.A, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "download_button_" + name);
 				 put(Tag.Property.NAME, "download_button_" + name);
 				 put(Tag.Property.HREF, "#");
 				 put(Tag.Property.CLICK, "$('#download_visible_" + name + "').submit();");
+			}}).add(Tag.Type.DIV,CurrentLocale.getInstance().getTextSource().getString("download"), new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.ID, "download_button_div_" + name);
+				 put(Tag.Property.NAME, "download_button_div_" + name);
 			}});
 			
 			Tag submit =  input.add(Tag.Type.DIV,
@@ -161,49 +165,65 @@ public class File extends Widget {
 		     put(Tag.Property.SRC, "js/jquery.fileupload.js");
 		}});
 
-		parrent.add(Tag.Type.SCRIPT, 																		("           \n" + 
-	"	$(function () {         \n" + 
-	"	    $('#visible_${name}').fileupload({      \n" + 
-	"		type: 'POST',     \n" + 
-	"		dataType: 'text',     \n" + 
-	"		paramName: 'file',      \n" + 
-	"		cache : false,     \n" + 
-	"		contentType : false,     \n" + 
-	"		processData : false,    \n" + 
-	"	        submit: function (e, data) {         \n" + 
-	"			if ( window.FileReader) {       \n" + 
-	"				if (data.files && data.files[0]) {       \n" + 
-	"					var reader = new FileReader();       \n" + 
+		parrent.add(Tag.Type.SCRIPT, 																				("             \n" + 
+	"	$(function () {           \n" + 
+	"	    $('#visible_${name}').fileupload({        \n" + 
+	"		type: 'POST',       \n" + 
+	"		dataType: 'text',       \n" + 
+	"		paramName: 'file',        \n" + 
+	"		cache : false,       \n" + 
+	"		contentType : false,       \n" + 
+	"		processData : false,      \n" + 
+	"	        submit: function (e, data) {           \n" + 
+	"			if ( window.FileReader) {         \n" + 
+	"				if (data.files && data.files[0]) {         \n" + 
+	"					var reader = new FileReader();         \n" + 
 	"					reader.onload = function(e) {  \n" + 
-	"						var fileTypeMatcher = e.target.result.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);  \n" + 
-	"						if (fileTypeMatcher[1] == 'image') {       \n" + 
-	"							$('#img_visible_${name}').show(); \n" + 
-	"							$('#download_visible_${name}').hide(); \n" + 
-	"							$('#img_visible_${name}').attr('src', e.target.result); \n" + 
-	"						} else { \n" + 
-	"							$('#download_button_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]); \n" + 
-	"							$('#download_visible_${name}').show(); \n" + 
-	"							$('#img_visible_${name}').hide(); \n" + 
-	"							$('#base64_visible_${name}').val(e.target.result); \n" + 
-	"						}       \n" + 
-	"						$('input#${name}').val(e.target.result);       \n" + 
-	"					}       \n" + 
-	"					reader.readAsDataURL(data.files[0]);       \n" + 
-	"					return false;      \n" + 
-	"				}       \n" + 
-	"			}       \n" + 
-	"	        },         \n" + 
-	"		success : function(data, textStatus, jqXHR) {     \n" + 
-	"			$('#visible_${name}').change();   \n" + 
-	"			$('#img_visible_${name}').attr('src', data);   \n" + 
-	"			$('input#${name}').attr('value', data);       \n" + 
-	"		},     \n" + 
-	"		error : function(jqXHR, textStatus, errorThrown) {     \n" + 
-	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);      \n" + 
-	"		}     \n" + 
-	"	    });         \n" + 
-	"	});   \n")
-		.replace("${name}", name));
+	"						var fileTypeMatcher = e.target.result.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);    \n" + 
+	"						if (fileTypeMatcher && fileTypeMatcher[2].match('^${accept}$')) {   \n" + 
+	"							$('#visible_${name}').parent().children('').removeClass( \"error error_color\", \"\"); \n" + 
+	"							if (fileTypeMatcher[1] == 'image' && fileTypeMatcher[2] != 'tiff') {         \n" + 
+	"								$('#img_visible_${name}').show();   \n" + 
+	"								$('#download_visible_${name}').hide();   \n" + 
+	"								$('#img_visible_${name}').attr('src', e.target.result);   \n" + 
+	"							} else {   \n" + 
+	"								$('#download_button_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);   \n" + 
+	"								$('#download_button_div_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);   \n" + 
+	"								$('#download_visible_${name}').show();   \n" + 
+	"								$('#img_visible_${name}').hide();   \n" + 
+	"								$('#base64_visible_${name}').val(e.target.result);   \n" + 
+	"							}         \n" + 
+	"							$('input#${name}').val(e.target.result);  \n" + 
+	"						} else {  \n" + 
+	"							alert('${incorrect_type} ${accept_message}');  \n" + 
+	"							$('#img_visible_${name}').show();   \n" + 
+	"							$('#download_visible_${name}').hide();   \n" + 
+	"							$('#img_visible_${name}').attr('src', '');  \n" + 
+	"							$('#base64_visible_${name}').val('');  \n" + 
+	"							$('#${name}').val('');  \n" + 
+	"							$('#visible_${name}').val('');  \n" + 
+	"							$('#visible_${name}').parent().children('').addClass('error error_color');  \n" + 
+	"						}         \n" + 
+	"					}         \n" + 
+	"					reader.readAsDataURL(data.files[0]);         \n" + 
+	"					return false;        \n" + 
+	"				}         \n" + 
+	"			}         \n" + 
+	"	        },           \n" + 
+	"		success : function(data, textStatus, jqXHR) {       \n" + 
+	"			$('#visible_${name}').change();     \n" + 
+	"			$('#img_visible_${name}').attr('src', data);     \n" + 
+	"			$('input#${name}').attr('value', data);         \n" + 
+	"		},       \n" + 
+	"		error : function(jqXHR, textStatus, errorThrown) {       \n" + 
+	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);        \n" + 
+	"		}       \n" + 
+	"	    });           \n" + 
+	"	});     \n")
+		.replace("${incorrect_type}", CurrentLocale.getInstance().getTextSource().getString("wrong_type"))
+		.replace("${name}", name)
+		.replace("${accept_message}", !"".equals(generator.getAttribute(TagGenerator.Attribute.ACCEPT)) ? ((String) generator.getAttribute(TagGenerator.Attribute.ACCEPT)).replaceAll("(image|application)\\/","").toUpperCase() : "")
+		.replace("${accept}", !"".equals(generator.getAttribute(TagGenerator.Attribute.ACCEPT)) ? ((String) generator.getAttribute(TagGenerator.Attribute.ACCEPT)).replaceAll("(image|application)\\/","").replaceAll(",","|") : ".*"));
 
 		return element;
 	}

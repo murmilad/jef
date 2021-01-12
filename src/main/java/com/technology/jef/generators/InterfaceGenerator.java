@@ -94,129 +94,39 @@ public class InterfaceGenerator extends TagGenerator {
 		     put(Tag.Property.SRC, "js/jquery.autocomplete.js?no_cache=" + new Random().nextInt(10000));
 		}});
 		
-		head.add(Tag.Type.SCRIPT, 
-																			(" $.support.cors = true;              \n" + 
-	"		(function($) {                \n" + 
-	"		    $(function() {                \n" + 
-	"		        $('input').styler();                \n" + 
-	"		    })                \n" + 
-	"		})(jQuery)        \n" + 
-	"	window.ajaxRequestStack = [];                 \n" + 
-	"	var ajaxRequestId = 0;                 \n" + 
-	"        window.ajaxPool = [];       \n" + 
-	"        window.ajaxXNR = [];       \n" + 
-	"        window.ajaxPool.hasSame = function(parameters) {       \n" + 
-	"            	if (ajaxPool.indexOf(parameters) != -1) {      \n" + 
-	" 					return true;      \n" + 
-	"				}       \n" + 
-	"				return false;       \n" + 
-	"        };       \n" + 
-	"        window.ajaxPool.delete	= function(parameters) {       \n" + 
-	"            	var i = ajaxPool.indexOf(parameters);       \n" + 
-	"				if (i > -1) ajaxPool.splice(i, 1);      \n" + 
-	"        };      \n" + 
-	"	function showError (header, message){              \n" + 
-	"		$(\"#background_overlay_error\").show();                     \n" + 
-	"   		$(\"#message_box_error\").show();                     \n" + 
-	"		$(\"#message_header_error\").html(header);              \n" + 
-	"		$(\"#message_body_error\").html(message);              \n" + 
-	"	}               \n" + 
-	"	function operateResult (result, callback) {            \n" + 
-	"		if (result.status_code == 2) {            \n" + 
-	"			if (result.error.error_code == 2) {            \n" + 
-	"				window.logout(document);            \n" + 
-	"			} else {            \n" + 
-	"				showError(result.error.error_description, result.error.error_message);            \n" + 
-	"			}            \n" + 
-	"		} else if (result.status_code == 1) {            \n" + 
-	"			if (callback) {            \n" + 
-	"				callback(result, this);            \n" + 
-	"			}            \n" + 
-	"		}            \n" + 
-	"	}        \n" + 
-	"	function releaseRequest(request){        \n" + 
-	"		window.ajaxRequestStack.splice((window.ajaxRequestStack.indexOf(request)-1), 1);        \n" + 
-	"		if (window.ajaxRequestStack.length == 0){        \n" + 
-	"			$( document ).trigger('allRequestsReleased');        \n" + 
-	"		}        \n" + 
-	"	} \n" + 
-	"	function bindIsFormLoading (){        \n" + 
-	"		if (window.ajaxRequestStack.length == 0){  \n" + 
-	" 			window.isFormLoading = false;      \n" + 
-	"			$(\"#message_overlay_wait_form\").hide();                             \n" + 
-	"			$(\"#message_box_overlay_wait_form\").hide();                             \n" + 
-	"   			$(\"#message_box_wait_form\").hide();                             \n" + 
-	"		} else {  \n" + 
-	"			$( document ).on('allRequestsReleased', function(){    \n" + 
-	" 				window.isFormLoading = false;      \n" + 
-	"				$(\"#message_overlay_wait_form\").hide();                             \n" + 
-	"				$(\"#message_box_overlay_wait_form\").hide();                             \n" + 
-	"	    			$(\"#message_box_wait_form\").hide();                             \n" + 
-	"				$( document ).unbind('allRequestsReleased');    \n" + 
-	"			});   \n" + 
-	"		} \n" + 
-	"	}  \n" + 
-	" 	function ajax(parameters, callback) {        \n" + 
-	"		pooledParameters = JSON.stringify(parameters).replace(/\"(rnd|no_cache)\":\\d+/g, \"\");     \n" + 
-	"		if (!window.ajaxPool.hasSame(pooledParameters)) {      \n" + 
-	"			window.ajaxPool.push(pooledParameters);  \n" + 
-	"			var currentAjaxRequest = {requestId: ajaxRequestId++};        \n" + 
-	"			window.ajaxRequestStack.push(currentAjaxRequest);        \n" + 
-	"			window.ajaxXNR[pooledParameters] = $.ajax(           \n" + 
-	"				parameters           \n" + 
-	"			).done(function(data){           \n" + 
-	"				window.ajaxPool.delete(pooledParameters);        \n" + 
-	"				operateResult(data, callback);        \n" + 
-	"				releaseRequest(currentAjaxRequest);        \n" + 
-	"			}).fail(function(jqXHR, textStatus, errorThrown){           \n" + 
-	"				window.ajaxPool.delete(pooledParameters);        \n" + 
-	"				showError(\"Error: \" + errorThrown, jqXHR.responseText);           \n" + 
-	"				releaseRequest(currentAjaxRequest);        \n" + 
-	"			});           \n" + 
-	"		} else {  \n" + 
-	"			window.ajaxXNR[pooledParameters].done(function(data){           \n" + 
-	"				operateResult(data, callback);        \n" + 
-	"			}).fail(function(jqXHR, textStatus, errorThrown){           \n" + 
-	"				showError(\"Error: \" + errorThrown, jqXHR.responseText);           \n" + 
-	"			});  \n" + 
-	"		}          \n" + 
-	"	}           \n" + 
-	"	function getJSON(url, parameters, callback){       \n" + 
-	"		var currentAjaxRequest = {requestId: ajaxRequestId++};        \n" + 
-	"		window.ajaxRequestStack.push(currentAjaxRequest);        \n" + 
-	"		$.getJSON(          \n" + 
-	"			url,          \n" + 
-	"			parameters          \n" + 
-	"		).done(function(data){           \n" + 
-	"			operateResult(data, callback);           \n" + 
-	"			releaseRequest(currentAjaxRequest);      \n" + 
-	"		}).fail(function(jqXHR, textStatus, errorThrown){           \n" + 
-	"			showError(\"Error: \" + errorThrown, jqXHR.responseText);           \n" + 
-	"			releaseRequest(currentAjaxRequest);        \n" + 
-	"		});       \n" + 
-	"	}          \n" + 
-	"	if (!uri_params) {         \n" + 
-	"		var uri_params = window              \n" + 
-	"		    	.location              \n" + 
-	"		    	.search              \n" + 
-	"		    	.replace('?','')              \n" + 
-	"		    	.split('&')              \n" + 
-	"		    	.reduce(              \n" + 
-	"		    			function(p,e){              \n" + 
-	"		    				var a = e.split('=');              \n" + 
-	"		    				p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);              \n" + 
-	"		    				return p;              \n" + 
-	"		    			},              \n" + 
-	"		        {}              \n" + 
-	"		    );         \n" + 
-	"	}         \n"),		
-
-
-		new HashMap<Tag.Property, String>(){{
-		    put(Tag.Property.TYPE, "text/javascript");
-		    put(Tag.Property.SRC, "js/jquery.formstyler.js?no_cache=" + new Random().nextInt(10000));
-		}});
+		head.add(Tag.Type.SCRIPT, (
+				"		(function($) {                \n" + 
+				"		    $(function() {                \n" + 
+				"		        $('input').styler();                \n" + 
+				"		    })                \n" + 
+				"		})(jQuery)        \n" + 
+				"	window.ajaxRequestStack = [];                 \n" + 
+				"	var ajaxRequestId = 0;                 \n" + 
+				"        window.ajaxPool = [];       \n" + 
+				"        window.ajaxXNR = [];       \n" + 
+				"        window.ajaxPool.hasSame = function(parameters) {       \n" + 
+				"            	if (ajaxPool.indexOf(parameters) != -1) {      \n" + 
+				" 					return true;      \n" + 
+				"				}       \n" + 
+				"				return false;       \n" + 
+				"        };       \n" + 
+				"        window.ajaxPool.delete	= function(parameters) {       \n" + 
+				"            	var i = ajaxPool.indexOf(parameters);       \n" + 
+				"				if (i > -1) ajaxPool.splice(i, 1);      \n" + 
+				"        };      \n"
 		
+		),
+			new HashMap<Tag.Property, String>(){{
+			    put(Tag.Property.TYPE, "text/javascript");
+			    put(Tag.Property.SRC, "js/jquery.formstyler.js?no_cache=" + new Random().nextInt(10000));
+		}});
+
+		head.add(Tag.Type.SCRIPT,	
+				new HashMap<Tag.Property, String>(){{
+				    put(Tag.Property.TYPE, "text/javascript");
+				    put(Tag.Property.SRC, "js/jef.js?no_cache=" + new Random().nextInt(10000));
+			}});
+
 		Tag body = dom.add(Tag.Type.BODY, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.CLASS, "body first_font background_color");
 		}});

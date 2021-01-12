@@ -214,7 +214,7 @@ public class GroupGenerator extends TagGenerator {
 					 put(Tag.Property.NAME, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 					 put(Tag.Property.TYPE, "button");
 					 put(Tag.Property.CLASS, "interface_add_button buttons_color buttons_height");
-					 put(Tag.Property.STYLE, "display: inline-block");
+					 put(Tag.Property.STYLE, !"".equals(getAttribute(TagGenerator.Attribute.JOINED_BY)) ? "display: none" : "display: inline-block");
 					 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("add") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", "").toLowerCase());
 				}});
 
@@ -265,9 +265,9 @@ public class GroupGenerator extends TagGenerator {
 		// Выбираем адрес DOM модели в зависимости от имени тега
 		switch (name) {
 		// Если дочерний генератор формирует скрипт, то пусть он записывается 
-		// не в шаблон группы а в ее родительский тег
+		// не в шаблон группы а в ее родительский тег кроме подключенных в XML событий
 		case SCRIPT:
-			return multilineParrentDOM;
+			return "add".equals(attributes.getValue("type")) ? dom : multilineParrentDOM;
 		default:
 			return dom;
 		}

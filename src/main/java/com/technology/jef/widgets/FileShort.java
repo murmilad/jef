@@ -50,11 +50,14 @@ public class FileShort extends File {
 				 put(Tag.Property.ID, "base64_visible_" + name);
 				 put(Tag.Property.NAME, "base64");
 			}});
-			downloadForm.add(Tag.Type.A, CurrentLocale.getInstance().getTextSource().getString("download"), new HashMap<Tag.Property, String>(){{
+			downloadForm.add(Tag.Type.A, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "download_button_" + name);
 				 put(Tag.Property.NAME, "download_button_" + name);
 				 put(Tag.Property.HREF, "#");
 				 put(Tag.Property.CLICK, "$('#download_visible_" + name + "').submit();");
+			}}).add(Tag.Type.DIV,CurrentLocale.getInstance().getTextSource().getString("download"), new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.ID, "download_button_div_" + name);
+				 put(Tag.Property.NAME, "download_button_div_" + name);
 			}});
 			
 			Tag submit =  input.add(Tag.Type.DIV,
