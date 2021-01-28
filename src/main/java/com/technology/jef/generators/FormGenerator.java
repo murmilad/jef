@@ -194,7 +194,7 @@ public class FormGenerator extends TagGenerator {
 				 put(Tag.Property.TYPE, "button");
 				 put(Tag.Property.CLASS, "interface_add_button buttons_color buttons_height");
 				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("add") + " " + ((String) joinedMultiplieGroups.get(joinedBy).get(0).getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", "").toLowerCase());
-				 put(Tag.Property.CLICK, "$('#combobox_add_joined_group_" + joinedBy + "').show(); $('#list_add_joined_group_" + joinedBy + "').focus();");
+				 put(Tag.Property.CLICK, "$('#button_add_joined_group_" + joinedBy + "').hide(); $('#combobox_add_joined_group_" + joinedBy + "').show(); $('#list_add_joined_group_" + joinedBy + "').focus();");
 			}});
 			Tag span = joinedGroupButtons.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.CLASS, "combobox");
@@ -207,7 +207,8 @@ public class FormGenerator extends TagGenerator {
 				 put(Tag.Property.ID, "list_add_joined_group_" + joinedBy);
 				 put(Tag.Property.NAME, "list_add_joined_group_" + joinedBy);
 				 put(Tag.Property.CLASS, "widget first_frames_border widgets_color widgets_height widgets_font");
-				 put(Tag.Property.STYLE, "padding-right:0px;width:100%;margin-top:1px;margin-bottom:1px;");
+				 put(Tag.Property.STYLE, "padding-right:0px;margin-top:1px;margin-bottom:1px;");
+				 put(Tag.Property.BLUR, "$('#combobox_add_joined_group_" + joinedBy + "').hide(); $('#button_add_joined_group_" + joinedBy + "').show();");
 			}});
 			span.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.TABINDEX, "-1");
@@ -505,14 +506,12 @@ public class FormGenerator extends TagGenerator {
 	"						bindIsFormLoading();   \n" + 
 	"						var parameters = ${value_js};     \n" + 
 	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};     \n" + 
-	"						$(\"input[id$='\" + groupPrefix + \"'][type='hidden']\").each(function(e) {parameters += (parameters ? '${parameter_separator}' : '') + $( this ).attr('id').replace(groupPrefix, '') + '${value_separator}' + $( this ).val(); });  \n" + 
 	"						if(!window.isFormLoading) {         \n" + 
 	"							setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);      \n" + 
 	"						}         \n" + 
 	"						$('#form_id').bind('setListOnLoad_${group_api}' + groupPrefix, function() {        \n" + 
 	"							var parameters = ${value_js};    \n" + 
 	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};    \n" + 
-	"							$(\"input[id$='\" + groupPrefix + \"'][type='hidden']\").each(function(e) {parameters += (parameters ? '${parameter_separator}' : '') + $( this ).attr('id').replace(groupPrefix, '') + '${value_separator}' + $( this ).val(); }); \n" + 
 	"							setButtonVisiblity${multiplie_group_name}('button_del', groupPrefix, parameters);     \n" + 
 	"						});        \n" + 
 	"						return groupPrefix;         \n" + 
@@ -523,6 +522,13 @@ public class FormGenerator extends TagGenerator {
 	"						setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);      \n" + 
 	"					});   \n" + 
 	"					function setButtonVisiblity${multiplie_group_name}(buttonName, groupPrefix, parameters) {       \n" + 
+	"						var form_parameters ='';                      \n" + 
+	"						$('input[type=\"hidden\"]').not('[name^=\"${system_prefix}_required_\"], [name^=\"${system_prefix}_parrent_api_\"], [name^=\"${system_prefix}_api_\"], [name^=\"${system_prefix}_changed_\"]').each( function(index, element){                      \n" + 
+	"							form_parameters += '${parameter_separator}' + $( this ).attr('id') +'${value_separator}'+ $( this ).val();                      \n" + 
+	"						});                      \n" + 
+	"						$('input[type=\"hidden\"][name$=\"'+groupPrefix+'\"]').not('[name^=\"${system_prefix}_required_\"], [name^=\"${system_prefix}_parrent_api_\"], [name^=\"${system_prefix}_api_\"], [name^=\"${system_prefix}_changed_\"]').each( function(index, element){                      \n" + 
+	"							form_parameters += '${parameter_separator}' + $( this ).attr('id').replace(groupPrefix, '') +'${value_separator}'+ $( this ).val();                      \n" + 
+	"						});                      \n" + 
 	"	            		$(\"#message_box_wait_\" + buttonName + groupPrefix).show();              \n" + 
 	"						if (buttonName === 'button_add' && ${joined_group_apis}.length > 0) { \n" + 
 	"							$('#button_add_${joined_groups_name}').hide(); \n" + 
@@ -535,7 +541,7 @@ public class FormGenerator extends TagGenerator {
 	"									data: {              \n" + 
 	"										parameter_name: buttonName,              \n" + 
 	"										form_api: joinedGroupApi,              \n" + 
-	"										parameters: parameters,              \n" + 
+	"										parameters: parameters + form_parameters,              \n" + 
 	"										rnd: Math.floor(Math.random() * 10000),              \n" + 
 	"									},             \n" + 
 	"				            				type: 'post',              \n" + 
@@ -573,6 +579,8 @@ public class FormGenerator extends TagGenerator {
 	"													$('input#name_add_${joined_groups_name}').val(suggestion.html);             \n" + 
 	"													$('#button_add_${group_separator}'+suggestion.data.split('\\|')[1]).click(); \n" +
 	"													$('#combobox_add_${joined_groups_name}').hide(); \n" +
+	"													$('#button_add_${joined_groups_name}').show(); \n " +
+	
 	"												}             \n" + 
 	"											},                             \n" + 
 	"											transformResult: function(response) {              \n" + 
@@ -600,7 +608,7 @@ public class FormGenerator extends TagGenerator {
 	"								data: {              \n" + 
 	"									parameter_name: buttonName,              \n" + 
 	"									form_api: '${group_api}',              \n" + 
-	"									parameters: parameters,              \n" + 
+	"									parameters: parameters  + form_parameters,              \n" + 
 	"									rnd: Math.floor(Math.random() * 10000),              \n" + 
 	"								},             \n" + 
 	"				            			type: 'post',              \n" + 
@@ -741,7 +749,6 @@ public class FormGenerator extends TagGenerator {
 	"					if (currentGroupPrefix !== ''){ \n" + 
 	"							var parameters = ${value_js};    \n" + 
 	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};    \n" + 
-	"							$(\"input[id$='\" + currentGroupPrefix + \"'][type='hidden']\").each(function(e) {parameters += (parameters ? '${parameter_separator}' : '') + $( this ).attr('id').replace(currentGroupPrefix, '') + '${value_separator}' + $( this ).val(); }); \n" + 
 	"							setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);     \n" + 
 	"					}                      \n" + 
 	"					groupInitialParams${api} = data;       \n" + 

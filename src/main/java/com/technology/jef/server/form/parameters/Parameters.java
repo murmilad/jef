@@ -1,5 +1,7 @@
 package com.technology.jef.server.form.parameters;
 
+import static com.technology.jef.server.serialize.SerializeConstant.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +42,14 @@ public class Parameters extends HashMap<String, Value>{
 		return this.containsKey(parameterName) ? this.get(parameterName).getValue() : "";
 	}
 
+	public String getGroupValue(String parameterName, String formName, Integer groupNumber) {
+		return getValue(parameterName + GROUP_SEPARATOR + formName + "_" + groupNumber);
+	}
+	
+	public String getGroupCount() {
+		return getValue("group_count");
+	}
+
 	public Boolean isChanged(String parameterName) {
 		return this.containsKey(parameterName) ? this.get(parameterName).getIsChanged() : false;
 	}
@@ -50,5 +60,10 @@ public class Parameters extends HashMap<String, Value>{
 
 	public void putValue(String name, String value) {
 		this.put(name, new Value(name, value));
+	}
+
+	public Object getLastJoinedGroupId(String string) {
+		// TODO Auto-generated method stub
+		return getValue("id_add_joined_group_" + string);
 	}
 }

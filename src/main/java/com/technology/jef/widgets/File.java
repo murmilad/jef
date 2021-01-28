@@ -165,65 +165,93 @@ public class File extends Widget {
 		     put(Tag.Property.SRC, "js/jquery.fileupload.js");
 		}});
 
-		parrent.add(Tag.Type.SCRIPT, 																				("             \n" + 
-	"	$(function () {           \n" + 
-	"	    $('#visible_${name}').fileupload({        \n" + 
-	"		type: 'POST',       \n" + 
-	"		dataType: 'text',       \n" + 
-	"		paramName: 'file',        \n" + 
-	"		cache : false,       \n" + 
-	"		contentType : false,       \n" + 
-	"		processData : false,      \n" + 
-	"	        submit: function (e, data) {           \n" + 
-	"			if ( window.FileReader) {         \n" + 
-	"				if (data.files && data.files[0]) {         \n" + 
-	"					var reader = new FileReader();         \n" + 
-	"					reader.onload = function(e) {  \n" + 
-	"						var fileTypeMatcher = e.target.result.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);    \n" + 
-	"						if (fileTypeMatcher && fileTypeMatcher[2].match('^${accept}$')) {   \n" + 
-	"							$('#visible_${name}').parent().children('').removeClass( \"error error_color\", \"\"); \n" + 
-	"							if (fileTypeMatcher[1] == 'image' && fileTypeMatcher[2] != 'tiff') {         \n" + 
-	"								$('#img_visible_${name}').show();   \n" + 
-	"								$('#download_visible_${name}').hide();   \n" + 
-	"								$('#img_visible_${name}').attr('src', e.target.result);   \n" + 
-	"							} else {   \n" + 
-	"								$('#download_button_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);   \n" + 
-	"								$('#download_button_div_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);   \n" + 
-	"								$('#download_visible_${name}').show();   \n" + 
-	"								$('#img_visible_${name}').hide();   \n" + 
-	"								$('#base64_visible_${name}').val(e.target.result);   \n" + 
-	"							}         \n" + 
-	"							$('input#${name}').val(e.target.result);  \n" + 
-	"						} else {  \n" + 
-	"							alert('${incorrect_type} ${accept_message}');  \n" + 
-	"							$('#img_visible_${name}').show();   \n" + 
-	"							$('#download_visible_${name}').hide();   \n" + 
-	"							$('#img_visible_${name}').attr('src', '');  \n" + 
-	"							$('#base64_visible_${name}').val('');  \n" + 
-	"							$('#${name}').val('');  \n" + 
-	"							$('#visible_${name}').val('');  \n" + 
-	"							$('#visible_${name}').parent().children('').addClass('error error_color');  \n" + 
-	"						}         \n" + 
-	"					}         \n" + 
-	"					reader.readAsDataURL(data.files[0]);         \n" + 
-	"					return false;        \n" + 
-	"				}         \n" + 
-	"			}         \n" + 
-	"	        },           \n" + 
-	"		success : function(data, textStatus, jqXHR) {       \n" + 
-	"			$('#visible_${name}').change();     \n" + 
-	"			$('#img_visible_${name}').attr('src', data);     \n" + 
-	"			$('input#${name}').attr('value', data);         \n" + 
-	"		},       \n" + 
-	"		error : function(jqXHR, textStatus, errorThrown) {       \n" + 
-	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);        \n" + 
-	"		}       \n" + 
-	"	    });           \n" + 
-	"	});     \n")
+		parrent.add(Tag.Type.SCRIPT, ("              \n" + 
+	"	function show_error_${name}(message){         \n" + 
+	"		alert(message);   \n" + 
+	"		$('#img_visible_${name}').show();    \n" + 
+	"		$('#download_visible_${name}').hide();    \n" + 
+	"		$('#img_visible_${name}').attr('src', '');   \n" + 
+	"		$('#base64_visible_${name}').val('');   \n" + 
+	"		$('#${name}').val('');   \n" + 
+	"		$('#visible_${name}').val('');   \n" + 
+	"		$('#visible_${name}').parent().children('').addClass('error error_color');   \n" + 
+	"		$('#visible_${name}').parent().children('[class=\"jq-file__name\"]').html('&nbsp;');    \n" + 
+	"	}         \n" + 
+	"	function check_put_image_${name}(data){ \n" + 
+	"		if (data) {    \n" + 
+	"			var fileSize = 75 * data.length / 100 / 1024;  \n" + 
+	"			if (!'${max_size}'  || fileSize <= ${max_size}) {    \n" + 
+	"				var fileTypeMatcher = data.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);     \n" + 
+	"				if (fileTypeMatcher && fileTypeMatcher[2].match('^${accept}$')) {    \n" + 
+	"					$('#visible_${name}').parent().children('').removeClass( \"error error_color\", \"\");  \n" + 
+	"					if (fileTypeMatcher[1] == 'image' && fileTypeMatcher[2] != 'tiff') {          \n" + 
+	"						$('#img_visible_${name}').show();    \n" + 
+	"						$('#download_visible_${name}').hide();    \n" + 
+	"						$('#img_visible_${name}').attr('src', data);    \n" + 
+	"					} else {    \n" + 
+	"						$('#download_button_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);    \n" + 
+	"						$('#download_button_div_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);    \n" + 
+	"						$('#download_visible_${name}').show();    \n" + 
+	"						$('#img_visible_${name}').hide();    \n" + 
+	"						$('#base64_visible_${name}').val(data);    \n" + 
+	"					}          \n" + 
+	"					$('input#${name}').val(data);   \n" + 
+	"				} else {          \n" + 
+	"					show_error_${name}('${incorrect_type} ${accept_message}');  \n" + 
+	"				}    \n" + 
+	"			} else {   \n" + 
+	"				show_error_${name}('${max_size_message}');  \n" + 
+	"			}          \n" + 
+	"      	} else {    \n" + 
+	"	     	show_error_${name}('${max_size_message}');  \n" + 
+	"	  	}          \n" + 
+	"		$('#message_box_wait_${name}').hide(); \n" + 
+	"		$('#is_loading').val(0); \n" + 
+	"	} \n" + 
+	"	$(function () {            \n" + 
+	"		var filename_${name} = ''; \n"	+
+	"	    $('#visible_${name}').fileupload({         \n" + 
+	"		type: 'POST',        \n" + 
+	"		dataType: 'text',        \n" + 
+	"		paramName: 'file',         \n" + 
+	"		cache : false,        \n" + 
+	"		contentType : false,        \n" + 
+	"		processData : false,       \n" + 
+	"	    submit: function (e, data) { \n" + 
+	"			$('#visible_${name}').parent().children('[class=\"jq-file__name\"]').html(data.files[0].name);    \n" + 
+	"			$('#message_box_wait_${name}').show(); \n" + 
+	"			$('#is_loading').val(1); \n" + 
+	"			if (window.FileReader) {          \n" + 
+	"				if (data.files && data.files[0]) {          \n" + 
+	"					var reader = new FileReader();          \n" + 
+	"					reader.onerror = function(e) {   \n" + 
+	"						show_error_${name}('${max_size_message}');  \n" + 
+	"						$('#message_box_wait_${name}').hide(); \n" + 
+	"						$('#is_loading').val(0); \n" + 
+	"					}   \n" + 
+	"					reader.onload = function(e) {   \n" + 
+	"						check_put_image_${name}(e.target.result);            \n" + 
+	"			  		}  \n" + 
+	"			  		reader.readAsDataURL(data.files[0]);          \n" + 
+	"			  		return false;         \n" + 
+	"				}          \n" + 
+	"			}          \n" + 
+	"	   	},            \n" + 
+	"		success : function(data, textStatus, jqXHR) {        \n" + 
+	"			check_put_image_${name}(data);            \n" + 
+	"		},        \n" + 
+	"		error : function(jqXHR, textStatus, errorThrown) {        \n" + 
+	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);         \n" + 
+	"		}        \n" + 
+	"	    });            \n" + 
+	"	});      \n")
 		.replace("${incorrect_type}", CurrentLocale.getInstance().getTextSource().getString("wrong_type"))
 		.replace("${name}", name)
 		.replace("${accept_message}", !"".equals(generator.getAttribute(TagGenerator.Attribute.ACCEPT)) ? ((String) generator.getAttribute(TagGenerator.Attribute.ACCEPT)).replaceAll("(image|application)\\/","").toUpperCase() : "")
-		.replace("${accept}", !"".equals(generator.getAttribute(TagGenerator.Attribute.ACCEPT)) ? ((String) generator.getAttribute(TagGenerator.Attribute.ACCEPT)).replaceAll("(image|application)\\/","").replaceAll(",","|") : ".*"));
+		.replace("${accept}", !"".equals(generator.getAttribute(TagGenerator.Attribute.ACCEPT)) ? ((String) generator.getAttribute(TagGenerator.Attribute.ACCEPT)).replaceAll("(image|application)\\/","").replaceAll(",","|") : ".*")
+		.replace("${max_size}", !"".equals(generator.getAttribute(TagGenerator.Attribute.MAX_SIZE)) ? (String) generator.getAttribute(TagGenerator.Attribute.MAX_SIZE) : "")
+		.replace("${max_size_message}", CurrentLocale.getInstance().getTextSource().getString("wrong_size").replaceAll("<SIZE>", (String) generator.getAttribute(TagGenerator.Attribute.MAX_SIZE)))
+	);
 
 		return element;
 	}

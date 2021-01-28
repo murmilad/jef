@@ -170,11 +170,14 @@ public class GroupGenerator extends TagGenerator {
 	"		count_${multiplie_group_name}--; \n" +
 	"						var parameters = ${value_js};  \n" + 
 	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};  \n" + 
+	"						$('#id_add_joined_group_${joined_by}').val(''); \n " + 
+	"						$('#name_add_joined_group_${joined_by}').val(''); \n " + 
 	"						setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);   \n" + 
 	"						setButtonVisiblity${multiplie_group_name}('button_del', groupPrefix, parameters);   \n" + 
 	"}); \n")
 	.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 	.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+	.replace("${joined_by}", (String) getAttribute(TagGenerator.Attribute.JOINED_BY))
 	.replace("${value_js}", Widget.getValueJS(null, "", null))
 	.replace("${multiplie_group_name}", GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API))
 	.replace("${api}", (String) getAttribute(TagGenerator.Attribute.API))

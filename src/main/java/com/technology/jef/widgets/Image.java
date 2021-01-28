@@ -147,8 +147,35 @@ public class Image extends Widget {
 	"				if (data.files && data.files[0]) {     \n" + 
 	"					var reader = new FileReader();     \n" + 
 	"					reader.onload = function(e) {     \n" + 
-	"						$('#img_visible_${name}').attr('src', e.target.result);     \n" + 
-	"						$('input#${name}').val(e.target.result);     \n" +
+	"						var fileTypeMatcher = e.target.result.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);    \n" + 
+	"						if (fileTypeMatcher && fileTypeMatcher[2].match('^${accept}$')) {   \n" + 
+	"							var fileSize = 75 * e.target.result.length / 100 / 1024; \n " +
+	"							if ('${max_size}'  && fileSize > ${max_size}) {   \n" + 
+	"								alert('${max_size_message}');  \n" + 
+	"								$('#img_visible_${name}').show();   \n" + 
+	"								$('#download_visible_${name}').hide();   \n" + 
+	"								$('#img_visible_${name}').attr('src', '');  \n" + 
+	"								$('#base64_visible_${name}').val('');  \n" + 
+	"								$('#${name}').val('');  \n" + 
+	"								$('#visible_${name}').val('');  \n" + 
+	"								$('#visible_${name}').parent().children('').addClass('error error_color');  \n" + 
+	"							} else {  \n" + 
+	"								$('#visible_${name}').parent().children('').removeClass( \"error error_color\", \"\"); \n" + 
+	"								if (fileTypeMatcher[1] == 'image' && fileTypeMatcher[2] != 'tiff') {         \n" + 
+	"									$('#img_visible_${name}').attr('src', e.target.result);     \n" + 
+	"									$('input#${name}').val(e.target.result);     \n" +
+	"								}         \n" + 
+	"							}         \n" + 
+	"						} else {  \n" + 
+	"							alert('${incorrect_type} ${accept_message}');  \n" + 
+	"							$('#img_visible_${name}').show();   \n" + 
+	"							$('#download_visible_${name}').hide();   \n" + 
+	"							$('#img_visible_${name}').attr('src', '');  \n" + 
+	"							$('#base64_visible_${name}').val('');  \n" + 
+	"							$('#${name}').val('');  \n" + 
+	"							$('#visible_${name}').val('');  \n" + 
+	"							$('#visible_${name}').parent().children('').addClass('error error_color');  \n" + 
+	"						}         \n" + 
 	"					}     \n" + 
 	"					reader.readAsDataURL(data.files[0]);     \n" + 
 	"					return false;    \n" + 
@@ -165,7 +192,12 @@ public class Image extends Widget {
 	"		}   \n" + 
 	"	    });       \n" + 
 	"	}); \n")
-		.replace("${name}", name));
+		.replace("${incorrect_type}", CurrentLocale.getInstance().getTextSource().getString("wrong_type"))
+		.replace("${name}", name)
+		.replace("${accept_message}", !"".equals(generator.getAttribute(TagGenerator.Attribute.ACCEPT)) ? ((String) generator.getAttribute(TagGenerator.Attribute.ACCEPT)).replaceAll("(image|application)\\/","").toUpperCase() : "")
+		.replace("${accept}", !"".equals(generator.getAttribute(TagGenerator.Attribute.ACCEPT)) ? ((String) generator.getAttribute(TagGenerator.Attribute.ACCEPT)).replaceAll("(image|application)\\/","").replaceAll(",","|") : ".*")
+		.replace("${max_size}", !"".equals(generator.getAttribute(TagGenerator.Attribute.MAX_SIZE)) ? (String) generator.getAttribute(TagGenerator.Attribute.MAX_SIZE) : "")
+		.replace("${max_size_message}", CurrentLocale.getInstance().getTextSource().getString("wrong_size").replaceAll("<SIZE>", (String) generator.getAttribute(TagGenerator.Attribute.MAX_SIZE))));
 
 		return element;
 	}
