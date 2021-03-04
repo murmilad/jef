@@ -1,5 +1,7 @@
 package com.technology.jef.generators;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.Tag;
 
 /**
@@ -16,14 +18,15 @@ public class FormsGenerator extends TagGenerator {
 	   * 
 	   * @param qName имя тега в XML представлении интерфейса
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
 	@Override
-	public Tag generate(String qName) {
+	public Tag generate(String qName) throws SAXException {
 
 		
 		addHandler(TagGenerator.Name.FORM, new Handler() {
 			@Override
-			public void handle(TagGenerator currentGenerator) {
+			public void handle(TagGenerator currentGenerator)  throws SAXException {
 				//Прибавляем количество форм (страниц) с каждым тегом FORM
 				formCount++;
 			}
@@ -38,7 +41,7 @@ public class FormsGenerator extends TagGenerator {
 	}
 	
 	@Override
-	public Object getAttribute(TagGenerator.Attribute attributeName) {
+	public Object getAttribute(TagGenerator.Attribute attributeName) throws SAXException {
 		switch (attributeName) {
 		case API:
 			return !"".equals(super.getAttribute(TagGenerator.Attribute.API)) 

@@ -3,6 +3,7 @@ package com.technology.jef.widgets;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.technology.jef.Tag;
@@ -98,8 +99,9 @@ public abstract class Widget {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
-		public Tag assembleTag(String name, TagGenerator generator, Tag parrent) {
+		public Tag assembleTag(String name, TagGenerator generator, Tag parrent) throws SAXException {
 		
 			this.setParrent(parrent);
 	
@@ -213,8 +215,9 @@ public abstract class Widget {
 	   * @param name имя элемента в DOM модели
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
-		protected abstract Tag assembleTag(String name, TagGenerator generator);
+		protected abstract Tag assembleTag(String name, TagGenerator generator) throws SAXException;
 
 		/**
 	   * Метод постобработки DOM модели для виджета
@@ -224,7 +227,7 @@ public abstract class Widget {
 	   * @param element тег созданного элемента
 	   * @return DOM модель на текущем уровне
 	   */
-		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
+		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element)  throws SAXException{
 
 			element.add(Tag.Type.SCRIPT, 		("  \n" + 
 				"			$('#visible_${name}').bindFirst('blur', function(event){   \n" + 
@@ -272,8 +275,9 @@ public abstract class Widget {
 	   * 	${list_item_js} - JS для добавления элемента для выбора
 	   * 
 	   * @return код JavaScript
+	 * @throws SAXException 
 	   */
-		public String getSetItemsJS() {
+		public String getSetItemsJS() throws SAXException {
 			
 			return "";
 		}
@@ -352,8 +356,9 @@ public abstract class Widget {
 	    * Метод возвращает функционал влияющий на состав списочного элемента 
 	   * 
 	   * @return код JavaScript
+		 * @throws SAXException 
 	   */
-		public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+		public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 			return "";
 		}
 
@@ -361,8 +366,9 @@ public abstract class Widget {
 		   * Метод возвращает функционал влияющий на видимость элемента 
 		   * 
 		   * @return код JavaScript
+		 * @throws SAXException 
 		   */
-			public String getVisibleConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+			public String getVisibleConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 
 				// Вызываем функцию связи в событиях родительского элемента
 				// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
@@ -475,8 +481,9 @@ public abstract class Widget {
 		   * Метод возвращает функционал влияющий на доступность редактирования элемента 
 		   * 
 		   * @return код JavaScript
+		 * @throws SAXException 
 		   */
-			public String getActiveConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+			public String getActiveConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 				String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 				String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_ACTIVE_PARRENT);
 
@@ -510,8 +517,9 @@ public abstract class Widget {
 	   * Метод возвращает функционал влияющий на значение элемента 
 	   * 
 	   * @return код JavaScript
+		 * @throws SAXException 
 	   */
-		public String getValueConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+		public String getValueConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 			String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 			String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_VALUE_PARRENT);
 
@@ -532,7 +540,7 @@ public abstract class Widget {
 			return asyncRequestValueJS(currentGenerator, parrentGenerator, getCleanValueJS(), getSetValueJS(), valueJS, "value");
 		}
 	
-		protected String asyncRequestValueJS(TagGenerator currentGenerator, TagGenerator parrentGenerator, String initValueJS, String setValueJS, String valueJS, String requestType) {
+		protected String asyncRequestValueJS(TagGenerator currentGenerator, TagGenerator parrentGenerator, String initValueJS, String setValueJS, String valueJS, String requestType) throws SAXException {
 			String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 			String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
 
@@ -648,9 +656,10 @@ public abstract class Widget {
 		   * Метод формирует значение поля на основе связных элементов  
 		   * 
 		   * @return код JavaScript
+		 * @throws SAXException 
 		   */
 	
-		public static String getValueJS(TagGenerator currentGenerator, String prefix, TagGenerator.Attribute parrentType) {
+		public static String getValueJS(TagGenerator currentGenerator, String prefix, TagGenerator.Attribute parrentType) throws SAXException {
 
 			String valueJS = "";
 

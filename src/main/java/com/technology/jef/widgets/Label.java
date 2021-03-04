@@ -4,6 +4,8 @@ import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAM
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -31,9 +33,10 @@ public class Label extends Widget {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
 		@Override
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			if (!"".equals(generator.getAttribute(TagGenerator.Attribute.NAME))) {
 				parrent.add(Tag.Type.SPAN, generator.getAttribute(TagGenerator.Attribute.NAME) + ":", new HashMap<Tag.Property, String>(){{
 					 put(Tag.Property.STYLE, "padding:5px;");

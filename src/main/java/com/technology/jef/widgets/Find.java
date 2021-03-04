@@ -3,6 +3,8 @@ package com.technology.jef.widgets;
 import java.util.HashMap;
 import java.util.Objects;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
@@ -31,9 +33,10 @@ public class Find extends Widget {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
 		@Override
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 
 			Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "fieldset_" + name);
@@ -54,7 +57,7 @@ public class Find extends Widget {
 			return getFindBody(name, generator, elementInput);
 		}
 
-		protected Tag getFindBody (String name, TagGenerator generator, Tag mainInput) {
+		protected Tag getFindBody (String name, TagGenerator generator, Tag mainInput) throws SAXException {
 			Tag row = mainInput
 					.add(Tag.Type.TABLE, new HashMap<Tag.Property, String>(){{
 						 put(Tag.Property.STYLE, "width: 100%;");

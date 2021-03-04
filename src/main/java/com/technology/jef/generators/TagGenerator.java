@@ -3,6 +3,7 @@ package com.technology.jef.generators;
 import java.util.HashMap;
 import java.util.LinkedList;
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.technology.jef.Tag;
@@ -70,8 +71,8 @@ public abstract class TagGenerator {
 
 	}
 
-	public interface Handler {
-		public void handle(TagGenerator currentGenerator);
+	public interface Handler  {
+		public void handle(TagGenerator currentGenerator) throws SAXException;
 	}
 
 	HashMap<TagGenerator.Name, LinkedList<Handler>> handlers = new HashMap();
@@ -98,13 +99,14 @@ public abstract class TagGenerator {
 	   * @param qName имя тега в XML представлении интерфейса
 	   * @return DOM модель на текущем уровне
 	   */
-	public abstract Tag generate(String qName);
+	public abstract Tag generate(String qName)  throws SAXException;
 
 	  /**
 	   * Метод завершающей обработки DOM модели после прохода текущего тега в XML представлении интерфейса
+	 * @throws SAXException 
 	   * 
 	   */
-	public abstract void onEndElement();
+	public abstract void onEndElement() throws SAXException;
 	
 	  /**
 	   * Метод формирования DOM модели на текущем уровне
@@ -113,8 +115,9 @@ public abstract class TagGenerator {
 	   * @param qName имя тега в XML представлении интерфейса
 	   * @param attributes атрибуты тега в XML представлении интерфейса
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
-	public Tag generate(Tag dom, String qName, Attributes attributes, TagGenerator parrent) {
+	public Tag generate(Tag dom, String qName, Attributes attributes, TagGenerator parrent) throws SAXException {
 		this.dom = dom;
 		this.attributes = new AttributesImpl(attributes);
 
@@ -134,23 +137,23 @@ public abstract class TagGenerator {
 	   * @param attributes атрибуты тега в XML представлении интерфейса
 	   * @return DOM модель на текущем уровне
 	   */
-	public Tag getDom(Name name, Attributes attributes) {
+	public Tag getDom(Name name, Attributes attributes)  throws SAXException{
 		return dom;
 	}
 
-	public Tag getDom() {
+	public Tag getDom()  throws SAXException {
 		return dom;
 	}
 
-	public void setDom(Tag dom) {
+	public void setDom(Tag dom)  throws SAXException {
 		this.dom = dom;
 	}
 
-	public TagGenerator getParrent() {
+	public TagGenerator getParrent()  throws SAXException {
 		return parrent;
 	}
 
-	public void setParrent(TagGenerator parrent) {
+	public void setParrent(TagGenerator parrent)  throws SAXException {
 		this.parrent = parrent;
 	}
 	
@@ -160,7 +163,7 @@ public abstract class TagGenerator {
 	   * @param attributeName имя атрибута тега в XML представлении интерфейса
 	   * @return Содержимое атрибута
 	   */
-	public Object getAttribute(TagGenerator.Attribute attributeName) {
+	public Object getAttribute(TagGenerator.Attribute attributeName)  throws SAXException {
 		return  hasAttribute(attributeName) ? attributes.getValue(attributeName.toString().toLowerCase()) : "";
 	}
 
@@ -170,7 +173,7 @@ public abstract class TagGenerator {
 	   * @param attributeName имя атрибута тега в XML представлении интерфейса
 	   * @return Признак наличия (true атрибут есть; false атрибута нет)
 	   */
-	public Boolean hasAttribute(TagGenerator.Attribute attributeName) {
+	public Boolean hasAttribute(TagGenerator.Attribute attributeName)  throws SAXException {
 		return  attributes.getIndex(attributeName.toString().toLowerCase()) >= 0;
 	}
 
@@ -181,7 +184,7 @@ public abstract class TagGenerator {
 	   * @param name уровень генератора, на котором будет вызываться событие
 	   * @return список событий
 	   */
-	public LinkedList<Handler> gethHandlerList(TagGenerator.Name name) {
+	public LinkedList<Handler> gethHandlerList(TagGenerator.Name name)  throws SAXException {
 		return handlers.containsKey(name) ? handlers.get(name) : new LinkedList<Handler>(); 
 	}
 	
@@ -192,7 +195,7 @@ public abstract class TagGenerator {
 	   * 
 	   * @param name уровень генератора, на котором будет вызываться событие
 	   */
-	public void addHandler(TagGenerator.Name name, Handler callback) {
+	public void addHandler(TagGenerator.Name name, Handler callback)  throws SAXException {
 		if (handlers.containsKey(name)) {
 			handlers.get(name).add(callback);
 		} else {

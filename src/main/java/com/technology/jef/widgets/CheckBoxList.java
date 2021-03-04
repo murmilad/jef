@@ -2,6 +2,8 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
@@ -25,7 +27,7 @@ public class CheckBoxList extends RadioSwitch {
 		}
 		
 		@Override
-		public String getSetItemsJS() {
+		public String getSetItemsJS() throws SAXException {
 			
 			String valueJS = getValueJS(null , "", null);
 			
@@ -58,7 +60,7 @@ public class CheckBoxList extends RadioSwitch {
 		}
 
 		@Override
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			
 			Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "fieldset_" + name);

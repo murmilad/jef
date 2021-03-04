@@ -4,6 +4,8 @@ import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAM
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -31,8 +33,9 @@ public class Info extends Widget {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			if (!"".equals(generator.getAttribute(TagGenerator.Attribute.HINT))) {
 				parrent.add(Tag.Type.FONT, (String) generator.getAttribute(TagGenerator.Attribute.HINT), new HashMap<Tag.Property, String>(){{
 					 put(Tag.Property.TYPE, "text");
@@ -40,10 +43,10 @@ public class Info extends Widget {
 				}});
 			}
 			
-			Tag elementInput = parrent.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
+			Tag elementInput = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
-				 put(Tag.Property.STYLE, "padding: 1pt 5px; vertical-align: middle; text-align: left;");
+				 put(Tag.Property.STYLE, "padding: 1pt 5px; vertical-align: middle; text-align: center; width:" + generator.getAttribute(TagGenerator.Attribute.WIDTH) + ";");
 			}});
 
 			return elementInput;

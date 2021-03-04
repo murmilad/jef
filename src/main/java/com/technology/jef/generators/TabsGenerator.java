@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.codec.binary.Base64;
+import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
@@ -21,7 +22,7 @@ public class TabsGenerator extends TagGenerator {
 	String firstTabFormId = null;
     
 	@Override
-	public Tag generate(String qName) {
+	public Tag generate(String qName) throws SAXException {
 
 
 		Tag container = dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
@@ -39,10 +40,10 @@ public class TabsGenerator extends TagGenerator {
 		}});
 
 
-		addHandler(TagGenerator.Name.TAB, new Handler() {
+		addHandler(TagGenerator.Name.TAB, new Handler()  {
 
 			@Override
-			public void handle(TagGenerator currentGenerator) {
+			public void handle(TagGenerator currentGenerator) throws SAXException {
 				if (firstTabFormId == null) {
 					firstTabFormId = (String) currentGenerator.getAttribute(TagGenerator.Attribute.FORM_ID);
 				}

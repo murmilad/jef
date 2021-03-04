@@ -2,6 +2,8 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.Tag;
 import com.technology.jef.Tag.Property;
 import com.technology.jef.generators.TagGenerator;
@@ -17,7 +19,7 @@ public class AutoCompleteEditableCompact extends AutoCompleteEditable {
 	}
 
 	@Override
-	public Tag assembleTag(String name, TagGenerator generator) {
+	public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 
 			Tag input = super.assembleTag(name, generator);
 

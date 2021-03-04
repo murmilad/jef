@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
@@ -27,9 +28,10 @@ public class GroupGenerator extends TagGenerator {
 	   * 
 	   * @param qName имя тега в XML представлении интерфейса
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
 	@Override
-	public Tag generate(String qName) {
+	public Tag generate(String qName) throws SAXException {
 		Tag group = null;
 		isMultiplie = "true".equals(getAttribute(TagGenerator.Attribute.IS_MULTIPLIE));
 		if (isMultiplie) {
@@ -49,7 +51,7 @@ public class GroupGenerator extends TagGenerator {
 			addHandler(TagGenerator.Name.FORM_ITEM, new Handler() {
 
 				@Override
-				public void handle(TagGenerator currentGenerator) {
+				public void handle(TagGenerator currentGenerator) throws SAXException {
 					formItems.add((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID));
 				}
 				
@@ -121,10 +123,11 @@ public class GroupGenerator extends TagGenerator {
 
 	  /**
 	   * Метод завершающей обработки DOM модели после прохода текущего тега в XML представлении интерфейса
+	 * @throws SAXException 
 	   * 
 	   */
 	@Override
-	public void onEndElement() {
+	public void onEndElement() throws SAXException {
 		// если группа у нас расширяемая, то добавляем соответсвующие элементы правления
 		if (isMultiplie) {
 			Tag buttonDel = dom.add(Tag.Type.DIV,
@@ -151,7 +154,7 @@ public class GroupGenerator extends TagGenerator {
 					put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("delete") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", "").toLowerCase());
 				}});
 			
-			dom.add(Tag.Type.SCRIPT, 	(" \n" + 
+			dom.getParrent().add(Tag.Type.SCRIPT, 	(" \n" + 
 	"	$(\"#button_del_<NUMBER>\").click(function(){  \n" + 
 	"		$('#action<NUMBER>').val('${action}'); \n" + 
 	"		$(\"#fildset_<NUMBER>\").remove();  \n" + 
@@ -186,7 +189,7 @@ public class GroupGenerator extends TagGenerator {
 	.replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX)
 
 	
-			);
+			) ;
 
 			dom.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "group_action_<NUMBER>");
@@ -198,7 +201,7 @@ public class GroupGenerator extends TagGenerator {
 
 			Tag buttonAdd = multilineParrentDOM.getParrent().add(Tag.Type.DIV,
 					new HashMap<Tag.Property, String>(){{
-						 put(Tag.Property.STYLE, "width: 100%; display: inline-block;");
+						 put(Tag.Property.STYLE, "width: 100%;");
 					}}).add(Tag.Type.DIV,
 							new HashMap<Tag.Property, String>(){{
 							put(Tag.Property.STYLE, "position:relative; width: 100%;text-align: left; display: block;");
@@ -220,7 +223,6 @@ public class GroupGenerator extends TagGenerator {
 					 put(Tag.Property.STYLE, !"".equals(getAttribute(TagGenerator.Attribute.JOINED_BY)) ? "display: none" : "display: inline-block");
 					 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("add") + " " + ((String) getAttribute(TagGenerator.Attribute.NAME)).replaceAll(CurrentLocale.getInstance().getTextSource().getString("multi_prefix") + "$", "").toLowerCase());
 				}});
-
 
 
 			
@@ -253,38 +255,16 @@ public class GroupGenerator extends TagGenerator {
 		}
 	}
 
-	  /**
-	   * Метод получения текущего адреса DOM модели для данного уровня гернератора
-	   * Позволяет получить нужный адрес в зависимости от атрибутов и имени тега в XML представлении
-	   * Нужен для тех случаев, когда генерация дочерних элементов должна проводиться для специальных
-	   * родителей DOM модели (группы)
-	   * 
-	   * @param name имя тега в XML представлении интерфейса
-	   * @param attributes атрибуты тега в XML представлении интерфейса
-	   * @return DOM модель на текущем уровне
-	   */
-	public Tag getDom(Name name, Attributes attributes) {
-
-		// Выбираем адрес DOM модели в зависимости от имени тега
-		switch (name) {
-		// Если дочерний генератор формирует скрипт, то пусть он записывается 
-		// не в шаблон группы а в ее родительский тег кроме подключенных в XML событий
-		case SCRIPT:
-			return "add".equals(attributes.getValue("type")) ? dom : multilineParrentDOM;
-		default:
-			return dom;
-		}
-		
-	}
 
 	  /**
 	   * Метод получения атрибута текущего тега в XML представлении интерфейса
 	   * 
 	   * @param attributeName имя атрибута тега в XML представлении интерфейса
 	   * @return Содержимое атрибута
+	 * @throws SAXException 
 	   */
 	@Override
-	public Object getAttribute(TagGenerator.Attribute attributeName) {
+	public Object getAttribute(TagGenerator.Attribute attributeName) throws SAXException {
 		switch (attributeName) {
 		case API:
 			return !"".equals(super.getAttribute(TagGenerator.Attribute.API)) 

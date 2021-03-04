@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
  
@@ -98,15 +99,22 @@ public class DOMGenerator {
    * Метод формирования DOM модели на основе XML представления
    * 
    * @return 
+ * @throws IOException 
+ * @throws SAXException 
+ * @throws ParserConfigurationException 
    */
 
-	public void createDOM () {
+	public void createDOM () throws SAXException{
 
 //		for (String resource : getResourceFiles(RESOURCE_XML_FOLDER)) {
  
-	        try {
 	            SAXParserFactory factory = SAXParserFactory.newInstance();
-	            SAXParser saxParser = factory.newSAXParser();
+	            SAXParser saxParser;
+				try {
+					saxParser = factory.newSAXParser();
+				} catch (ParserConfigurationException e) {
+					throw new SAXException(e);
+				}
 	 
 	            // Здесь мы определили анонимный класс, расширяющий класс DefaultHandler до нужной нам функциональности
 	            DefaultHandler handler = new DefaultHandler() {
@@ -172,11 +180,12 @@ public class DOMGenerator {
 	            };
 	 
 	            // Стартуем разбор методом parse, которому передаем наследника от DefaultHandler, который будет вызываться в нужные моменты
-	            saxParser.parse(sourcePath, handler);
+	            try {
+					saxParser.parse(sourcePath, handler);
+				} catch (IOException e) {
+					throw new SAXException(e);
+				}
 	 
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
 //		}
 		
 	    setHtml("<!DOCTYPE HTML>" 
@@ -191,9 +200,10 @@ public class DOMGenerator {
    * @param qName имя тега в XML представлении интерфейса
    * @param attributes атрибуты тега в XML представлении интерфейса
    * @return генератор DOM модели для текущего элемента в XML представлении интерфейса
+ * @throws SAXException 
    */
 
-	private TagGenerator addTag(Tag dom, String qName, Attributes attributes) {
+	private TagGenerator addTag(Tag dom, String qName, Attributes attributes) throws SAXException {
 		TagGenerator generator = null;
 		TagGenerator.Name name = TagGenerator.Name.valueOf(qName.toUpperCase());
 

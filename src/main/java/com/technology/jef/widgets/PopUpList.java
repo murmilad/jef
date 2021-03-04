@@ -2,6 +2,8 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
@@ -77,8 +79,9 @@ public class PopUpList extends Widget {
 	   * Метод возвращает функционал влияющий на состав списочного элемента 
 	   * 
 	   * @return код JavaScript
+	 * @throws SAXException 
 	   */
-		public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+		public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 			String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 			String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
 			String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
@@ -274,8 +277,43 @@ public class PopUpList extends Widget {
 
 			return bodyJS;
 		}
-		
-		public String getSetItemsJS() {
+
+//		  /**
+//		   * Метод возвращает функционал устанавливающий признак активности элемента
+//		   * Применяемые переменные: 
+//		   * 	${child_name} - имя текущего (зависимого) элемента
+//		   * 	val - JSON объект, содержащий возвращенное сервисом значение элемента
+//		   * 
+//		   * @return код JavaScript
+//		   */
+//			public String getSetActiveJS() {
+//				
+//				return 
+//				"		if (data.value) { \n " + 
+//				"			$('#fake_visible_${child_name}').prop( \"disabled\", false); \n " +
+//				"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+//				"           $(\"#fake_visible_${child_name}\").trigger('refresh');" +
+//				"		} else { \n " +
+//				"			$('#fake_visible_${child_name}').prop( \"disabled\", true); \n " +
+//				"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
+//				"		} \n ";
+//			}
+//
+//		  /**
+//		   * Метод возвращает функционал снимающий признак активности элемента
+//		   * Применяемые переменные: 
+//		   * 	${child_name} - имя текущего (зависимого) элемента
+//		   * 
+//		   * @return код JavaScript
+//		   */
+//			public String getSetInactiveJS() {
+//				
+//				return "$('#fake_visible_${child_name}').prop( \"disabled\", false); \n " +
+//						"$(\"#tr_${child_name}\" ).css('color', 'black'); \n ";
+//			}
+//
+			
+		public String getSetItemsJS() throws SAXException {
 
 			String valueJS = getValueJS(null , "", null);
 			

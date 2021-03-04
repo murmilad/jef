@@ -6,6 +6,8 @@ import com.technology.jef.generators.TagGenerator;
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 /**
 * Виджет поиск при помощи DaData
 */
@@ -30,9 +32,10 @@ public class DaDataJob extends com.technology.jef.widgets.Widget {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
 		@Override
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 
 			String prefix = (String) generator.getAttribute(TagGenerator.Attribute.PREFIX);
 			String nameAPI = name.replace(prefix, "");

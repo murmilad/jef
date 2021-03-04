@@ -3,6 +3,8 @@ package com.technology.jef.generators;
 import java.util.HashMap;
 import java.util.Random;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 
@@ -16,10 +18,11 @@ public class InterfaceGenerator extends TagGenerator {
 	   * 
 	   * @param qName имя тега в XML представлении интерфейса
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
 	@SuppressWarnings("serial")
 	@Override
-	public Tag generate(String qName) {
+	public Tag generate(String qName) throws SAXException {
 		
 		Tag head = dom.add(Tag.Type.HEAD);
 		head.add(Tag.Type.META, new HashMap<Tag.Property, String>(){{
@@ -205,10 +208,11 @@ public class InterfaceGenerator extends TagGenerator {
 
 	  /**
 	   * Метод завершающей обработки DOM модели после прохода текущего тега в XML представлении интерфейса
+	 * @throws SAXException 
 	   * 
 	   */
 	@Override
-	public void onEndElement() {
+	public void onEndElement() throws SAXException {
 		// Добавляем загрузку сгенерированного JS для текущего интерфейса 
 		dom.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.TYPE, "text/javascript");

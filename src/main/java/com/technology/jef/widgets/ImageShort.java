@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.technology.jef.CurrentLocale;
@@ -20,7 +21,7 @@ public class ImageShort extends Image {
 	}
 
 	@Override
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			
 			
 			Tag input =  parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{

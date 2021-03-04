@@ -4,6 +4,7 @@ import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAM
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.technology.jef.CurrentLocale;
@@ -69,7 +70,7 @@ public class File extends Widget {
 	}
 
 	@Override
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			
 
 			Tag fieldset = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
@@ -148,7 +149,7 @@ public class File extends Widget {
 		}
 
 	@Override
-	protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
+	protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) throws SAXException {
 
 		parrent.add(Tag.Type.SCRIPT, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.TYPE, "text/javascript");

@@ -1,5 +1,7 @@
 package com.technology.jef.widgets;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -27,8 +29,9 @@ public class ListEditableShort extends ListEditable {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			
 			return getListBody(name, generator, parrent);
 		}		

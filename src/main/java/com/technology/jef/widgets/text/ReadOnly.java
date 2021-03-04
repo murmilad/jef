@@ -1,5 +1,7 @@
 package com.technology.jef.widgets.text;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 import com.technology.jef.widgets.Text;
@@ -22,7 +24,7 @@ public class ReadOnly extends Text {
 		}
 		
 		@Override
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			
 			Tag inputText = super.assembleTag(name, generator);
 			

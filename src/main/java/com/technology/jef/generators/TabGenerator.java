@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.codec.binary.Base64;
+import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
@@ -31,9 +32,10 @@ public class TabGenerator extends TagGenerator {
 	   * 
 	   * @param qName имя тега в XML представлении интерфейса
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
 	@Override
-	public Tag generate(String qName) {
+	public Tag generate(String qName) throws SAXException {
 
 		Tag tab = dom.add(Tag.Type.DIV, (String) getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.DATA_FORM_ID, (String) getAttribute(TagGenerator.Attribute.FORM_ID));
@@ -57,7 +59,7 @@ public class TabGenerator extends TagGenerator {
 
 		addHandler(TagGenerator.Name.SCRIPT, new Handler() {
 			@Override
-			public void handle(TagGenerator currentGenerator) {
+			public void handle(TagGenerator currentGenerator) throws SAXException {
 				if ("click".equals(((String)currentGenerator.getAttribute(TagGenerator.Attribute.TYPE)).toLowerCase())) {
 					hasOnClick = true;
 				}
@@ -68,7 +70,7 @@ public class TabGenerator extends TagGenerator {
 	}
 
 	@Override
-	public void onEndElement() {
+	public void onEndElement() throws SAXException {
 		if (!hasOnClick) {
 			dom.add(Tag.Type.SCRIPT, 
 						("                         \n" + 

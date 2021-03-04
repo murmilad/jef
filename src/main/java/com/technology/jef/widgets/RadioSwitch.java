@@ -7,6 +7,8 @@ import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAM
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
@@ -32,7 +34,7 @@ public class RadioSwitch extends List {
 	}
 
 	@Override
-	public Tag assembleTag(String name, TagGenerator generator) {
+	public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 
 		Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>() {
 			{
@@ -106,7 +108,7 @@ public class RadioSwitch extends List {
 	}
 
 	@Override
-	public String getSetItemsJS() {
+	public String getSetItemsJS() throws SAXException {
 
 		String valueJS = getValueJS(null , "", null);
 
@@ -196,7 +198,7 @@ public class RadioSwitch extends List {
 	}
 
 	@Override
-	public String getValueConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+	public String getValueConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 		String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_value(this);")
 				.replace("${parrent_name}",
 						((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID))
@@ -215,7 +217,7 @@ public class RadioSwitch extends List {
 	}
 
 	@Override
-	public String getVisibleConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+	public String getVisibleConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 		String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_visible(this);")
 				.replace("${parrent_name}",
 						((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID))
@@ -235,7 +237,7 @@ public class RadioSwitch extends List {
 	}
 
 	@Override
-	public String getActiveConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+	public String getActiveConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 		String onChangeJS = ("onChange${parrent_name}_${child_name}_ct_ajax_active(this);")
 				.replace("${parrent_name}",
 						((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID))
@@ -255,7 +257,7 @@ public class RadioSwitch extends List {
 	}
 
 	@Override
-	public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+	public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 		String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 		String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
 		String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);

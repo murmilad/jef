@@ -136,22 +136,35 @@ public class Field {
 
 	
 	
-	private String fieldName;
+	private String daoValueField = null;
+	private String daoNameField = null;
+
+	public Field(String daoValueField, String daoNameField) {
+		setDaoNameField(daoNameField);
+		setDaoValueField(daoValueField);
+	}
 	
-	public Field(String fieldName) {
-		setFieldName(fieldName);
+	public Field(String daoValueField) {
+		setDaoValueField(daoValueField);
 	}
 
 	public Field() {
-		setFieldName(null);
+		setDaoValueField(null);
 	}
 
-	public String getFieldName() {
-		return fieldName;
+	public String getDaoValueField() {
+		return daoValueField;
+		
 	}
 
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
+	public void setDaoValueField(String daoValueField) {
+		this.daoValueField = daoValueField;
+	}
+	public String getDaoNameField() {
+		return daoNameField;
+	}
+	public void setDaoNameField(String daoNameField) {
+		this.daoNameField = daoNameField;
 	}
 
 }

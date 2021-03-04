@@ -2,6 +2,8 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
@@ -47,9 +49,10 @@ public class AutoComplete extends Widget {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
 		@Override
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 
 			String[] ajax_parrent_list = (String[])generator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT);
 
@@ -214,8 +217,9 @@ public class AutoComplete extends Widget {
 			   * Метод возвращает функционал влияющий на состав списочного элемента 
 			   * 
 			   * @return код JavaScript
+			 * @throws SAXException 
 			   */
-				public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+				public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 					String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 					String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
 					String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);

@@ -289,24 +289,33 @@ public abstract class Form {
 			
 			for (String interfaceFieldName : parametersMap.keySet()) {
 				if (parametersMap.containsKey(interfaceFieldName) && parametersMap.get(interfaceFieldName) != null) {
-					if (parametersMap.get(interfaceFieldName).getFieldName() != null) {
-						Object fieldValue = formData.get(parametersMap.get(interfaceFieldName).getFieldName());
-		
-						Pattern pattern = Pattern.compile("^(.+)_id$");
-						Matcher matcher = pattern.matcher(parametersMap.get(interfaceFieldName).getFieldName());
-		
-						if ((fieldValue == null || !fieldValue.toString().contains(PARAMETER_NAME_VALUE_SEPARATOR)) && matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
-							String value = PARAMETER_NAME_VALUE_SEPARATOR;
-							if (formData.get(matcher.group(1) + "_name") != null) {
-								value = (fieldValue != null ? fieldValue : "") +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");
-							} else if (formData.get(matcher.group(1) + "_other") != null) {
-								value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
+					if (parametersMap.get(interfaceFieldName).getDaoValueField() != null) {
+						Object fieldValue = formData.get(parametersMap.get(interfaceFieldName).getDaoValueField());
+						if (parametersMap.get(interfaceFieldName).getDaoNameField() != null 
+								&& (
+										fieldValue != null && !fieldValue.toString().contains(PARAMETER_NAME_VALUE_SEPARATOR)
+										|| fieldValue == null 
+								)
+						){
+							Object fieldName = formData.get(parametersMap.get(interfaceFieldName).getDaoNameField());
+							this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, (fieldValue != null ? fieldValue : "") + PARAMETER_NAME_VALUE_SEPARATOR + (fieldName != null ? fieldName : "")));
+						} else { // Deprecated Scoring-12.01
+							Pattern pattern = Pattern.compile("^(.+)_id$");
+							Matcher matcher = pattern.matcher(parametersMap.get(interfaceFieldName).getDaoValueField());
+			
+							if ((fieldValue == null || !fieldValue.toString().contains(PARAMETER_NAME_VALUE_SEPARATOR)) && matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
+								String value = PARAMETER_NAME_VALUE_SEPARATOR;
+								if (formData.get(matcher.group(1) + "_name") != null) {
+									value = (fieldValue != null ? fieldValue : "") +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");
+								} else if (formData.get(matcher.group(1) + "_other") != null) {
+									value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
+								}
+			
+								this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, value));
+							} else {
+							
+								this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, fieldValue != null ? fieldValue.toString() : ""));
 							}
-		
-							this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, value));
-						} else {
-						
-							this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, fieldValue != null ? fieldValue.toString() : ""));
 						}
 					} else {
 						this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName));
@@ -364,8 +373,8 @@ public abstract class Form {
 			
 			Map<String,Field> parametersMap = getFieldsMap();
 			for (String name : parametersMap.keySet()) {
-				if (parametersMap.get(name).getFieldName() != null && parameters.get(name) != null) {
-					daoParameters.put(parametersMap.get(name).getFieldName(), parameters.getValue(name));
+				if (parametersMap.get(name).getDaoValueField() != null && parameters.get(name) != null) {
+					daoParameters.put(parametersMap.get(name).getDaoValueField(), parameters.getValue(name));
 				}
 			}
 

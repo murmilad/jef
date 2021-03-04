@@ -5,14 +5,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -22,6 +26,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.DOMGenerator;
+import com.technology.jef.generators.TagGenerator;
 
 
 /**
@@ -54,17 +59,21 @@ import com.technology.jef.DOMGenerator;
  */
 public class WECompiler {
 
+    List<String> interfaces = new LinkedList<String>();
+
 	/**
 	 * @param args параметры запуска
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		if (args.length < 1) {
 			showUsageError("Wrong parameter number.");
 		}
 
-		try {
+			WECompiler сompiler = new WECompiler();
+			
 			if (args.length == 4) {
-				compile(args[0], args[1], args[2], args[3]);
+				сompiler.compile(args[0], args[1], args[2], args[3]);
 				
 				
 				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("js"), new File(args[2]));
@@ -74,18 +83,15 @@ public class WECompiler {
 					FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("css"), newDestDir);
 				}
 			} else if (args.length < 4) {
-				compile(args[0], "src/html/", "src/html/", "ru_RU");
+				сompiler.compile(args[0], "src/html/", "src/html/", "ru_RU");
 
 				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("js"), new File("src/html/"));
 				FileUtils.copyResourcesRecursively(WECompiler.class.getClassLoader().getResource("css"), new File("src/html/"));
 			}
-		} catch (Exception e) {
-			showError(e.getMessage());
-		}
 	}
 
 
-	private static void compile(String srcFilePath, String destHtmlPath, String destJsPath, String locale) {
+	private void compile(String srcFilePath, String destHtmlPath, String destJsPath, String locale) throws Exception {
 		
 		File srcFile = new File(srcFilePath);
 
@@ -94,13 +100,13 @@ public class WECompiler {
 	    ResourceBundle textSource;
 
 	    CurrentLocale.getInstance().setLocale(new Locale(locale));
+	    
 
 	    if ( srcFile.isFile()) {
 			// Передали 1 файл
 			String srcFileName = srcFile.getAbsolutePath();
 
 			
-			try {
 	            SAXParserFactory factory = SAXParserFactory.newInstance();
 	            SAXParser saxParser = factory.newSAXParser();
 	 
@@ -115,8 +121,12 @@ public class WECompiler {
         				// Нашли тег интерфейса
 	                	if (qName.equals("interface")) {
 	        				DOMGenerator generator = new DOMGenerator(attributes.getValue("id"), srcFileName);
+	        				if (interfaces.contains(attributes.getValue("id"))) {
+	        					throw new SAXException("ERROR: Duplicate interface '" + attributes.getValue("id") + "'");
+	        				}
+	        				interfaces.add(attributes.getValue("id"));
 
-	        				generator.createDOM();
+							generator.createDOM();
 
 							try {
 								File fileHTML = new File(destHtmlPath + "/" +  attributes.getValue("id") + ".html");
@@ -128,6 +138,7 @@ public class WECompiler {
 		        				outHTML.close();
 							} catch (FileNotFoundException e) {
 								showError(e.getMessage());
+								new SAXException(e.getMessage(), e);
 							}
 
 							try {
@@ -140,6 +151,7 @@ public class WECompiler {
 		        				outJS.close();
 							} catch (FileNotFoundException e) {
 								showError(e.getMessage());
+								new SAXException(e.getMessage(), e);
 							}
 
 	                	}
@@ -149,9 +161,6 @@ public class WECompiler {
 	            // Стартуем разбор методом parse, которому передаем наследника от DefaultHandler, который будет вызываться в нужные моменты
 	            saxParser.parse(srcFileName, handler);
 		 
-			} catch (Exception e) {
-				showError(e.getMessage());
-			}
 		} else { // передали директорию
 			// Создание списка файлов, состоящих из исходников текущей директории и вложенных директорий
 			File[] files = srcFile.listFiles(new FilenameFilter() {

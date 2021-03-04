@@ -2,6 +2,8 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
 
@@ -17,8 +19,9 @@ public class Hidden extends Widget {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			
 			((Tag) generator.getAttribute(TagGenerator.Attribute.VISIBLE_ROW)).setProperty(Tag.Property.STYLE, "display: none;");
 			((Tag) generator.getAttribute(TagGenerator.Attribute.VISIBLE_TAG)).setProperty(Tag.Property.STYLE, "display: none;");

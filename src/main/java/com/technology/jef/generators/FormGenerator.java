@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Base64;
+import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
@@ -25,6 +26,7 @@ public class FormGenerator extends TagGenerator {
 	HashMap<String, List<TagGenerator>> joinedMultiplieGroups = new HashMap<String, List<TagGenerator>>();
 	HashMap<String, String> joinedMultiplieGroupsBy = new HashMap<String, String>();
 	HashMap<String, String> formInterfaceApiMap = new HashMap<String, String>();
+	List<String> groups = new LinkedList<String>();
 
 
 	/**
@@ -34,7 +36,7 @@ public class FormGenerator extends TagGenerator {
 	   * @return DOM модель на текущем уровне
 	   */
 	@Override
-	public Tag generate(String qName) {
+	public Tag generate(String qName)  throws SAXException {
 
 		Tag body = dom.locateUp(Tag.Type.BODY);
 		if (body != null) {
@@ -95,7 +97,7 @@ public class FormGenerator extends TagGenerator {
 
 		addHandler(TagGenerator.Name.GROUP, new Handler() {
 			@Override
-			public void handle(TagGenerator currentGenerator) {
+			public void handle(TagGenerator currentGenerator)  throws SAXException {
 				if (!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))) { // Если группа множественная
 					//Добавляем флаг JS свидетельствующий о том, что происходит загрузка связных списков для множественных групп, если таковые имеются
 					currentGenerator.getDom().add(Tag.Type.SCRIPT, 	"var ajax_is_parrent_blocked" + currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX) + " = {};\n"+
@@ -113,7 +115,10 @@ public class FormGenerator extends TagGenerator {
 		// Реализуем накопление API для заполнения параметров на уровне элементов
 		addHandler(TagGenerator.Name.FORM_ITEM, new Handler() {
 			@Override
-			public void handle(TagGenerator currentGenerator) {
+			public void handle(TagGenerator currentGenerator) throws SAXException {
+				if (connectedElements.containsKey((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))) {
+					throw new SAXException("ERROR: Duplicate item '" + currentGenerator.getAttribute(TagGenerator.Attribute.ID) + "' for form '" + getAttribute(TagGenerator.Attribute.ID) +  "'");
+				}
 				connectedElements.put((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID), currentGenerator);
 				
 				String formInterfaceApi = (String) currentGenerator.getAttribute(TagGenerator.Attribute.API);
@@ -127,7 +132,10 @@ public class FormGenerator extends TagGenerator {
 		// Реализуем накопление API для заполнения параметров на уровне групп
 		addHandler(TagGenerator.Name.GROUP, new Handler() {
 			@Override
-			public void handle(TagGenerator currentGenerator) {
+			public void handle(TagGenerator currentGenerator) throws SAXException {
+				if (groups.contains((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))) {
+					throw new SAXException("ERROR: Duplicate group '" + currentGenerator.getAttribute(TagGenerator.Attribute.ID) + "' for form '" + getAttribute(TagGenerator.Attribute.ID) +  "'");
+				}
 				String formInterfaceApi = (String) currentGenerator.getAttribute(TagGenerator.Attribute.API);
 				if  (!"".equals(formInterfaceApi)) {
 					// Добавляем в карту API встретившийся у парамера API и записываем в текущую API родительские API (те что должны быть вызваны первыми)
@@ -139,7 +147,7 @@ public class FormGenerator extends TagGenerator {
 		// Создаем карту объединенных по общему типу групп для общего механизма добавления
 		addHandler(TagGenerator.Name.GROUP, new Handler() {
 			@Override
-			public void handle(TagGenerator currentGenerator) {
+			public void handle(TagGenerator currentGenerator) throws SAXException {
 				String formInterfaceApi = (String) currentGenerator.getAttribute(TagGenerator.Attribute.API);
 				String joinedBy = (String) currentGenerator.getAttribute(TagGenerator.Attribute.JOINED_BY);
 				if  (!"".equals(formInterfaceApi) && !"".equals(joinedBy) ) {
@@ -157,13 +165,14 @@ public class FormGenerator extends TagGenerator {
 		return form;
 	}
 
-	private void addConectionJS (String conectionName, TagGenerator currentGenerator, String currentName, TagGenerator.Attribute attribute, Handler widgetJSHandler){
+	private void addConectionJS (String conectionName, TagGenerator currentGenerator, String currentName, TagGenerator.Attribute attribute, Handler widgetJSHandler) throws  SAXException {
 		// Идем по связям элемента, влияющих на видимость
 		String[] ajax_visible_list = (String[])currentGenerator.getAttribute(attribute);
 		for (String parrentName: ajax_visible_list) {
 			TagGenerator parrentGenerator = connectedElements.get(parrentName);
 			if (parrentGenerator == null) {
 				System.out.println("ERROR: Can't find parrent element '" + parrentName + "' for '" + currentName  + "'");
+				throw new  SAXException ("ERROR: Can't find parrent element '" + parrentName + "' for '" + currentName  + "'");
 			} else {
 			
 
@@ -178,7 +187,7 @@ public class FormGenerator extends TagGenerator {
 	   * 
 	   */
 	@Override
-	public void onEndElement() {
+	public void onEndElement() throws SAXException  {
 		for(String joinedBy : joinedMultiplieGroups.keySet()) {
 
 			Tag joinedGroupPlace = dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
@@ -378,7 +387,7 @@ public class FormGenerator extends TagGenerator {
 			// Пишем функционал связи влияющий на видимость элемента 
 			addConectionJS("ct_ajax_visible", currentGenerator, currentName, TagGenerator.Attribute.AJAX_VISIBLE_PARRENT, new Handler(){
 				@Override
-				public void handle(TagGenerator parrentGenerator) {
+				public void handle(TagGenerator parrentGenerator) throws SAXException {
 					// Пишем функционал связи влияющий на видимость элемента 
 					currentGenerator.getDom().add(Tag.Type.SCRIPT, currentWidget.getVisibleConnectJS(currentGenerator, parrentGenerator));
 				}
@@ -387,7 +396,7 @@ public class FormGenerator extends TagGenerator {
 			// Пишем функционал связи влияющий на доступность редактирования элемента 
 			addConectionJS("ct_ajax_active", currentGenerator, currentName, TagGenerator.Attribute.AJAX_ACTIVE_PARRENT, new Handler(){
 				@Override
-				public void handle(TagGenerator parrentGenerator) {
+				public void handle(TagGenerator parrentGenerator)  throws SAXException  {
 					// Пишем функционал связи влияющий на видимость элемента 
 					currentGenerator.getDom().add(Tag.Type.SCRIPT, currentWidget.getActiveConnectJS(currentGenerator, parrentGenerator));
 				}
@@ -396,7 +405,7 @@ public class FormGenerator extends TagGenerator {
 			// Пишем функционал связи влияющий на содержание элемента 
 			addConectionJS("ct_ajax_value", currentGenerator, currentName, TagGenerator.Attribute.AJAX_VALUE_PARRENT, new Handler(){
 				@Override
-				public void handle(TagGenerator parrentGenerator) {
+				public void handle(TagGenerator parrentGenerator)  throws SAXException  {
 					// Пишем функционал связи влияющий на содержание элемента 
 					currentGenerator.getDom().add(Tag.Type.SCRIPT, currentWidget.getValueConnectJS(currentGenerator, parrentGenerator));
 				}
@@ -405,7 +414,7 @@ public class FormGenerator extends TagGenerator {
 			// Пишем функционал связи влияющий на состав списочного элемента 
 			addConectionJS("ct_ajax_list", currentGenerator, currentName, TagGenerator.Attribute.AJAX_LIST_PARRENT, new Handler(){
 				@Override
-				public void handle(TagGenerator parrentGenerator) {
+				public void handle(TagGenerator parrentGenerator)  throws SAXException  {
 					// Пишем функционал связи влияющий на содержание элемента 
 					currentGenerator.getDom().add(Tag.Type.SCRIPT, currentWidget.getListConnectJS(currentGenerator, parrentGenerator));
 				}
@@ -421,7 +430,9 @@ public class FormGenerator extends TagGenerator {
 			byte[] encodedJS = Base64.encodeBase64(templateParrentGroup.getJS().getBytes());
 			
 			
-			multiplieGroupGenerator.getDom(Name.SCRIPT, multiplieGroupGenerator.attributes).add(Tag.Type.SCRIPT,									("					var tag_${multiplie_group_name} = '${encoded_tag}';            \n" + 
+			//multiplieGroupGenerator.getDom(Name.SCRIPT, multiplieGroupGenerator.attributes);
+			dom.add(Tag.Type.SCRIPT,
+	("					var tag_${multiplie_group_name} = '${encoded_tag}';            \n" + 
 	"					var script_${multiplie_group_name} = '${encoded_script}';            \n" + 
 	"					var count_${multiplie_group_name} = 0;            \n" + 
 	"					var number_${multiplie_group_name} = 0;            \n" + 
@@ -468,22 +479,22 @@ public class FormGenerator extends TagGenerator {
 	"					}}            \n" + 
 	"					$(\"#button_add_${multiplie_group_name}\").click(function(){          \n" + 
 	"						setTimeout(function( x ) {          \n" + 
-	"							var prefix = add_${multiplie_group_name}();          \n" + 
+	"							var prefix = add_${multiplie_group_name}(\"#${group_plase}\");          \n" + 
 	"							load_form_data_${group_api}(groupInitialParams${group_api}, prefix);            \n" + 
 	"							$( '#form_id' ).trigger('setListOnLoad_${group_api}'+prefix);                              \n" + 
 	"							$( '#div_' + prefix ).trigger( 'add' );          \n" + 
 	"						}, 100);         \n" + 
 	"					});          \n" + 
-	"					function add_${multiplie_group_name}() {          \n" + 
+	"					function add_${multiplie_group_name}(group_plase) {          \n" + 
 	"						window.isFormLoading = true;    \n" + 
 	"						var groupPrefix = \"${multiplie_group_name}_\" + number_${multiplie_group_name};         \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").show();            \n" + 
 	"						$(\"#message_box_wait_${multiplie_group_name}\").show();            \n" + 
 	"						var template_tag = Base64.decode(tag_${multiplie_group_name}).replace(/<NUMBER>/g, groupPrefix);            \n" + 
 	"						var template_script = Base64.decode(script_${multiplie_group_name}).replace(/<NUMBER>/g, groupPrefix);            \n" + 
-	"						$(\"#${group_plase}\").append(template_tag);            \n" + 
-	"						if (jQuery.isFunction($(\"#place_${multiplie_group_name}\").find('input').styler)) {            \n" + 
-	"							$(\"#place_${multiplie_group_name}\").find('input').styler({});            \n" + 
+	"						$(group_plase ? group_plase : \"#place_${group_separator}${group_api}\").append(template_tag);            \n" + 
+	"						if (jQuery.isFunction($(\"#fildset_\" + groupPrefix).find('input').styler)) {            \n" + 
+	"							$(\"#fildset_\" + groupPrefix).find('input').styler({});            \n" + 
 	"						}            \n" + 
 	"						eval(template_script);							          \n" + 
 	"						$(\"<input/>\", {           \n" + 
@@ -625,7 +636,13 @@ public class FormGenerator extends TagGenerator {
 	"						}              \n" + 
 	"					}       \n")
 					.replace("${joined_group_apis}", joinedMultiplieGroupsBy.containsKey((String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))
-							? joinedMultiplieGroups.get(joinedMultiplieGroupsBy.get((String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))).stream().map(g -> (String) g.getAttribute(TagGenerator.Attribute.API)).collect(Collectors.joining("','","['","']"))
+							? joinedMultiplieGroups.get(joinedMultiplieGroupsBy.get((String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))).stream().map(g -> {
+									try {
+										return (String) g.getAttribute(TagGenerator.Attribute.API);
+									} catch (SAXException e) {
+										throw new RuntimeException(e);
+									}
+								}).collect(Collectors.joining("','","['","']"))
 							: "[]"
 					)
 					.replace("${joined_groups_name}", joinedMultiplieGroupsBy.containsKey((String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))
@@ -742,7 +759,7 @@ public class FormGenerator extends TagGenerator {
 	"					}                   \n" + 
 	"					var currentGroupPrefix = '';                           \n" + 
 	"					$.each(data.groups, function(key, parameters) {                           \n" + 
-	"							currentGroupPrefix = add_${multiplie_group_name}(parameters);                           \n" + 
+	"							currentGroupPrefix = add_${multiplie_group_name}();                           \n" + 
 	"							load_form_data_${api}(parameters, currentGroupPrefix);    \n" +
 	"							$( '#form_id' ).trigger('setListOnLoad_${api}'+currentGroupPrefix); \n" + 
 	"					});     \n" + 
@@ -789,9 +806,10 @@ public class FormGenerator extends TagGenerator {
 	   * 
 	   * @param attributeName имя атрибута тега в XML представлении интерфейса
 	   * @return Содержимое атрибута
+	 * @throws SAXException 
 	   */
 	@Override
-	public Object getAttribute(TagGenerator.Attribute attributeName) {
+	public Object getAttribute(TagGenerator.Attribute attributeName) throws SAXException {
 		switch (attributeName) {
 		case API:
 			return !"".equals(super.getAttribute(TagGenerator.Attribute.API)) 

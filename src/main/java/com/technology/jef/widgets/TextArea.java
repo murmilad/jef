@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.technology.jef.Tag;
@@ -31,8 +32,9 @@ public class TextArea extends Widget {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			Tag tableForm = parrent.add(Tag.Type.TABLE, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.WIDTH, "100%");
 				 put(Tag.Property.COLOR, "gray");

@@ -1,5 +1,7 @@
 package com.technology.jef.generators;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.Tag;
 
 /**
@@ -14,9 +16,10 @@ public class ScriptGenerator extends TagGenerator {
 	   * 
 	   * @param qName имя тега в XML представлении интерфейса
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
 	@Override
-	public Tag generate(String qName) {
+	public Tag generate(String qName) throws SAXException {
 
 		Tag script;
 		if (hasAttribute(TagGenerator.Attribute.TYPE)) {

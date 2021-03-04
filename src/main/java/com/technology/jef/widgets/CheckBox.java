@@ -39,7 +39,7 @@ public class CheckBox extends Widget {
 		return 		(" \n" + 
 	"	$('#visible_${child_name}').prop('checked', data.value === '1' ? true : false);  \n" + 
 	"	$('#visible_${child_name}').change(); \n" + 
-	"	$('input#${child_name}').val(data.value); \n"+
+	"	$('input#${child_name}').val(data.value === '1' ? 1 : 0); \n"+
 	"	$('#visible_${child_name}').bind('change', function(){ \n" + 
 	"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
 	"	}); \n" 

@@ -2,6 +2,8 @@ package com.technology.jef.widgets;
 
 import java.util.HashMap;
 
+import org.xml.sax.SAXException;
+
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.generators.TagGenerator;
@@ -32,8 +34,9 @@ public class List extends Widget {
 	   * @param generator генератор тегов уровня текущего элеметна
 	   * @param parrent родительский тег в DOM модели
 	   * @return DOM модель на текущем уровне
+	 * @throws SAXException 
 	   */
-		public Tag assembleTag(String name, TagGenerator generator) {
+		public Tag assembleTag(String name, TagGenerator generator) throws SAXException {
 			Tag mainInput = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
 				put(Tag.Property.ID, "fieldset_" + name);
 				put(Tag.Property.CLASS, "fieldset second_frames_border");
@@ -93,8 +96,9 @@ public class List extends Widget {
 	   * Метод возвращает функционал влияющий на состав списочного элемента 
 	   * 
 	   * @return код JavaScript
+	 * @throws SAXException 
 	   */
-		public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) {
+		public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
 			String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
 			String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
 			String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
@@ -248,8 +252,9 @@ public class List extends Widget {
 	   * 	${list_item_js} - JS для добавления элемента для выбора
 	   * 
 	   * @return код JavaScript
+	 * @throws SAXException 
 	   */
-		public String getSetItemsJS() {
+		public String getSetItemsJS() throws SAXException {
 
 			String valueJS = getValueJS(null , "", null);
 			
