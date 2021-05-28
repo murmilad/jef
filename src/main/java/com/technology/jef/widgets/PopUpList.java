@@ -439,10 +439,27 @@ public class PopUpList extends Widget {
 						"			$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
 						"		}); \n" + 
 						"	} else { \n" + 
+						"		$(\"input#${child_name}\").val(data.value);           \n" + 
+						"		$(\"#fake_visible_${child_name}\").val(data.name);           \n" + 
 						"		$(\"#visible_${child_name}\").val(data.value).change(); \n" + 
-						"	} \n").replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
+						"	} \n"
+					).replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 		}
-		
+
+		public String getSetActiveJS() {
+			
+			return 
+			"		if (data.value) { \n " + 
+			"			$('#visible_${child_name}').prop( \"disabled\", false); \n " +
+			"			$('#fake_visible_${child_name}').prop( \"disabled\", false); \n " +
+			"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+			"           $(\"#visible_${child_name}\").trigger('refresh');" +
+			"		} else { \n " +
+			"			$('#visible_${child_name}').prop( \"disabled\", true); \n " +
+			"			$('#fake_visible_${child_name}').prop( \"disabled\", true); \n " +
+			"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
+			"		} \n ";
+		}
 		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
 
 			return element;

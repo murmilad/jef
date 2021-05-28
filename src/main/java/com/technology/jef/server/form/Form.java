@@ -45,7 +45,7 @@ public abstract class Form {
 		 * @param parameters 
 		 * @throws ServiceException
 		 */
-		public abstract void load(Integer id, Integer groupId, Parameters parameters) throws ServiceException;
+		public abstract void load(String id, String secondaryId, Parameters parameters) throws ServiceException;
 
 	
 		/**
@@ -55,7 +55,7 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		protected List<OptionDto> getList(Integer primaryId, String parameterName, Parameters parameters)
+		protected List<OptionDto> getList(String primaryId, String parameterName, Parameters parameters)
 				throws ServiceException {
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
@@ -83,7 +83,7 @@ public abstract class Form {
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
 		 */
-		protected  List<OptionDto> getInteractiveList(Integer primaryId, String parameterName, Parameters parameters) throws ServiceException {
+		protected  List<OptionDto> getInteractiveList(String primaryId, String parameterName, Parameters parameters) throws ServiceException {
 
 			List<OptionDto> list = new LinkedList<OptionDto>();
 
@@ -110,7 +110,7 @@ public abstract class Form {
 		 * @return значение параметра формы
 		 * @throws ServiceException
 		 */
-		protected  String getValue(Integer primaryId, String parameterName, Parameters parameters) throws ServiceException {
+		protected  String getValue(String primaryId, String parameterName, Parameters parameters) throws ServiceException {
 
 			String value = "";
 			
@@ -139,7 +139,7 @@ public abstract class Form {
 		 * @throws ServiceException
 		 */
 
-		protected  Boolean isVisible(Integer primaryId, String parameterName, Parameters parameters) throws ServiceException {
+		protected  Boolean isVisible(String primaryId, String parameterName, Parameters parameters) throws ServiceException {
 
 			Boolean isVisible = null;
 			
@@ -174,7 +174,7 @@ public abstract class Form {
 		 * @return признак активности True активен, False не активен
 		 * @throws ServiceException
 		 */
-		protected  Boolean isActive(Integer primaryId, String parameterName, Parameters parameters) throws ServiceException {
+		protected  Boolean isActive(String primaryId, String parameterName, Parameters parameters) throws ServiceException {
 			Boolean isActive = null;
 
 			parameters.put("id", new Value("id",Objects.toString(primaryId, "")));
@@ -203,7 +203,7 @@ public abstract class Form {
 		 * @return список ошибок
 		 * @throws ServiceException
 		 */
-		protected  List<String> checkParameter(Integer primaryId, Integer secondaryId, Value parameter,
+		protected  List<String> checkParameter(String primaryId, String secondaryId, Value parameter,
 				Parameters parameters) throws ServiceException {
 
 			Boolean isRequired = parameter.getIsRequired();
@@ -246,7 +246,7 @@ public abstract class Form {
 		 * @return список атрибутов параметра
 		 * @throws ServiceException
 		 */
-		protected Map<Attribute, Boolean> getAttributes(String parameterName, Parameters parameters, Integer id) throws ServiceException {
+		protected Map<Attribute, Boolean> getAttributes(String parameterName, Parameters parameters, String id) throws ServiceException {
 
 			Map<Attribute, Boolean> attributes = new HashMap<Attribute, Boolean>();
 			if (getFieldsMap().containsKey(parameterName)) {
@@ -268,7 +268,7 @@ public abstract class Form {
 		 * @return список ошибок
 		 * @throws ServiceException
 		 */
-		public Map<String, List<String>> checkForm(Integer primaryId, Integer secondaryId, Parameters parameters)  throws ServiceException {
+		public Map<String, List<String>> checkForm(String primaryId, String secondaryId, Parameters parameters)  throws ServiceException {
 			
 			return new HashMap<String, List<String>>();
 		}
@@ -299,23 +299,8 @@ public abstract class Form {
 						){
 							Object fieldName = formData.get(parametersMap.get(interfaceFieldName).getDaoNameField());
 							this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, (fieldValue != null ? fieldValue : "") + PARAMETER_NAME_VALUE_SEPARATOR + (fieldName != null ? fieldName : "")));
-						} else { // Deprecated Scoring-12.01
-							Pattern pattern = Pattern.compile("^(.+)_id$");
-							Matcher matcher = pattern.matcher(parametersMap.get(interfaceFieldName).getDaoValueField());
-			
-							if ((fieldValue == null || !fieldValue.toString().contains(PARAMETER_NAME_VALUE_SEPARATOR)) && matcher.find() && formData.containsKey(matcher.group(1) + "_name")) {
-								String value = PARAMETER_NAME_VALUE_SEPARATOR;
-								if (formData.get(matcher.group(1) + "_name") != null) {
-									value = (fieldValue != null ? fieldValue : "") +  PARAMETER_NAME_VALUE_SEPARATOR + formData.get(matcher.group(1) + "_name");
-								} else if (formData.get(matcher.group(1) + "_other") != null) {
-									value = "other" + PARAMETER_NAME_VALUE_SEPARATOR + "Иное";
-								}
-			
-								this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, value));
-							} else {
-							
-								this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, fieldValue != null ? fieldValue.toString() : ""));
-							}
+						} else {
+							this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName, fieldValue != null ? fieldValue.toString() : ""));
 						}
 					} else {
 						this.formData.putValue(interfaceFieldName, new Value(interfaceFieldName));
@@ -349,7 +334,7 @@ public abstract class Form {
 		 * @throws ServiceException
 		 */
 
-		abstract public Integer saveForm(Integer primaryId, Integer secondaryId, Parameters parameters)  throws ServiceException;
+		abstract public String saveForm(String primaryId, String secondaryId, Parameters parameters)  throws ServiceException;
 
 		/**
 		 * Удаление групповой формы
@@ -361,7 +346,7 @@ public abstract class Form {
 		 * @throws ServiceException
 		 */
 
-		public void deleteForm(Integer primaryId, Integer secondaryId, Parameters parametersMap)  throws ServiceException {};
+		public void deleteForm(String primaryId, String secondaryId, Parameters parametersMap)  throws ServiceException {};
 
 		protected RecordDto mapDaoParameters(Parameters parameters) {
 
@@ -388,7 +373,7 @@ public abstract class Form {
 		 * @return результаты проверки данных
 		 * @throws ServiceException
 		 */
-		public Map<String, List<String>> checkInterface(Integer primaryId, Parameters parameters)  throws ServiceException {
+		public Map<String, List<String>> checkInterface(String primaryId, Parameters parameters)  throws ServiceException {
 			
 			return new HashMap<String, List<String>>();
 		}
@@ -401,7 +386,7 @@ public abstract class Form {
 		 * @return список идентификаторов групп
 		 * @throws ServiceException
 		 */
-		public List<String> getGroups(Integer primaryId, Parameters parameters)  throws ServiceException {
+		public List<String> getGroups(String primaryId, Parameters parameters)  throws ServiceException {
 			
 			return null;
 		}

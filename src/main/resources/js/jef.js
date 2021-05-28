@@ -18,21 +18,47 @@
 		$("#message_header_error").html(header);               
 		$("#message_body_error").html(message);               
 	}                
-	function operateResult (result, parameters, callback) {
+	function operateResult (result, parameters, callback, current) {
 		if (parameters.dataType == 'text') {
 			if (callback) {             
-				callback(result, this);             
+				callback(result, current);             
 			}       			
 		} else {            
 			if (result.status_code == 2) {             
 				if (result.error.error_code == 2) {             
 					window.logout(document);             
-				} else {             
-					showError(result.error.error_description, result.error.error_message);             
+				} else if (result.error.error_button === 'close') { //Close             
+					showError(result.error.error_description, result.error.error_message);
+					$( "#message_buttons_error" ).show();
+					$( "#message_error_button" ).unbind("click");
+					$( "#message_error_button" ).on("click", function(){
+						$("#background_overlay_error").hide();                      
+				   		$("#message_box_error").hide();                      
+					});
+             
+				} else if (result.error.error_button === 'back') { //Back             
+					showError(result.error.error_description, result.error.error_message);
+					$( "#message_buttons_error" ).show();
+					$( "#message_error_button" ).unbind("click");
+					$( "#message_error_button" ).on("click", function(){
+						history.back();                      
+					});
+             
+				} else if (result.error.error_button === 'reload') { //Refrech             
+					showError(result.error.error_description, result.error.error_message);
+					$( "#message_buttons_error" ).show();
+					$( "#message_error_button" ).unbind("click");
+					$( "#message_error_button" ).on("click", function(){
+						window.location.reload();                      
+					});
+             
+				} else { //Incorrect form error             
+					showError(result.error.error_description, result.error.error_message);
+					$( "#message_buttons_error" ).hide();
 				}             
 			} else if (result.status_code == 1) {             
 				if (callback) {             
-					callback(result, this);             
+					callback(result, current);             
 				}             
 			}
 		}             
@@ -71,7 +97,7 @@
 				parameters            
 			).done(function(data){            
 				window.ajaxPool.delete(pooledParameters);
-				operateResult(data, parameters, callback);         
+				operateResult(data, parameters, callback, this);         
 				releaseRequest(currentAjaxRequest);         
 			}).fail(function(jqXHR, textStatus, errorThrown){            
 				window.ajaxPool.delete(pooledParameters);         
@@ -80,7 +106,7 @@
 			});            
 		} else {   
 			window.ajaxXNR[pooledParameters].done(function(data){            
-				operateResult(data, parameters, callback);         
+				operateResult(data, parameters, callback, this);         
 			}).fail(function(jqXHR, textStatus, errorThrown){            
 				showError("Error: " + errorThrown, jqXHR.responseText);            
 			});   
@@ -94,7 +120,7 @@
 			url,           
 			parameters           
 		).done(function(data){            
-			operateResult(data, parameters, callback);            
+			operateResult(data, parameters, callback, this);            
 			releaseRequest(currentAjaxRequest);       
 		}).fail(function(jqXHR, textStatus, errorThrown){            
 			showError("Error: " + errorThrown, jqXHR.responseText);            

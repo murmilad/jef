@@ -30,6 +30,12 @@ public class SerializeConstant {
   public static final String GROUP_SEPARATOR = "_g_";
 
   /**
+   * Разделитель между айди группы и хэндлером группы
+   * 
+   */
+  public static final String JOINED_GROUP_SEPARATOR = ":g:";
+
+  /**
    * Разделитель между элементами списка, содержащегося в параметре
    * 
    */

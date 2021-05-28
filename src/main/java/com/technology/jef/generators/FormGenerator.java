@@ -332,8 +332,8 @@ public class FormGenerator extends TagGenerator {
 	"										var errors = data.errors.parametersErrors[name];           \n" + 
 	"										$.each( errors, function(index, error) {                    \n" + 
 	"											$(\"#visible_\" + name).parent().children('').addClass(\"error error_color\");   \n" + 
-	"											var header = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html();                    \n" + 
-	"											$(\"<li/>\", {html: header.charAt(1).toUpperCase() + header.slice(2).toLowerCase() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                     \n" + 
+	"											var header = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim();                    \n" + 
+	"											$(\"<li/>\", {html: header.charAt(0).toUpperCase() + header.slice(1).toLowerCase() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                     \n" + 
 	"											hasErrors = true;               \n" + 
 	"										});                 \n" + 
 	"									});                 \n" + 
@@ -477,14 +477,6 @@ public class FormGenerator extends TagGenerator {
 	"						}            \n" + 
 	"						return t            \n" + 
 	"					}}            \n" + 
-	"					$(\"#button_add_${multiplie_group_name}\").click(function(){          \n" + 
-	"						setTimeout(function( x ) {          \n" + 
-	"							var prefix = add_${multiplie_group_name}(\"#${group_plase}\");          \n" + 
-	"							load_form_data_${group_api}(groupInitialParams${group_api}, prefix);            \n" + 
-	"							$( '#form_id' ).trigger('setListOnLoad_${group_api}'+prefix);                              \n" + 
-	"							$( '#div_' + prefix ).trigger( 'add' );          \n" + 
-	"						}, 100);         \n" + 
-	"					});          \n" + 
 	"					function add_${multiplie_group_name}(group_plase) {          \n" + 
 	"						window.isFormLoading = true;    \n" + 
 	"						var groupPrefix = \"${multiplie_group_name}_\" + number_${multiplie_group_name};         \n" + 
@@ -519,7 +511,8 @@ public class FormGenerator extends TagGenerator {
 	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};     \n" + 
 	"						if(!window.isFormLoading) {         \n" + 
 	"							setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);      \n" + 
-	"						}         \n" + 
+	"							$( window ).scrollTop($(document).height()); \n" + 
+	"						}\n" + 
 	"						$('#form_id').bind('setListOnLoad_${group_api}' + groupPrefix, function() {        \n" + 
 	"							var parameters = ${value_js};    \n" + 
 	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};    \n" + 
@@ -545,16 +538,21 @@ public class FormGenerator extends TagGenerator {
 	"							$('#button_add_${joined_groups_name}').hide(); \n" + 
 	"							var joinedGroups = []; \n" +
 	"							var waitJoinedGroups = 0; \n" +
+	" 							var group_count = 0; \n"+
+	"							${joined_group_apis}.forEach(function(joinedGroupApi){ \n" + 
+	" 								group_count += eval('count_${group_separator}'+joinedGroupApi)\n"+
+	"							}); \n" +
 	"							${joined_group_apis}.forEach(function(joinedGroupApi){ \n" + 
 	"								waitJoinedGroups++; \n" +
+	"								var group_parameters = parameters.replace(/group_count${value_separator}\\d+/, 'group_count${value_separator}' + group_count); \n" +
 	"								ajax({              \n" + 
 	"						            		url: '${service}get_list_interactive',              \n" + 
-	"									data: {              \n" + 
-	"										parameter_name: buttonName,              \n" + 
-	"										form_api: joinedGroupApi,              \n" + 
-	"										parameters: parameters + form_parameters,              \n" + 
-	"										rnd: Math.floor(Math.random() * 10000),              \n" + 
-	"									},             \n" + 
+	"											data: {              \n" + 
+	"												parameter_name: buttonName,              \n" + 
+	"												form_api: joinedGroupApi,              \n" + 
+	"												parameters: group_parameters + form_parameters,              \n" + 
+	"												rnd: Math.floor(Math.random() * 10000),              \n" + 
+	"											},             \n" + 
 	"				            				type: 'post',              \n" + 
 	"					            			dataType: 'json',              \n" + 
 	"					            			contentType: 'application/x-www-form-urlencoded',              \n" + 
@@ -562,11 +560,12 @@ public class FormGenerator extends TagGenerator {
 	"									if (data.data && data.data.length > 0){           \n" + 
 	"										$('#button_add_${joined_groups_name}').show(); \n" + 
 	"										$.each(data.data, function(key, val) {   \n" +
-	"											joinedGroups.push({html: val.name, value: val.name, name: val.name, data: val.id + '|' + joinedGroupApi});                                \n" + 
+	"											joinedGroups.push({html: val.name, value: val.name, name: val.name, data: val.id + '${joined_group_separator}' + joinedGroupApi});                                \n" + 
 	"										});   \n" + 
 	"									}   \n" + 
 	"									waitJoinedGroups--; \n" +
 	"									if (waitJoinedGroups == 0){ \n" +
+	"										joinedGroups.sort(function(a,b){return a.name<b.name?-1:(a.name>b.name?1:0)});                                \n" + 
 	"										$('#list_add_${joined_groups_name}').val(''); \n" + 
 	"										$('#list_add_${joined_groups_name}').empty(); \n" + 
 	"										$('#list_add_${joined_groups_name}').autocomplete({                             \n" + 
@@ -585,10 +584,10 @@ public class FormGenerator extends TagGenerator {
 	"												contentType: 'application/x-www-form-urlencoded; charset=UTF-8',	         \n" + 
 	"											},         \n" + 
 	"											onSelect: function (suggestion) {                             \n" + 
-	"												if(suggestion.data.split('\\|').length > 0) {             \n" + 
-	"													$('input#id_add_${joined_groups_name}').val(suggestion.data.split('\\|')[0]);             \n" + 
+	"												if(suggestion.data.split('${joined_group_separator}').length > 0) {             \n" + 
+	"													$('input#id_add_${joined_groups_name}').val(suggestion.data.split('${joined_group_separator}')[0]);             \n" + 
 	"													$('input#name_add_${joined_groups_name}').val(suggestion.html);             \n" + 
-	"													$('#button_add_${group_separator}'+suggestion.data.split('\\|')[1]).click(); \n" +
+	"													$('#button_add_${group_separator}'+suggestion.data.split('${joined_group_separator}')[1]).click(); \n" +
 	"													$('#combobox_add_${joined_groups_name}').hide(); \n" +
 	"													$('#button_add_${joined_groups_name}').show(); \n " +
 	
@@ -608,32 +607,35 @@ public class FormGenerator extends TagGenerator {
 	"											formatResult:function (suggestion, currentValue) {                   \n" + 
 	"												return \"<div data-field='${joined_groups_name}' data-id='\"+suggestion.data+\"' data-name = '\"+suggestion.name +\"' > \" + suggestion.html + \"</div>\";                   \n" + 
 	"											},                                   \n" + 
+	"											afterRender:function (element, container, suggestions) {                   \n" + 
+	"												$( window ).scrollTop($(document).height()); \n" + 
+	"											},                                   \n" + 
 	"										});                             \n" +
 	"			            				$('#message_box_wait_' + buttonName + groupPrefix).hide();              \n" + 
 	"									} \n" +
 	"								}); \n" + 
 	"							}); \n" + 
-	"						} else { \n" + 
-	"							ajax({              \n" + 
-	"					            		url: '${service}get_is_visible_interactive',              \n" + 
-	"								data: {              \n" + 
-	"									parameter_name: buttonName,              \n" + 
-	"									form_api: '${group_api}',              \n" + 
-	"									parameters: parameters  + form_parameters,              \n" + 
-	"									rnd: Math.floor(Math.random() * 10000),              \n" + 
-	"								},             \n" + 
-	"				            			type: 'post',              \n" + 
-	"					            		dataType: 'json',              \n" + 
-	"					            		contentType: 'application/x-www-form-urlencoded',              \n" + 
-	"							}, function (data) {        \n" + 
-	"									if (data.value) {              \n" + 
-	"										$('#' + buttonName + '_' + groupPrefix).show();              \n" + 
-	"									} else {              \n" + 
-	"										$('#' + buttonName + '_' + groupPrefix).hide();              \n" + 
-	"									}              \n" + 
-	"			            					$(\"#message_box_wait_\" + buttonName + groupPrefix).hide();              \n" + 
-	"							}); \n" + 
-	"						}              \n" + 
+	"						}\n" + 
+	"						ajax({              \n" + 
+	"				            		url: '${service}get_is_visible_interactive',              \n" + 
+	"									data: {              \n" + 
+	"										parameter_name: buttonName,              \n" + 
+	"										form_api: '${group_api}',              \n" + 
+	"										parameters: parameters  + form_parameters,              \n" + 
+	"										rnd: Math.floor(Math.random() * 10000),              \n" + 
+	"									},             \n" + 
+	"			            			type: 'post',              \n" + 
+	"				            		dataType: 'json',              \n" + 
+	"				            		contentType: 'application/x-www-form-urlencoded',              \n" + 
+	"						}, function (data) {        \n" + 
+	"								if (data.value) {              \n" + 
+	"									$('#' + buttonName + '_' + (buttonName === 'button_add' && ${joined_group_apis}.length > 0 ? '${joined_groups_name}' : groupPrefix)).show();              \n" + 
+	"								} else {              \n" + 
+	"									$('#' + buttonName + '_' + (buttonName === 'button_add' && ${joined_group_apis}.length > 0 ? '${joined_groups_name}' : groupPrefix)).hide();              \n" + 
+	"								}              \n" + 
+	"		            					$(\"#message_box_wait_\" + buttonName + groupPrefix).hide();              \n" + 
+	"						}); \n" + 
+	"						              \n" + 
 	"					}       \n")
 					.replace("${joined_group_apis}", joinedMultiplieGroupsBy.containsKey((String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))
 							? joinedMultiplieGroups.get(joinedMultiplieGroupsBy.get((String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))).stream().map(g -> {
@@ -664,6 +666,7 @@ public class FormGenerator extends TagGenerator {
 					.replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX)
 					.replace("${group_api}", (String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))
 					.replace("${group_id}", (String) getAttribute(TagGenerator.Attribute.ID))
+					.replace("${joined_group_separator}", JOINED_GROUP_SEPARATOR)
 				);
 		}
 
@@ -739,8 +742,8 @@ public class FormGenerator extends TagGenerator {
 	"										var errors = data.errors.parametersErrors[name];             \n" + 
 	"										$.each( errors, function(index, error) {                      \n" + 
 	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error error_color\");                      \n" + 
-	"											var header = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html();                   \n" + 
-	"											$(\"<li/>\", {html: header.charAt(1).toUpperCase() + header.slice(2).toLowerCase() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                    \n" + 
+	"											var header = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim();                   \n" + 
+	"											$(\"<li/>\", {html: header.charAt(0).toUpperCase() + header.slice(1).toLowerCase() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                    \n" + 
 	"											hasErrors = true;                 \n" + 
 	"										});                   \n" + 
 	"									});                   \n" + 
@@ -789,7 +792,6 @@ public class FormGenerator extends TagGenerator {
 	" 		window.isFormLoading = true;     \n" + 
 	"		$( document ).ready(function() {       \n" + 
 	"				$(\"#message_box_wait_form\").show();       \n" + 
-	"				getJSON( \"${service}\" + \"check\", {no_cache: Math.floor(Math.random() * 10000)}, function( data ) {});    \n" + 
 	"				${service_call_js}		      \n" + 
 	"				bindIsFormLoading(); \n" + 
 	"       	});   \n")

@@ -38,7 +38,9 @@ public class GroupGenerator extends TagGenerator {
 			isMultiplie = true;
 
 			// То что не должно пойти в шаблон
-			multilineParrentDOM = dom.add(Tag.Type.DIV).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			multilineParrentDOM = dom.add(Tag.Type.DIV,new HashMap<Tag.Property, String>(){{
+			     put(Tag.Property.STYLE, "display: inline-block;");
+			}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			     put(Tag.Property.ID, "place_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 			     put(Tag.Property.NAME, "place_" + GROUP_SEPARATOR +getAttribute(TagGenerator.Attribute.API));
 			}});
@@ -56,6 +58,25 @@ public class GroupGenerator extends TagGenerator {
 				}
 				
 			});
+			
+			addHandler(TagGenerator.Name.SCRIPT, new Handler() {
+
+				@Override
+				public void handle(TagGenerator currentGenerator) throws SAXException {
+				//  Убираем Propagation для событий добавления и удаления из группы поскольку 
+				// если группы вложенны друг в друга то вызываются события 
+				// добавления/удаления родительской группы
+					if ("add".equals(currentGenerator.getAttribute(TagGenerator.Attribute.TYPE)) 
+							|| "delete".equals(currentGenerator.getAttribute(TagGenerator.Attribute.TYPE))){
+						currentGenerator.getDom().setBody(currentGenerator.getDom().getBody() + "event.stopPropagation();");
+					}
+					formItems.add((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID));
+				}
+				
+			});
+			
+			
+
 //TODO			load params with prefix
 		} else {
 			group = addFormGroup(dom, (String) getAttribute(TagGenerator.Attribute.ID), (String) getAttribute(TagGenerator.Attribute.NAME));
@@ -156,6 +177,7 @@ public class GroupGenerator extends TagGenerator {
 			
 			dom.getParrent().add(Tag.Type.SCRIPT, 	(" \n" + 
 	"	$(\"#button_del_<NUMBER>\").click(function(){  \n" + 
+	"		$( '#div_<NUMBER>').trigger( 'delete' );           \n" +
 	"		$('#action<NUMBER>').val('${action}'); \n" + 
 	"		$(\"#fildset_<NUMBER>\").remove();  \n" + 
 	"			$(\"<input/>\", {    \n" + 
@@ -190,7 +212,6 @@ public class GroupGenerator extends TagGenerator {
 
 	
 			) ;
-
 			dom.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "group_action_<NUMBER>");
 				 put(Tag.Property.ID, "group_action_<NUMBER>");
@@ -199,6 +220,23 @@ public class GroupGenerator extends TagGenerator {
 				 put(Tag.Property.VALUE, "create");
 			}});
 
+			multilineParrentDOM.getParrent().add(Tag.Type.SCRIPT, 		("  \n" + 
+					"					$(\"#button_add_${multiplie_group_name}\").click(function(){           \n" + 
+					"						setTimeout(function( x ) {           \n" + 
+					"							var prefix = add_${multiplie_group_name}(\"#${group_plase}\");           \n" + 
+					"							window.isFormLoading = true;             \n" + 
+					"							load_form_data_${group_api}(groupInitialParams${group_api}, prefix);             \n" + 
+					"							$( '#form_id' ).trigger('setListOnLoad_${group_api}'+prefix);                               \n" + 
+					"							window.isFormLoading = false;             \n" + 
+					"							$( '#div_' + prefix ).trigger( 'add' );           \n" + 
+					"						}, 100);          \n" + 
+					"					});           \n")
+					.replace("${multiplie_group_name}", GROUP_SEPARATOR + (String) getAttribute(TagGenerator.Attribute.API))
+					.replace("${group_plase}", !"".equals(getAttribute(TagGenerator.Attribute.JOINED_BY))
+						? "place_joined_group_" + getAttribute(TagGenerator.Attribute.JOINED_BY)
+						: "place_" + GROUP_SEPARATOR + (String) getAttribute(TagGenerator.Attribute.API))
+					.replace("${group_api}", (String) getAttribute(TagGenerator.Attribute.API))
+			);
 			Tag buttonAdd = multilineParrentDOM.getParrent().add(Tag.Type.DIV,
 					new HashMap<Tag.Property, String>(){{
 						 put(Tag.Property.STYLE, "width: 100%;");

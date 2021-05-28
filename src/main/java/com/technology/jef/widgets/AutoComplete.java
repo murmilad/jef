@@ -198,19 +198,19 @@ public class AutoComplete extends Widget {
 		   */
 			public String getSetValueJS() {
 				
-				return  		("  \n" + 
-	"	if (data.value != '') { \n" + 
-	"		$('#visible_${child_name}').val(data.name).blur().change().trigger('autoCompleteChange');  \n" + 
-	"		$('input#${child_name}').val(data.value);  \n" + 
-	"	} else { \n" + 
-	"		$('#visible_${child_name}').val('---').blur().change().trigger('autoCompleteChange');  \n" + 
-	"		$('input#${child_name}').val('');  \n" + 
-	"	} \n" + 
-	"	$('#visible_${child_name}').bind('change', function(){ \n" + 
-	"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
-	"	}); \n" 
-	).replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX)
-				;
+				return (
+					"		if (data.value != '') {  \n" + 
+					"			$('#visible_${child_name}').val(data.name).blur().change().trigger('autoCompleteChange');   \n" + 
+					"			$('input#${child_name}').val(data.value);   \n" + 
+					"		} else {  \n" + 
+					"			$('#visible_${child_name}').val('---').blur().change().trigger('autoCompleteChange');   \n" + 
+					"			$('input#${child_name}').val('');   \n" + 
+					"		}  \n" + 
+					"		$('#visible_${child_name}').bind('change', function(){  \n" + 
+					"			$('#${system_prefix}_changed_${child_name}').val('1')  \n" + 
+					"		});  \n" 
+						)
+					.replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 			}
 
 			   /**
@@ -229,21 +229,15 @@ public class AutoComplete extends Widget {
 					// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
 					currentGenerator.getDom().add(Tag.Type.SCRIPT,
 							(
-							" $(\"#visible_${parrent_name}\").on('change', function(){\n" +
-							"		onChange${parrent_name}_${child_name}_ct_ajax_list(this); \n" +
+							" $(\"#visible_${parrent_name}\").bindFirst('change', function(){\n" +
+						"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
 							" }); \n")
 							.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
 							.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
 					);
 					
-					String bodyJS =
-							("		function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){      \n" + 
-							"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
-							"		}      \n")
-					.replace("${parrent_name}", ((String) parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
-					.replace("${child_name}", name);
 
-					return bodyJS;
+					return "";
 				}
 				
 

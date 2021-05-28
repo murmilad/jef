@@ -61,7 +61,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public FormDto getFormDto(Integer id, String formApi, Map<String, String> parameters)
+	public FormDto getFormDto(String id, String formApi, Map<String, String> parameters)
 			throws ServiceException {
 
 		FormDto fromResult = null;
@@ -72,7 +72,7 @@ public class Service<F extends FormFactory> {
 		if (groupIdList != null) {
 			List<FormDto> groups = new LinkedList<FormDto>();
 			for (String secondaryId: groupIdList) {
-				groups.add(getFormDto(id, "".equals(secondaryId) ? null : Integer.parseInt(secondaryId), formApi, parameters));
+				groups.add(getFormDto(id, "".equals(secondaryId) ? null : secondaryId, formApi, parameters));
 			}
 			fromResult = getFormDto(id, null, formApi, parameters);
 			fromResult.setGroups(groups);
@@ -80,13 +80,14 @@ public class Service<F extends FormFactory> {
 		} else {
 			fromResult = getFormDto(id, null, formApi, parameters);
 		}
+		fromResult.setResult(checkInterface(id, formApi, stringMapToValueMap(parameters)));
 
 		
 
 		return fromResult;
 	}
 
-	private FormDto getFormDto(Integer primaryId, Integer secondaryId, String formApi, Map<String, String> parameters)
+	private FormDto getFormDto(String primaryId, String secondaryId, String formApi, Map<String, String> parameters)
 			throws ServiceException {
 
 		FormDto fromResult;
@@ -107,7 +108,6 @@ public class Service<F extends FormFactory> {
 			}
 		}
 
-		fromResult.setResult(checkInterface(primaryId, formApi, form.getFormData().getValues()));
 
 		return fromResult;
 	}
@@ -133,7 +133,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceServiceException
 	 */
 
-	public ResultDto setFormData(Integer id, Map<String, String> parameters)
+	public ResultDto setFormData(String id, Map<String, String> parameters)
 			throws ServiceException {
 
 		ResultDto result = null;
@@ -219,7 +219,7 @@ public class Service<F extends FormFactory> {
 									id,
 									secondaryId == null | "".equals(secondaryId) 
 										? null
-										: Integer.parseInt(secondaryId),
+										: secondaryId,
 									formParameters.getCurrentApi(),
 									formParameters.getFormParameters(groupPrefix),
 									formParameters.getInputParameters(groupPrefix)
@@ -234,24 +234,44 @@ public class Service<F extends FormFactory> {
 
 		release = result.getErrors().getFormErrors().size() == 0 && result.getErrors().getParametersErrors().isEmpty();
 		
-		// Сохраняем параметры формы в случае если нет ошибок на форме
-		List<Integer> newRecordId = new LinkedList<Integer>() {{ add(id); }};
+		// Удаляем группы в случае если нет ошибок на форме
+		final List<String> newRecordId = new LinkedList<String>() {{ add(id); }};
 		if (release) {
 			for (FormParameters parrentFormParameters : formsList) {
 				operateFormParameters(parrentFormParameters, result, (FormParameters formParameters, ResultDto currentResult) -> {
 						for (String groupPrefix :  
 								formParameters.getParameters().keySet().stream()
-								.sorted((f1, f2) -> f2.compareTo(f1)).collect(Collectors.toList())
+								.sorted((f1, f2) -> f1.compareTo(f2)).collect(Collectors.toList())
 						) {
-							Integer currentPrimaryId = newRecordId.get(0);
+							String currentPrimaryId = newRecordId.get(0);
 							String secondaryId = parameters.get("group_id" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
 							String action = parameters.get("action" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
 							if (ACTION_DELETE.equals(action)) {
 								if (secondaryId != null && !"".equals(secondaryId)) {
-									deleteFormData(currentPrimaryId, Integer.parseInt(secondaryId), formParameters.getCurrentApi(), parameters);
+									deleteFormData(currentPrimaryId, secondaryId, formParameters.getCurrentApi(), parameters);
 								}
-							} else {
-								newRecordId.set(0,  saveFormData(currentPrimaryId, (secondaryId == null || "".equals(secondaryId)) ? null : Integer.parseInt(secondaryId), formParameters.getCurrentApi(), formParameters.getInputParameters(groupPrefix)));
+							}
+						}
+				});
+			}
+			
+		}
+
+		// Сохраняем параметры формы в случае если нет ошибок на форме
+		newRecordId.clear();
+		newRecordId.add(id);
+		if (release) {
+			for (FormParameters parrentFormParameters : formsList) {
+				operateFormParameters(parrentFormParameters, result, (FormParameters formParameters, ResultDto currentResult) -> {
+						for (String groupPrefix :  
+								formParameters.getParameters().keySet().stream()
+								.sorted((f1, f2) -> f1.compareTo(f2)).collect(Collectors.toList())
+						) {
+							String currentPrimaryId = newRecordId.get(0);
+							String secondaryId = parameters.get("group_id" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
+							String action = parameters.get("action" + GROUP_SEPARATOR + formParameters.getCurrentApi() + "_" + groupPrefix);
+							if (!ACTION_DELETE.equals(action)) {
+								newRecordId.set(0,  saveFormData(currentPrimaryId, (secondaryId == null || "".equals(secondaryId)) ? null : secondaryId, formParameters.getCurrentApi(), formParameters.getInputParameters(groupPrefix)));
 							}
 						}
 				});
@@ -298,7 +318,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 	
-	public ResultDto checkFormData(Integer primaryId, Integer secondaryId, String formApi, List<Value> parameters, Parameters checkParametersMap)
+	public ResultDto checkFormData(String primaryId, String secondaryId, String formApi, List<Value> parameters, Parameters checkParametersMap)
 			throws ServiceException {
 		
 		Form form = factory.getForm(formApi);
@@ -337,7 +357,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public Integer saveFormData(Integer primaryId, Integer secondaryId, String formApi, Parameters saveParametersMap)
+	public String saveFormData(String primaryId, String secondaryId, String formApi, Parameters saveParametersMap)
 			throws ServiceException {
 		
 		Form form = factory.getForm(formApi);
@@ -354,7 +374,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public void deleteFormData(Integer primaryId, Integer secondaryId, String formApi, Map<String, String> parametersMap)
+	public void deleteFormData(String primaryId, String secondaryId, String formApi, Map<String, String> parametersMap)
 			throws ServiceException {
 		
 		Form form = factory.getForm(formApi);
@@ -374,7 +394,7 @@ public class Service<F extends FormFactory> {
 	 */
 
 
-	public List<ListItemDto> getListData(Integer id, String formApi, String parameterName, Map<String, String> parameters)
+	public List<ListItemDto> getListData(String id, String formApi, String parameterName, Map<String, String> parameters)
 			throws ServiceException {
 		
 		List<ListItemDto> result = new LinkedList<ListItemDto>();
@@ -401,7 +421,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public List<ListItemDto> getInteractiveListData(Integer id, String formApi, String parameterName, Map<String, String> parameters) throws ServiceException {
+	public List<ListItemDto> getInteractiveListData(String id, String formApi, String parameterName, Map<String, String> parameters) throws ServiceException {
 
 		List<ListItemDto> result = new LinkedList<ListItemDto>();
 		
@@ -428,7 +448,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public String getValueData(Integer id, String formApi, String parameterName, Map<String, String> parameters) throws ServiceException {
+	public String getValueData(String id, String formApi, String parameterName, Map<String, String> parameters) throws ServiceException {
 
 		
 		
@@ -448,7 +468,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public Boolean getIsVisible(Integer id, String formApi, String parameterName, Map<String, String> parameters) throws ServiceException {
+	public Boolean getIsVisible(String id, String formApi, String parameterName, Map<String, String> parameters) throws ServiceException {
 
 		
 		
@@ -468,7 +488,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public Boolean getIsActive(Integer id, String formApi, String parameterName, Map<String, String> parameters) throws ServiceException {
+	public Boolean getIsActive(String id, String formApi, String parameterName, Map<String, String> parameters) throws ServiceException {
 
 		
 		
@@ -488,7 +508,7 @@ public class Service<F extends FormFactory> {
 	 * @throws ServiceException
 	 */
 
-	public ResultDto checkInterface(Integer id, String formApi, Parameters checkParametersMap)
+	public ResultDto checkInterface(String id, String formApi, Parameters checkParametersMap)
 			throws ServiceException {
 		
 		Form form = factory.getForm(formApi);

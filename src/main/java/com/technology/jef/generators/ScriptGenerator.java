@@ -41,7 +41,7 @@ public class ScriptGenerator extends TagGenerator {
 	@Override
 	public void onEndElement() {
 		if (hasEvent) {
-			dom.setBody(dom.getBody() + "});\n");
+			dom.setBody(dom.getBody() + " });\n"); // event.stopPropagation(); отмена поиска аналогичных эвентов в родительских элементах
 		}
 	}
 

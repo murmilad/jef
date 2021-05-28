@@ -10,14 +10,20 @@ public class ListItemDto {
 
 	private String id;
 	private String name;
+	private Boolean disabled;
 	
 	public ListItemDto(String id, String name) {
+		this(id, name, false);
+	}
+
+	public ListItemDto(String id, String name, Boolean disabled) {
 		this.setId(id);
 		this.setName(name);
+		this.setDisabled(disabled);
 	}
-	
+
 	public ListItemDto(OptionDto item){
-		this(item.getValue().toString(), item.getName());
+		this(item.getValue().toString(), item.getName(), item.containsKey("disabled") ? (Boolean) item.get("disabled") : false);
 	}
 
 	public String getId() {
@@ -45,5 +51,13 @@ public class ListItemDto {
 		    }
 		    return result;
 		  }
+
+	public Boolean getDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(Boolean disabled) {
+		this.disabled = disabled;
+	}
 
 }

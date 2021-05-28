@@ -25,10 +25,6 @@ public interface WebServiceConstant {
 	public static final Integer SERVICE_STATUS_OK = 1;
 	public static final Integer SERVICE_STATUS_ERROR = 2;
 	
-	public static final int INCORRECT_PARAMETER_ERROR_CODE = 1;
-	public static final int AUTHORIZATION_REQUIRED = 2;
-	public static final int SYSTEM_ERROR = 3;
-	public static final int REDIRECT_REQUIRED = 4;
 
 	//Form constants
 	

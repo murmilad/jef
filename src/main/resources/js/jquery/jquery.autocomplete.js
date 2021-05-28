@@ -644,6 +644,7 @@
                 container = $(that.suggestionsContainer),
                 noSuggestionsContainer = $(that.noSuggestionsContainer),
                 beforeRender = options.beforeRender,
+                afterRender = options.afterRender,
                 html = '',
                 category,
                 formatGroup = function (suggestion, index) {
@@ -692,12 +693,18 @@
             }
 
             that.visible = true;
+
+            if ($.isFunction(afterRender)) {
+                afterRender.call(that.element, container, that.suggestions);
+            }
+
             that.findBestHint();
         },
 
         noSuggestions: function() {
              var that = this,
                  beforeRender = that.options.beforeRender,
+                 afterRender = that.options.afterRender,
                  container = $(that.suggestionsContainer),
                  noSuggestionsContainer = $(that.noSuggestionsContainer);
 
@@ -719,6 +726,11 @@
 
             container.show();
             that.visible = true;
+
+            if ($.isFunction(afterRender)) {
+                afterRender.call(that.element, container, that.suggestions);
+            }
+
         },
 
         adjustContainerWidth: function() {

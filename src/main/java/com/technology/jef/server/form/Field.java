@@ -123,7 +123,7 @@ public class Field {
 	
 	@FunctionalInterface
 	public interface GetAttributesListener {
-		public abstract Map<Attribute, Boolean> handle (String parameterName, Parameters parameters, Integer primaryId) throws ServiceException;
+		public abstract Map<Attribute, Boolean> handle (String parameterName, Parameters parameters, String primaryId) throws ServiceException;
 
 	}
 	private GetAttributesListener getAttributesListener = null;
