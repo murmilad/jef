@@ -92,6 +92,7 @@ public class AutoComplete extends Widget {
 	"						$('#visible_${name}').trigger('autoCompleteChange');         \n" + 
 	"					},                       \n" + 
 	"					onSearchError: function (query, jqXHR, textStatus, errorThrown) {     \n" + 
+	"						$('#error_${name}').empty().hide();       \n" + 
 	"						$('#background_overlay_wait_${name}').hide();     \n" + 
 	"						$('#message_box_wait_${name}').hide();     \n" + 
 	"						$('#is_loading').val('0'); \n" +  
@@ -100,8 +101,16 @@ public class AutoComplete extends Widget {
 	"					transformResult: function(response) {        \n" + 
 	"						response.data.unshift({name: '---', id: ''})  \n" + 
 	"						var query = $('#visible_${name_api}${prefix}').val();                           \n" + 
+	"						$('#error_${name}').empty().hide();       \n" + 
 	"						return {        \n" + 
-	"									suggestions: $.map(response.data, function(dataItem) {         \n" + 
+	"									suggestions: response.data.filter(function(dataItem) {     \n" + 
+	"										if (dataItem.error) {  \n" + 
+	"											$('#error_${name}').show();       \n" + 
+	"											$('#error_${name}').append('<span style=\"color:red\">' + dataItem.error + '</span>' );       \n" + 
+	"											return false;       \n" + 
+	"										}  \n" + 
+	"									    return true; \n" + 
+	"									}).map( function(dataItem) {         \n" + 
 	"										var index = dataItem.name.toLowerCase().indexOf(query.toLowerCase());            \n" + 
 	"										var visible_name =  index >= 0 ? dataItem.name.substr(0, index) + '<b>' + query + '</b>' + dataItem.name.substr(index+query.length, dataItem.name.length) : dataItem.name;            \n" + 
 	"										return { value: dataItem.name, data: dataItem.id, name: dataItem.name, html: visible_name, disabled: dataItem.disabled};                          \n" + 
@@ -157,6 +166,12 @@ public class AutoComplete extends Widget {
 			Tag span = parrent.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.CLASS, "combobox");
 			}});
+			parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+				 put(Tag.Property.CLASS, "styled");
+				 put(Tag.Property.ID, "error_" + name);
+				 put(Tag.Property.NAME, "error_" + name);
+			}});
+
 			Tag input = span.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);

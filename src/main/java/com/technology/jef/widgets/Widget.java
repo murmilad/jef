@@ -60,6 +60,7 @@ public abstract class Widget {
 			SHORT_CHECKBOX_LIST,
 			RADIO_SWITCH,
 			SHORT_RADIO_SWITCH,
+			SHORT_RADIO_SWITCH_CLEANUP,
 			DADATA,
 			DADATAJOB,
 			AUTO_COMPLETE,
@@ -67,6 +68,7 @@ public abstract class Widget {
 			AUTO_COMPLETE_EDITABLE_COMPACT,
 			AUTO_COMPLETE_EDITABLE,
 			TEXT_READ_ONLY,
+			FILL_BUTTON,
 		}
 		
 		protected Tag parrent;

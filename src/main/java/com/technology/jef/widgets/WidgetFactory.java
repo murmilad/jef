@@ -97,6 +97,9 @@ public class WidgetFactory {
 		case SHORT_RADIO_SWITCH:
 			widget = new RadioSwitchShort();
 			break;
+		case SHORT_RADIO_SWITCH_CLEANUP:
+			widget = new RadioSwitchShortCleanup();
+			break;
 		case DADATA:
 			widget = new DaData();
 			break;
@@ -136,7 +139,11 @@ public class WidgetFactory {
 		case TEXT_READ_ONLY:
 			widget = new ReadOnly();
 			break;
+		case FILL_BUTTON:
+			widget = new FillButton();
+			break;
 		}
+		
 		
 		
 		return widget;

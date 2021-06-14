@@ -135,6 +135,7 @@ public class AutoCompleteAddress extends Widget {
 	"						$('#visible_${name}').trigger('autoCompleteChange');               \n" + 
 	"					},                             \n" + 
 	"					onSearchError: function (query, jqXHR, textStatus, errorThrown) {     \n" + 
+	"						$('#error_${name}').empty().hide();       \n" + 
 	"						$('#background_overlay_wait_${name}').hide();     \n" + 
 	"						$('#message_box_wait_${name}').hide();     \n" + 
 	"						showError(\"Error: \" + errorThrown, jqXHR.responseText + 'Parameters:' + query + '<br><br>');       \n" + 
@@ -146,8 +147,16 @@ public class AutoCompleteAddress extends Widget {
 	"						if (response.data.length > 200) {      \n" + 
 	"							response.data[199] =  {name: '...', disabled: true};      \n" + 
 	"						}      \n" + 
+	"						$('#error_${name}').empty().hide();       \n" + 
 	"						return {               \n" + 
-	"							suggestions: $.map(response.data.slice(0, 200), function(dataItem) {          \n" + 
+	"							suggestions: response.data.slice(0, 200).filter(function(dataItem) {     \n" + 
+	"								if (dataItem.error) {  \n" + 
+	"									$('#error_${name}').show();       \n" + 
+	"									$('#error_${name}').append('<span style=\"color:red\">' + dataItem.error + '</span>' );       \n" + 
+	"									return false;       \n" + 
+	"								}  \n" + 
+	"							    return true; \n" + 
+	"							}).map( function(dataItem) {         \n" + 
 	"								var index = dataItem.name.toLowerCase().indexOf(query.toLowerCase());                   \n" + 
 	"								var visible_name =  dataItem.name.substr(0, index) + '<b>' + query + '</b>' + dataItem.name.substr(index+query.length, dataItem.name.length);                   \n" + 
 	"								if (isHouse){                                   \n" + 
@@ -194,6 +203,11 @@ public class AutoCompleteAddress extends Widget {
 	"						}       \n" + 
 	"					} ,     \n" + 
 	"					formatResult:function (suggestion, currentValue) {             \n" + 
+	"						if (suggestion.error) {  \n" + 
+	"							$('#error_${name}').show();       \n" + 
+	"							$('#error_${name}').append('<span style=\"color:red\">' + suggestion.error + '</span>' );       \n" + 
+	"							return '';       \n" + 
+	"						}  \n" + 
 	"						if (suggestion.disabled) {  \n" + 
 	"							return \"<div style='color:gray;' > \" + suggestion.html + \"</div>\";  \n" + 
 	"						} else {  \n" + 
@@ -218,6 +232,9 @@ public class AutoCompleteAddress extends Widget {
 
 			);
 
+			parrent.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
+				put(Tag.Property.CLASS, "combobox");
+			}});
 			
 			return parrent.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);

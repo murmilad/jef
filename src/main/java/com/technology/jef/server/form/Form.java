@@ -153,8 +153,9 @@ public abstract class Form {
 					} else {
 						throw new ServiceException("isVisibleListener is not definded for parameter: '" + parameterName + "'");
 					}
+				} else {
+					isVisible = isVisibleListener.handle(parameterName, parameters);
 				}
-				isVisible = isVisibleListener.handle(parameterName, parameters);
 			} else {
 				if ("button_add".equals(parameterName) || "button_del".equals(parameterName) ) { // Methods for buttons is optional
 					isVisible = true; // Buttons is visible by default

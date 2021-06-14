@@ -82,16 +82,22 @@ public class Find extends Widget {
 				 put(Tag.Property.ID, "button_" + name);
 				 put(Tag.Property.NAME, "button_" + name);
 				 put(Tag.Property.VALUE, CurrentLocale.getInstance().getTextSource().getString("find"));
-				 put(Tag.Property.CLASS, "interface_button first_color second_text_color");
+				 put(Tag.Property.CLASS, "interface_button first_color second_text_color widgets_height");
 				 put(Tag.Property.TYPE, "button");
-				 put(Tag.Property.STYLE, "margin-left:10px;margin-right:10px;");
+				 put(Tag.Property.STYLE, "margin-left:10px;margin-right:10px;padding:0px !important;");
 				 put(Tag.Property.CLICK, "onClickFindButton" + name + "(this);");
 			}});
 
 			Tag elementInput =  row.add(Tag.Type.TD, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.STYLE, "width:50%;");
-			}})
-			.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			}});
+			elementInput.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+						 put(Tag.Property.CLASS, "styled");
+						 put(Tag.Property.ID, "search_result_error_" + name);
+						 put(Tag.Property.NAME, "search_result_error_" + name);
+			}});
+					
+			elementInput = elementInput.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.CLASS, "styled");
 			}})
 			.add(Tag.Type.SELECT, new HashMap<Tag.Property, String>(){{
@@ -103,57 +109,61 @@ public class Find extends Widget {
 			
 
 			String prefix = (String) generator.getAttribute(TagGenerator.Attribute.PREFIX);
-			String valueJS = "";
 			String nameAPI = name.replace(prefix, "");
 
-			valueJS = valueJS.concat("&value_1=\" + encodeURIComponent($(\"input#${parrent_name}${prefix}\").val()) + \"&parrent_1=${parrent_name}"
-					.replace("${parrent_name}", nameAPI)
-					.replace("${prefix}", prefix)
-			);
-			String[] ajax_parrent_list = (String[])generator.getAttribute(TagGenerator.Attribute.AJAX_VALUE_PARRENT);
+			String valueJS = getValueJS(generator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
 
-			for (Integer i = 1; i <= ajax_parrent_list.length; i++) {
-				valueJS = valueJS.concat("&value_${index}=\" + encodeURIComponent($(\"input#${parrent_name}${prefix}\").val()) + \"&parrent_${index}=${parrent_name}"
-						.replace("${index}", String.valueOf(i+1))
-						.replace("${parrent_name}", ajax_parrent_list[i-1])
-						.replace("${prefix}", prefix)
-				);
-			}
+			String[] ajax_parrent_list = (String[])generator.getAttribute(TagGenerator.Attribute.AJAX_LIST_PARRENT);
 
 			String ajaxSearchJS = 
-				("					$(\"input#${name}\").on( \"clean_find_data\", function() { \n" + 
-				"						$(\"#search_result_${name}\") \n" + 
-				"							.empty() \n" + 
-				"							.val(\"\") \n" + 
-				"							.css({visibility: \"hidden\"}) \n" + 
-				"						; \n" + 
-				"					}); \n" + 
-			
-				"					function onClickFindButton${name}(current){ \n" + 
-			
-				"						$(\"#search_result_${name}\").empty(); \n" + 
-				"						$(\"#search_result_${name}\").attr(\"disabled\",\"disabled\"); \n" + 
-				"						$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#search_result_${name}\"); \n" + 
-				"						$(\"#search_result_${name}\").trigger('refresh'); \n" + 
-			
-				"						getJSON(\"/${service}/get_value?child=${name_api}&${value_js}&api=${api}\" \n" + 
-				"						+ \"&id=\"\n" + 
-				"						+ $(\"#id\").val()\n" + 
-				"						+ \"&form_id=\" \n" + 
-				"						+ $(\"#form_id\").val() \n" + 
-				"						,{}	, function(data) { \n" + 
-				"								$(\"#search_result_${name}\").empty(); \n" + 
-				"								$(\"<option/>\", {'value': '', 'disabled': 'disabled', 'selected': 'selected'}).appendTo(\"#search_result_${name}\"); \n" + 
-				"								$.each(data.data, function(key, val) { \n" + 
-				"									$(\"<option/>\", {'value': val.id, html: val.name}).appendTo(\"#search_result_${name}\"); \n" + 
-				"							  	}); \n" + 
-				"								$(\"#search_result_${name}\").removeAttr('disabled'); \n" + 
-				"								$(\"#search_result_${name}\").trigger('refresh'); \n" + 
-				"								$(\"#search_result_${name}\").css({visibility: \"visible\"}); \n" + 
-				"							} \n" + 
-				"						); \n" + 
-				"					} \n")
-				.replace("${loading}", valueJS)
+						("  \n" + 
+	"					$(\"input#${name}\").on( \"clean_find_data\", function() {   \n" + 
+	"						$(\"#search_result_${name}\")   \n" + 
+	"							.empty()   \n" + 
+	"							.val(\"\")   \n" + 
+	"							.css({visibility: \"hidden\"})   \n" + 
+	"						;   \n" + 
+	"					});   \n" + 
+	"					function onClickFindButton${name}(current){   \n" + 
+	"						$(\"#search_result_${name}\").empty();   \n" + 
+	"						$(\"#search_result_${name}\").attr(\"disabled\",\"disabled\");   \n" + 
+	"						$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#search_result_${name}\");   \n" + 
+	"						$(\"#search_result_${name}\").trigger('refresh');   \n" + 
+	"					ajax({      \n" + 
+	"						url: \"${service}\" + \"get_list_interactive\",     \n" + 
+	"						data: {   \n" + 
+	"							form_api: \"${api}\",   \n" + 
+	"							parameter_name: \"${name_api}\",   \n" + 
+	"							parameters: ${value_js},   \n" + 
+	"						},     \n" + 
+	"						type: \"post\",     \n" + 
+	"						dataType: \"json\",    \n" + 
+	"						contentType: 'application/x-www-form-urlencoded',    \n" + 
+	"						function(data) {   \n" + 
+	"								$(\"#search_result_${name}\").empty();   \n" + 
+	"								$(\"<option/>\", {'value': '', 'disabled': 'disabled', 'selected': 'selected'}).appendTo(\"#search_result_${name}\");   \n" + 
+	"								var errors = []; \n" + 
+	"								$.each(data.data, function(key, val) {   \n" + 
+	"									if (val.error) { \n" + 
+	"										errors.push(val.error); \n" + 
+	"									} \n" + 
+	"									$(\"<option/>\", {'value': val.id, html: val.name}).appendTo(\"#search_result_${name}\");   \n" + 
+	"							  	});   \n" + 
+	"				  				if (errors.length > 0) { \n" + 
+	"				  					$(\"#search_result_${name}\").empty(); \n" + 
+	"				  					$(\"#search_result_${name}\").hide(); \n" + 
+	"				  					$(\"#search_result_error_${name}\").html('<span style=\"color:red\">'+ errors.join('<br>')+'</span>'); \n" + 
+	"				  				} else { \n" + 
+	"				  					$(\"#search_result_${name}\").show(); \n" + 
+	"				  					$(\"#search_result_error_${name}\").empty().hide(); \n" + 
+	"				  				} \n" + 
+	"								$(\"#search_result_${name}\").removeAttr('disabled');   \n" + 
+	"								$(\"#search_result_${name}\").trigger('refresh');   \n" + 
+	"								$(\"#search_result_${name}\").css({visibility: \"visible\"});   \n" + 
+	"							}   \n" + 
+	"						});   \n" + 
+	"					}   \n")
+				.replace("${loading}", CurrentLocale.getInstance().getTextSource().getString("loading"))
 				.replace("${value_js}", valueJS)
 				.replace("${name}", name)
 				.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))

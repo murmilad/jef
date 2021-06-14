@@ -11,19 +11,25 @@ public class ListItemDto {
 	private String id;
 	private String name;
 	private Boolean disabled;
+	private String error;
 	
 	public ListItemDto(String id, String name) {
-		this(id, name, false);
+		this(id, name, false, null);
 	}
 
-	public ListItemDto(String id, String name, Boolean disabled) {
+	public ListItemDto(String id, String name, Boolean disabled, String error) {
 		this.setId(id);
 		this.setName(name);
 		this.setDisabled(disabled);
+		this.setError(error);
 	}
 
 	public ListItemDto(OptionDto item){
-		this(item.getValue().toString(), item.getName(), item.containsKey("disabled") ? (Boolean) item.get("disabled") : false);
+		this(item.getValue() == null ? "" : item.getValue().toString(), 
+				item.getName(), 
+				item.containsKey("disabled") ? (Boolean) item.get("disabled") : false,
+				item.containsKey("error") ? (String)item.get("error") : null
+		);
 	}
 
 	public String getId() {
@@ -58,6 +64,14 @@ public class ListItemDto {
 
 	public void setDisabled(Boolean disabled) {
 		this.disabled = disabled;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 }
