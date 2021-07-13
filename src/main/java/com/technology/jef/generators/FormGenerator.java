@@ -10,6 +10,7 @@ import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
+import com.technology.jef.widgets.Text;
 import com.technology.jef.widgets.Widget;
 
 import static com.technology.jef.server.serialize.SerializeConstant.*;
@@ -270,7 +271,7 @@ public class FormGenerator extends TagGenerator {
 		}});
 
 		//TODO предусматреть внедрение JS из XML при нажатии кнопки "Далее" 
-		String valueJS = Widget.getValueJS(null, "", null);
+		String valueJS = new Text().getValueJS(null, "", null);
 		// При нажатии клавиши Enter вызываем нажатие кноеки "Далее"
 		buttonsRow.add(Tag.Type.SCRIPT, 
 																		("				$( document ).ready(function() {                       \n" + 
@@ -653,7 +654,7 @@ public class FormGenerator extends TagGenerator {
 					.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 					.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 					.replace("${group_separator}", GROUP_SEPARATOR)
-					.replace("${value_js}", Widget.getValueJS(null, "", null))
+					.replace("${value_js}", new Text().getValueJS(null, "", null))
 					.replace("${service}", (String) getAttribute(TagGenerator.Attribute.SERVICE))
 					.replace("${multiplie_group_name}", GROUP_SEPARATOR + (String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))
 					.replace("${group_plase}", joinedMultiplieGroupsBy.containsKey((String) multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))

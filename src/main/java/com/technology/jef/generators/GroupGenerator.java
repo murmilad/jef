@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
+import com.technology.jef.widgets.Text;
 import com.technology.jef.widgets.Widget;
 
 import static com.technology.jef.server.serialize.SerializeConstant.*;
@@ -203,7 +204,7 @@ public class GroupGenerator extends TagGenerator {
 	.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 	.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 	.replace("${joined_by}", (String) getAttribute(TagGenerator.Attribute.JOINED_BY))
-	.replace("${value_js}", Widget.getValueJS(null, "", null))
+	.replace("${value_js}", new Text().getValueJS(null, "", null))
 	.replace("${multiplie_group_name}", GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API))
 	.replace("${api}", (String) getAttribute(TagGenerator.Attribute.API))
 	.replace("${parrent_api}", (String) getAttribute(TagGenerator.Attribute.PARRENT_API))

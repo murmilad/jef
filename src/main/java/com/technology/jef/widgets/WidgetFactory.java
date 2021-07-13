@@ -118,6 +118,9 @@ public class WidgetFactory {
 		case AUTO_COMPLETE_ADDRESS:
 			widget = new AutoCompleteAddress();
 			break;
+		case AUTO_COMPLETE_FILTER:
+			widget = new AutoCompleteFilter();
+			break;
 		case ANYTEXT:
 			widget = new AnyText();
 			break;

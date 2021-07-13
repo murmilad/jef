@@ -65,6 +65,7 @@ public abstract class Widget {
 			DADATAJOB,
 			AUTO_COMPLETE,
 			AUTO_COMPLETE_ADDRESS,
+			AUTO_COMPLETE_FILTER,
 			AUTO_COMPLETE_EDITABLE_COMPACT,
 			AUTO_COMPLETE_EDITABLE,
 			TEXT_READ_ONLY,
@@ -661,7 +662,7 @@ public abstract class Widget {
 		 * @throws SAXException 
 		   */
 	
-		public static String getValueJS(TagGenerator currentGenerator, String prefix, TagGenerator.Attribute parrentType) throws SAXException {
+		public String getValueJS(TagGenerator currentGenerator, String prefix, TagGenerator.Attribute parrentType) throws SAXException {
 
 			String valueJS = "";
 
