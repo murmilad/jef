@@ -138,8 +138,8 @@ public class Find extends Widget {
 	"						},     \n" + 
 	"						type: \"post\",     \n" + 
 	"						dataType: \"json\",    \n" + 
-	"						contentType: 'application/x-www-form-urlencoded',    \n" + 
-	"						function(data) {   \n" + 
+	"						contentType: 'application/x-www-form-urlencoded'    \n" + 
+	"					},function(data) {   \n" + 
 	"								$(\"#search_result_${name}\").empty();   \n" + 
 	"								$(\"<option/>\", {'value': '', 'disabled': 'disabled', 'selected': 'selected'}).appendTo(\"#search_result_${name}\");   \n" + 
 	"								var errors = []; \n" + 
@@ -160,7 +160,7 @@ public class Find extends Widget {
 	"								$(\"#search_result_${name}\").removeAttr('disabled');   \n" + 
 	"								$(\"#search_result_${name}\").trigger('refresh');   \n" + 
 	"								$(\"#search_result_${name}\").css({visibility: \"visible\"});   \n" + 
-	"							}   \n" + 
+	"						   \n" + 
 	"						});   \n" + 
 	"					}   \n")
 				.replace("${loading}", CurrentLocale.getInstance().getTextSource().getString("loading"))
