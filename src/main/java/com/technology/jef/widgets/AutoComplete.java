@@ -199,7 +199,6 @@ public class AutoComplete extends Widget {
 	   */
 		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
 
-
 			return element;
 		}
 
@@ -215,11 +214,11 @@ public class AutoComplete extends Widget {
 				
 				return (
 					"		if (data.value != '') {  \n" + 
+					"			$('input#${child_name}').val(data.value);   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
 					"			$('#visible_${child_name}').val(data.name).blur().change().trigger('autoCompleteChange');   \n" + 
-					"			$('input#${child_name}').val(data.value);   \n" + 
 					"		} else {  \n" + 
+					"			$('input#${child_name}').val('');   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
 					"			$('#visible_${child_name}').val('---').blur().change().trigger('autoCompleteChange');   \n" + 
-					"			$('input#${child_name}').val('');   \n" + 
 					"		}  \n" + 
 					"		$('#visible_${child_name}').bind('change', function(){  \n" + 
 					"			$('#${system_prefix}_changed_${child_name}').val('1')  \n" + 
