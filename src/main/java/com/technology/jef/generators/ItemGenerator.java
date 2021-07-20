@@ -154,7 +154,7 @@ public class ItemGenerator extends TagGenerator {
 					? super.getAttribute(TagGenerator.Attribute.API)
 					: this.getParrent().getAttribute(TagGenerator.Attribute.API);
 		case PARRENT_API:
-			return !"".equals(super.getAttribute(TagGenerator.Attribute.PARRENT_API)) 
+			return hasAttribute(TagGenerator.Attribute.PARRENT_API) 
 					? super.getAttribute(TagGenerator.Attribute.PARRENT_API)
 					: this.getParrent().getAttribute(TagGenerator.Attribute.PARRENT_API);
 		case PREFIX:

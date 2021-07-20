@@ -125,7 +125,7 @@ public class FormGenerator extends TagGenerator {
 				String formInterfaceApi = (String) currentGenerator.getAttribute(TagGenerator.Attribute.API);
 				if  (!"".equals(formInterfaceApi)) {
 					// Добавляем в карту API встретившийся у парамера API и записываем в текущую API родительские API (те что должны быть вызваны первыми)
-					formInterfaceApiMap.put(formInterfaceApi, (String) currentGenerator.getParrent().getAttribute(TagGenerator.Attribute.PARRENT_API));
+					formInterfaceApiMap.put(formInterfaceApi, (String) currentGenerator.getAttribute(TagGenerator.Attribute.PARRENT_API));
 				}
 			}
 		});
@@ -681,7 +681,7 @@ public class FormGenerator extends TagGenerator {
 		String serviceCallJS = "";
 		for (String formApi: formInterfaceApiMap.keySet()) {
 			
-			// Если у группы есть родительские (которые должны загрузиться первыми) то вызываем их по событияа окончания загрузки родительских
+			// Если у группы есть родительские (которые должны загрузиться первыми) то вызываем их по событиям окончания загрузки родительских
 			if ( !"".equals(formInterfaceApiMap.get(formApi))) {
 				serviceCallJS += "	$('#form_id').bind('${parrent_api}_group_loaded', function(){ \n"
 						.replace("${parrent_api}", formInterfaceApiMap.get(formApi));
