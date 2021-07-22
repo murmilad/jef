@@ -42,6 +42,10 @@ public class Parameters extends HashMap<String, Value>{
 		return this.containsKey(parameterName) ? this.get(parameterName).getValue() : "";
 	}
 
+	public Boolean isEmptyValue(String parameterName) {
+		return !this.containsKey(parameterName) || "".equals(this.get(parameterName).getValue());
+	}
+
 	public String getGroupValue(String parameterName, String formName, Integer groupNumber) {
 		return getValue(parameterName + GROUP_SEPARATOR + formName + "_" + groupNumber);
 	}

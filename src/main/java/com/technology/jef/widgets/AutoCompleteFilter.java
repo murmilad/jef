@@ -17,6 +17,14 @@ import static com.technology.jef.server.serialize.SerializeConstant.*;
 public class AutoCompleteFilter extends AutoComplete {
 
 	@Override
+	public String getCleanValueJS() {
+			
+			return 		(" \n" + 
+"	$('#visible_${child_name}').val('');   \n" + 
+"	$('input#${child_name}').val('');   \n" + 
+" ");
+		}
+	@Override
 	protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
 		element.removeProperty(Tag.Property.READONLY);
 		element.getParrent().add(Tag.Type.SCRIPT,	(" \n" + 
@@ -44,6 +52,6 @@ public class AutoCompleteFilter extends AutoComplete {
 		String nameAPI = name.replace(prefix, "");
 			
 
-			return "'filter_" + nameAPI + PARAMETER_NAME_VALUE_SEPARATOR + "' + $('#visible_" + name + "').val() + '" + PARAMETER_SEPARATOR + "' + " + super.getValueJS(currentGenerator, prefix, parrentType);
+			return "'filter_" + nameAPI + PARAMETER_NAME_VALUE_SEPARATOR + "' + ($('#visible_" + name + "').val() ? $('#visible_" + name + "').val() : '---') + '" + PARAMETER_SEPARATOR + "' + " + super.getValueJS(currentGenerator, prefix, parrentType);
 	}
 }

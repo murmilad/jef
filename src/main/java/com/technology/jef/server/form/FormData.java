@@ -1,5 +1,7 @@
 package com.technology.jef.server.form;
 
+import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_NAME_VALUE_SEPARATOR;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +46,11 @@ public class FormData {
 
 	public String getValue(String interfaceFieldName) {
 		return this.values.get(interfaceFieldName).getValue();
+	}
+
+	public Boolean isEmptyValue(String interfaceFieldName) {
+		return "".equals(this.values.get(interfaceFieldName).getValue())
+		|| PARAMETER_NAME_VALUE_SEPARATOR.equals(this.values.get(interfaceFieldName).getValue());
 	}
 
 	public void putAttributes(String parameterName, Map<Attribute, Boolean> attributes) {

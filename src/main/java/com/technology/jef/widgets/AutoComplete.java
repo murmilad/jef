@@ -176,7 +176,10 @@ public class AutoComplete extends Widget {
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.TYPE, "search");
-				 put(Tag.Property.STYLE, "padding-right:0px;width:100%;margin-top:1px;margin-bottom:1px;");
+				 if (generator.hasAttribute(TagGenerator.Attribute.HINT)) {
+					 put(Tag.Property.PLACEHOLDER, (String) generator.getAttribute(TagGenerator.Attribute.HINT));
+				 }
+			     put(Tag.Property.STYLE, "padding-right:0px;width:100%;margin-top:1px;margin-bottom:1px;");
 				 put(Tag.Property.READONLY, "readonly");
 			}});
 			span.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
