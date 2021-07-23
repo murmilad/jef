@@ -37,7 +37,7 @@ public class CheckBox extends Widget {
 	public String getSetValueJS() {
 		
 		return 		(" \n" + 
-	"	$('#visible_${child_name}').prop('checked', data.value === '1' ? true : false);  \n" + 
+	"	$('#visible_${child_name}').prop('checked', data.value === 'true' || data.value == '1');  \n" + 
 	"	$('#visible_${child_name}').change(); \n" + 
 	"	$('input#${child_name}').val(data.value === '1' ? 1 : 0); \n"+
 	"	$('#visible_${child_name}').bind('change', function(){ \n" + 

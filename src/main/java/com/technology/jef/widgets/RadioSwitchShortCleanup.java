@@ -11,7 +11,7 @@ import com.technology.jef.generators.TagGenerator;
 /**
 * Виджет маленький переключатель
 */
-public class RadioSwitchShortCleanup extends RadioSwitch {
+public class RadioSwitchShortCleanup extends RadioSwitchShort {
 
 	  /**
 	   * Метод возвращает тип виджета
@@ -43,15 +43,13 @@ public class RadioSwitchShortCleanup extends RadioSwitch {
 							put(Tag.Property.STYLE, "border-width: 1px; display: table-cell;");
 					}});			
 
-			elementInput.add(Tag.Type.LINK, CurrentLocale.getInstance().getTextSource().getString("cleanup"),
+			parrent.add(Tag.Type.A, CurrentLocale.getInstance().getTextSource().getString("cleanup"),
 					new HashMap<Tag.Property, String>() {
 						{
 							put(Tag.Property.ID, "link_" + name);
 							put(Tag.Property.STYLE,
-									"border-bottom: 1px dashed; cursor: pointer; margin: 0pt 2px 2px; text-align: left;");
-							put(Tag.Property.CLICK, "$(\"[name='visible_" + name
-									+ "']\").each(function(index, item){ $(this).prop(\"checked\", false).trigger('refresh');});$('#"
-									+ name + "').val('');return false;");
+									"border-bottom: 1px dashed; cursor: pointer; margin: 0pt 2px 2px; text-align: left;display: table-cell;");
+							put(Tag.Property.CLICK, "$('#"+ name+"').val(''); $(\"input[name^='visible_" + name + "']\").each(function(index, item){ if ($( item ).prop(\"checked\")) {$( item ).prop('checked',false).trigger('refresh').trigger('update');  }}); $('#visible_"+ name+"').change();");
 						}
 					});
 			return elementInput;
