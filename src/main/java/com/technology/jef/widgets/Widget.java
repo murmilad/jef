@@ -244,6 +244,14 @@ public abstract class Widget {
 				"			});   \n")
 				.replace("${name}", name)
 				);
+			element.add(Tag.Type.SCRIPT, 		("  \n" + 
+					"		$(\"#visible_${child_name}\").bind('setValue', function(event, value){      \n" + 
+					"			$('#visible_${child_name}').val(value);  \n" + 
+					"			$('#visible_${child_name}').change(); \n" + 
+					"			$('input#${child_name}').val(value); \n"+
+					"		});     \n")
+					.replace("${name_value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+					.replace("${child_name}", name));
 			 
 			return element;
 		}
@@ -450,7 +458,7 @@ public abstract class Widget {
 	"								}         \n" + 
 	"							$('#tr_${child_name}').trigger('refresh');         \n" + 
 	"							--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];    \n" + 
-	"							$(\"#visible_${child_name}\").trigger(\"set_find_result\");         \n" + 
+	"							$(\"#visible_${child_name}\").trigger(\"after_load\");         \n" + 
 	"							if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {         \n" + 
 	"								$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');   \n" + 
 	"								$(\"#background_overlay_wait_${parrent_name}\").hide();         \n" + 
@@ -612,13 +620,13 @@ public abstract class Widget {
 	"									}       \n" + 
 	"								}       \n" + 
 	"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];       \n" + 
-	"								$(\"#visible_${child_name}\").trigger('set_find_result');       \n" + 
+	"								$(\"#visible_${child_name}\").trigger('after_load');       \n" + 
 	"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {       \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');       \n" + 
 	"									$(\"#background_overlay_wait_${parrent_name}\").hide();       \n" + 
 	"		            				$(\"#message_box_wait_${parrent_name}\").hide();       \n" + 
 	"									$(\"input#${parrent_name}\").trigger('unlock');          \n" + 
-	"									$(\"#visible_${child_name}\").unbind('set_find_result');     \n" + 
+	"									$(\"#visible_${child_name}\").unbind('after_load');     \n" + 
 	"								}       \n" + 
 	"								--ajax_is_child_blocked${prefix}[\"${child_name}\"];  \n" + 
 	"								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {  \n" + 

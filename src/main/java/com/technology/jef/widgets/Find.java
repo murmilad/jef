@@ -68,15 +68,16 @@ public class Find extends Widget {
 					 put(Tag.Property.STYLE, "width:40%;");
 				}})
 				.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
-					 put(Tag.Property.ID, name);
-					 put(Tag.Property.NAME, name);
+					 put(Tag.Property.ID,"visible_" + name);
+					 put(Tag.Property.NAME, "visible_" + name);
 					 put(Tag.Property.TYPE, "text");
 					 put(Tag.Property.STYLE, "width: 100%;");
+					 put(Tag.Property.CLASS, "widget first_frames_border widgets_color widgets_height widgets_font");
 					 put(Tag.Property.KEYDOWN, "if (window.event.keyCode == 13) {  event.returnValue = false; onClickFindButton" + name + "(this); event.preventDefault();}");
 				}});
 
 			row.add(Tag.Type.TD, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.STYLE, "width:40%;");
+				 put(Tag.Property.STYLE, "width:10%;");
 			}})
 			.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "button_" + name);
@@ -105,6 +106,7 @@ public class Find extends Widget {
 				 put(Tag.Property.NAME, "search_result_" + name);
 				 put(Tag.Property.STYLE, "float:left; visibility: hidden;width:100%;");
 				 put(Tag.Property.CHANGE, "onChangeFindResult" + name + "(this);");
+				 put(Tag.Property.CLASS, "widget first_frames_border widgets_color widgets_height widgets_font");
 			}});
 			
 
@@ -125,6 +127,7 @@ public class Find extends Widget {
 	"						;   \n" + 
 	"					});   \n" + 
 	"					function onClickFindButton${name}(current){   \n" + 
+	"						$(\"#${name}\").val($(\"#visible_${name}\").val());   \n" + 
 	"						$(\"#search_result_${name}\").empty();   \n" + 
 	"						$(\"#search_result_${name}\").attr(\"disabled\",\"disabled\");   \n" + 
 	"						$(\"<option/>\", {'value': '', html: '${loading}'}).appendTo(\"#search_result_${name}\");   \n" + 
@@ -169,91 +172,81 @@ public class Find extends Widget {
 				.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))
 				.replace("${name_api}", nameAPI)
 				.replace("${service}", (String) generator.getAttribute(TagGenerator.Attribute.SERVICE));
-	
-			String valueTemplateJS = 
-				("					$(\"#search_result_${name}\").attr(\"disabled\",\"disabled\"); \n" + 
-				"					${sub_list_js} \n")
-				.replace("${name}", name);
 
+			
+			
+			
+		
+			
+			
 			String[] ajax_child_list = (String[])generator.getAttribute(TagGenerator.Attribute.AJAX_VALUE_CHILD);
-			
-			
-			String readyToUnbindJS = "ajax_is_parrent_blocked" + prefix + "[\"" + 
-					String.join(prefix + "\"] == 0 && ajax_is_parrent_blocked" + prefix + "[\"", ajax_child_list) +
-					"\"] == 0";
-			String unbindAllListenersJS = "$(\"#visible_" + 
-					String.join(prefix + "\").unbind('set_find_result');\n\t\t\t\t\t\t\t$(\"#visible_", ajax_child_list) +
-					"\").unbind('set_find_result');";
-			String unbindAllUnbindListenersJS ="$(\"#visible_" + 
-					String.join(prefix + prefix + "\").unbind('on_parrent_unblocked');\n\t\t\t\t\t\t\t$(\"#visible_", ajax_child_list) +
-					"\").unbind('on_parrent_unblocked');";
 
-			String unbindJS = "";
-			for (String childName: ajax_child_list) {
-				unbindJS = unbindJS.concat(
-					("						$(\"#visible_${result_name}${prefix}\").on( \"on_parrent_unblocked\", function() { \n" + 
-					"							if (${redy_to_unbind}) { \n" + 
-					"								${unbind_all_listeners}; \n" + 
-					"								${unbind_all_unbund_listeners}; \n" + 
-					"								$(\"#search_result_${name}\").removeAttr('disabled'); \n" + 
-					"							} \n" + 
-					"						}); \n")
-					.replace("${result_name}", childName)
-					.replace("${prefix}", prefix)
-					.replace("${name}", name)
-					.replace("${redy_to_unbind}", readyToUnbindJS)
-					.replace("${unbind_all_listeners}", unbindAllListenersJS)
-					.replace("${unbind_all_unbund_listeners}", unbindAllUnbindListenersJS)
-				);
+			String callEventsJS = "";
+			for (String parrentName: ajax_child_list) {
+				
+				String condition = "typeof onChange" + String.join("_" + parrentName + "__ct_ajax_value === 'function' || typeof onChange", ajax_child_list) + "_" + parrentName + "__ct_ajax_value == 'function'";
+
+				callEventsJS = callEventsJS.concat(	(" \n" + 
+				"			if (!(${condition})) { \n" + 
+				"				$(\"#visible_${parrent_name}${prefix}\").trigger('set_find_result'); \n" + 
+				"				$(\"#visible_${parrent_name}${prefix}\").trigger('on_parrent_unblocked'); \n" + 
+				"				$(\"#visible_${parrent_name}${prefix}\").unbind('set_find_result'); \n" + 
+				"			}  \n")
+				.replace("${condition}", condition)
+				.replace("${parrent_name}", parrentName)
+				.replace("${prefix}", prefix));
 			}
+			
+			
 			
 			// Добавляем листенеры для установки значений полей после загрузки списков
 			
-			for (Integer i = 0; i < ajax_parrent_list.length; i++) {
-				String subList = 
-					("						if (value_array[${index}] == \"\") { \n" + 
-					"							value_array[${index}] = \"\" \n" + 
-					"						} \n" + 
-				
-					"						$(\"#visible_${result_name}${prefix}\").val(value_array[${index}]); \n" + 
-					"						$(\"#visible_${result_name}${prefix}\").change(); \n")
-					.replace("${result_name}", ajax_parrent_list[i])
-					.replace("${prefix}", prefix)
-					.replace("${index}", Objects.toString(i, ""));
-
-				if (i+1 < ajax_parrent_list.length) {
-					subList =
-						("							if (value_array[${index}] == \"\") { \n" + 
-						"								value_array[${index}] = \"\" \n" + 
-						"							} \n" + 
-					
-						"							$(\"#visible_${child_result_name}${prefix}\").on( \"set_find_result\", function() { \n" + 
-						"								${sub_list_js} \n" + 
-						"							}); \n" + 
-					
-						"							$(\"#visible_${result_name}${prefix}\").val(value_array[${index}]); \n" + 
-						"							$(\"#visible_${result_name}${prefix}\").change(); \n")
-						.replace("${result_name}", ajax_parrent_list[i])
-						.replace("${prefix}", prefix)
-						.replace("${index}", Objects.toString(i, ""))
-						.replace("${child_result_name}", ajax_parrent_list[i+1]);
-				}
-				
-				String tabs = "";
-				for (int j = 0; j < i; j++)
-					tabs = tabs.concat("\t\t");
-				subList = subList.replaceAll("\n", "\n" + tabs);
-				valueTemplateJS = valueTemplateJS.replace("${sub_list_js}", subList);
-			}
+			String resultName = ajax_child_list[0];
+			
+			valueJS = 	(" \n" + 
+			"		var set_result_listeners = ${set_result_listeners}; \n" + 
+			"		$(\"#visible_${result_name}${prefix}\").trigger('setValue', [value_array[0]]); \n" + 
 		
+			"		\n")
+			.replace("${set_result_listeners}", String.valueOf(ajax_child_list.length))
+			.replace("${result_name}", resultName)
+			.replace("${prefix}", prefix);
+			
+			
+			
+			Integer index = 0;
+			for (String childName: ajax_child_list) {
+				valueJS = valueJS.concat(
+						(" \n" + 
+	"				$(\"#visible_${result_name}${prefix}\").on( \"on_child_unblocked\", function() { \n" + 
+	"					$(\"#visible_${result_name}${prefix}\").unbind('set_find_result'); \n" + 
+	"				}); \n" + 
+
+	"				$(\"#visible_${result_name}${prefix}\").on( \"after_load\", function() { \n"+
+	"					$(\"#visible_${result_name}${prefix}\").trigger('set_find_result'); \n" + 
+	"				}); \n" +
+	
+	"				$(\"#visible_${result_name}${prefix}\").on( \"set_find_result\", function() { \n"+
+	"					$(\"#visible_${result_name}${prefix}\").trigger('setValue', [value_array[${i}]]); \n" + 
+	"				}); \n"
+	)
+					.replace("${result_name}", childName)
+					.replace("${prefix}", prefix)
+					.replace("${i}", String.valueOf(index))
+				);
+				index++;
+			}
+			
+			
+			
 			String setValueJS = 
 				("			function onChangeFindResult${name}(current){ \n" + 
-				"				var value_array = current.value.split(\",\"); \n" + 
-				"				${unbind_js} \n" + 
+				"				var value_array = current.value.split(\"\\|\"); \n" + 
 				"				${value_js} \n" + 
+				"				${call_events_js} \n" + 
 				"			} \n")
-				.replace("${value_js}", valueTemplateJS)
-				.replace("${unbind_js}", unbindJS)
+				.replace("${value_js}", valueJS)
+				.replace("${call_events_js}", callEventsJS)
 				.replace("${name}", name);			
 
 			parrent.add(Tag.Type.SCRIPT, ajaxSearchJS + setValueJS);

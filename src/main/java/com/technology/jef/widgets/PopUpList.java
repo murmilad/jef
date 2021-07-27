@@ -138,11 +138,11 @@ public class PopUpList extends Widget {
 "									$(\"#fake_visible_${child_name}\").val('${list_empty}');            \n" + 
 "									$(\"input#${child_name}\").val('');            \n" + 
 "									$(\"#fake_visible_${child_name}\").removeAttr('disabled');            \n" + 
-"									$(\"#visible_${child_name}\").trigger('set_find_result');            \n" + 
+"									$(\"#visible_${child_name}\").trigger('after_load');            \n" + 
 "									return;            \n" + 
 "								}            \n" + 
 "								$(\"#fake_visible_${child_name}\").removeAttr('disabled');            \n" + 
-"								$(\"#visible_${child_name}\").trigger('set_find_result');            \n" + 
+"								$(\"#visible_${child_name}\").trigger('after_load');            \n" + 
 "								--ajax_is_child_blocked${prefix}[\"${child_name}\"];   \n" + 
 "								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {   \n" + 
 "            								$(\"#visible_${child_name}\").trigger( 'on_child_unblocked');   \n" + 
@@ -297,6 +297,14 @@ public class PopUpList extends Widget {
 			"		} \n ";
 		}
 		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) throws SAXException {
+
+			element.add(Tag.Type.SCRIPT, 		("  \n" + 
+					"		$(\"#visible_${child_name}\").bind('setValue', function(event, value){      \n" + 
+					"				$('input#${child_name}').val(value.split('${name_value_separator}')[1]);        \n" + 
+					"				$('#visible_${child_name}').val(value.split('${name_value_separator}')[0]).change();                        \n" + 
+					"		});     \n")
+					.replace("${name_value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+					.replace("${child_name}", name));
 
 			return element;
 		}

@@ -55,7 +55,7 @@ public class CheckBoxList extends RadioSwitch {
 	"					$(\"#visible_${name}\").trigger('refresh');          \n" + 
 	"					$(\"#visible_${name}\").unbind(\"focusin\");         \n" + 
 	"					$(\"#visible_${name}\").find('input').styler({});    \n" + 
-	"					$(\"#visible_${name}\").trigger('setValue');    \n" + 
+	"					$(\"#visible_${name}\").trigger('setCheckboxValue');    \n" + 
 	"			});         \n").replace("${value_js}", valueJS);
 		}
 
@@ -108,6 +108,18 @@ public class CheckBoxList extends RadioSwitch {
 					"	} \n")
 					.replace("${name}", name)
 					.replace("${list_separator}", LIST_SEPARATOR));
+			element.add(Tag.Type.SCRIPT, 		("  \n" + 
+	"		$(\"#visible_${child_name}\").bind('setValue', function(event, value){      \n" + 
+	"			value.split('${list_separator}').forEach(function callback(currentValue, index, array) {     \n" + 
+	"				$('#visible_${child_name}' + currentValue).click();      \n" + 
+	"				$('#visible_${child_name}' + currentValue).prop('checked', true).trigger('refresh');       \n" + 
+	"				$('#visible_${child_name}' + currentValue).change();      \n" + 
+	"				$(\"#visible_${child_name}\" + currentValue).trigger('refresh');       \n" + 
+	"			});     \n" +
+	"		});     \n")
+	.replace("${list_separator}", LIST_SEPARATOR)
+	.replace("${child_name}", name));
+
 			return element;
 		}
 		
@@ -175,7 +187,7 @@ public class CheckBoxList extends RadioSwitch {
 			@Override
 			public String getSetValueJS() {
 				return  					("	if (isLoading) {    \n" + 
-	"		$(\"#visible_${child_name}\").bind('setValue', function(){      \n" + 
+	"		$(\"#visible_${child_name}\").bind('setCheckboxValue', function(){      \n" + 
 	"			$('input#${child_name}').val(data.value);     \n" + 
 	"			data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {    \n" + 
 	"				$('#visible_${child_name}' + currentValue).click();     \n" + 
@@ -186,7 +198,7 @@ public class CheckBoxList extends RadioSwitch {
 	"			$('#visible_${child_name}').bind('change', function(){  \n" + 
 	"				$('#${system_prefix}_changed_${child_name}').val('1')  \n" + 
 	"			});  \n" + 
-	"			$(\"#visible_${child_name}\").unbind('setValue');      \n" + 
+	"			$(\"#visible_${child_name}\").unbind('setCheckboxValue');      \n" + 
 	"		});      \n" + 
 	"	} else {   \n" + 
 	"	$('input#${child_name}').val(data.value);     \n" + 

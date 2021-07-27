@@ -1,5 +1,6 @@
 package com.technology.jef.widgets;
 
+import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_NAME_VALUE_SEPARATOR;
 import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAMETER_PREFIX;
 
 import java.util.HashMap;
@@ -64,6 +65,14 @@ public class CheckBox extends Widget {
 			.replace("${name}", name)
 		);
 		
+		element.add(Tag.Type.SCRIPT, 		("  \n" + 
+				"		$(\"#visible_${child_name}\").bind('setValue', function(event, value){      \n" + 
+				"			$('#visible_${child_name}').prop('checked', value === 'true' || value == '1');  \n" + 
+				"			$('#visible_${child_name}').change(); \n" + 
+				"			$('input#${child_name}').val(value === '1' ? 1 : 0); \n"+
+				"		});     \n")
+				.replace("${name_value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+				.replace("${child_name}", name));
 
 		return element;
 	}

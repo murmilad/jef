@@ -1,6 +1,7 @@
 package com.technology.jef.widgets;
 
 import static com.technology.jef.server.serialize.SerializeConstant.FIAS_CODE_NAME_SEPARATOR;
+import static com.technology.jef.server.serialize.SerializeConstant.LIST_SEPARATOR;
 import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_NAME_VALUE_SEPARATOR;
 import static com.technology.jef.server.serialize.SerializeConstant.PARAMETER_SEPARATOR;
 import static com.technology.jef.server.serialize.SerializeConstant.SYSTEM_PARAMETER_PREFIX;
@@ -130,7 +131,7 @@ public class RadioSwitch extends List {
 	"					$(\"#visible_${name}\").removeAttr('disabled');         \n" + 
 	"					${list_item_js}          \n" + 
 	"					$(\"#visible_${name}\").trigger('refresh');          \n" + 
-	"					$(\"#visible_${name}\").trigger('setValue');    \n" + 
+	"					$(\"#visible_${name}\").trigger('setRadioValue');    \n" + 
 	"					$(\"#background_overlay_wait_${name}\").hide();          \n" + 
 	"					$(\"#message_box_wait_${name}\").hide();          \n" + 
 	"					$(\"input#${name}\").trigger('unlock');         \n" + 
@@ -171,7 +172,7 @@ public class RadioSwitch extends List {
 	@Override
 	public String getSetValueJS() {
 		return 		("	if (isLoading) {                                                   \n" + 
-	"		$(\"#visible_${child_name}\").bind('setValue', function(){      \n" + 
+	"		$(\"#visible_${child_name}\").bind('setRadioValue', function(){      \n" + 
 	"			$(\"#visible_${child_name}\" + data.value).click();     \n" + 
 	"			$(\"#visible_${child_name}\" + data.value).prop('checked',true).trigger('refresh');     \n" + 
 	"			$(\"#visible_${child_name}\").change();     \n" + 
@@ -179,7 +180,7 @@ public class RadioSwitch extends List {
 	"			$('#visible_${child_name}').bind('change', function(){   \n" + 
 	"				$('#${system_prefix}_changed_${child_name}').val('1')   \n" + 
 	"			});   \n" + 
-	"			$(\"#visible_${child_name}\").unbind('setValue');      \n" + 
+	"			$(\"#visible_${child_name}\").unbind('setRadioValue');      \n" + 
 	"		});                                                           \n" + 
 	"	} else { \n" + 
 	"		if ($(\"#visible_${child_name}\" + data.value).attr('disabled')) { \n" + 
@@ -336,7 +337,7 @@ public class RadioSwitch extends List {
 	"									}             \n" + 
 	"								}             \n" + 
 	"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];             \n" + 
-	"								$(\"#visible_${child_name}\").trigger('set_find_result');             \n" + 
+	"								$(\"#visible_${child_name}\").trigger('after_load');             \n" + 
 	"								if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {             \n" + 
 	"									$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');             \n" + 
 	"									$(\"#background_overlay_wait_${parrent_name}\").hide();             \n" + 
@@ -346,7 +347,7 @@ public class RadioSwitch extends List {
 	"								--ajax_is_child_blocked${prefix}[\"${child_name}\"];      \n" + 
 	"								if (ajax_is_child_blocked${prefix}[\"${child_name}\"] == 0) {      \n" + 
 	"				            		$(\"#visible_${child_name}\").trigger( 'on_child_unblocked');      \n" + 
-	"									$(\"#visible_${child_name}\").trigger('setValue'); \n" +
+	"									$(\"#visible_${child_name}\").trigger('setRadioValue'); \n" +
 	"								}      \n" + 
 	"								$(\"#visible_${parrent_name}\").trigger('refresh');             \n" + 
 	"								$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
@@ -383,6 +384,14 @@ public class RadioSwitch extends List {
 	}
 
 	protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
+		element.add(Tag.Type.SCRIPT, 		("  \n" + 
+		"		$(\"#visible_${child_name}\").bind('setValue', function(event, value){      \n" + 
+		"			$(\"#visible_${child_name}\" + value).click();     \n" + 
+		"			$(\"#visible_${child_name}\" + value).prop('checked',true).trigger('refresh');     \n" + 
+		"			$(\"#visible_${child_name}\").change();     \n" + 
+		"			$(\"input#${child_name}\").val(value);   \n" + 
+		"		});     \n")
+		.replace("${child_name}", name));
 
 		return element;
 	}

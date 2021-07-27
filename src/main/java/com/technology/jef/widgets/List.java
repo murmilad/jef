@@ -177,7 +177,7 @@ public class List extends Widget {
 			"										}           \n" + 
 			"									}           \n" + 
 			"									--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];           \n" + 
-			"									$(\"#visible_${child_name}\").trigger('set_find_result');           \n" + 
+			"									$(\"#visible_${child_name}\").trigger('after_load');           \n" + 
 			"									if (ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] == 0) {           \n" + 
 			"										$(\"#visible_${parrent_name}\").trigger('on_parrent_unblocked');           \n" + 
 			"										$(\"#background_overlay_wait_${parrent_name}\").hide();           \n" + 

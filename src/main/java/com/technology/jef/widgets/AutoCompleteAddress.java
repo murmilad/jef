@@ -269,6 +269,14 @@ public class AutoCompleteAddress extends Widget {
 	   */
 		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) {
 
+			element.add(Tag.Type.SCRIPT, 		("  \n" + 
+					"		$(\"#visible_${child_name}\").bind('setValue', function(event, value){      \n" + 
+					"				$('input#${child_name}').val(value.split('${name_value_separator}')[1]);        \n" + 
+					"				$('#visible_${child_name}').val(value.split('${name_value_separator}')[0]);                        \n" + 
+					"				$('#visible_${child_name}').trigger('autoCompleteChange');                        \n" + 
+					"		});     \n")
+					.replace("${name_value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+					.replace("${child_name}", name));
 
 			return element;
 		}
