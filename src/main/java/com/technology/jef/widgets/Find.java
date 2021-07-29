@@ -218,6 +218,8 @@ public class Find extends Widget {
 			for (String childName: ajax_child_list) {
 				valueJS = valueJS.concat(
 						(" \n" + 
+	"				$(\"input#${result_name}${prefix}\").val(value_array[${i}]); \n" + 
+
 	"				$(\"#visible_${result_name}${prefix}\").on( \"on_child_unblocked\", function() { \n" + 
 	"					$(\"#visible_${result_name}${prefix}\").unbind('set_find_result'); \n" + 
 	"				}); \n" + 
