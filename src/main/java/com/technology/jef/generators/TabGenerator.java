@@ -75,7 +75,7 @@ public class TabGenerator extends TagGenerator {
 			dom.add(Tag.Type.SCRIPT, 
 						("                         \n" + 
 	"					$(\"#${name}_tab\").on(\"click\", function(event){                        \n" + 
-	"						loadForm('${form}');  \n" + 
+	"						loadFormTab('${form}');  \n" + 
 	"					});                                 \n" + 
 	"					\n")
 			.replace("${form}", (String) getAttribute(TagGenerator.Attribute.FORM_ID))

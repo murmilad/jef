@@ -179,7 +179,7 @@ public class AutoComplete extends Widget {
 				 if (generator.hasAttribute(TagGenerator.Attribute.HINT)) {
 					 put(Tag.Property.PLACEHOLDER, (String) generator.getAttribute(TagGenerator.Attribute.HINT));
 				 }
-			     put(Tag.Property.STYLE, "padding-right:0px;width:100%;margin-top:1px;margin-bottom:1px;");
+			     put(Tag.Property.STYLE, "padding-right:0px;width:100%;-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;");
 				 put(Tag.Property.READONLY, "readonly");
 			}});
 			span.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{
@@ -225,10 +225,10 @@ public class AutoComplete extends Widget {
 				
 				return (
 					"		if (data.value != '') {  \n" + 
-					"			$('input#${child_name}').val(data.value);   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
+					"			$('input#${child_name}').trigger('setHiddenValue',[data.value]);   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
 					"			$('#visible_${child_name}').val(data.name).blur().change().trigger('autoCompleteChange');   \n" + 
 					"		} else {  \n" + 
-					"			$('input#${child_name}').val('');   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
+					"			$('input#${child_name}').trigger('setHiddenValue',['']);   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
 					"			$('#visible_${child_name}').val('---').blur().change().trigger('autoCompleteChange');   \n" + 
 					"		}  \n" + 
 					"		$('#visible_${child_name}').bind('change', function(){  \n" + 

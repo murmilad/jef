@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class FormErrorsDto {
 
-	private List<String> form = new LinkedList<String>();
-	private Map<String,List<String>> parameters = new HashMap<String, List<String>>();
+	private List<FormErrorDto> form = new LinkedList<FormErrorDto>();
+	private Map<String,List<FormErrorDto>> parameters = new HashMap<String, List<FormErrorDto>>();
 
-	public FormErrorsDto(List<String> formErrors, Map<String,List<String>> parameters) {
+	public FormErrorsDto(List<FormErrorDto> formErrors, Map<String,List<FormErrorDto>> parameters) {
 		this.form = formErrors;
 		this.parameters = parameters;
 	}
@@ -20,28 +20,32 @@ public class FormErrorsDto {
 		// TODO Auto-generated constructor stub
 	}
 
-	public List<String> getFormErrors() {
+	public List<FormErrorDto> getFormErrors() {
 		return form;
 	}
 
-	public void setFormErrors(List<String> errors) {
+	public void setFormErrors(List<FormErrorDto> errors) {
 		this.form = errors;
 	}
 
-	public void addFormError(String formError) {
+	public void addFormError(FormErrorDto formError) {
 		this.form.add(formError);
 	}
 
-	public Map<String,List<String>> getParametersErrors() {
+	public Map<String,List<FormErrorDto>> getParametersErrors() {
 		return parameters;
 	}
 
-	public void setParametersErrors(Map<String, List<String>> errors) {
+	public void setParametersErrors(Map<String, List<FormErrorDto>> errors) {
 		this.parameters = errors;
 	}
 
-	public void addParametersError(String string, List<String> list) {
-		parameters.put(string, list);
+	public void addParametersError(String string, List<FormErrorDto> list) {
+		if (parameters.containsKey(string)) {
+			parameters.get(string).addAll(list);
+		} else {
+			parameters.put(string,list);
+		}
 	}
 
 }

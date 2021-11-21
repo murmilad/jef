@@ -42,6 +42,14 @@ public class Parameters extends HashMap<String, Value>{
 		return this.containsKey(parameterName) ? this.get(parameterName).getValue() : "";
 	}
 
+	public Double getDoubleOrZero(String parameterName) {
+		return this.containsKey(parameterName) ? this.get(parameterName).getDoubleOrZero() : 0;
+	}
+
+	public Integer getIntegerOrNull(String parameterName) {
+		return this.containsKey(parameterName) ? this.get(parameterName).getIntegerOrNull() : null;
+	}
+
 	public Boolean isEmptyValue(String parameterName) {
 		return !this.containsKey(parameterName) || "".equals(this.get(parameterName).getValue());
 	}

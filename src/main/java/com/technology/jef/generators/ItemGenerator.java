@@ -38,7 +38,7 @@ public class ItemGenerator extends TagGenerator {
 		     put(Tag.Property.STYLE, "position:relative;" + 
 		    		 (hasAttribute(TagGenerator.Attribute.HEIGHT) ? ("height: " +  getAttribute(TagGenerator.Attribute.HEIGHT) + ";") : "") 
 		    		 + ("1".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? "height: 45px;" : "") 
-		    		 + (hasAttribute(TagGenerator.Attribute.WIDTH) ? "" : "width:100%;")
+		    		 + (hasAttribute(TagGenerator.Attribute.WIDTH) ? "width:"+getAttribute(TagGenerator.Attribute.WIDTH)+";" : "width:100%;")
 		     );
 		}});
 
@@ -51,29 +51,27 @@ public class ItemGenerator extends TagGenerator {
 			 put(Tag.Property.CLASS, "message_overlay_loading");
 			}});
 
-		Tag element_table = visibleTag.add(Tag.Type.TABLE, new HashMap<Tag.Property, String>(){{
+		Tag element_table = visibleTag.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "table_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
 		     put(Tag.Property.CLASS, "interface_element_horizontal");
 		     put(Tag.Property.STYLE, 
-		    		 (hasAttribute(TagGenerator.Attribute.HEIGHT) ? ("height: " +  getAttribute(TagGenerator.Attribute.HEIGHT) + ";") : "") 
-		    		 + ("1".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? ("width: " + getAttribute(TagGenerator.Attribute.WIDTH) + ";") : "width:100%;") 
+		    		 (hasAttribute(TagGenerator.Attribute.HEIGHT) ? ("height: " +  getAttribute(TagGenerator.Attribute.HEIGHT) + ";") : "")  
 		     );
 		}});
 		
 		visibleRow = element_table
-				.add(Tag.Type.TR, new HashMap<Tag.Property, String>(){{
+				.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 					put(Tag.Property.ID, "tr_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
+				    put(Tag.Property.CLASS, "interface_element_body");
+				    put(Tag.Property.STYLE, "display: block;");
 				}});
 				
 		Tag element_row = visibleRow
-				.add(Tag.Type.TD)
-				.add(Tag.Type.TABLE, new HashMap<Tag.Property, String>(){{
+				.add(Tag.Type.DIV)
+				.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				     put(Tag.Property.CLASS, "interface_element_horizontal");
-				     put(Tag.Property.STYLE, 
-				    		 (hasAttribute(TagGenerator.Attribute.WIDTH) ? ("width: " + getAttribute(TagGenerator.Attribute.WIDTH) + ";") : "width:100%;") 
-				     );
 				}})
-				.add(Tag.Type.TR, new HashMap<Tag.Property, String>(){{
+				.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				     put(Tag.Property.CLASS, "interface_element_horizontal");
 				}});
 		
@@ -86,21 +84,22 @@ public class ItemGenerator extends TagGenerator {
 			String caption = ((String) getAttribute(TagGenerator.Attribute.NAME))
 				.replace("\\n", "<br>");
 
-			element_row.add(Tag.Type.TD, new HashMap<Tag.Property, String>(){{
-			     put(Tag.Property.STYLE,"padding: 1pt 5px; vertical-align: middle; text-align: left;"); 
+			element_row.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			     put(Tag.Property.CLASS,"widgets_header widgets_header_float"); 
 			}})
 			.add(Tag.Type.NOBR)
 			.add(Tag.Type.LABEL, caption + ":", new HashMap<Tag.Property, String>(){{
 				put(Tag.Property.FOR,"visible_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX)); 
+				put(Tag.Property.CLASS, "widgets_label_color");
 			}});
-			elementValue = element_row.add(Tag.Type.TD, new HashMap<Tag.Property, String>(){{
-			     put(Tag.Property.STYLE,"vertical-align: middle; width: 100%;"); 
+			elementValue = element_row.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			     put(Tag.Property.CLASS,"widgets_body widgets_body_float"); 
 			}});
 			break;
 		case SINGLE: 
-			elementValue = element_row.add(Tag.Type.TD, new HashMap<Tag.Property, String>(){{
-			     put(Tag.Property.STYLE,"vertical-align: middle; width: 100%;"); 
-			     put(Tag.Property.COLSPAN, "2"); 
+			elementValue = element_row.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			     put(Tag.Property.CLASS,"widgets_body widgets_body_float"); 
+			     put(Tag.Property.STYLE, "display: block;");
 			}});
 			break;
 		}

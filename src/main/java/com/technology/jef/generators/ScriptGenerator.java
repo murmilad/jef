@@ -1,5 +1,7 @@
 package com.technology.jef.generators;
 
+import java.util.HashMap;
+
 import org.xml.sax.SAXException;
 
 import com.technology.jef.Tag;
@@ -25,10 +27,22 @@ public class ScriptGenerator extends TagGenerator {
 		if (hasAttribute(TagGenerator.Attribute.TYPE)) {
 			script = dom.add(Tag.Type.SCRIPT, "$( \"#"+ dom.getProperty(Tag.Property.NAME) + "\" ).bind( \"" + 
 					((String) getAttribute(TagGenerator.Attribute.TYPE)).replaceAll(",", " ")
-					+ "\", function(event, data) { \n");
+					+ "\", function(event, data) { \n", new HashMap<Tag.Property, String>(){{
+						if (!"".equals(getAttribute(TagGenerator.Attribute.SRC))) {
+							put(Tag.Property.SRC, (String) getAttribute(TagGenerator.Attribute.SRC));
+							put(Tag.Property.TYPE, "text/javascript");
+						}
+
+					}});
 			hasEvent = true;
 		} else {
-			script = dom.add(Tag.Type.SCRIPT, "");
+			script = dom.add(Tag.Type.SCRIPT, "", new HashMap<Tag.Property, String>(){{
+				if (!"".equals(getAttribute(TagGenerator.Attribute.SRC))) {
+					put(Tag.Property.SRC, (String) getAttribute(TagGenerator.Attribute.SRC));
+					put(Tag.Property.TYPE, "text/javascript");
+				}
+
+			}});
 		}
 
 		return script;

@@ -47,6 +47,7 @@ public class RadioSwitch extends List {
 		Tag elementInput = mainInput.add(Tag.Type.LEGEND).add(Tag.Type.LABEL, new HashMap<Tag.Property, String>() {
 			{
 				put(Tag.Property.FOR, "visible_" + name);
+				put(Tag.Property.CLASS, "widgets_label_color");
 			}
 		}).add(Tag.Type.SPAN, (String) generator.getAttribute(TagGenerator.Attribute.NAME),
 				new HashMap<Tag.Property, String>() {
@@ -64,13 +65,18 @@ public class RadioSwitch extends List {
 						put(Tag.Property.STYLE, "display: table-cell; border-width: 1px;");
 					}
 				});
-
+		elementInput.add(Tag.Type.DIV, new HashMap<Tag.Property, String>() {
+			{
+				put(Tag.Property.ID, "visible_container_" + name);
+				put(Tag.Property.NAME, "visible_container_" + name);
+			}
+		});
 		mainInput.add(Tag.Type.A, CurrentLocale.getInstance().getTextSource().getString("cleanup"),
 				new HashMap<Tag.Property, String>() {
 					{
 						put(Tag.Property.ID, "link_" + name);
 						put(Tag.Property.STYLE,
-								"border-bottom: 1px dashed; cursor: pointer; margin: 0pt 2px 2px; text-align: left;display: table-cell;");
+								"border-bottom: 1px dashed; cursor: pointer; margin: 0pt 2px 2px; text-align: left;display: block;");
 						put(Tag.Property.CLICK, "$('#"+ name+"').val(''); $(\"input[name^='visible_" + name + "']\").each(function(index, item){ if ($( item ).prop(\"checked\")) {$( item ).prop('checked',false).trigger('refresh').trigger('update');  }}); $('#visible_"+ name+"').change();");
 								
 					}
@@ -89,17 +95,22 @@ public class RadioSwitch extends List {
 	"				'type': 'radio',     \n" + 
 	"				'id': visible_name,     \n" + 
 	"				'name': 'visible_${name}',     \n" + 
-	"				'disabled' : $('input#${name}').attr('data-disabled') ? 'disabled' : false ,			}).appendTo(\"#visible_${name}\");    \n" + 
+	"				'disabled' : $('input#${name}').attr('data-disabled') ? 'disabled' : false ," +
+	"			}).appendTo(\"#visible_container_${name}\");    \n" + 
 	"			$(\"<label/>\", {     \n" + 
-	"				style: 'margin:3px;',     \n" + 
+	"				style: 'margin:6px;',     \n" + 
 	"				html: val.name,     \n" + 
 	"				'for': visible_name,     \n" + 
-	"			}).appendTo(\"#visible_${name}\");   \n" + 
+	"				'class': 'frist_text_color',     \n" + 
+	"			}).appendTo(\"#visible_container_${name}\");   \n" + 
 	"			$('#' + visible_name).bindFirst('click', function(event){ \n" + 
+	"				$('#' + visible_name + '-styler').addClass('checked').trigger('refresh'); \n"+
 	"				onChangeReadOnly${name}(event.delegateTarget);  \n" + 
 	"			});  \n" + 
 	"			$('#' + visible_name).bindFirst('change', function(event){  \n" + 
-	"				onChangeReadOnly${name}(event.delegateTarget);  \n" + 
+	"				$('#' + visible_name + '-styler').addClass('checked').trigger('refresh'); \n"+
+	"				onChangeReadOnly${name}(event.delegateTarget);  \n" +
+	"//				$('.checked[name=\"visible_${name}\"]').removeClass('checked'); \n"+
 	"			});  \n" + 
 	"           $(\"#visible_${name}\" + val.id).styler({});  \n" + 
 	"		});    \n")
@@ -115,26 +126,33 @@ public class RadioSwitch extends List {
 		return 	("			$(\"#background_overlay_wait_${name}\").show();          \n" + 
 	"			$(\"#message_box_wait_${name}\").show();          \n" + 
 	"			$(\"input#${name}\").trigger('lock');         \n" + 
+	"			$( '#form_id' ).bind('setRadioValue', function() { //С помощью триггера сортирую вызовы установки значения радио в порядке формы , чтобы избежать ненужной проверки циклических зависимостей\n" + 
+	"				$(\"#visible_${name}\").trigger('setRadioValue');    \n" + 
+	"			});       \n" + 
+	"			document.setRadioValueCount = !document.setRadioValueCount ? 1 : document.setRadioValueCount+1; \n" +
 	"			$(\"#visible_${name}\").attr(\"disabled\",\"disabled\");         \n" + 
-	"			ajax({                                        \n" + 
-	"					url: \"${service}\" + \"get_list\",   \n" + 
-	"					data: {  \n" + 
-	"						form_api: \"${api}\",  \n" + 
-	"						parameter_name: \"${name_api}\",  \n" + 
-	"						parameters: ${value_js},  \n" + 
-	"					},    \n" + 
-	"					type: \"post\",     \n" + 
-	"					dataType: \"json\",    \n" + 
-	"					contentType: 'application/x-www-form-urlencoded'    \n" + 
-	"				}, function( data ) {      \n" + 
-	"					$(\"#visible_${name}\").empty();          \n" + 
-	"					$(\"#visible_${name}\").removeAttr('disabled');         \n" + 
-	"					${list_item_js}          \n" + 
-	"					$(\"#visible_${name}\").trigger('refresh');          \n" + 
-	"					$(\"#visible_${name}\").trigger('setRadioValue');    \n" + 
-	"					$(\"#background_overlay_wait_${name}\").hide();          \n" + 
-	"					$(\"#message_box_wait_${name}\").hide();          \n" + 
-	"					$(\"input#${name}\").trigger('unlock');         \n" + 
+	"				ajax({                                        \n" + 
+	"						url: \"${service}\" + \"get_list\",   \n" + 
+	"						data: {  \n" + 
+	"							form_api: \"${api}\",  \n" + 
+	"							parameter_name: \"${name_api}\",  \n" + 
+	"							parameters: ${value_js},  \n" + 
+	"						},    \n" + 
+	"						type: \"post\",     \n" + 
+	"						dataType: \"json\",    \n" + 
+	"						contentType: 'application/x-www-form-urlencoded'    \n" + 
+	"					}, function( data ) {      \n" + 
+	"						$(\"#visible_container_${name}\").empty();          \n" + 
+	"						$(\"#visible_${name}\").removeAttr('disabled');         \n" + 
+	"						${list_item_js}          \n" + 
+	"						$(\"#visible_${name}\").trigger('refresh');          \n" + 
+	"						if (--document.setRadioValueCount == 0) { \n" +
+	"							$( '#form_id' ).trigger('setRadioValue');       \n" + 
+	"							$( '#form_id' ).unbind('setRadioValue');       \n" + 
+	"						} \n" +
+	"						$(\"#background_overlay_wait_${name}\").hide();          \n" + 
+	"						$(\"#message_box_wait_${name}\").hide();          \n" + 
+	"						$(\"input#${name}\").trigger('unlock');         \n" + 
 	"			});     \n").replace("${value_js}", valueJS);
 	}
 
@@ -143,21 +161,25 @@ public class RadioSwitch extends List {
 
 		return 	(" \n" + 
 	"		if (data.value) {  \n" + 
-	" 			$( \"[name='visible_${child_name}']\" ).each(function( index, element) {  \n" + 
-	" 				$( element ).prop( \"disabled\", false);  \n" + 
-	"	           $( element ).trigger('refresh');  \n" + 
-	"			}); \n" + 
-	"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n" + 
+	" 			if ($('#tr_${child_name}' ).prop('disabled')){  \n" + 
+	" 				$( '#tr_${child_name}' ).prop( 'disabled', false);  \n" + 
+	" 				$( \"[name='visible_${child_name}']\" ).each(function( index, element) {  \n" + 
+	" 					$( element ).prop( \"disabled\", false).trigger('refresh');  \n" + 
+	"				}); \n" + 
+	"				$(\"#tr_${child_name}\" ).css('color', 'black'); \n" + 
+	" 			}                                                 \n" +
 	"			if ($('input#${child_name}').val()) { //ie9 support                                           \n" + 
 	" 				$('#visible_${child_name}' + $('input#${child_name}').val()).prop('checked', true).trigger('refresh');   \n" + 
 	"			}  \n" + 
 	" 		} else {                                                 \n" + 
-	" 			$( \"[name='visible_${child_name}']\" ).each(function( index, element) {  \n" + 
-	" 				$( element ).prop( \"disabled\", true);  \n" + 
-	"	             $( element ).trigger('refresh');  \n" + 
-	"			});                                          \n" + 
-	" 			$(\"#tr_${child_name}\" ).css('color', 'lightgray');  \n" + 
-	" 		}                                                 \n");
+	" 			if (!$('#tr_${child_name}' ).prop('disabled')){  \n" + 
+	" 				$( \"[name='visible_${child_name}']\" ).each(function( index, element) {  \n" + 
+	" 					$( element ).prop( \"disabled\", true).trigger('refresh');  \n" + 
+	"				});                                          \n" + 
+	" 				$( '#tr_${child_name}' ).prop( 'disabled', true);  \n" + 
+	" 				$(\"#tr_${child_name}\" ).css('color', 'lightgray');  \n" + 
+	" 			}                                                 \n" +
+	" 		}  ;                                               \n");
 	}
 
 	@Override
@@ -176,7 +198,7 @@ public class RadioSwitch extends List {
 	"			$(\"#visible_${child_name}\" + data.value).click();     \n" + 
 	"			$(\"#visible_${child_name}\" + data.value).prop('checked',true).trigger('refresh');     \n" + 
 	"			$(\"#visible_${child_name}\").change();     \n" + 
-	"			$(\"input#${child_name}\").val(data.value);   \n" + 
+	"			$(\"input#${child_name}\").trigger('setHiddenValue',[data.value]);   \n" + 
 	"			$('#visible_${child_name}').bind('change', function(){   \n" + 
 	"				$('#${system_prefix}_changed_${child_name}').val('1')   \n" + 
 	"			});   \n" + 
@@ -192,7 +214,7 @@ public class RadioSwitch extends List {
 	"		} \n" + 
 	" 		$(\"#visible_${child_name}\" + data.value).prop('checked',true).trigger('refresh');     \n" + 
 	"		$(\"#visible_${child_name}\").change();     \n" + 
-	"		$(\"input#${child_name}\").val(data.value);     \n" + 
+	"		$(\"input#${child_name}\").trigger('setHiddenValue',[data.value]);     \n" + 
 	"	}                                              \n")
 				.replace("${system_prefix}", SYSTEM_PARAMETER_PREFIX);
 	}
@@ -282,14 +304,13 @@ public class RadioSwitch extends List {
 
 		String bodyJS = 	("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){             \n" + 
 	"				if (!ajax_is_parrent_blocked${prefix}[\"${child_name}\"]) { // прерывание циклических зависимостей  \n" + 
+	"						$(\"#background_overlay_wait_${parrent_name}\").show();             \n" + 
+	"	            		$(\"#message_box_wait_${parrent_name}\").show();             \n" + 
 	"						var valueJS = ${value_js};   \n" + 
 	"						$(\"input#${child_name}\").trigger('cleanValue');         \n" + 
 	"						if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)){ return };             \n" + 
-	"						var value = $(\"#visible_${child_name}\").val();   \n" + 
-	"						$(\"#visible_${child_name}\").empty();             \n" + 
+	"						$(\"#visible_container_${child_name}\").empty();             \n" + 
 	"						$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
-	"						$(\"#background_overlay_wait_${parrent_name}\").show();             \n" + 
-	"	            		$(\"#message_box_wait_${parrent_name}\").show();             \n" + 
 	"						$(\"input#${parrent_name}\").trigger('lock');         \n" + 
 	"						if (!ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"]) {             \n" + 
 	"							ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"] = 0;             \n" + 
@@ -311,7 +332,7 @@ public class RadioSwitch extends List {
 	"					           	dataType: 'json',          \n" + 
 	"			            			contentType: 'application/x-www-form-urlencoded',          \n" + 
 	"						}, function (data) {    \n" + 
-	"								$(\"#visible_${child_name}\").empty();             \n" + 
+	"								$(\"#visible_container_${child_name}\").empty();             \n" + 
 	"								${list_item_js}   \n" + 
 	"								var ${child_name} = $('#tr_${child_name}');             \n" + 
 	"								if (data.data && data.data.length > 0){             \n" + 
@@ -351,9 +372,6 @@ public class RadioSwitch extends List {
 	"								}      \n" + 
 	"								$(\"#visible_${parrent_name}\").trigger('refresh');             \n" + 
 	"								$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
-	"								if (value) {     \n" + 
-	"									$(\"#visible_${child_name}\").val(value).change();     \n" + 
-	"								}     \n" + 
 	"						});            \n" + 
 	"					}            \n" + 
 	"				}             \n")

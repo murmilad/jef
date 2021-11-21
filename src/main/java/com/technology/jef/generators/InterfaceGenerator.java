@@ -102,21 +102,7 @@ public class InterfaceGenerator extends TagGenerator {
 				"		    $(function() {                \n" + 
 				"		        $('input').styler();                \n" + 
 				"		    })                \n" + 
-				"		})(jQuery)        \n" + 
-				"	window.ajaxRequestStack = [];                 \n" + 
-				"	var ajaxRequestId = 0;                 \n" + 
-				"        window.ajaxPool = [];       \n" + 
-				"        window.ajaxXNR = [];       \n" + 
-				"        window.ajaxPool.hasSame = function(parameters) {       \n" + 
-				"            	if (ajaxPool.indexOf(parameters) != -1) {      \n" + 
-				" 					return true;      \n" + 
-				"				}       \n" + 
-				"				return false;       \n" + 
-				"        };       \n" + 
-				"        window.ajaxPool.delete	= function(parameters) {       \n" + 
-				"            	var i = ajaxPool.indexOf(parameters);       \n" + 
-				"				if (i > -1) ajaxPool.splice(i, 1);      \n" + 
-				"        };      \n"
+				"		})(jQuery)        \n" 
 		
 		),
 			new HashMap<Tag.Property, String>(){{
@@ -137,9 +123,11 @@ public class InterfaceGenerator extends TagGenerator {
 
 		Tag div = body.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			put(Tag.Property.ID, "wrapper");
+			put(Tag.Property.STYLE, "display: block;");
 		    put(Tag.Property.CLASS, "wrapper" + (!"".equals((String) getAttribute(TagGenerator.Attribute.NAME))? " work_area_width" : ""));
 		}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "main_content");
+			 put(Tag.Property.STYLE, "display: inline-block;");
 		     put(Tag.Property.CLASS, "block");
 		}});
 		if (!"".equals(getAttribute(TagGenerator.Attribute.HEADER))) {

@@ -36,7 +36,7 @@ public class ImageShort extends Image {
 				 }
 				 put(Tag.Property.ONERROR, "this.onerror=null; this.src='" + generator.getAttribute(TagGenerator.Attribute.DEFAULT_IMAGE) + "'");
 				 put(Tag.Property.NAME, "img_visible_" + name);
-				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
+				 put(Tag.Property.STYLE, "width: 100%;");
 			}});
 			
 			Tag submit =  input.add(Tag.Type.DIV,

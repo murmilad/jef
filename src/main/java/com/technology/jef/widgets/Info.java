@@ -46,7 +46,7 @@ public class Info extends Widget {
 			Tag elementInput = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
-				 put(Tag.Property.STYLE, "padding: 1pt 5px; vertical-align: middle; text-align: center; width:" + generator.getAttribute(TagGenerator.Attribute.WIDTH) + ";");
+				 put(Tag.Property.STYLE, "vertical-align: middle; text-align: center; width:" + generator.getAttribute(TagGenerator.Attribute.WIDTH) + ";");
 			}});
 
 			return elementInput;
@@ -61,8 +61,9 @@ public class Info extends Widget {
 	   * @return код JavaScript
 	   */
 		public String getSetValueJS() {
-			
+				
 			return 	(" \n" + 
+	"	$('#${child_name}').trigger('setHiddenValue',[data.value]); \n" +
 	"	$('#visible_${child_name}').html(data.value).change(); \n" +
 	"	$('#visible_${child_name}').bind('change', function(){ \n" + 
 	"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 

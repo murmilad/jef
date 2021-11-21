@@ -71,6 +71,7 @@ public class CheckBoxList extends RadioSwitch {
 					.add(Tag.Type.LEGEND)
 					.add(Tag.Type.LABEL, new HashMap<Tag.Property, String>(){{
 						 put(Tag.Property.FOR, "visible_" + name);
+						 put(Tag.Property.CLASS, "widgets_label_color");
 					}})
 					.add(Tag.Type.DIV, (String) generator.getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
 						 put(Tag.Property.NAME, "span_" + name);
@@ -80,7 +81,7 @@ public class CheckBoxList extends RadioSwitch {
 							 put(Tag.Property.CLASS, "styled widgets_height");
 							put(Tag.Property.ID, "visible_" + name);
 							put(Tag.Property.NAME, "visible_" + name);
-							put(Tag.Property.STYLE, "display: table-cell; border-width: 1px;");
+							put(Tag.Property.CLASS, "display: block; border-width: 1px;");
 					}});
 
 			mainInput.add(Tag.Type.LINK, CurrentLocale.getInstance().getTextSource().getString("cleanup"), new HashMap<Tag.Property, String>(){{
@@ -143,7 +144,8 @@ public class CheckBoxList extends RadioSwitch {
 	"								$(\"<label/>\", {    \n" + 
 	"									html : val.name,    \n" + 
 	"									'for' : visible_name,    \n" + 
-	"									'style' : 'display: inline-block; padding:4px;',    \n" + 
+	"									'style' : 'display: inline-block; padding:6px;',    \n" + 
+	"									'class' : 'frist_text_color',    \n" + 
 	"								}).appendTo(\"#\" + span_name);    \n" + 
 	"								$('#' + visible_name).change( function(event){  \n" + 
 	"									fill_${name}_checks(); \n" + 
@@ -158,16 +160,24 @@ public class CheckBoxList extends RadioSwitch {
 				
 				return 
 				"		if (data.value) { \n " + 
-				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
-				"				$( element ).prop( \"disabled\", false); \n	" +
-				"			}); \n " +
-				"           $(\"#visible_${child_name}\").find(\"input\").trigger('refresh');" +
-				"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+				" 			if ($('#tr_${child_name}' ).prop('disabled')){  \n" + 
+				"				$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
+				"					$( element ).prop( \"disabled\", false); \n	" +
+				"           		$( element ).find(\"input\").trigger('refresh');" +
+				"				}); \n " +
+				"           	$(\"#visible_${child_name}\").find(\"input\").trigger('refresh');" +
+				"				$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+				" 				$( '#tr_${child_name}' ).prop( 'disabled', false);  \n" + 
+				"           	$(\"#visible_${child_name}\").find(\"input\").trigger('refresh');" +
+				" 			}                                                 \n" +
 				"		} else { \n " +
-				"			$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
-				"				$( element ).prop( \"disabled\", true); \n	" +
-				"			}); \n " +
-				"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
+				" 			if (!$('#tr_${child_name}' ).prop('disabled')){  \n" + 
+				"				$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
+				"					$( element ).prop( \"disabled\", true); \n	" +
+				"				}); \n " +
+				"				$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
+				" 				$( '#tr_${child_name}' ).prop( 'disabled', true);  \n" + 
+				" 			}                                                 \n" +
 				"		} \n ";
 			}
 
@@ -188,7 +198,7 @@ public class CheckBoxList extends RadioSwitch {
 			public String getSetValueJS() {
 				return  					("	if (isLoading) {    \n" + 
 	"		$(\"#visible_${child_name}\").bind('setCheckboxValue', function(){      \n" + 
-	"			$('input#${child_name}').val(data.value);     \n" + 
+	"			$('input#${child_name}').trigger('setHiddenValue',[data.value]);     \n" + 
 	"			data.value.split('${list_separator}').forEach(function callback(currentValue, index, array) {    \n" + 
 	"				$('#visible_${child_name}' + currentValue).click();     \n" + 
 	"				$('#visible_${child_name}' + currentValue).prop('checked', true).trigger('refresh');      \n" + 

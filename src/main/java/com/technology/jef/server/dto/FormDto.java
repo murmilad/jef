@@ -48,7 +48,7 @@ public class FormDto  extends ResultDto {
 		this.parameters.put(parameterName, parameter);
 	}
 
-	public void setResult(List<String> formErrors, Map<String, List<String>> parametersErrors) {
+	public void setResult(List<FormErrorDto> formErrors, Map<String, List<FormErrorDto>> parametersErrors) {
 		getErrors().setFormErrors(formErrors);
 		getErrors().setParametersErrors(parametersErrors);
 	}

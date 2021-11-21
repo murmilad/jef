@@ -25,6 +25,8 @@ public abstract class TagGenerator {
 		FORM_ITEM,
 		TABS,
 		TAB,
+		CONTAINERS,
+		CONTAINER,
 	}
 
    /**
@@ -68,6 +70,7 @@ public abstract class TagGenerator {
 		ACCEPT,               // Доступные mimetype для виджета File
 		JOINED_BY,            // Группы, объединенные по типу
 		MAX_SIZE,             // Максимальный размер файла
+		SRC,                  // Источник файла скрипта
 
 	}
 

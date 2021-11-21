@@ -251,7 +251,7 @@ public class DaData extends Widget {
 						 put(Tag.Property.NAME, "visible_" + name);
 						 put(Tag.Property.TYPE, "search");
 						 put(Tag.Property.PLACEHOLDER, hint);
-						 put(Tag.Property.STYLE, "padding-right:0px;width:100%;font-size:large;height:28px;");
+						 put(Tag.Property.STYLE, "padding-right:0px;width:100%;font-size:large;height:28px;-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;");
 			}});
 			
 			return elementInput;

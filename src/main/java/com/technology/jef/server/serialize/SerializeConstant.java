@@ -40,7 +40,13 @@ public class SerializeConstant {
    * 
    */
   public static final String LIST_SEPARATOR = ":l:";
-  
+
+  /**
+   * Разделитель между кодом ошибки и текстом ошибки
+   * 
+   */
+  public static final String ERROR_TEXT_FIELD_CODE_SEPARATOR = ":e:";
+
   /**
    * Разделитель между кодом и именем в адресе ФИАС
    * 

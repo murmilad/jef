@@ -44,7 +44,7 @@ public class ImageWebCam extends Image {
 				 }
 				 put(Tag.Property.NAME, "img_visible_" + name);
 				 put(Tag.Property.ONERROR, "this.onerror=null; this.src='" + generator.getAttribute(TagGenerator.Attribute.DEFAULT_IMAGE) + "'");
-				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
+				 put(Tag.Property.STYLE, "width: 100%;");
 			}});
 			// слой для ввывода информации об ошибках в фото
 			parrent.add(Tag.Type.SPAN, new HashMap<Tag.Property, String>(){{

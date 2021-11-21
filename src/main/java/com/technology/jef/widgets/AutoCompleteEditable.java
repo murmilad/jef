@@ -195,7 +195,7 @@ public class AutoCompleteEditable extends Widget {
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.TYPE, "search");
-				 put(Tag.Property.STYLE, "padding-right:0px;width:100%;margin-top:1px;margin-bottom:1px;");
+			     put(Tag.Property.STYLE, "padding-right:0px;width:100%;-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;");
 				 put(Tag.Property.READONLY, "readonly");
 //				 put(Tag.Property.CHANGE, 	("var group_postfix='';  \n" + 
 //				"			if (match = '${name}'.match(/_group_.*/)){  \n" + 
@@ -267,7 +267,7 @@ public class AutoCompleteEditable extends Widget {
 	"	if (data.value != '') {   \n" + 
 	"		var value = data.value.split('${split}')[0]; \n" + 
 	"		var other = data.value.split('${split}')[1];  \n" + 
-	"		$('input#${child_name}').val(data.value);   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
+	"		$('input#${child_name}').trigger('setHiddenValue',[data.value]);   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
 	"		$('#visible_${child_name}').val(data.name).blur().change().trigger('autoCompleteChange');    \n" + 
 	"		if (other) {  \n" + 
 	"			$(\"#visible_${name}_other\").val(other);     \n" + 
@@ -276,7 +276,7 @@ public class AutoCompleteEditable extends Widget {
 	"			$(\"#visible_${name}_other\").trigger('refresh');     \n" + 
 	"		}  \n" + 
 	"	} else {   \n" + 
-	"		$('input#${child_name}').val('');   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
+	"		$('input#${child_name}').trigger('setHiddenValue',['']);   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
 	"		$('#visible_${child_name}').val('---').blur().change().trigger('autoCompleteChange');    \n" + 
 	"	}   \n" + 
 	"	$('#visible_${child_name}').bind('change', function(){   \n" + 

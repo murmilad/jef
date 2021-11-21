@@ -105,6 +105,7 @@ public class GroupGenerator extends TagGenerator {
 		
 		Tag tagCaption = tagFieldset.add(Tag.Type.LEGEND).add(Tag.Type.LABEL, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.FOR, "fildset_" + name);
+			 put(Tag.Property.CLASS, "widgets_label_color");
 		}});
 		
 		tagCaption.add(Tag.Type.SPAN, "-", new HashMap<Tag.Property, String>(){{

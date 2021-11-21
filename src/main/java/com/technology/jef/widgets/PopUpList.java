@@ -62,19 +62,15 @@ public class PopUpList extends Widget {
 				 put(Tag.Property.STYLE, "top: 0; left:0; display: none; background: rgba(255, 255, 255, 0.7)");
 			}});			
 			
-			Tag styledDiv = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.CLASS, "styled");
-			}});
-
-			Tag elementInput = styledDiv.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
+			Tag elementInput = parrent.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "fake_visible_" + name);
 				 put(Tag.Property.NAME, "fake_visible_" + name);
 				 put(Tag.Property.TYPE, "text");
 				 put(Tag.Property.READONLY, "readonly");
-				 put(Tag.Property.STYLE, "width:100%;cursor: default;");
+				 put(Tag.Property.STYLE, "width:100%;cursor: default; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;");
 			}});
 
-			styledDiv.add(Tag.Type.SELECT, new HashMap<Tag.Property, String>(){{
+			parrent.add(Tag.Type.SELECT, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.STYLE, "display: none;");
@@ -116,7 +112,7 @@ public class PopUpList extends Widget {
 "								$(\"#visible_${child_name}\").empty();            \n" + 
 "								$(\"#fake_visible_${child_name}\").val('${not_selected}');            \n" + 
 "								// создаем слой            \n" + 
-"								$(\"#fake_visible_${child_name}\").after(\"<div id='popup_${child_name}' class='popup background_color first_frames_border'><p id='column1'></p><p id='column2'></p></div>\");            \n" + 
+"								$(\"#fake_visible_${child_name}\").after(\"<div id='popup_${child_name}' class='popup first_font background_color first_frames_border'><p id='column1'></p><p id='column2'></p></div>\");            \n" + 
 "								$(\"#popup_${child_name}\").prepend(\"<h3>${select} \"+$('label[for=\"visible_${child_name}\"]').html()+\"</h3>\");            \n" + 
 "								$(\"#popup_${child_name}\").prepend(\"<div id='popup_${child_name}_close' class='popup_close buttons_height buttons_color'>${close}</div>\");            \n" + 
 "								var i = 0;            \n" + 
@@ -139,6 +135,7 @@ public class PopUpList extends Widget {
 "									$(\"input#${child_name}\").val('');            \n" + 
 "									$(\"#fake_visible_${child_name}\").removeAttr('disabled');            \n" + 
 "									$(\"#visible_${child_name}\").trigger('after_load');            \n" + 
+"									$(\"#overlay_${child_name}\").hide();       \n" + 
 "									return;            \n" + 
 "								}            \n" + 
 "								$(\"#fake_visible_${child_name}\").removeAttr('disabled');            \n" + 
@@ -275,7 +272,7 @@ public class PopUpList extends Widget {
 						"			$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
 						"		}); \n" + 
 						"	} else { \n" + 
-						"		$(\"input#${child_name}\").val(data.value);           \n" + 
+						"		$(\"input#${child_name}\").trigger('setHiddenValue',[data.value]);           \n" + 
 						"		$(\"#fake_visible_${child_name}\").val(data.name);           \n" + 
 						"		$(\"#visible_${child_name}\").val(data.value).change(); \n" + 
 						"	} \n"

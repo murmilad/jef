@@ -19,6 +19,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.technology.jef.generators.ContainerGenerator;
+import com.technology.jef.generators.ContainersGenerator;
 import com.technology.jef.generators.FormGenerator;
 import com.technology.jef.generators.FormsGenerator;
 import com.technology.jef.generators.GroupGenerator;
@@ -254,6 +256,18 @@ public class DOMGenerator {
 		case TABS:
 			generator = new TabsGenerator();
 			// Формируем DOM модель на уровне контейнера табов
+    		// Добавляем ссылку на текущую позицию в DOM в адресный стек
+    		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
+			break;
+		case CONTAINER:
+			generator = new ContainerGenerator();
+			// Формируем DOM модель на уровне контейнера
+    		// Добавляем ссылку на текущую позицию в DOM в адресный стек
+    		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
+			break;
+		case CONTAINERS:
+			generator = new ContainersGenerator();
+			// Формируем DOM модель на уровне контейнера контейнеров
     		// Добавляем ссылку на текущую позицию в DOM в адресный стек
     		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
 			break;

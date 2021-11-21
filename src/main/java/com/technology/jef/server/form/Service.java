@@ -8,6 +8,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -30,6 +33,7 @@ import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 
 import com.technology.jef.server.dto.FormDto;
+import com.technology.jef.server.dto.FormErrorDto;
 import com.technology.jef.server.dto.ListItemDto;
 import com.technology.jef.server.dto.OptionDto;
 import com.technology.jef.server.dto.ParameterDto;
@@ -323,27 +327,34 @@ public class Service<F extends FormFactory> {
 		
 		Form form = factory.getForm(formApi);
 		
-		Map<String,List<String>> parameterErrors = new HashMap<String,List<String>>(); 
+		Map<String,List<FormErrorDto>> parameterErrors = new HashMap<String,List<FormErrorDto>>(); 
 		// Добавляем ошибки связанные с заполнением интерфейса 
 		for (Value parameter : parameters) {
 			List<String> result = form.checkParameter(primaryId, secondaryId, parameter, checkParametersMap);
 			if (result != null && result.size() > 0) {
-				parameterErrors.put(parameter.getName(), result);
+				
+				parameterErrors.put(parameter.getName(), result.stream().map(
+						error -> new FormErrorDto(error, parameter.getName())).collect(Collectors.toList()));
 			}
 		}
 
-		List<String> formErrors = new LinkedList<String>();
+		List<FormErrorDto> formErrors = new LinkedList<FormErrorDto>();
 		Map<String, List<String>> formParameterErrors = form.checkForm(primaryId, secondaryId, checkParametersMap);
 		
 		for (String parameterName: formParameterErrors.keySet()){
 			if ("form".equals(parameterName) || !form.getFieldsMap().containsKey(parameterName)) {
-				formErrors.addAll(formParameterErrors.get(parameterName));
+				formErrors.addAll(formParameterErrors.get(parameterName).stream().map(
+						error -> error.indexOf(ERROR_TEXT_FIELD_CODE_SEPARATOR) > 0
+							? new FormErrorDto(error.split(ERROR_TEXT_FIELD_CODE_SEPARATOR)[0], error.split(ERROR_TEXT_FIELD_CODE_SEPARATOR)[1], error.split(ERROR_TEXT_FIELD_CODE_SEPARATOR)[2]) 
+							: new FormErrorDto(error)
+						).collect(Collectors.toList()));
 			} else {
-				parameterErrors.put(parameterName, formParameterErrors.get(parameterName));
+				parameterErrors.put(parameterName, formParameterErrors.get(parameterName).stream().map(
+						error -> new FormErrorDto(error, parameterName)).collect(Collectors.toList()));
 			}
 		}
 
-		return new ResultDto(formErrors != null ? formErrors : new LinkedList<String>(), parameterErrors);
+		return new ResultDto(formErrors != null ? formErrors : new LinkedList<FormErrorDto>(), parameterErrors);
 	}
 
 	/**
@@ -514,20 +525,25 @@ public class Service<F extends FormFactory> {
 		Form form = factory.getForm(formApi);
 		form.getFormData().putExtraValues(checkParametersMap);
 		
-		Map<String,List<String>> parameterErrors = new HashMap<String,List<String>>(); 
-		List<String> formErrors =  new LinkedList<String>();
+		Map<String,List<FormErrorDto>> parameterErrors = new HashMap<String,List<FormErrorDto>>(); 
+		List<FormErrorDto> formErrors =  new LinkedList<FormErrorDto>();
 		Map<String, List<String>> interfaceErrors = form.checkInterface(id, form.getFormData().getValues());
 
 		for (String parameterName: interfaceErrors.keySet()){
 			if ("form".equals(parameterName)) {
-				formErrors.addAll(interfaceErrors.get(parameterName));
+				formErrors.addAll(interfaceErrors.get(parameterName).stream().map(
+						error -> error.indexOf(ERROR_TEXT_FIELD_CODE_SEPARATOR) > 0
+						? new FormErrorDto(error.split(ERROR_TEXT_FIELD_CODE_SEPARATOR)[0], error.split(ERROR_TEXT_FIELD_CODE_SEPARATOR)[1], error.split(ERROR_TEXT_FIELD_CODE_SEPARATOR)[2], false) 
+						: new FormErrorDto(error) {{setBlock(false);}}
+					).collect(Collectors.toList()));
 			} else {
-				parameterErrors.put(parameterName, interfaceErrors.get(parameterName));
+				parameterErrors.put(parameterName, interfaceErrors.get(parameterName).stream().map(
+						error -> new FormErrorDto(error, parameterName){{setBlock(false);}}).collect(Collectors.toList()));
 			}
 		}
 
 		
-		return new ResultDto(formErrors != null ? formErrors : new LinkedList<String>(), parameterErrors);
+		return new ResultDto(formErrors != null ? formErrors : new LinkedList<FormErrorDto>(), parameterErrors);
 	}
 
 	  public static void setListData(String listString, SetListHandler setListHandler, ClearListHandler clearListHandler) throws ServiceException {
@@ -595,7 +611,7 @@ public class Service<F extends FormFactory> {
 	 * @return десериализованный Map
 	 */
 	
-	public static Map<String,String> listToMap(String list) {
+	public static Map<String,String> listToMap(String list) throws ServiceException {
 		Map<String,String> parametersMap = new HashMap<String,String>();
 		
 		for (String parameter: list.split(PARAMETER_SEPARATOR)) {

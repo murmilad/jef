@@ -23,8 +23,10 @@ public class CheckBox extends Widget {
 	public Tag assembleTag(String name, TagGenerator generator) {
 		
 		Tag elementInput = parrent.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-			 put(Tag.Property.CLASS, "widgets_height");
-			 put(Tag.Property.STYLE, "margin: 1px;");
+			 put(Tag.Property.CLASS, "");
+			 put(Tag.Property.STYLE, "margin: 0px; ");
+		}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			 put(Tag.Property.STYLE, "margin: 4px 5px 4px 10px;");
 		}}).add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "visible_" + name);
 			 put(Tag.Property.NAME, "visible_" + name);
@@ -34,13 +36,19 @@ public class CheckBox extends Widget {
 		return elementInput;
 	}
 
+	
+	@Override
+	public String getSetHiddenValueJS() {
+		return 	"$('input#${name}').val(value === 'true' || value === '1' ? 1 : 0);"; 
+	}
+
 	@Override
 	public String getSetValueJS() {
 		
 		return 		(" \n" + 
 	"	$('#visible_${child_name}').prop('checked', data.value === 'true' || data.value == '1');  \n" + 
 	"	$('#visible_${child_name}').change(); \n" + 
-	"	$('input#${child_name}').val(data.value === '1' ? 1 : 0); \n"+
+	"	$('input#${child_name}').trigger('setHiddenValue',[data.value]); \n"+
 	"	$('#visible_${child_name}').bind('change', function(){ \n" + 
 	"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
 	"	}); \n" 

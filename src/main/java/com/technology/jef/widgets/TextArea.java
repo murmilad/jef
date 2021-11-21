@@ -56,7 +56,7 @@ public class TextArea extends Widget {
 					 put(Tag.Property.ID, "visible_" + name);
 					 put(Tag.Property.NAME, "visible_" + name);
 					 put(Tag.Property.ROWS, "3");
-					 put(Tag.Property.STYLE, "height:80; width:100%;");
+					 put(Tag.Property.STYLE, "height:80; width:100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;");
 				}});
 
 			parrent.add(Tag.Type.SCRIPT, 	(" \n" + 

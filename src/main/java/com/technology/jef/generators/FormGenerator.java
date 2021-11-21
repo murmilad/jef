@@ -59,6 +59,7 @@ public class FormGenerator extends TagGenerator {
 		Tag form = dom.add(Tag.Type.FORM, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, (String) getAttribute(TagGenerator.Attribute.ID));
 		     put(Tag.Property.NAME, (String) getAttribute(TagGenerator.Attribute.ID));
+			 put(Tag.Property.STYLE, "display: inline-block;");
 		}});
 
 
@@ -82,7 +83,7 @@ public class FormGenerator extends TagGenerator {
 		Tag errors = form.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "error");
 		     put(Tag.Property.NAME, "error");
-		     put(Tag.Property.STYLE, "color: red; display: none; padding-left:20px;");
+		     put(Tag.Property.STYLE, "color: red; display: none; padding-left:20px; ");
 		}});
 		errors.add(Tag.Type.H4, CurrentLocale.getInstance().getTextSource().getString("found_errors"));
 		errors.add(Tag.Type.UL, new HashMap<Tag.Property, String>(){{
@@ -275,6 +276,8 @@ public class FormGenerator extends TagGenerator {
 		// При нажатии клавиши Enter вызываем нажатие кноеки "Далее"
 		buttonsRow.add(Tag.Type.SCRIPT, 
 																		("				$( document ).ready(function() {                       \n" + 
+	"					$( document ).on('beforeLoading', function(){$('#submit_button').attr('disabled', true);}); \n" + 
+	"					$( document ).on('afterLoading', function(){$('#submit_button').attr('disabled', false);}); \n" + 
 	"					$(\":input\").keypress(function (e) {                       \n" + 
 	"					      if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {                       \n" + 
 	"					          $(\"#submit_button:visible\").focus();                       \n" + 
@@ -290,7 +293,6 @@ public class FormGenerator extends TagGenerator {
 	"    						$(\"#message_box_overlay_wait_form\").show();                             \n" + 
 	"    						$(\"#message_box_wait_form\").show();                             \n" + 
 	"							$( document ).bind('allRequestsReleased', function(){ \n" + 
-	"								$( document ).unbind('allRequestsReleased'); \n" + 
 	"								setForm(); \n" + 
 	"							});  \n" + 
 	"						} else {  \n" + 
@@ -327,21 +329,33 @@ public class FormGenerator extends TagGenerator {
 	"								var hasErrors = false;                    \n" + 
 	"								$(\"#error_list\").empty();                  \n" + 
 	"								if (data.errors.parametersErrors != null) {             \n" + 
-	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {           \n" + 
+	"									Object.keys(data.errors.parametersErrors) \n " + 
+	"											.filter(function(name) { return $('#' + name).length > 0})           \n" + 
+	"											.map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {           \n" + 
 	"										var name = obj.name;          \n" + 
 	"										var group = obj.group;          \n" + 
 	"										var errors = data.errors.parametersErrors[name];           \n" + 
-	"										$.each( errors, function(index, error) {                    \n" + 
-	"											$(\"#visible_\" + name).parent().children('').addClass(\"error error_color\");   \n" + 
-	"											var header = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim();                    \n" + 
-	"											$(\"<li/>\", {html: header.charAt(0).toUpperCase() + header.slice(1).toLowerCase() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                     \n" + 
-	"											hasErrors = true;               \n" + 
+	"										$.each( errors, function(index, error) {  \n" + 
+	"											if (error.block) { \n" + 
+	"												$(\"#visible_\" + name).parent().children('').addClass(\"error error_color\");   \n" + 
+	"												var groupHeader = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim();                    \n " +
+	"												if (error.message.toUpperCase().indexOf(groupHeader.toUpperCase()) == -1) { \n" + 
+	"													var parameterHeader = $.trim($(\"[for='visible_\" + name + \"']\").html()); \n " + 
+	"													$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: groupHeader.charAt(0).toUpperCase() + groupHeader.slice(1).toLowerCase() + ' - ' + parameterHeader + \" \" + error.message}).appendTo(\"#error_list\");                     \n" + 
+	"												} else { \n" + 
+	"													$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: error.message}).appendTo(\"#error_list\");                     \n" + 
+	"												} \n" + 
+	"												hasErrors = true;               \n" + 
+	"											} \n" + 
 	"										});                 \n" + 
 	"									});                 \n" + 
 	"								}                 \n" + 
+	"								Object.keys(data.errors.parametersErrors) \n " +
+	"									.filter(function(name) { return $('#' + name).length == 0})           \n" + 
+	"									.map(function(name) {data.errors.formErrors = data.errors.formErrors.concat(data.errors.parametersErrors[name])});            \n" + 
 	"								if (data.errors.formErrors != null) {                 \n" + 
 	"									$.each( data.errors.formErrors, function(index, error) {                    \n" + 
-	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                     \n" + 
+	"										$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: error.message}).appendTo(\"#error_list\");                     \n" + 
 	"										hasErrors = true;               \n" + 
 	"									});                 \n" + 
 	"								}                 \n" + 
@@ -485,6 +499,12 @@ public class FormGenerator extends TagGenerator {
 	"						$(\"#message_box_wait_${multiplie_group_name}\").show();            \n" + 
 	"						var template_tag = Base64.decode(tag_${multiplie_group_name}).replace(/<NUMBER>/g, groupPrefix);            \n" + 
 	"						var template_script = Base64.decode(script_${multiplie_group_name}).replace(/<NUMBER>/g, groupPrefix);            \n" + 
+
+	"						var replace = \"getWindowParams\\\\s*(\\\\s*\\\\(\\\\))?([^\\\\(\\\\\\\\])\"; \n " +
+	"						var re = new RegExp(replace,\"g\");   \n " +
+	"						template_script = template_script.replace(re, \"getWindowParams()$2\"); \n " +    
+							
+	
 	"						$(group_plase ? group_plase : \"#place_${group_separator}${group_api}\").append(template_tag);            \n" + 
 	"						if (jQuery.isFunction($(\"#fildset_\" + groupPrefix).find('input').styler)) {            \n" + 
 	"							$(\"#fildset_\" + groupPrefix).find('input').styler({});            \n" + 
@@ -729,29 +749,41 @@ public class FormGenerator extends TagGenerator {
 	"						});                          \n" + 
 	"						$.each(data.parameters, function(key, parameter) {                           \n" + 
 	"							var valueArray = parameter.value.split('${value_separator}');                          \n" + 
-	"							$(\"input#\" + key + groupPrefix).val(valueArray[0]);                           \n" + 
+	"							$('input#' + key + groupPrefix).val(valueArray[0]); \n"+
+	"							$('input#' + key + groupPrefix).trigger('setHiddenValue',[valueArray[0]]); \n"+
 	"						});                          \n" + 
 	"						$.each(data.parameters, function(key, parameter) {                           \n" + 
 	"							var valueArray = parameter.value.split('${value_separator}');                          \n" + 
 	"							$(\"input#\" + key + groupPrefix).trigger('setValueOnLoad',[{value:valueArray[0], name:(valueArray.length > 1 ? valueArray[1] : '')}]);                  \n" + 
+	"							$(\"input#\" + key + groupPrefix).unbind('setValueOnLoad');    \n" + 
 	"						});                   \n" + 
 	"								var hasErrors = false;         \n" + 
 	"								if (data.errors.parametersErrors != null) {                  \n" + 
-	"									Object.keys(data.errors.parametersErrors).map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return  a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {             \n" + 
+	"									Object.keys(data.errors.parametersErrors) \n " +
+	"											.filter(function(name) { return $('#' + name).length > 0})           \n" + 
+	"											.map(function(name) { return {name: name, group: $('#' + name).closest('fieldset')}}).sort(function(a,b){return  a.group.html() > b.group.html() ? 1 : -1}).forEach(function(obj) {             \n" + 
 	"										var name = obj.name;            \n" + 
 	"										var group = obj.group;            \n" + 
 	"										var errors = data.errors.parametersErrors[name];             \n" + 
 	"										$.each( errors, function(index, error) {                      \n" + 
 	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error error_color\");                      \n" + 
-	"											var header = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim();                   \n" + 
-	"											$(\"<li/>\", {html: header.charAt(0).toUpperCase() + header.slice(1).toLowerCase() + ' - ' + $.trim($(\"[for='visible_\" + name + \"']\").html()) + \" \" + error}).appendTo(\"#error_list\");                    \n" + 
+	"											var groupHeader = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim();                    \n " +
+	"											if (error.message.toUpperCase().indexOf(groupHeader.toUpperCase()) == -1) { \n" + 
+	"												var parameterHeader = $.trim($(\"[for='visible_\" + name + \"']\").html()); \n " + 
+	"												$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: groupHeader.charAt(0).toUpperCase() + groupHeader.slice(1).toLowerCase() + ' - ' + parameterHeader + \" \" + error.message}).appendTo(\"#error_list\");                     \n" + 
+	"											} else { \n" + 
+	"												$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: error.message}).appendTo(\"#error_list\");                     \n" + 
+	"											} \n" + 
 	"											hasErrors = true;                 \n" + 
 	"										});                   \n" + 
 	"									});                   \n" + 
 	"								}                  \n" + 
+	"								Object.keys(data.errors.parametersErrors) \n " +
+	"									.filter(function(name) { return $('#' + name).length == 0})           \n" + 
+	"									.map(function(name) {data.errors.formErrors = data.errors.formErrors.concat(data.errors.parametersErrors[name])});            \n" + 
 	"								if (data.errors.formErrors != null) {                  \n" + 
 	"									$.each( data.errors.formErrors, function(index, error) {                     \n" + 
-	"										$(\"<li/>\", {html: error}).appendTo(\"#error_list\");                      \n" + 
+	"										$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: error.message}).appendTo(\"#error_list\");                      \n" + 
 	"										hasErrors = true;                \n" + 
 	"									});                  \n" + 
 	"								}             \n" + 

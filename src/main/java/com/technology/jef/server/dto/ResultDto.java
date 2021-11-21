@@ -15,7 +15,7 @@ public class ResultDto  extends StatusDto {
 		super(status_code);
 	}
 
-	public ResultDto(List<String> formErrors, Map<String, List<String>> parameterErrors) {
+	public ResultDto(List<FormErrorDto> formErrors, Map<String, List<FormErrorDto>> parameterErrors) {
 		this.errors = new FormErrorsDto(formErrors, parameterErrors);
 	}
 
@@ -32,7 +32,7 @@ public class ResultDto  extends StatusDto {
 	}
 
 	public void appendResult(ResultDto result, String parameterPrefix) {
-		for (String formError: result.getErrors().getFormErrors()) {
+		for (FormErrorDto formError: result.getErrors().getFormErrors()) {
 			addFormError(formError);
 		}
 
@@ -42,12 +42,12 @@ public class ResultDto  extends StatusDto {
 		}
 	}
 
-	private void addFormError(String formError) {
+	private void addFormError(FormErrorDto formError) {
 		getErrors().addFormError(formError);
 	}
 
 
-	private void addParametersError(String string, List<String> list) {
+	private void addParametersError(String string, List<FormErrorDto> list) {
 		getErrors().addParametersError(string, list);
 		
 	}

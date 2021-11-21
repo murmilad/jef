@@ -39,9 +39,14 @@ public class RadioSwitchShort extends RadioSwitch {
 							put(Tag.Property.ID, "visible_" + name);
 							 put(Tag.Property.NAME, "visible_" + name);
 							 put(Tag.Property.STYLE, "display: table-row;");
-							put(Tag.Property.STYLE, "border-width: 1px; display: table-cell;");
+							put(Tag.Property.STYLE, "border-width: 1px; display: block;");
 					}});			
-
+			elementInput.add(Tag.Type.DIV, new HashMap<Tag.Property, String>() {
+				{
+					put(Tag.Property.ID, "visible_container_" + name);
+					put(Tag.Property.NAME, "visible_container_" + name);
+				}
+			});
 			return elementInput;
 		}
 

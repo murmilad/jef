@@ -145,6 +145,15 @@ public class WidgetFactory {
 		case FILL_BUTTON:
 			widget = new FillButton();
 			break;
+		case BUTTON:
+			widget = new Button();
+			break;
+		case HTML:
+			widget = new HTML();
+			break;
+		case PRINT:
+			widget = new Print();
+			break;
 		}
 		
 		

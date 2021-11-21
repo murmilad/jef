@@ -38,6 +38,21 @@ public class Value {
 	public String getValue() {
 		return value == null ? "" : value;
 	}
+	public Double getDoubleOrZero() {
+		return value == null 
+				? 0 
+				: "".equals(value)
+					? 0
+					: Double.parseDouble(value);
+	}
+	public Integer getIntegerOrNull() {
+		return value == null 
+				? null 
+				: "".equals(value)
+					? null
+					: Integer.parseInt(value);
+	}
+	
 	public void setValue(String value) {
 		this.value = value;
 	}

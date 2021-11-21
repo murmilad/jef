@@ -47,6 +47,7 @@ public class Find extends Widget {
 					.add(Tag.Type.LEGEND)
 					.add(Tag.Type.LABEL, new HashMap<Tag.Property, String>(){{
 						 put(Tag.Property.FOR, "visible_" + name);
+						 put(Tag.Property.CLASS, "widgets_label_color");
 					}})
 					.add(Tag.Type.SPAN, (String) generator.getAttribute(TagGenerator.Attribute.NAME), new HashMap<Tag.Property, String>(){{
 						 put(Tag.Property.NAME, "span_" + name);

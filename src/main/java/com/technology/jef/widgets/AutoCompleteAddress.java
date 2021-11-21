@@ -240,7 +240,7 @@ public class AutoCompleteAddress extends Widget {
 				 put(Tag.Property.ID, "visible_" + name);
 				 put(Tag.Property.NAME, "visible_" + name);
 				 put(Tag.Property.TYPE, "search");
-				 put(Tag.Property.STYLE, "padding-right:0px;width:100%;margin-top:1px;margin-bottom:1px;");
+			     put(Tag.Property.STYLE, "padding-right:0px;width:100%;-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;");
 //				 put(Tag.Property.CHANGE, 	("var group_postfix='';  \n" + 
 //				"			if (match = '${name}'.match(/_group_.*/)){  \n" + 
 //				"				group_postfix = match[0]  \n" + 
@@ -292,7 +292,7 @@ public class AutoCompleteAddress extends Widget {
 			public String getSetValueJS() {
 				
 				return  		("  \n" + 
-	"			$('input#${child_name}').val(data.value);   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
+	"			$('input#${child_name}').trigger('setHiddenValue',[data.value]);   \n" + // установка значения идет первой потому что при вызове в дальнейшем метода change зависимые поля должны уже видеть изменение в текущем поле  
 	"	$('#visible_${child_name}').val(data.value.split('|').pop()).blur().change().trigger('autoCompleteChange'); \n" + 
 	"	if (data.value.split('|').shift() || !data.value.split('|').pop()) { \n" + 
 	"		$('#visible_${child_name}').removeClass('warning_color');                              \n" + 

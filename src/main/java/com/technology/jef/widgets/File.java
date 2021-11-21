@@ -54,7 +54,7 @@ public class File extends Widget {
 	"		$('#img_visible_${child_name}').hide();   \n" + 
 	"		$('#base64_visible_${child_name}').val(data.value);   \n" + 
 	"	} \n" + 
-	"	$(\"input#${child_name}\").val(data.value);      \n" + 
+	"	$(\"input#${child_name}\").trigger('setHiddenValue',[data.value]);      \n" + 
 	"	if (isLoading) {    \n" + 
 	"		$(\"#visible_${child_name}\").change();   \n" + 
 	"		$('#visible_${child_name}').bind('change', function(){      \n" + 
@@ -79,6 +79,7 @@ public class File extends Widget {
 			
 			fieldset.add(Tag.Type.LEGEND).add(Tag.Type.LABEL, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.FOR, name);
+				 put(Tag.Property.CLASS, "widgets_label_color");
 			}}).add(Tag.Type.SPAN, (String) generator.getAttribute(TagGenerator.Attribute.NAME),  new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "span_" + name);
 				 put(Tag.Property.STYLE, !"".equals(generator.getAttribute(TagGenerator.Attribute.REQUIRED)) ? "color: rgb(170, 0, 0);" : "color: rgb(0, 0, 0);");
@@ -96,7 +97,7 @@ public class File extends Widget {
 				 }
 				 put(Tag.Property.ONERROR, "this.onerror=null; this.src='" + generator.getAttribute(TagGenerator.Attribute.DEFAULT_IMAGE) + "'");
 				 put(Tag.Property.NAME, "img_visible_" + name);
-				 put(Tag.Property.STYLE, "max-width: " + generator.getAttribute(TagGenerator.Attribute.WIDTH) +";");
+				 put(Tag.Property.STYLE, "width: 100%;");
 			}});
 
 			Tag downloadForm = input.add(Tag.Type.FORM, new HashMap<Tag.Property, String>(){{

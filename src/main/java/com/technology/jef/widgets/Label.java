@@ -70,7 +70,7 @@ public class Label extends Widget {
 			
 			return 
 					("	$('#visible_${child_name}').html(data.value); \n" +
-					"	$('input#${child_name}').val(data.value); \n" + 
+					"	$('input#${child_name}').trigger('setHiddenValue',[data.value]); \n" + 
 					"	$('#hidden_${child_name}').val(data.value).change(); \n"+
 			"	$('#visible_${child_name}').bind('change', function(){ \n" + 
 			"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 

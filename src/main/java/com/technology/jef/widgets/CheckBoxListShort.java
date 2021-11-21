@@ -37,7 +37,7 @@ public class CheckBoxListShort extends CheckBoxList {
 				 put(Tag.Property.CLASS, "styled");
 				put(Tag.Property.ID, "visible_" + name);
 				put(Tag.Property.NAME, "visible_" + name);
-				put(Tag.Property.STYLE, "border-width: 1px; display: table-cell;");
+				put(Tag.Property.STYLE, "border-width: 1px; display: block;");
 			}});
 		}
 

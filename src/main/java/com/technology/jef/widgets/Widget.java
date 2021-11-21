@@ -70,6 +70,9 @@ public abstract class Widget {
 			AUTO_COMPLETE_EDITABLE,
 			TEXT_READ_ONLY,
 			FILL_BUTTON,
+			BUTTON,
+			PRINT,
+			HTML,
 		}
 		
 		protected Tag parrent;
@@ -116,6 +119,12 @@ public abstract class Widget {
 			
 			Tag resultElement = assembleTag(name, generator);
 			resultElement.add(Tag.Type.SCRIPT,								("     \n" + 
+	"	$('input#visible_${name}').on('focusin', function () {   \n" + 
+	"		$('input#visible_${name}').addClass('widgets_focused');  \n" + 
+	"	});    \n" + 
+	"	$('input#visible_${name}').on('focusout', function () {   \n" + 
+	"		$('input#visible_${name}').removeClass('widgets_focused');  \n" + 
+	"	});    \n" + 
 	"	$('input#${name}').on('setLocked', function () {    \n" + 
 	"			var data = {value: 0};     \n" + 
 	"			${set_active_js}     \n" + 
@@ -174,7 +183,9 @@ public abstract class Widget {
 	"				${cleanValueJS}  \n" + 
 	"			}	 \n" + 
 	" 		});  \n" + 
-	"		$(\"input#${name}\").unbind(\"setValueOnLoad\");    \n" + 
+	"	});       \n" + 
+	"	$('input#${name}').bind('setHiddenValue',function(event, value){ \n" + 
+	"		${setHiddenValueJS}  \n" + 
 	"	});       \n" + 
 	"	$( '#form_id' ).bind('setListOnLoad_${api}${prefix}', function() {       \n" + 
 	"		${setItemsJS}      \n" + 
@@ -192,6 +203,7 @@ public abstract class Widget {
 	"	}        \n")
 					.replace("${cleanValueJS}", this.getCleanValueJS().replace("${child_name}", name))
 					.replace("${setValueJS}", this.getSetValueJS().replace("${child_name}", name))
+					.replace("${setHiddenValueJS}",this.getSetHiddenValueJS().replace("${child_name}", name))
 					.replace("${name}", name)
 					.replace("${api}", (String) generator.getAttribute(TagGenerator.Attribute.API))
 					.replace("${prefix}", (String) generator.getAttribute(TagGenerator.Attribute.PREFIX))
@@ -398,7 +410,7 @@ public abstract class Widget {
 //TODO Нужно убрать блок	ignoreEmptyJS создав евент выключения видимости поля но учесть при этом отчистку списочных полей	
 				String ignoreEmptyJS =
 						("			if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)) {\n" + 
-								"				$('#tr_${child_name}').css(\"display\", 'none');\n" + 
+								"				$('#tr_${child_name}').hide();\n" + 
 								"				${clean_value_js}\n" + 
 								"				$('input#${child_name}').attr('invisible', true);\n" + 
 								"				$('#tr_${child_name}').trigger('refresh');\n" + 
@@ -446,13 +458,10 @@ public abstract class Widget {
 	"				            contentType: 'application/x-www-form-urlencoded',         \n" + 
 	"						}, function (data) {   \n" + 
 	"								if (data.value) {         \n" + 
-	"									if ((document.getElementById && !document.all) || window.opera)         \n" + 
-	"										$('#tr_${child_name}').css(\"display\",'table-row');         \n" + 
-	"									else         \n" + 
-	"										$('#tr_${child_name}').css(\"display\",'inline');         \n" + 
-	"										$('input#${child_name}').attr('invisible', false);         \n" + 
+	"									$('#tr_${child_name}').show();         \n" + 
+	"									$('input#${child_name}').attr('invisible', false);         \n" + 
 	"								} else {         \n" + 
-	"									$('#tr_${child_name}').css(\"display\", 'none');         \n" + 
+	"									$('#tr_${child_name}').hide();         \n" + 
 	"									${clean_value_js}         \n" + 
 	"									$('input#${child_name}').attr('invisible', true);         \n" + 
 	"								}         \n" + 
@@ -601,22 +610,16 @@ public abstract class Widget {
 	"								var ${child_name} = $('#tr_${child_name}');       \n" + 
 	"								if (elements_present==0){       \n" + 
 	"									if (\"${hide_if_empty}\"){       \n" + 
-	"										${child_name}.css(\"display\", 'none');       \n" + 
+	"										${child_name}.hide();       \n" + 
 	"										$('#is_empty_${child_name}').val(1);       \n" + 
 	"									}else{       \n" + 
 	"										if ($('input#${child_name}').attr('invisible') == 'false') {       \n" + 
-	"											if ((document.getElementById && !document.all) || window.opera)       \n" + 
-	"												${child_name}.css(\"display\",'table-row');       \n" + 
-	"											else       \n" + 
-	"												${child_name}.css(\"display\",'inline');       \n" + 
+	"											${child_name}.show();       \n" + 
 	"										}       \n" + 
 	"									}       \n" + 
 	"								}else{       \n" + 
 	"									if ($('input#${child_name}').attr('invisible') == 'false') {       \n" + 
-	"										if ((document.getElementById && !document.all) || window.opera)       \n" + 
-	"											${child_name}.css(\"display\",'table-row');       \n" + 
-	"										else       \n" + 
-	"											${child_name}.css(\"display\",'inline');       \n" + 
+	"										${child_name}.show();       \n" + 
 	"									}       \n" + 
 	"								}       \n" + 
 	"								--ajax_is_parrent_blocked${prefix}[\"${parrent_name}\"];       \n" + 
@@ -694,10 +697,10 @@ public abstract class Widget {
 			}
 
 			valueJS = valueJS.concat(" \n" + 
-					"	${increment_operation} Object.keys(uri_params).filter(function callback(currentValue, index, array) {  \n" + 
+					"	${increment_operation} Object.keys(getWindowParams()).filter(function callback(currentValue, index, array) {  \n" + 
 					"	    return currentValue != \"\"; \n" + 
 					"	}).map(function callback(currentValue, index, array) {  \n" + 
-					"	    return 'uri_' + currentValue + \"${value_separator}\"  + uri_params[currentValue]; \n" + 
+					"	    return 'uri_' + currentValue + \"${value_separator}\"  + getWindowParams()[currentValue]; \n" + 
 					"	}).join(\"${parameter_separator}\") \n"
 			).replace("${increment_operation}", "".equals(valueJS) ? "" : "+ '${parameter_separator}' + ")
 			.replace("${parameter_separator}", PARAMETER_SEPARATOR)
@@ -711,6 +714,10 @@ public abstract class Widget {
 		
 		public void setParrent(Tag parrent) {
 			this.parrent = parrent;
+		}
+
+		public String getSetHiddenValueJS() {
+			return 	"$('input#${child_name}').val(value); \n";
 		}
 	
 }
