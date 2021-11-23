@@ -304,11 +304,12 @@ public class RadioSwitch extends List {
 
 		String bodyJS = 	("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){             \n" + 
 	"				if (!ajax_is_parrent_blocked${prefix}[\"${child_name}\"]) { // прерывание циклических зависимостей  \n" + 
-	"						$(\"#background_overlay_wait_${parrent_name}\").show();             \n" + 
-	"	            		$(\"#message_box_wait_${parrent_name}\").show();             \n" + 
 	"						var valueJS = ${value_js};   \n" + 
 	"						$(\"input#${child_name}\").trigger('cleanValue');         \n" + 
 	"						if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)){ return };             \n" + 
+	"						$(\"#background_overlay_wait_${parrent_name}\").show();             \n" + 
+	"	            		$(\"#message_box_wait_${parrent_name}\").show();             \n" + 
+
 	"						$(\"#visible_container_${child_name}\").empty();             \n" + 
 	"						$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
 	"						$(\"input#${parrent_name}\").trigger('lock');         \n" + 
