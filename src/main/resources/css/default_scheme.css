@@ -40,15 +40,24 @@
 	color: #2873b6;
 }
 
+/*height*/
+.widgets_height {
+	height: 20px;
+}
+
+.header_height {
+	height: 30px;
+}
+
+.block_height {
+	min-height: 30px;
+}
+
 
 /*work_area*/
 
 .header_color {
 	background: #100280;
-}
-
-.header_height {
-	height: 32px;
 }
 
 .header_line_height {
@@ -68,6 +77,7 @@
 	border-color: #E50029 !important;
 }
 
+
 /*widgets*/
 
 .widgets_header_float {
@@ -84,10 +94,6 @@
 
 .widgets_label_color {
 	color: #000;
-}
-
-.widgets_height {
-	height: 20px;
 }
 
 .widgets_font { 

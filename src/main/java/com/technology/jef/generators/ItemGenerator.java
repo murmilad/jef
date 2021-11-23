@@ -34,10 +34,11 @@ public class ItemGenerator extends TagGenerator {
 		
 		visibleTag = dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "div_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
-		     put(Tag.Property.CLASS, "div_interface_element_horizontal interface_element_horizontal");
+		     put(Tag.Property.CLASS, "div_interface_element_horizontal interface_element_horizontal"
+		    		 + ("1".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? " block_height" : "") 
+		    );
 		     put(Tag.Property.STYLE, "position:relative;" + 
 		    		 (hasAttribute(TagGenerator.Attribute.HEIGHT) ? ("height: " +  getAttribute(TagGenerator.Attribute.HEIGHT) + ";") : "") 
-		    		 + ("1".equals(getAttribute(TagGenerator.Attribute.FIXED)) ? "height: 45px;" : "") 
 		    		 + (hasAttribute(TagGenerator.Attribute.WIDTH) ? "width:"+getAttribute(TagGenerator.Attribute.WIDTH)+";" : "width:100%;")
 		     );
 		}});
@@ -62,12 +63,14 @@ public class ItemGenerator extends TagGenerator {
 		visibleRow = element_table
 				.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 					put(Tag.Property.ID, "tr_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
-				    put(Tag.Property.CLASS, "interface_element_body");
+				    put(Tag.Property.CLASS, "block_height");
 				    put(Tag.Property.STYLE, "display: block;");
 				}});
 				
 		Tag element_row = visibleRow
-				.add(Tag.Type.DIV)
+				.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+				    put(Tag.Property.CLASS, "interface_element_body");
+				}})
 				.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				     put(Tag.Property.CLASS, "interface_element_horizontal");
 				}})

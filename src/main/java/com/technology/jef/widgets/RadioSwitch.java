@@ -309,7 +309,6 @@ public class RadioSwitch extends List {
 	"						if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)){ return };             \n" + 
 	"						$(\"#background_overlay_wait_${parrent_name}\").show();             \n" + 
 	"	            		$(\"#message_box_wait_${parrent_name}\").show();             \n" + 
-
 	"						$(\"#visible_container_${child_name}\").empty();             \n" + 
 	"						$(\"#visible_${child_name}\").trigger('refresh');             \n" + 
 	"						$(\"input#${parrent_name}\").trigger('lock');         \n" + 

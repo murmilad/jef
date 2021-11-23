@@ -35,6 +35,7 @@ public abstract class Widget {
 			TEXTAREA,
 			NUMBER,
 			DATE,
+			DATETIME,
 			INN,
 			EMAIL,
 			MONEY,

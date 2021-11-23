@@ -338,10 +338,10 @@ public class FormGenerator extends TagGenerator {
 	"										$.each( errors, function(index, error) {  \n" + 
 	"											if (error.block) { \n" + 
 	"												$(\"#visible_\" + name).parent().children('').addClass(\"error error_color\");   \n" + 
-	"												var groupHeader = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim();                    \n " +
-	"												if (error.message.toUpperCase().indexOf(groupHeader.toUpperCase()) == -1) { \n" + 
+	"												var groupHeader = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() ? group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim() : '';                    \n " +
+	"												if (!groupHeader || error.message.toUpperCase().indexOf(groupHeader.toUpperCase()) == -1) { \n" + 
 	"													var parameterHeader = $.trim($(\"[for='visible_\" + name + \"']\").html()); \n " + 
-	"													$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: groupHeader.charAt(0).toUpperCase() + groupHeader.slice(1).toLowerCase() + ' - ' + parameterHeader + \" \" + error.message}).appendTo(\"#error_list\");                     \n" + 
+	"													$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: (groupHeader ? groupHeader.charAt(0).toUpperCase() + groupHeader.slice(1).toLowerCase() + ' - '  : '')+ parameterHeader + \" \" + error.message}).appendTo(\"#error_list\");                     \n" + 
 	"												} else { \n" + 
 	"													$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: error.message}).appendTo(\"#error_list\");                     \n" + 
 	"												} \n" + 
@@ -767,10 +767,10 @@ public class FormGenerator extends TagGenerator {
 	"										var errors = data.errors.parametersErrors[name];             \n" + 
 	"										$.each( errors, function(index, error) {                      \n" + 
 	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error error_color\");                      \n" + 
-	"											var groupHeader = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim();                    \n " +
-	"											if (error.message.toUpperCase().indexOf(groupHeader.toUpperCase()) == -1) { \n" + 
+	"											var groupHeader = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() ? group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim() : '';                    \n " +
+	"											if (!groupHeader || error.message.toUpperCase().indexOf(groupHeader.toUpperCase()) == -1) { \n" + 
 	"												var parameterHeader = $.trim($(\"[for='visible_\" + name + \"']\").html()); \n " + 
-	"												$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: groupHeader.charAt(0).toUpperCase() + groupHeader.slice(1).toLowerCase() + ' - ' + parameterHeader + \" \" + error.message}).appendTo(\"#error_list\");                     \n" + 
+	"												$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: (groupHeader ? groupHeader.charAt(0).toUpperCase() + groupHeader.slice(1).toLowerCase() + ' - ' : '') + parameterHeader + \" \" + error.message}).appendTo(\"#error_list\");                     \n" + 
 	"											} else { \n" + 
 	"												$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: error.message}).appendTo(\"#error_list\");                     \n" + 
 	"											} \n" + 

@@ -2,6 +2,7 @@ package com.technology.jef.widgets;
 
 import com.technology.jef.widgets.text.AnyText;
 import com.technology.jef.widgets.text.Date;
+import com.technology.jef.widgets.text.DateTime;
 import com.technology.jef.widgets.text.Email;
 import com.technology.jef.widgets.text.Inn;
 import com.technology.jef.widgets.text.Money;
@@ -39,6 +40,9 @@ public class WidgetFactory {
 			break;
 		case DATE:
 			widget = new Date();
+			break;
+		case DATETIME:
+			widget = new DateTime();
 			break;
 		case INN:
 			widget = new Inn();
