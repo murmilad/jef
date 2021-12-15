@@ -51,7 +51,7 @@ public class HTML extends Widget {
 	"							for (var i = 0; i < jsonList.length; i++) {  \n" + 
 	"								$('#${visible_name}').append($('<table id=\"'+i+'_${visible_name}\"/>').css(\"border-collapse\", \"collapse\").css(\"border\", \"1px solid black\"));  \n" + 
 	"								if (jsonList[i].type == 'table') {  \n" + 
-	"									buildHtmlTable(jsonList[i].body, '#'+i+'_${visible_name}');  \n" + 
+	"									buildHtmlTable(jsonList[i].columns, jsonList[i].body, '#'+i+'_${visible_name}');  \n" + 
 	"								} else if (jsonList[i].type == 'list'){  \n" + 
 	"									buildHtmlList(jsonList[i].body, '#'+i+'_${visible_name}');  \n" + 
 	"								}  \n" + 
@@ -71,32 +71,26 @@ public class HTML extends Widget {
 	"					$(selector).append(row$);  \n" + 
 	"				}  \n" + 
 	"			}  \n" + 
-	"			// Builds the HTML Table out of json.  \n" + 
-	"			function buildHtmlTable(json, selector) {  \n" + 
-	"				var columns = addAllColumnHeaders(json, selector);  \n" + 
-	"				for (var i = 0; i < json.length; i++) {  \n" + 
+
+	"			function buildHtmlTable(columns, body, selector) {  \n" + 
+	"				var columnsJS = addAllColumnHeaders(columns, selector);  \n" + 
+	"				for (var i = 0; i < body.length; i++) {  \n" + 
 	"					var row$ = $('<tr/>');  \n" + 
-	"					for (var colIndex = 0; colIndex < columns.length; colIndex++) {  \n" + 
-	"						var cellValue = json[i][columns[colIndex]];  \n" + 
+	"					for (var colIndex = 0; colIndex < columnsJS.length; colIndex++) {  \n" + 
+	"						var cellValue = body[i][columnsJS[colIndex]];  \n" + 
 	"						if (cellValue == null) cellValue = \"\";  \n" + 
 	"						row$.append($('<td/>').html(cellValue).css(\"border-left\", \"1px solid black\").css(\"border-right\", \"1px solid black\").css(\"text-align\", \"center\").css(\"padding\", \"2px\"));  \n" + 
 	"					}  \n" + 
 	"					$(selector).append(row$);  \n" + 
 	"				}  \n" + 
-	"			} // Adds a header row to the table and returns the set of columns.  \n" + 
-	"			// Need to do union of keys from all records as some records may not contain  \n" + 
-	"			// all records.  \n" + 
-	"			function addAllColumnHeaders(json, selector) {  \n" + 
+	"			}\n" + 
+
+	"			function addAllColumnHeaders(columns, selector) {  \n" + 
 	"				var columnSet = [];  \n" + 
 	"				var headerTr$ = $('<tr/>');  \n" + 
-	"				for (var i = 0; i < json.length; i++) {  \n" + 
-	"					var rowHash = json[i];  \n" + 
-	"					for (var key in rowHash) {  \n" + 
-	"						if ($.inArray(key, columnSet) == -1) {  \n" + 
-	"							columnSet.push(key);  \n" + 
-	"							headerTr$.append($('<th/>').html(key).css(\"border\", \"1px solid black\").css(\"border-bottom\", \"2px solid black\").css(\"text-align\", \"center\").css(\"padding\", \"2px\"));  \n" + 
-	"						}  \n" + 
-	"					}  \n" + 
+	"				for (var index in columns) {  \n" + 
+	"					columnSet.push(columns[index]);  \n" + 
+	"					headerTr$.append($('<th/>').html(columns[index]).css(\"border\", \"1px solid black\").css(\"border-bottom\", \"2px solid black\").css(\"text-align\", \"center\").css(\"padding\", \"2px\"));  \n" + 
 	"				}  \n" + 
 	"				$(selector).append(headerTr$);  \n" + 
 	"				return columnSet;  \n" + 
