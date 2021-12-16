@@ -1,6 +1,11 @@
 package com.technology.jef.widgets;
 
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.xml.sax.SAXException;
@@ -333,10 +338,11 @@ public abstract class Widget {
 	   * @return код JavaScript
 	   */
 		public String getCleanValueJS() {
-			
+			// Вызываем change что бы связанные поля тоже отчистились
 			return 	(" \n" +
 					"	if ($('#visible_${child_name}').val() !== '') {  \n" + 
-					"		$('#visible_${child_name}').val('').change(); \n" + 
+					"		$('#visible_${child_name}').val(''); \n" + 
+					"		$('#visible_${child_name}').change();   \n" + 
 					"	}  \n" + 
 					" \n");
 		}
@@ -432,7 +438,7 @@ public abstract class Widget {
 				
 				String bodyJS = 
 									("				function onChange${parrent_name}_${child_name}_ct_ajax_visible(${parrent_name}List){         \n" + 
-	"				if (!ajax_is_parrent_blocked${prefix}[\"${child_name}\"]) { // прерывание циклических зависимостей  \n" + 
+	"				if (!ajax_is_parrent_blocked${prefix}[\"${child_name}\"] || !ajax_is_child_blocked${prefix}[\"${parrent_name}\"]) { // прерывание циклических зависимостей  \n" + 
 	"					var valueJS = ${value_js};      \n" + 
 	"					${ignore_empty_js}          \n" + 
 	"					$('input#${child_name}').attr('invisible', true);         \n" + 
@@ -567,7 +573,7 @@ public abstract class Widget {
 
 			String bodyJS = 
 									("				function onChange${parrent_name}_${child_name}_ct_ajax_${request_type}(${parrent_name}List){       \n" + 
-	"					if (!ajax_is_parrent_blocked${prefix}[\"${child_name}\"]) { // прерывание циклических зависимостей  \n" + 
+	"				if (!ajax_is_parrent_blocked${prefix}[\"${child_name}\"] || !ajax_is_child_blocked${prefix}[\"${parrent_name}\"]) { // прерывание циклических зависимостей  \n" + 
 	"						var valueJS = ${value_js};     \n" + 
 	"						var isLoading = false;     \n" + 
 	"						if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)){            \n" + 
@@ -679,22 +685,23 @@ public abstract class Widget {
 			String valueJS = "";
 
 			if (currentGenerator != null) {
-				String[] elements = (String[])currentGenerator.getAttribute(parrentType);
-				for (Integer i = 0; i <= elements.length; i++) {
+				LinkedList<String> elements = new LinkedList<String>();
+				elements.addAll(Arrays.stream((String[])currentGenerator.getAttribute(parrentType)).map(parameter -> SYSTEM_PARAMETER_PREFIX + "_required_" +  parameter).collect(Collectors.toList()));
+				elements.add(SYSTEM_PARAMETER_PREFIX + "_required_" +  currentGenerator.getAttribute(TagGenerator.Attribute.ID));
+				elements.addAll(Arrays.stream((String[])currentGenerator.getAttribute(parrentType)).map(parameter -> SYSTEM_PARAMETER_PREFIX + "_changed_" +  parameter).collect(Collectors.toList()));
+				elements.add(SYSTEM_PARAMETER_PREFIX + "_changed_" +  currentGenerator.getAttribute(TagGenerator.Attribute.ID));
+				elements.addAll(Arrays.stream((String[])currentGenerator.getAttribute(parrentType)).map(parameter -> "visible_" +  parameter).collect(Collectors.toList()));
+				Collections.addAll(elements, (String[])currentGenerator.getAttribute(parrentType));
+				elements.add("visible_" +  currentGenerator.getAttribute(TagGenerator.Attribute.ID));
+				elements.add((String)currentGenerator.getAttribute(TagGenerator.Attribute.ID));
+				
+				valueJS = String.join("+ '" + PARAMETER_SEPARATOR + "' +", elements.stream().map(elementName -> 
+					"'${parrent_name_api_value_js}' + '${value_separator}' + $('input#${parrent_name_value_js}').val()"
+							.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+							.replace("${parrent_name_api_value_js}", elementName)
+							.replace("${parrent_name_value_js}", elementName + prefix)).collect(Collectors.toList()));
 					
-					String elementName = null;
-					if (i < elements.length) {
-						elementName = elements[i];
-					} else {
-						elementName = (String) currentGenerator.getAttribute(TagGenerator.Attribute.ID);
-					}
-					valueJS = valueJS.concat("'${parrent_name_api_value_js}' + '${value_separator}' + $('input#${parrent_name_value_js}').val()${divider}"
-					.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
-					.replace("${parrent_name_api_value_js}", elementName)
-					.replace("${parrent_name_value_js}", elementName + prefix))
-					.replace("${divider}",i < elements.length ? "+ '" + PARAMETER_SEPARATOR + "' +" : "");
 					
-				}
 			}
 
 			valueJS = valueJS.concat(" \n" + 

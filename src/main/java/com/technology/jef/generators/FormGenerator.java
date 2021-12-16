@@ -303,7 +303,7 @@ public class FormGenerator extends TagGenerator {
 	"					function setForm() {                      \n" + 
 	"						var field_values = [];        \n" + 
 	"						var globalIndex;        \n" + 
-	"						$('input[type=\"hidden\"][name^=\"${system_prefix}_required_\"], input[type=\"hidden\"][name^=\"${system_prefix}_parrent_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_changed_\"]').each( function(index, element){                      \n" + 
+	"						$('input[name^=\"visible_\"], input[type=\"hidden\"][name^=\"${system_prefix}_required_\"], input[type=\"hidden\"][name^=\"${system_prefix}_parrent_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_api_\"], input[type=\"hidden\"][name^=\"${system_prefix}_changed_\"]').each( function(index, element){                      \n" + 
 	"							field_values[index] = $( this ).attr('id') +'${value_separator}'+ $( this ).val();                      \n" + 
 	"							globalIndex = index;        \n" + 
 	"						});                      \n" + 

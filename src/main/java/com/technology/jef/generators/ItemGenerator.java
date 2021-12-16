@@ -175,6 +175,11 @@ public class ItemGenerator extends TagGenerator {
 			} else {
 				return new String[0];
 			}
+		case FORCE_AJAX:
+			return hasAttribute(TagGenerator.Attribute.FORCE_AJAX) 
+					? super.getAttribute(TagGenerator.Attribute.FORCE_AJAX) + "," + SYSTEM_PARAMETER_PREFIX + ",visible_"
+					: SYSTEM_PARAMETER_PREFIX + ",visible_";
+			
 		default:
 			return super.getAttribute(attributeName);
 		}

@@ -35,10 +35,11 @@ public class AutoCompleteAddress extends Widget {
 		   * @return код JavaScript
 		   */
 			public String getCleanValueJS() {
-				
+				// Вызываем change что бы связанные поля тоже отчистились
 				return ("	$('#visible_${child_name}').val(''); \n" + 
 						"	${child_name}_autocomplete_result = []; \n" + 
-						"       $('input#${child_name}').val('|'); \n"
+						"       $('input#${child_name}').val('|'); \n" +
+						"	$('#visible_${child_name}').change();   \n" 
 						);
 			}
 
@@ -317,11 +318,9 @@ public class AutoCompleteAddress extends Widget {
 					String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
 					String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
 
-					// Вызываем функцию связи в событиях родительского элемента
-					// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
 					currentGenerator.getDom().add(Tag.Type.SCRIPT,
 							(
-							" $(\"#visible_${parrent_name}\").on('blur', function(){\n" +
+							" $(\"#visible_${parrent_name}\").on('change', function(){\n" +
 							"		onChange${parrent_name}_${child_name}_ct_ajax_list(this); \n" +
 							" }); \n")
 							.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))

@@ -36,10 +36,11 @@ public class AutoCompleteEditable extends Widget {
 		   * @return код JavaScript
 		   */
 			public String getCleanValueJS() {
-				
+				// Вызываем change что бы связанные поля тоже отчистились
 				return 		(" \n" + 
 	"	$('#visible_${child_name}').val('---');   \n" + 
 	"	$('input#${child_name}').val('');   \n" + 
+	"	$('#visible_${child_name}').change();   \n" + 
 	" ");
 			}
 

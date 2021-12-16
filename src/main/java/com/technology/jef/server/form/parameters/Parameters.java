@@ -50,6 +50,10 @@ public class Parameters extends HashMap<String, Value>{
 		return this.containsKey(parameterName) ? this.get(parameterName).getIntegerOrNull() : null;
 	}
 
+	public Integer getIntegerOrZero(String parameterName) {
+		return this.containsKey(parameterName) ? this.get(parameterName).getIntegerOrZero() : 0;
+	}
+
 	public Boolean isEmptyValue(String parameterName) {
 		return !this.containsKey(parameterName) || "".equals(this.get(parameterName).getValue());
 	}

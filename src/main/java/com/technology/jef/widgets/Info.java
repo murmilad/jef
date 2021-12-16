@@ -79,10 +79,11 @@ public class Info extends Widget {
 	   * @return код JavaScript
 	   */
 		public String getCleanValueJS() {
-			
+			// Вызываем change что бы связанные поля тоже отчистились
 			return 	(" \n" + 
 	"	if ($('#visible_${child_name}').html() !== '') { \n" + 
-	"		$('#visible_${child_name}').html('').change(); \n" + 
+	"		$('#visible_${child_name}').html(''); \n" + 
+	"		$('#visible_${child_name}').change();   \n" + 
 	"	} \n");
 		}
 

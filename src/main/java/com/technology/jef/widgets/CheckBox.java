@@ -57,9 +57,10 @@ public class CheckBox extends Widget {
 
 	@Override
 	public String getCleanValueJS() {
-		
+		// Вызываем change что бы связанные поля тоже отчистились
 		return 	(" \n" + 
 	"	$('#visible_${child_name}').prop('checked', false); \n" + 
+	"	$('#visible_${child_name}').change(); \n" + 
 	"	$('input#${child_name}').val(0); \n")
 	;
 	}

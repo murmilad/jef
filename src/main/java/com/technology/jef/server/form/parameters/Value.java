@@ -5,6 +5,7 @@ public class Value {
 
 	private String name;
 	private String value;
+	private String visibleValue;
 	private Boolean isRequired;
 	private Boolean isChanged;
 
@@ -13,6 +14,7 @@ public class Value {
 		setValue("");
 		setIsRequired(false);
 		setIsChanged(false);
+		setVisibleValue("");
 	}
 
 	public Value(String name, String value) {
@@ -20,13 +22,15 @@ public class Value {
 		setValue(value);
 		setIsRequired(false);
 		setIsChanged(false);
+		setVisibleValue("");
 	}
 	
-	public Value(String name, String value, Boolean isRequired, Boolean isChanged) {
+	public Value(String name, String value, Boolean isRequired, Boolean isChanged, String visibleValue) {
 		setName(name);
 		setValue(value);
 		setIsRequired(isRequired);
 		setIsChanged(isChanged);
+		setVisibleValue(visibleValue);
 	}
 	
 	public String getName() {
@@ -69,6 +73,22 @@ public class Value {
 
 	public void setIsChanged(Boolean isChanged) {
 		this.isChanged = isChanged;
+	}
+
+	public String getVisibleValue() {
+		return visibleValue;
+	}
+
+	public void setVisibleValue(String visibleValue) {
+		this.visibleValue = visibleValue;
+	}
+
+	public int getIntegerOrZero() {
+		return value == null 
+				? 0 
+				: "".equals(value)
+					? 0
+					: Integer.parseInt(value);
 	}
 
 

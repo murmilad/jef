@@ -86,11 +86,12 @@ public class Label extends Widget {
 	   */
 		@Override
 		public String getCleanValueJS() {
-			
+			// Вызываем change что бы связанные поля тоже отчистились
 			return
 					"	$('#visible_${child_name}').html(''); \n" +
 					"	$('input#${child_name}').val(''); \n" + 
-					"	$('#hidden_${child_name}').val('').change(); \n";
+					"	$('#hidden_${child_name}').val(''); \n" +
+					"	$('#visible_${child_name}').change();   \n"; 
 		}
 
 	

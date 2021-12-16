@@ -180,33 +180,41 @@ public class File extends Widget {
 	"		$('#visible_${name}').parent().children('[class=\"jq-file__name\"]').html('&nbsp;');    \n" + 
 	"	}         \n" + 
 	"	function check_put_image_${name}(data){ \n" + 
-	"		if (data) {    \n" + 
-	"			var fileSize = 75 * data.length / 100 / 1024;  \n" + 
-	"			if (!'${max_size}'  || fileSize <= ${max_size}) {    \n" + 
-	"				var fileTypeMatcher = data.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);     \n" + 
-	"				if (fileTypeMatcher && fileTypeMatcher[2].match('^${accept}$')) {    \n" + 
-	"					$('#visible_${name}').parent().children('').removeClass( \"error error_color\", \"\");  \n" + 
-	"					if (fileTypeMatcher[1] == 'image' && fileTypeMatcher[2] != 'tiff') {          \n" + 
-	"						$('#img_visible_${name}').show();    \n" + 
-	"						$('#download_visible_${name}').hide();    \n" + 
-	"						$('#img_visible_${name}').attr('src', data);    \n" + 
-	"					} else {    \n" + 
-	"						$('#download_button_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);    \n" + 
-	"						$('#download_button_div_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);    \n" + 
-	"						$('#download_visible_${name}').show();    \n" + 
-	"						$('#img_visible_${name}').hide();    \n" + 
-	"						$('#base64_visible_${name}').val(data);    \n" + 
-	"					}          \n" + 
-	"					$('input#${name}').val(data);   \n" + 
-	"				} else {          \n" + 
-	"					show_error_${name}('${incorrect_type} ${accept_message}');  \n" + 
-	"				}    \n" + 
-	"			} else {   \n" + 
-	"				show_error_${name}('${max_size_message}');  \n" + 
-	"			}          \n" + 
-	"      	} else {    \n" + 
-	"	     	show_error_${name}('${max_size_message}');  \n" + 
+	"		if (!$('#visible_${name}')[0].preventLoading) {    \n" + 
+		"		if (data) {    \n" + 
+		"			var fileSize = 75 * data.length / 100 / 1024;  \n" + 
+		"			if (!'${max_size}'  || fileSize <= ${max_size}) {    \n" + 
+		"				var fileTypeMatcher = data.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);     \n" + 
+		"				if (fileTypeMatcher && fileTypeMatcher[2].match('^${accept}$')) {    \n" + 
+		"					$('#visible_${name}').parent().children('').removeClass( \"error error_color\", \"\");  \n" + 
+		"					if (fileTypeMatcher[1] == 'image' && fileTypeMatcher[2] != 'tiff') {          \n" + 
+		"						$('#img_visible_${name}').show();    \n" + 
+		"						$('#download_visible_${name}').hide();    \n" + 
+		"						$('#img_visible_${name}').attr('src', data);    \n" + 
+		"					} else {    \n" + 
+		"						$('#download_button_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);    \n" + 
+		"						$('#download_button_div_${name}').attr('class', 'download_button download_button_'+fileTypeMatcher[2]);    \n" + 
+		"						$('#download_visible_${name}').show();    \n" + 
+		"						$('#img_visible_${name}').hide();    \n" + 
+		"						$('#base64_visible_${name}').val(data);    \n" + 
+		"					}          \n" + 
+		"					$('input#${name}').val(data);   \n" + 
+		"				} else {          \n" + 
+		"					show_error_${name}('${incorrect_type} ${accept_message}');  \n" + 
+		"				}    \n" + 
+		"			} else {   \n" + 
+		"				show_error_${name}('${max_size_message}');  \n" + 
+		"			}          \n" + 
+		"      	} else {    \n" + 
+		"	     	show_error_${name}('${max_size_message}');  \n" + 
+		"	  	}          \n" + 
+	"	  	} else {          \n" + 
+	"			$('input#${name}').attr('value', '');   \n" + 
+	"			$('#img_visible_${name}').attr('src', '');  \n" + 
+	"			$('#visible_${name}').val('');   \n" + 
+	"			$('#visible_${name}').parent().children('[class=\"jq-file__name\"]').html('&nbsp;');    \n" + 
 	"	  	}          \n" + 
+	"		$('#visible_${name}')[0].preventLoading = false; \n" + 
 	"		$('#message_box_wait_${name}').hide(); \n" + 
 	"		$('#is_loading').val(0); \n" + 
 	"	} \n" + 
@@ -219,6 +227,7 @@ public class File extends Widget {
 	"		cache : false,        \n" + 
 	"		contentType : false,        \n" + 
 	"		processData : false,       \n" + 
+	"		replaceFileInput : false,       \n" + 
 	"	    submit: function (e, data) { \n" + 
 	"			$('#visible_${name}').parent().children('[class=\"jq-file__name\"]').html(data.files[0].name);    \n" + 
 	"			$('#message_box_wait_${name}').show(); \n" + 

@@ -144,16 +144,34 @@ public class Image extends Widget {
 	"		cache : false,   \n" + 
 	"		contentType : false,   \n" + 
 	"		processData : false,  \n" + 
+	"		replaceFileInput : false,       \n" + 
 	"	    submit: function (e, data) {       \n" + 
 	"			if ( window.FileReader) {     \n" + 
 	"				if (data.files && data.files[0]) {     \n" + 
 	"					var reader = new FileReader();     \n" + 
 	"					reader.onload = function(e) {     \n" + 
-	"						var fileTypeMatcher = e.target.result.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);    \n" + 
-	"						if (fileTypeMatcher && fileTypeMatcher[2].match('^${accept}$')) {   \n" + 
-	"							var fileSize = 75 * e.target.result.length / 100 / 1024; \n " +
-	"							if ('${max_size}'  && fileSize > ${max_size}) {   \n" + 
-	"								alert('${max_size_message}');  \n" + 
+	"						if (!$('#visible_${name}')[0].preventLoading) {    \n" + 
+	"							var fileTypeMatcher = e.target.result.match(/data:([a-zA-Z]*)\\/([a-zA-Z]*);base64,/i);    \n" + 
+	"							if (fileTypeMatcher && fileTypeMatcher[2].match('^${accept}$')) {   \n" + 
+	"								var fileSize = 75 * e.target.result.length / 100 / 1024; \n " +
+	"								if ('${max_size}'  && fileSize > ${max_size}) {   \n" + 
+	"									alert('${max_size_message}');  \n" + 
+	"									$('#img_visible_${name}').show();   \n" + 
+	"									$('#download_visible_${name}').hide();   \n" + 
+	"									$('#img_visible_${name}').attr('src', '');  \n" + 
+	"									$('#base64_visible_${name}').val('');  \n" + 
+	"									$('#${name}').val('');  \n" + 
+	"									$('#visible_${name}').val('');  \n" + 
+	"									$('#visible_${name}').parent().children('').addClass('error error_color');  \n" + 
+	"								} else {  \n" + 
+	"									$('#visible_${name}').parent().children('').removeClass( \"error error_color\", \"\"); \n" + 
+	"									if (fileTypeMatcher[1] == 'image' && fileTypeMatcher[2] != 'tiff') {         \n" + 
+	"										$('#img_visible_${name}').attr('src', e.target.result);     \n" + 
+	"										$('input#${name}').val(e.target.result);     \n" +
+	"									}         \n" + 
+	"								}         \n" + 
+	"							} else {  \n" + 
+	"								alert('${incorrect_type} ${accept_message}');  \n" + 
 	"								$('#img_visible_${name}').show();   \n" + 
 	"								$('#download_visible_${name}').hide();   \n" + 
 	"								$('#img_visible_${name}').attr('src', '');  \n" + 
@@ -161,23 +179,14 @@ public class Image extends Widget {
 	"								$('#${name}').val('');  \n" + 
 	"								$('#visible_${name}').val('');  \n" + 
 	"								$('#visible_${name}').parent().children('').addClass('error error_color');  \n" + 
-	"							} else {  \n" + 
-	"								$('#visible_${name}').parent().children('').removeClass( \"error error_color\", \"\"); \n" + 
-	"								if (fileTypeMatcher[1] == 'image' && fileTypeMatcher[2] != 'tiff') {         \n" + 
-	"									$('#img_visible_${name}').attr('src', e.target.result);     \n" + 
-	"									$('input#${name}').val(e.target.result);     \n" +
-	"								}         \n" + 
 	"							}         \n" + 
-	"						} else {  \n" + 
-	"							alert('${incorrect_type} ${accept_message}');  \n" + 
-	"							$('#img_visible_${name}').show();   \n" + 
-	"							$('#download_visible_${name}').hide();   \n" + 
+	"	  					} else {          \n" + 
+	"							$('input#${name}').attr('value', '');   \n" + 
 	"							$('#img_visible_${name}').attr('src', '');  \n" + 
-	"							$('#base64_visible_${name}').val('');  \n" + 
-	"							$('#${name}').val('');  \n" + 
-	"							$('#visible_${name}').val('');  \n" + 
-	"							$('#visible_${name}').parent().children('').addClass('error error_color');  \n" + 
-	"						}         \n" + 
+	"							$('#visible_${name}').val('');   \n" + 
+	"							$('#visible_${name}').parent().children('[class=\"jq-file__name\"]').html('&nbsp;');    \n" + 
+	"	  					}          \n" + 
+	"						$('#visible_${name}')[0].preventLoading = false; \n" + 
 	"					}     \n" + 
 	"					reader.readAsDataURL(data.files[0]);     \n" + 
 	"					return false;    \n" + 
@@ -185,9 +194,17 @@ public class Image extends Widget {
 	"			}     \n" + 
 	"	        },       \n" + 
 	"		success : function(data, textStatus, jqXHR) {   \n" + 
-	"			$('#visible_${name}').change(); \n" +
-	"			$('#img_visible_${name}').attr('src', data); \n" +
-	"			$('input#${name}').attr('value', data);     \n" +
+	"			if (!$('#visible_${name}')[0].preventLoading) {    \n" + 
+	"				$('#visible_${name}').change(); \n" +
+	"				$('#img_visible_${name}').attr('src', data); \n" +
+	"				$('input#${name}').attr('value', data);     \n" +
+	"	  		} else {          \n" + 
+	"				$('input#${name}').attr('value', '');   \n" + 
+	"				$('#img_visible_${name}').attr('src', '');  \n" + 
+	"				$('#visible_${name}').val('');   \n" + 
+	"				$('#visible_${name}').parent().children('[class=\"jq-file__name\"]').html('&nbsp;');    \n" + 
+	"	  		}          \n" + 
+	"			$('#visible_${name}')[0].preventLoading = false; \n" + 
 	"		},   \n" + 
 	"		error : function(jqXHR, textStatus, errorThrown) {   \n" + 
 	"			showError(\"Error: \" +  textStatus + \" \"+ errorThrown, jqXHR.responseText);    \n" + 

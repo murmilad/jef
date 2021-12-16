@@ -35,11 +35,14 @@ public class PopUpList extends Widget {
 		   * @return код JavaScript
 		   */
 			public String getCleanValueJS() {
-				
+				// Вызываем change что бы связанные поля тоже отчистились
 				return 	("							$(\"#visible_${child_name}\").empty();  \n" + 
 						"							$(\"#fake_visible_${child_name}\").val('${not_selected}');  \n" + 
 						"							$( \"#popup_${child_name}\" ).remove();  \n" + 
-						"							$(\"input#${child_name}\").val('');  \n")
+						"							$(\"input#${child_name}\").val('');  \n" +
+						"							$('#visible_${child_name}').change();   \n" 
+						
+						)
 						.replace("${not_selected}", CurrentLocale.getInstance().getTextSource().getString("not_selected")); 
 			}
 
@@ -207,16 +210,32 @@ public class PopUpList extends Widget {
 			return elementInput;
 		}
 		
-	   /**
-	   * Метод возвращает функционал влияющий на состав списочного элемента 
-	   * 
-	   * @return код JavaScript
-	 * @throws SAXException 
-	   */
-		public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
+		   /**
+		   * Метод возвращает функционал влияющий на состав списочного элемента 
+		   * 
+		   * @return код JavaScript
+		 * @throws SAXException 
+		   */
+			public String getListConnectJS(TagGenerator currentGenerator, TagGenerator parrentGenerator) throws SAXException {
+				String prefix = (String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX);
+				String handler = (String) currentGenerator.getAttribute(TagGenerator.Attribute.HANDLER);
+				String valueJS = getValueJS(currentGenerator, prefix, TagGenerator.Attribute.AJAX_LIST_PARRENT);
+				String name = ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(prefix);
 
-			return "";
-		}
+				// Вызываем функцию связи в событиях родительского элемента
+				// Пишем процедуру в DOM дочернего элемента для корректной обработки мулттиформ
+				currentGenerator.getDom().add(Tag.Type.SCRIPT,
+						(
+						" $(\"#visible_${parrent_name}\").bindFirst('change', function(){\n" +
+					"						$(\"input#${child_name}\").trigger('cleanValue');       \n" + 
+						" }); \n")
+						.replace("${parrent_name}", ((String)parrentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat((String)parrentGenerator.getAttribute(TagGenerator.Attribute.PREFIX)))
+						.replace("${child_name}", ((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID)).concat(((String) currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))))
+				);
+				
+
+				return "";
+			}
 
 //		  /**
 //		   * Метод возвращает функционал устанавливающий признак активности элемента

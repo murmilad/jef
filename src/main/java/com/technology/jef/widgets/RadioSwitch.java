@@ -26,12 +26,14 @@ public class RadioSwitch extends List {
 
 	@Override
 	public String getCleanValueJS() {
-
+		// Вызываем change что бы связанные поля тоже отчистились
 		return 	("							    \n" + 
 	"							$(\"[name='visible_${child_name}']\").each(function(index, item){  \n" + 
-	"								$(this).prop(\"checked\", false).trigger('refresh');  \n" + 
+	"								$(this).prop(\"checked\", false).trigger('refresh').change();  \n" + 
 	"							});  \n" + 
-	"							$('input#${child_name}').val('');  \n");
+	"							$('input#${child_name}').val('');  \n" +
+	"							$('#visible_${child_name}').change();   \n" 
+	);
 	}
 
 	@Override
@@ -303,7 +305,7 @@ public class RadioSwitch extends List {
 		super.getListConnectJS(currentGenerator, parrentGenerator);
 
 		String bodyJS = 	("					function onChange${parrent_name}_${child_name}_ct_ajax_list(${parrent_name}List){             \n" + 
-	"				if (!ajax_is_parrent_blocked${prefix}[\"${child_name}\"]) { // прерывание циклических зависимостей  \n" + 
+	"				if (!ajax_is_parrent_blocked${prefix}[\"${child_name}\"] || !ajax_is_child_blocked${prefix}[\"${parrent_name}\"]) { // прерывание циклических зависимостей  \n" + 
 	"						var valueJS = ${value_js};   \n" + 
 	"						$(\"input#${child_name}\").trigger('cleanValue');         \n" + 
 	"						if (valueJS.match(/${force_ajax}${value_separator}(none|${fias_code_name_separator})?(${parameter_separator}|$)/)){ return };             \n" + 

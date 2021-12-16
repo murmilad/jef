@@ -122,7 +122,12 @@ public class Service<F extends FormFactory> {
 		Parameters result = new Parameters();
 
 		parameters.keySet().forEach(name -> 
-			result.put(name, new Value(name, parameters.get(name)))
+			result.put(name, new Value(
+					name
+					, parameters.get(name)
+					, "1".equals(parameters.get(SYSTEM_PARAMETER_PREFIX + "_required_" + name))
+					, "1".equals(parameters.get(SYSTEM_PARAMETER_PREFIX + "_changed_" + name))
+					, parameters.get("visible_" + name)))
 		);
 		
 		return result;
@@ -159,7 +164,12 @@ public class Service<F extends FormFactory> {
 			if (prefixMatcher.matches()) {
 				formsMap.put(Objects.toString(value, ""), new FormParameters(Objects.toString(value, "")));
 			} else if (!name.contains(SYSTEM_PARAMETER_PREFIX + "_parrent_api_") && !name.contains(SYSTEM_PARAMETER_PREFIX + "_api_") && !name.contains(SYSTEM_PARAMETER_PREFIX + "_required_") && !name.contains(SYSTEM_PARAMETER_PREFIX + "_changed_")) {
-				allInputParametersMap.put(name, new Value(name, parameters.get(name), "1".equals(parameters.get(SYSTEM_PARAMETER_PREFIX + "_required_" + name)),  "1".equals(parameters.get(SYSTEM_PARAMETER_PREFIX + "_changed_" + name))));
+				allInputParametersMap.put(name, new Value(
+						name
+						, parameters.get(name)
+						, "1".equals(parameters.get(SYSTEM_PARAMETER_PREFIX + "_required_" + name))
+						, "1".equals(parameters.get(SYSTEM_PARAMETER_PREFIX + "_changed_" + name))
+						, parameters.get("visible_" + name)));
 			}
 		}
 
