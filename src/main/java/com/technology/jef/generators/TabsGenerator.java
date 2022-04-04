@@ -101,7 +101,6 @@ public class TabsGenerator extends TagGenerator {
 	"		    					'class': 'message_box_form_loading messages_border messages_color',  \n" + 
 	"		    					'id': 'message_box_wait_tab_load',  \n" + 
 	"		    					'name': 'message_box_wait_tab_load',  \n" + 
-	"		    					'text': '${loading}',  \n" + 
 	"						}).appendTo($box);  \n" + 
 	"						var resourcesRegExp = /<\\s*script\\s+src\\s*=\\s*['\"](.+?\\.js)/g;      \n" + 
 	"						var resourcesRegExpResult;      \n" + 
@@ -139,9 +138,14 @@ public class TabsGenerator extends TagGenerator {
 	"					});                 \n" + 
 	"				}            \n")
 					.replace("${form}", firstTabFormId)
-					.replace("${loading}", CurrentLocale.getInstance().getTextSource().getString("loading"))
 			);
 		}
+	}
+
+
+	@Override
+	public Name getName() {
+		return Name.TABS;
 	}
 
 }

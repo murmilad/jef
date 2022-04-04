@@ -111,7 +111,7 @@
             onSearchComplete: noop,
             onSearchError: noop,
             preserveInput: false,
-            containerClass: 'autocomplete-suggestions first_font first_frames_border background_color',
+            containerClass: 'autocomplete-suggestions first_font first_frames_border background_color first_text_color',
             tabDisabled: false,
             dataType: 'text',
             currentRequest: null,

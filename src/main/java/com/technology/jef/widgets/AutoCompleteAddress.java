@@ -299,6 +299,8 @@ public class AutoCompleteAddress extends Widget {
 	"		$('#visible_${child_name}').removeClass('warning_color');                              \n" + 
 	"	} else  { \n" + 
 	"		$('#visible_${child_name}').addClass('warning_color');                              \n" + 
+	// XSS unescape for input fields
+	"		if (data.value) {$('#visible_${child_name}').val(data.value.split('|').pop().replace(/&gt;/g, '>').replace(/&lt;/g, '<'));}  \n" + 
 	"	}  \n" + 
 	"	$('#visible_${child_name}').bind('change', function(){  \n" + 
 	"		$('#${system_prefix}_changed_${child_name}').val('1')  \n" + 

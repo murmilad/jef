@@ -272,6 +272,8 @@ public class AutoCompleteEditable extends Widget {
 	"		$('#visible_${child_name}').val(data.name).blur().change().trigger('autoCompleteChange');    \n" + 
 	"		if (other) {  \n" + 
 	"			$(\"#visible_${name}_other\").val(other);     \n" + 
+	// XSS unescape for input fields
+	"			if (other) {$('#visible_${name}_other').val(other.replace(/&gt;/g, '>').replace(/&lt;/g, '<'));}  \n" + 
 	"			$(\"#visible_${name}_other\").show();     \n" + 
 	"			$(\"#visible_${name}_other\").styler({});     \n" + 
 	"			$(\"#visible_${name}_other\").trigger('refresh');     \n" + 

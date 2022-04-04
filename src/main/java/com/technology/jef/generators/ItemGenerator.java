@@ -6,6 +6,7 @@ import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
+import com.technology.jef.generators.TagGenerator.Name;
 import com.technology.jef.widgets.Widget;
 import com.technology.jef.widgets.WidgetFactory;
 
@@ -47,7 +48,7 @@ public class ItemGenerator extends TagGenerator {
 			 put(Tag.Property.ID, "message_box_wait_" + getAttribute(TagGenerator.Attribute.ID) + getAttribute(TagGenerator.Attribute.PREFIX));
 			 put(Tag.Property.NAME, "message_box_wait");
 			 put(Tag.Property.CLASS, "message_box_loading background_color");
-			}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
+			}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.NAME, "message_overlay_wait");
 			 put(Tag.Property.CLASS, "message_overlay_loading");
 			}});
@@ -193,6 +194,11 @@ public class ItemGenerator extends TagGenerator {
 	public void onEndElement() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Name getName() {
+		return Name.FORM_ITEM;
 	}
 
 }

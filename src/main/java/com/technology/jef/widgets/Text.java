@@ -46,7 +46,7 @@ public class Text extends Widget {
 				 put(Tag.Property.PLACEHOLDER, (String) generator.getAttribute(TagGenerator.Attribute.HINT));
 				 put(Tag.Property.STYLE, "width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;");
 				 put(Tag.Property.CHANGE, !"".equals(getInputRegexp())
-						 ? "if ($(this).val() && !($(this).val().match(/^" + getInputRegexp() + "$/))) { alert(\""+ CurrentLocale.getInstance().getTextSource().getString("data_is_incorrect") +" \\'\" + $(this).val() + \"\\'\"); $(this).val(\"\").change().addClass(\"error error_color\").trigger(\"refresh\").focus(); return false;} else {$(this).removeClass( \"error error_color\", \"\").trigger(\"refresh\")}" 
+						 ? "if (!window.isFormLoading && $(this).val() && !($(this).val().match(/^" + getInputRegexp() + "$/))) { alert(\""+ CurrentLocale.getInstance().getTextSource().getString("data_is_incorrect") +" \\'\" + $(this).val() + \"\\'\"); $(this).addClass(\"error error_color\").val('').trigger(\"refresh\").focus(); return false;} else {$(this).removeClass( \"error error_color\", \"\").trigger(\"refresh\")}" 
 						 : ""
 				);
 				 put(Tag.Property.MOUSEDOWN, "setTimeout(function() {$('#visible_" + name + "').focus();}, 100);");

@@ -5,23 +5,25 @@
 }
 
 .first_color {
-	background: #100280;
+	background: #BF0028!important;
 }
 .second_color {
-	background: #BBB;
+	background: #BBB!important;
 }
+
 .warning_color {
     background-color: #FBEEC0 !important
 }
 
+
 .first_text_color{
-	color: #000;
+	color: #000!important;
 }
 .second_text_color {
-	color: #FFF;
+	color: #FFF!important;
 }
 .third_text_color {
-	color: #100280;
+	color: #BF0028!important;
 }
 
 .first_frames_border {
@@ -31,9 +33,8 @@
 	border: solid 1px #E6E6E6;
 }
 
-
 .background_color {
-	background: #FFF;
+	background-color: #FFF;
 }
 
 .url_color { 
@@ -42,22 +43,21 @@
 
 /*height*/
 .widgets_height {
-	height: 20px;
+	height: 28px;
 }
 
 .header_height {
-	height: 30px;
+	height: 33px;
 }
 
 .block_height {
-	min-height: 30px;
+	min-height: 33px;
 }
-
 
 /*work_area*/
 
 .header_color {
-	background: #100280;
+	background: #BF0028 url(../images/caption.png) repeat-x;
 }
 
 .header_line_height {
@@ -67,7 +67,22 @@
 	font-size: 15px;
 }
 .work_area_width {
-	width: 1080px;
+	width: 1070px;
+}
+
+/*messages*/
+
+.background_overlay_color {
+	  background-color: #FFF;
+}
+
+.message_box_load{
+    border: 2px solid #ccc;
+    background-color: #f3f3f3;
+}
+
+.message_overlay_load_color {
+    background-color: #f3f3f3;
 }
 
 
@@ -75,36 +90,51 @@
 
 .error_color {
 	border-color: #E50029 !important;
+	background-color: #FAD2D2 !important;
 }
-
 
 /*widgets*/
 
 .widgets_header_float {
 	display: table-cell;
 }
+
 .widgets_body_float {
 	display: table-cell;
 }
 
-
 .widgets_color {
-	background-color: #FFF;
+	background-color: #E7F0F5;
 }
 
-.widgets_label_color {
-	color: #000;
+.widgets_color:disabled {
+	background-color: #E7F0F5;
 }
-
+.widgets_label_color_disabled {
+	color: #666666;
+}
 .widgets_font { 
-	font: bold 13px/18px Arial, Tahoma, sans-serif;
+	font: bold 16px/28px Arial, Tahoma, sans-serif;
+}
+
+.jq-radio.checked .jq-radio__div {
+	background: #E4032E !important;
+}
+
+.jq-checkbox.checked .jq-checkbox__div {
+	background: #E4032E !important;
 }
 
 .downarrow_color {
 	background-color: rgba(231, 240, 245, 1);
 }
 .downarrow_size {
-	size: 10px;
+	size: 8px;
+}
+
+.background_overlay_trans {
+	background-color: rgba(255, 255, 255, 0.7) !important;
+
 }
 
 /*messages*/
@@ -119,6 +149,55 @@
 	 border: 2px solid #E50029;
 }
 
+.message_box_form_loading:before {
+	content: "Loading";
+}
+.message_box_form_loading{
+    width: 470px;
+    top: 50%;
+    left: 55%;
+    margin-top: -9em;
+    margin-left: -20em;
+    padding: 20px;
+    font-size: 18px;
+	font: bold 13px/18px Arial, Tahoma, sans-serif;
+    font-size: 18px;
+}
+
+.message_box_load:before {
+	content: "Loading";
+}
+.message_box_load{
+    border: 2px solid #ccc;
+    font-size: 18px;
+    width: 470px;
+    top: 50%;
+    left: 50%;
+    margin-top: -9em;
+    margin-left: -20em;
+    padding: 20px;
+	font: bold 13px/18px Arial, Tahoma, sans-serif;
+    font-size: 18px;
+}
+
+
+.message_box_wait:before {
+	content: "Loading";
+}
+.message_box_wait{
+    width: 470px;
+    top: 50%;
+    left: 50%;
+    margin-top: -9em;
+    margin-left: -20em;
+    padding: 20px;
+	font: bold 13px/18px Arial, Tahoma, sans-serif;
+    font-size: 18px;
+}
+
+.message_overlay_loading:before {
+	content: "Loading";
+}
 
 /*buttons*/
 .buttons_color {
@@ -131,4 +210,9 @@
 
 .buttons_width {
 	width: 98px;
+}
+
+.group_bar{
+	display: block !important;
+/*	top: 79 !important; */
 }

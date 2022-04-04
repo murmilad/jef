@@ -7,6 +7,7 @@ import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
+import com.technology.jef.generators.TagGenerator.Name;
 
 /**
 * Класс сборщика DOM модели уровня интерфейса
@@ -190,6 +191,7 @@ public class InterfaceGenerator extends TagGenerator {
 			 put(Tag.Property.CLASS, "interface_button first_color second_text_color");
 			 put(Tag.Property.CLICK, "location.reload();");
 		}});
+
 		
 		return content;
 	}
@@ -207,5 +209,10 @@ public class InterfaceGenerator extends TagGenerator {
 		     put(Tag.Property.SRC, "js/" + getAttribute(TagGenerator.Attribute.ID) + ".js?no_cache=" + new Random().nextInt(10000));
 		}});
 	}
-	
+
+	@Override
+	public Name getName() {
+		return Name.INTERFACE;
+	}
+
 }

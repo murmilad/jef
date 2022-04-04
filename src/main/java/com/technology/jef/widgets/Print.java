@@ -14,7 +14,7 @@ import com.technology.jef.generators.TagGenerator;
 /**
 * Виджет кнопка
 */
-public class Print extends Widget {
+public class Print extends HTML {
 		@Override
 		public ViewType getType() {
 			// TODO Auto-generated method stub
@@ -63,35 +63,7 @@ public class Print extends Widget {
 				 put(Tag.Property.VALUE, "0");
 			}});
 			
-			parrent.add(Tag.Type.SCRIPT, 				("  \n" + 
-	"					json_${name} = '${value}';  \n" + 
-	"					$( document ).ready(function() {  \n" + 
-	"						$('#${visible_name}').change(function() {  \n" + 
-	"							var val = $(this).val();  \n" + 
-	"							if (val != null && val != '') {  \n" + 
-	"								$('#${visible_name}').empty();  \n" + 
-	"								var jsonList = jQuery.parseJSON(val);  \n" + 
-	"								if (jsonList.error){  \n" + 
-	"									$('#${visible_name}').append(jsonList.error);  \n" + 
-	"								} else {   \n" + 
-
-	"									for (var i = 0; i < jsonList.length; i++) {  \n" + 
-	"										$('#${visible_name}').append($('<table id=\"'+i+'_${visible_name}\"/>').css(\"border-collapse\", \"collapse\").css(\"border\", \"1px solid black\"));  \n" + 
-	"										if (jsonList[i].type == 'table') {  \n" + 
-	"											buildHtmlTable(jsonList[i].body, '#'+i+'_${visible_name}');  \n" + 
-	"										} else if (jsonList[i].type == 'list'){  \n" + 
-	"											buildHtmlList(jsonList[i].body, '#'+i+'_${visible_name}');  \n" + 
-	"										}  \n" + 
-	"										$('#${visible_name}').append($('<br/>'));  \n" + 
-	"									}  \n" + 
-	"								}  \n" + 
-	"							}  \n" + 
-	"						    return 0;  \n" + 
-	"		  				});  \n" + 
-	"					});  \n")
-	.replace("${visible_name}", "visible_" + name)
-	.replace("${name}", name)
-	.replace("${value}", ""));
+			parrent.add(Tag.Type.SCRIPT, getJsonToHtmlJs(name));
 			return elementInput;
 		}
 			

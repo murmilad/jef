@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
+import com.technology.jef.generators.TagGenerator.Name;
 import com.technology.jef.widgets.Text;
 import com.technology.jef.widgets.Widget;
 
@@ -42,8 +43,8 @@ public class GroupGenerator extends TagGenerator {
 			multilineParrentDOM = dom.add(Tag.Type.DIV,new HashMap<Tag.Property, String>(){{
 			     put(Tag.Property.STYLE, "display: inline-block;");
 			}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-			     put(Tag.Property.ID, "place_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
-			     put(Tag.Property.NAME, "place_" + GROUP_SEPARATOR +getAttribute(TagGenerator.Attribute.API));
+			     put(Tag.Property.ID, "place_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "")+ GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+			     put(Tag.Property.NAME, "place_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "")+ GROUP_SEPARATOR +getAttribute(TagGenerator.Attribute.API));
 			}});
 			
 			// Формируем шаблон для мультигрупп и возвращаем его для дочерних генераторов
@@ -69,7 +70,15 @@ public class GroupGenerator extends TagGenerator {
 				// добавления/удаления родительской группы
 					if ("add".equals(currentGenerator.getAttribute(TagGenerator.Attribute.TYPE)) 
 							|| "delete".equals(currentGenerator.getAttribute(TagGenerator.Attribute.TYPE))){
-						currentGenerator.getDom().setBody(currentGenerator.getDom().getBody() + "event.stopPropagation();");
+						currentGenerator.getDom().setBody(
+								(
+								"${body} \n" +
+								"	if (event.target.getAttribute('id') !== 'div_<NUMBER>') { return; }\n "+
+								"	event.stopPropagation(); \n"
+								)
+								.replace("${body}", currentGenerator.getDom().getBody())
+								.replace("${current_item_id}", (String)currentGenerator.getParrent().getAttribute(TagGenerator.Attribute.ID))
+								);
 					}
 					formItems.add((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID));
 				}
@@ -79,6 +88,10 @@ public class GroupGenerator extends TagGenerator {
 			
 
 //TODO			load params with prefix
+		} else if (Name.GROUP.equals(getParrent().getName()) && "true".equals(getParrent().getAttribute(TagGenerator.Attribute.IS_MULTIPLIE))) {
+			group = addFormGroup(dom 
+					, "<NUMBER>" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.ID)
+					, (String) getAttribute(TagGenerator.Attribute.NAME));
 		} else {
 			group = addFormGroup(dom, (String) getAttribute(TagGenerator.Attribute.ID), (String) getAttribute(TagGenerator.Attribute.NAME));
 		}
@@ -165,9 +178,6 @@ public class GroupGenerator extends TagGenerator {
 				 put(Tag.Property.ID, "message_box_wait_button_del_<NUMBER>");
 				 put(Tag.Property.NAME, "message_box_wait");
 				 put(Tag.Property.CLASS, "message_box_loading background_color");
-				}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.NAME, "message_overlay_wait");
-				 put(Tag.Property.CLASS, "message_overlay_loading");
 				}});
 			buttonDel.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
 					put(Tag.Property.NAME, "button_del_<NUMBER>");
@@ -181,32 +191,36 @@ public class GroupGenerator extends TagGenerator {
 	"	$(\"#button_del_<NUMBER>\").click(function(){  \n" + 
 	"		$( '#div_<NUMBER>').trigger( 'delete' );           \n" +
 	"		$('#action<NUMBER>').val('${action}'); \n" + 
+	"		$('#group_bar').find(\"[name^='fildset_<NUMBER>']\").remove(); \n" +
 	"		$(\"#fildset_<NUMBER>\").remove();  \n" + 
 	"			$(\"<input/>\", {    \n" + 
 	"				'value': '${api}',     \n" + 
 	"				'type': 'hidden',     \n" + 
 	"				'id': '${system_prefix}_api_group_id<NUMBER>',     \n" + 
 	"				'name': '${system_prefix}_api_group_id<NUMBER>',     \n" + 
-	"			}).appendTo( \"#place_${multiplie_group_name}\" ); \n" + 
+	"			}).appendTo( \"#place_${parrent_group_name}\" ); \n" + 
 	"			$(\"<input/>\", {    \n" + 
 	"				'value': '${parrent_api}',     \n" + 
 	"				'type': 'hidden',     \n" + 
 	"				'id': '${system_prefix}_parrent_api_group_id<NUMBER>',     \n" + 
 	"				'name': '${system_prefix}_parrent_api_group_id<NUMBER>',     \n" + 
-	"			}).appendTo( \"#place_${multiplie_group_name}\" ); \n" + 
-	"		count_${multiplie_group_name}--; \n" +
+	"			}).appendTo( \"#place_${parrent_group_name}\" ); \n" + 
+	"		count_multiplie_group['${parrent_group_name}${multiplie_group_name}']--; \n" +
 	"						var parameters = ${value_js};  \n" + 
-	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};  \n" + 
+	"						if (!count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}']) {count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'] = 0;}    \n" + 
+	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_multiplie_group['${parrent_group_name}'];  \n" + 
+	"						parameters += parrentGroupPrefix ? '${parameter_separator}super_group_id${value_separator}' + $('#group_id' + parrentGroupPrefix).val() : '';     \n" + 
 	"						$('#id_add_joined_group_${joined_by}').val(''); \n " + 
 	"						$('#name_add_joined_group_${joined_by}').val(''); \n " + 
-	"						setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);   \n" + 
-	"						setButtonVisiblity${multiplie_group_name}('button_del', groupPrefix, parameters);   \n" + 
+	"						setButtonVisiblity${multiplie_group_name}('button_add', '${parrent_group_name}', parameters);   \n" + 
+	"						setButtonVisiblity${multiplie_group_name}('button_del', '${parrent_group_name}', parameters);   \n" + 
 	"}); \n")
 	.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 	.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 	.replace("${joined_by}", (String) getAttribute(TagGenerator.Attribute.JOINED_BY))
 	.replace("${value_js}", new Text().getValueJS(null, "", null))
 	.replace("${multiplie_group_name}", GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API))
+	.replace("${parrent_group_name}", (Name.GROUP.equals(getParrent().getName()) ? "<GROUP_NUMBER>" : "") + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API))
 	.replace("${api}", (String) getAttribute(TagGenerator.Attribute.API))
 	.replace("${parrent_api}", (String) getAttribute(TagGenerator.Attribute.PARRENT_API))
 	.replace("${action}", ACTION_DELETE)
@@ -223,21 +237,41 @@ public class GroupGenerator extends TagGenerator {
 			}});
 
 			multilineParrentDOM.getParrent().add(Tag.Type.SCRIPT, 		("  \n" + 
-					"					$(\"#button_add_${multiplie_group_name}\").click(function(){           \n" + 
+					"					number_multiplie_group['${parrent_group_name}${multiplie_group_name}'] = 0;            \n" + 
+					"					count_multiplie_group['${parrent_group_name}${multiplie_group_name}'] = 0;            \n" + 
+					"						$('#form_id').bind('setListOnLoad_${parrent_group_api}${parrent_group_name}', function() {        \n" + 
+
+					"							var parameters = ${value_js};     \n" + 
+					"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_multiplie_group['${parrent_group_name}${multiplie_group_name}'];     \n" + 
+					"							parameters += '${parrent_group_name}' ? '${parameter_separator}super_group_id${value_separator}' + $('#group_id${parrent_group_name}').val() : '';     \n" + 
+					"							setButtonVisiblity${multiplie_group_name}('button_add', '${parrent_group_name}${multiplie_group_name}', parameters);      \n" + 
+					"						});        \n" + 
+
+					"					$(\"#button_add_${parrent_group_name}${multiplie_group_name}\").click(function(){           \n" + 
 					"						setTimeout(function( x ) {           \n" + 
-					"							var prefix = add_${multiplie_group_name}(\"#${group_plase}\");           \n" + 
+					"							var prefix = add_${multiplie_group_name}(\"#${group_plase}\", '${parrent_group_name}');           \n" + 
 					"							window.isFormLoading = true;             \n" + 
-					"							load_form_data_${group_api}(groupInitialParams${group_api}, prefix);             \n" + 
-					"							$( '#form_id' ).trigger('setListOnLoad_${group_api}'+prefix);                               \n" + 
+					"							load_form_data_${group_api}(groupInitialParams${group_api}, prefix, '${parrent_group_name}');             \n" + 
 					"							window.isFormLoading = false;             \n" + 
 					"							$( '#div_' + prefix ).trigger( 'add' );           \n" + 
+					"							$( '#form_id' ).trigger('setListOnLoad_${group_api}'+prefix);                               \n" + 
+					"							$( '#form_id' ).trigger('setListOnLoad_${group_api}', [prefix]); \n " + 
+					"							$(document.body).animate({ \n" + 
+					"						    	'scrollTop':   ($('#span_' + prefix).offset().top - 100) \n" + 
+					"							}, 200); \n" + 
 					"						}, 100);          \n" + 
 					"					});           \n")
 					.replace("${multiplie_group_name}", GROUP_SEPARATOR + (String) getAttribute(TagGenerator.Attribute.API))
+					.replace("${parrent_group_name}", (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : ""))
 					.replace("${group_plase}", !"".equals(getAttribute(TagGenerator.Attribute.JOINED_BY))
 						? "place_joined_group_" + getAttribute(TagGenerator.Attribute.JOINED_BY)
-						: "place_" + GROUP_SEPARATOR + (String) getAttribute(TagGenerator.Attribute.API))
+						: "place_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "") + GROUP_SEPARATOR + (String) getAttribute(TagGenerator.Attribute.API))
 					.replace("${group_api}", (String) getAttribute(TagGenerator.Attribute.API))
+					.replace("${parrent_group_api}", Name.GROUP.equals(getParrent().getName()) ? (String) getParrent().getAttribute(TagGenerator.Attribute.API) : "")
+					.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+					.replace("${parameter_separator}", PARAMETER_SEPARATOR)
+					.replace("${group_separator}", GROUP_SEPARATOR)
+					.replace("${value_js}", new Text().getValueJS(null, "", null))
 			);
 			Tag buttonAdd = multilineParrentDOM.getParrent().add(Tag.Type.DIV,
 					new HashMap<Tag.Property, String>(){{
@@ -247,17 +281,17 @@ public class GroupGenerator extends TagGenerator {
 							put(Tag.Property.STYLE, "position:relative; width: 100%;text-align: left; display: block;");
 					}});
 			buttonAdd.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "message_box_wait_button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+				 put(Tag.Property.ID, "message_box_wait_button_add_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "")+ GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.NAME, "message_box_wait");
 				 put(Tag.Property.CLASS, "message_box_loading background_color");
-				}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
+				}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "message_overlay_wait");
 				 put(Tag.Property.CLASS, "message_overlay_loading");
 				}});
 
 			buttonAdd.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
-					 put(Tag.Property.ID, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
-					 put(Tag.Property.NAME, "button_add_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+					 put(Tag.Property.ID, "button_add_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "")+ GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+					 put(Tag.Property.NAME, "button_add_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "")+ GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 					 put(Tag.Property.TYPE, "button");
 					 put(Tag.Property.CLASS, "interface_add_button buttons_color buttons_height");
 					 put(Tag.Property.STYLE, !"".equals(getAttribute(TagGenerator.Attribute.JOINED_BY)) ? "display: none" : "display: inline-block");
@@ -269,18 +303,15 @@ public class GroupGenerator extends TagGenerator {
 			
 
 			multilineParrentDOM.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "background_overlay_wait_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+				 put(Tag.Property.ID, "background_overlay_wait_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "")+ GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.NAME, "background_overlay_wait");
 				 put(Tag.Property.CLASS, "background_overlay_wait background_color");
 			}});
 
 			multilineParrentDOM.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.ID, "message_box_wait_" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
+				 put(Tag.Property.ID, "message_box_wait_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "")+ GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 				 put(Tag.Property.NAME, "message_box_wait");
 				 put(Tag.Property.CLASS, "message_box_wait messages_border messages_color");
-			}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("wait"), new HashMap<Tag.Property, String>(){{
-				 put(Tag.Property.NAME, "message_overlay_wait");
-				 put(Tag.Property.CLASS, "message_overlay_wait messages_color");
 			}});
 
 		} else {
@@ -311,7 +342,16 @@ public class GroupGenerator extends TagGenerator {
 					? super.getAttribute(TagGenerator.Attribute.API)
 					: this.getParrent().getAttribute(TagGenerator.Attribute.API);
 		case PREFIX: // Хотим получить префикс для параметра групповых форм
-			return isMultiplie ? "<NUMBER>" : "";
+			return 
+					(isMultiplie 
+							? "<NUMBER>" 
+							: (
+								Name.GROUP.equals(this.getParrent().getName()) 
+								&& "true".equals(this.getParrent().getAttribute(TagGenerator.Attribute.IS_MULTIPLIE))
+							) 
+								? "<NUMBER>"
+								:""
+					);
 		case TEMPLATE: // Хотим получить шаблон для мультигруппы
 			return templateParrentGroup;
 		case SERVICE:
@@ -321,6 +361,11 @@ public class GroupGenerator extends TagGenerator {
 		default:
 			return super.getAttribute(attributeName);
 		}
+	}
+
+	@Override
+	public Name getName() {
+		return Name.GROUP;
 	}
 
 }

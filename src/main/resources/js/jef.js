@@ -160,11 +160,12 @@
 	}
 	
 	function setWindowParams(location, place){
-		var params = location 
+		var paramsArray = location 
 			.replace(/#\d*$/,'')       
 			.replace('?','&')    
-			.split('&')    
-			.reduce(    
+			.split('&');
+		paramsArray.shift();
+		var paramsHash = paramsArray.reduce(    
 					function(p,e){    
 						var a = e.split('=');    
 						try{
@@ -174,15 +175,15 @@
 					},    
 		    {}    
 		);
-		params.no_cache = Math.floor(Math.random() * 10000);
+		paramsHash.no_cache = Math.floor(Math.random() * 10000);
 	
 		if (place) {
 			if (!window.params_places) {
 				window.params_places = {};
 			}
-			window.params_places[place] = params;
+			window.params_places[place] = paramsHash;
 		} else {
-			window.params = params;
+			window.params = paramsHash;
 		}
 	
 	}
@@ -262,6 +263,12 @@
 		var loadedStack = [];
 // 		var page = uri.substr(uri.lastIndexOf('/')+1, uri.indexOf('?') == -1 ? uri.length : uri.indexOf('?'))
 		setWindowParams(uri, place);
+		parameters.uri = uri + (parameters && Object.keys(parameters).length > 0 
+			? ( uri.indexOf('?') == -1 
+				? '?'
+				: '&'
+			) + Object.keys(parameters).map(function(key){return key + '=' + parameters[key]}).join('&')
+			: '');
 		appendWindowParams(parameters, place);
 		
 
@@ -385,12 +392,6 @@
 			    'style': 'display:none;',
 			}).appendTo('body');
 		
-			$('<div />', {
-			    'class': 'message_overlay_load message_overlay_load_color',
-			    'id': 'message_overlay_load',
-			    'name': 'message_overlay_load',
-			    'text': 'Подождите...',
-			}).appendTo($box);
 		
 			$('<div />', {
 			    'class': 'background_overlay_error',
@@ -431,3 +432,57 @@
 			}).appendTo($buttons_box);
 		}
 	});
+
+	$( document ).scroll(function(){
+		if ($('#group_bar:visible').length) {
+			if (isIE() && $('#group_bar').css('position') != 'fixed') {
+				$('#group_bar').css('position', 'fixed');
+			}
+			$("[id^='fildset_']").each(function(){
+				var fildsetId = $( this ).attr('name');
+				var spanId = fildsetId.replace('fildset_', 'span_');
+				var divId = $( this ).attr('name').replace('fildset_', 'div_');
+	
+				if (
+					$('#group_bar').position().top + $('#group_bar').height() >= $( this ).position().top  
+					&& $('#group_bar').find("[name^='"+fildsetId+"']").length == 0
+				){
+					var source = $('#' + fildsetId).clone(false).attr('id', '');
+					source.css('border-bottom', 'none');
+					source.css('padding-bottom', '0px');
+					source.css('padding-top', '2px');
+					source.css('margin-bottom', '0px');
+					if (isIE()) {
+						source.css('border', 'none');
+					}
+					source.find("#" + divId).attr('id', '').empty();
+					source.find("#" + spanId).css('font-weight', '800').attr('id', '');
+					source.appendTo(downTree($('#group_bar')));
+					source.attr('data-current-height', source.height());
+				}
+				if ($('#group_bar').find("[name^='"+fildsetId+"']").length > 0 && $('#group_bar').position().top + $('#group_bar').height() > $('#' + fildsetId).height() + $( this ).position().top) {
+					$('#group_bar').find("[name^='"+fildsetId+"']").remove();
+				}
+				
+				if ($('#group_bar').find("[name^='"+fildsetId+"']").length > 0 && $( this ).position().top > $('#group_bar').position().top + $('#group_bar').height() - $('#group_bar').find("[name^='"+fildsetId+"']").attr('data-current-height')){
+					$('#group_bar').find("[name^='"+fildsetId+"']").remove();
+					$('#group_bar').find("[name^='"+fildsetId+"']").attr('data-current-height');
+				}
+			});
+		}
+	});
+
+	function downTree (node){
+		if (node.children().length) {
+			return downTree(node.children().last());
+		} else {
+			return node;
+		}
+	}
+	function isIE() {
+	    var ua = window.navigator.userAgent; //Check the userAgent property of the window.navigator object
+	    var msie = ua.indexOf('MSIE '); // IE 10 or older
+	    var trident = ua.indexOf('Trident/'); //IE 11
+	    
+	    return (msie > 0 || trident > 0);
+		}

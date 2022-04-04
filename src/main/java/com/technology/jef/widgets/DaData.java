@@ -41,7 +41,7 @@ public class DaData extends Widget {
 			String nameAPI = name.replace(prefix, "");
 			String hint = (String) generator.getAttribute(TagGenerator.Attribute.HINT);
 
-			 parrent.add(Tag.Type.SCRIPT,	("  				var dadata_key;   \n" + 
+			 parrent.add(Tag.Type.SCRIPT,	("  				   \n" +
 	"				var dadata_url;   \n" + 
 	"				$( document ).ready(function() {    \n" + 
 	"							$.ajax({    \n" + 
@@ -53,18 +53,18 @@ public class DaData extends Widget {
 	"							},    \n" + 
 	"                        		    success: function(responce) {    \n" + 
 	"								if (responce.status_code == 1) {   \n" + 
-	"									dadata_key = responce.dadata_key;   \n" + 
+
 	"									dadata_url = responce.dadata_url;   \n" + 
-	"									if (!dadata_key || !dadata_url){    \n" + 
+	"									if (!dadata_url){    \n" +
 	"			  							$('#visible_${name}${group_prefix}').attr(\"placeholder\", \"${dadata_is_not_configured}\");    \n" + 
 	"										$('#visible_${name}${group_prefix}').attr(\"disabled\", \"disabled\");    \n" + 
 	"  							          	} else {    \n" + 
-	"  							          	 var token = 'Token ' + dadata_key;   \n" + 
+
 	"								         $.ajax({    \n" + 
 	"										method : 'POST', \n" + 
 	"						                            url: dadata_url, \n" +
+	"						                            data: JSON.stringify({'query': 'test-string'}), \n" +
 	"						                            headers:{ \n" + 
-	"						                                    'Authorization': token, \n" +
 	"						                                    'Content-Type' :'application/json', \n" + 
 	"       						                             'Accept': 'application/json' \n" + 
 	"										}, \n" + 
@@ -76,7 +76,6 @@ public class DaData extends Widget {
 	"															dataType:'json',    \n" + 
 	"															ajaxSettings:{    \n" + 
 	"																headers:{    \n" + 
-	"																	'Authorization': token,    \n" + 
 	"																	'Content-Type' :'application/json',    \n" + 
 	"																	'Accept': 'application/json'    \n" + 
 	"																	},    \n" + 

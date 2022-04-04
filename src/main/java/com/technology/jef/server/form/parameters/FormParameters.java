@@ -10,27 +10,29 @@ public class FormParameters {
 
 	private String parrentApi;
 	private String currentApi;
+	private String superApi;
+	
 	private List<FormParameters> children = new LinkedList<FormParameters>();
-	private Map<String, ParameterList> parameters = new HashMap<String, ParameterList>();
+	private Map<String, Map<String,ParameterList>> parameters = new HashMap<String, Map<String,ParameterList>>();
 
 	public FormParameters(String currentApi) {
 		setCurrentApi(currentApi);
 	}
 	
-	public Map<String, ParameterList> getParameters() {
+	public Map<String, Map<String,ParameterList>> getParameters() {
 		return parameters;
 	}
 
-	public void setParameters(Map<String, ParameterList> parameters) {
+	public void setParameters(Map<String, Map<String,ParameterList>> parameters) {
 		this.parameters = parameters;
 	}
 
-	public List<Value> getFormParameters(String formPrefix) {
-		return parameters.get(formPrefix).getFormParameters();
+	public List<Value> getFormParameters(String formPath, String formPrefix) {
+		return parameters.get(formPath).get(formPrefix).getFormParameters();
 	}
 
-	public Parameters getInputParameters(String formPrefix) {
-		return parameters.get(formPrefix).getInputParameters();
+	public Parameters getInputParameters(String formPath, String formPrefix) {
+		return parameters.get(formPath).get(formPrefix).getInputParameters();
 	}
 
 	public String getParrentApi() {
@@ -41,12 +43,15 @@ public class FormParameters {
 		this.parrentApi = parrentApi;
 	}
 
-	public void addParameter(String name, Value parameter, String formPrefix, Parameters allInputParameters) {
-		if (!this.parameters.containsKey(formPrefix)) {
-			this.parameters.put(formPrefix, new ParameterList(new Parameters(allInputParameters)));
+	public void addParameter(String name, Value parameter, String formPath, String formPrefix, Parameters allInputParameters) {
+		if (!this.parameters.containsKey(formPath)) {
+			this.parameters.put(formPath, new HashMap<String, ParameterList>());
 		}
-		this.parameters.get(formPrefix).addFormParameter(parameter);
-		this.parameters.get(formPrefix).putInputParameter(name, parameter);
+		if (!this.parameters.get(formPath).containsKey(formPrefix)) {
+			this.parameters.get(formPath).put(formPrefix, new ParameterList(new Parameters(allInputParameters)));
+		}
+		this.parameters.get(formPath).get(formPrefix).addFormParameter(parameter);
+		this.parameters.get(formPath).get(formPrefix).putInputParameter(name, parameter);
 	}
 
 	public void addChildren(FormParameters formParameters) {
@@ -61,8 +66,17 @@ public class FormParameters {
 		return currentApi;
 	}
 
+	public String getSuperApi() {
+		return superApi;
+	}
+
 	public void setCurrentApi(String currentApi) {
 		this.currentApi = currentApi;
+	}
+
+	public void setSuperApi(String superApi) {
+		this.superApi = superApi;
+		
 	}
 
 }

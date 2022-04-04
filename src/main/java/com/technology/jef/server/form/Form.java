@@ -37,20 +37,33 @@ public abstract class Form {
 	   * Данные формы, загруженные из БД
 	   */
 		private com.technology.jef.server.form.FormData formData = new com.technology.jef.server.form.FormData();
-	
+
+	   /**
+	   * Дополнительные данные о форме
+	   */
+
+	   /**
+	   * ID группы, содержащей текущую группу
+	   */
+		private String superGroupId = "";
+
+	   /**
+	   * ID текущей группы
+	   */
+		private String groupId = "";
+
 		/**
 		 * Метод загрузки данных формы из БД для групповых форм
-		 * @param id идентификатор анкеты
+		 * @param id идентификатор 
 		 * @param groupId идентификатор группы для групповых форм
 		 * @param parameters 
 		 * @throws ServiceException
 		 */
 		public abstract void load(String id, String secondaryId, Parameters parameters) throws ServiceException;
-
 	
 		/**
 		 * Метод загрузки списочных элементов параметра формы
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param parameterName наименование параметра формы 
 		 * @return список элементов параметра формы
 		 * @throws ServiceException
@@ -77,7 +90,7 @@ public abstract class Form {
 
 		/**
 		 * Метод интерактивной загрузки списочных элементов параметра формы
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param parameterName наименование параметра формы 
 		 * @param parameters Параметры, влияющие на состав возвращаемого списка 
 		 * @return список элементов параметра формы
@@ -104,7 +117,7 @@ public abstract class Form {
 
 		/**
 		 * Метод интерактивной загрузки значения параметра формы
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param parameterName наименование параметра формы 
 		 * @param parameters Параметры, влияющие значение параметра формы 
 		 * @return значение параметра формы
@@ -132,7 +145,7 @@ public abstract class Form {
 
 		/**
 		 * Метод интерактивной загрузки признака видимости параметра формы
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param parameterName наименование параметра формы 
 		 * @param parameters Параметры, влияющие признак видимости параметра формы
 		 * @return признак видимости True видим, False не видим
@@ -169,7 +182,7 @@ public abstract class Form {
 
 		/**
 		 * Метод интерактивной загрузки признака активности параметра формы
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param parameterName наименование параметра формы 
 		 * @param parameters Параметры, влияющие на признак активности параметра формы 
 		 * @return признак активности True активен, False не активен
@@ -196,7 +209,7 @@ public abstract class Form {
 
 		/**
 		 * Метод проверки параметра формы, который вызывается непосредственно перед сохранением
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param secondaryId данные о группе (если она множимая)
 		 * @param parameterName наименование параметра на форме
 		 * @param isRequired 
@@ -243,7 +256,7 @@ public abstract class Form {
 		 * Метод получения атрибутов параметра формы (видимость, доступность к редактированию)
 		 * @param parameterName наименование параметра на форме
 		 * @param parameters 
-		 * @param id идентификатор анкеты
+		 * @param id идентификатор 
 		 * @return список атрибутов параметра
 		 * @throws ServiceException
 		 */
@@ -263,7 +276,7 @@ public abstract class Form {
 		
 		/**
 		 * Метод проверки всей формы, который вызывается непосредственно перед сохранением
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param secondaryId данные о группе (если она множимая)
 		 * @param parameters Параметры для проверки 
 		 * @return список ошибок
@@ -327,7 +340,7 @@ public abstract class Form {
 
 		/**
 		 * Метод сохранения формы
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param secondaryId данные о группе (если она множимая)
 		 * @param parameters Параметры для сохранения 
 		 * @return TODO
@@ -339,7 +352,7 @@ public abstract class Form {
 
 		/**
 		 * Удаление групповой формы
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param secondaryId данные о группе (если она множимая)
 		 * @param parametersMap 
 		 * @return TODO
@@ -370,7 +383,7 @@ public abstract class Form {
 		/**
 		 * Общая проверка данных, связанных с формой
 		 * 
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @return результаты проверки данных
 		 * @throws ServiceException
 		 */
@@ -382,7 +395,7 @@ public abstract class Form {
 		/**
 		 * Получение списка идентификаторов если форма являетсся групповой
 		 * 
-		 * @param primaryId идентификатор анкеты
+		 * @param primaryId идентификатор 
 		 * @param parameters 
 		 * @return список идентификаторов групп
 		 * @throws ServiceException
@@ -454,6 +467,34 @@ public abstract class Form {
 
 			
 			return fieldsMap;
+		}
+
+		/**
+		 * @return Айди группы, содержащей текущую
+		 */
+		public String getSuperGroupId() {
+			return superGroupId;
+		}
+
+		/**
+		 * @param superGroupId Айди группы, содержащей текущую
+		 */
+		public void setSuperGroupId(String superGroupId) {
+			this.superGroupId = superGroupId;
+		}
+
+		/**
+		 * @return Айди текущей группы
+		 */
+		public String getGroupId() {
+			return groupId;
+		}
+
+		/**
+		 * @param Айди текущей группы
+		 */
+		public void setGroupId(String groupId) {
+			this.groupId = groupId;
 		}	
 
 }

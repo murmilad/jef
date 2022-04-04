@@ -10,6 +10,7 @@ import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
 import com.technology.jef.Tag.Type;
 import com.technology.jef.generators.TagGenerator.Handler;
+import com.technology.jef.generators.TagGenerator.Name;
 import com.technology.jef.widgets.Widget;
 
 import static com.technology.jef.server.serialize.SerializeConstant.*;
@@ -56,4 +57,10 @@ public class ContainerGenerator extends TagGenerator {
 	@Override
 	public void onEndElement() throws SAXException {
 	}
+
+	@Override
+	public Name getName() {
+		return Name.CONTAINER;
+	}
+
 }

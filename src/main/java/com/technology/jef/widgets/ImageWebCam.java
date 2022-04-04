@@ -24,13 +24,13 @@ public class ImageWebCam extends Image {
 		//language=JavaScript
 		return 
 		"		if (data.value) { \n " + 
-		"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+		" 			$( '#tr_${child_name}' ).prop( 'disabled', false);  \n" + 
 		"			$('#div_header_visible_${child_name}').show(); \n " +
 		"			$('#div_submit_data_${child_name}').show(); \n " +
 		"		} else { \n " +
 		"			$('#div_header_visible_${child_name}').hide(); \n " +
 		"			$('#div_submit_data_${child_name}').hide(); \n " +
-		"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
+		" 			$( '#tr_${child_name}' ).prop( 'disabled', true);  \n" + 
 		"		} \n ";
 	}
 	@Override
@@ -104,9 +104,9 @@ public class ImageWebCam extends Image {
 					"	<script src=\"js/webcam.min.js\"></script> \n" +
 					"	<script src=\"js/main.bundle.js\"></script>"+
 					"	<img src=\"data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=\" id=\"camera_snapshot_${name}\"><br> \n" + 
-					"	<input style=\"width:200px;\"               id=\"init_camera_button_${name}\"   type=\"button\" value=\"Клиент готов. Включить камеру\" onclick=\"init_camera_${name}()\"> \n" + 
-					"	<input style=\"width:80px;\"                id=\"not_present_camera_button_${name}\"   type=\"button\" value=\"Нет камеры\" onclick=\"not_present_camera_${name}()\"> \n" + 
-					"	<input style=\"display:none; width:300px;\" id=\"take_snapshot_button_${name}\" type=\"button\" value=\"Сделать фото клиента\" onclick=\"take_snapshot_${name}()\"> \n")
+					"	<input style=\"margin: 2px;\"               id=\"init_camera_button_${name}\"   type=\"button\" value=\"Клиент готов. Включить камеру\" onclick=\"init_camera_${name}()\" class='interface_button first_color second_text_color widgets_height'> \n" + 
+					"	<input style=\"margin: 2px;\"                id=\"not_present_camera_button_${name}\"   type=\"button\" value=\"Нет камеры\" onclick=\"not_present_camera_${name}()\" class='interface_button first_color second_text_color widgets_height'> \n" + 
+					"	<input style=\"display:none; margin: 2px;\" id=\"take_snapshot_button_${name}\" type=\"button\" value=\"Сделать фото клиента\" onclick=\"take_snapshot_${name}()\" class='interface_button first_color second_text_color widgets_height'> \n")
 					.replace("${name}", name),
 				new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "div_submit_data_" + name);

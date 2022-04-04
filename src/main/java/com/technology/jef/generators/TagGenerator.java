@@ -95,6 +95,17 @@ public abstract class TagGenerator {
 	*/
 	TagGenerator parrent;
 	
+	/**
+	* Имя генератора  
+	*/
+	Name name;
+
+	  /**
+	   * Метод получения имени генератора
+	   * 
+	   * @return Имя генератора
+	   */
+	public abstract Name getName();
 
 	  /**
 	   * Метод формирования DOM модели на текущем уровне

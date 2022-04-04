@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.xml.sax.SAXException;
 
 import com.technology.jef.Tag;
+import com.technology.jef.generators.TagGenerator.Name;
 
 /**
 * Класс сборщика DOM модели уровня скрипта
@@ -59,6 +60,10 @@ public class ScriptGenerator extends TagGenerator {
 		}
 	}
 
-	
+	@Override
+	public Name getName() {
+		return Name.SCRIPT;
+	}
+
 
 }

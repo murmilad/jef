@@ -1,8 +1,10 @@
 package com.technology.jef.generators;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Base64;
@@ -10,6 +12,7 @@ import org.xml.sax.SAXException;
 
 import com.technology.jef.CurrentLocale;
 import com.technology.jef.Tag;
+import com.technology.jef.generators.TagGenerator.Name;
 import com.technology.jef.widgets.Text;
 import com.technology.jef.widgets.Widget;
 
@@ -21,12 +24,100 @@ import static com.technology.jef.server.WebServiceConstant.*;
 */
 public class FormGenerator extends TagGenerator {
 
+    private class Hierarchy {
+    	private String parrentGroup = null;
+    	private String superGroup = null;
+    	private Boolean isMultiGroup = null;
+		/**
+		 * @return the parrentGroup
+		 */
+		public String getParrentGroup() {
+			return parrentGroup;
+		}
+		/**
+		 * @param parrentGroup the parrentGroup to set
+		 */
+		public void setParrentGroup(String parrentGroup) {
+			this.parrentGroup = parrentGroup;
+		}
+		/**
+		 * @return the superGroup
+		 */
+		public String getSuperGroup() {
+			return superGroup;
+		}
+		/**
+		 * @param superGroup the superGroup to set
+		 */
+		public void setSuperGroup(String superGroup) {
+			this.superGroup = superGroup;
+		}
+		/**
+		 * @return the isMultiGroup
+		 */
+		public Boolean getIsMultiGroup() {
+			return isMultiGroup;
+		}
+		/**
+		 * @param isMultiGroup the isMultiGroup to set
+		 */
+		public void setIsMultiGroup(Boolean isMultiGroup) {
+			this.isMultiGroup = isMultiGroup;
+		}
+    	
+    }
+    
+    
+    private class FormInterfaceApiHierarchy {
+    	private Map<String, Hierarchy> formInterfaceApiHierarchy;
+    	
+    	public FormInterfaceApiHierarchy() {
+    		formInterfaceApiHierarchy = new HashMap<String, Hierarchy>();
+		}
+    	
+    	public Map<String, Hierarchy>  getHierarchy() {
+    		return formInterfaceApiHierarchy;
+    	}
+    	
+    	public void addSuperGroup(String api, String superApi) {
+    		if (!formInterfaceApiHierarchy.containsKey(api)) {
+    			formInterfaceApiHierarchy.put(api, new Hierarchy());
+    		}
+    		formInterfaceApiHierarchy.get(api).setSuperGroup(superApi);
+    	}
+
+    	public void addParrentGroup(String api, String parrentApi) {
+    		if (!formInterfaceApiHierarchy.containsKey(api)) {
+    			formInterfaceApiHierarchy.put(api, new Hierarchy());
+    		}
+    		formInterfaceApiHierarchy.get(api).setParrentGroup(parrentApi);
+    	}
+
+    	public String getSuperGroup(String api) {
+    		return formInterfaceApiHierarchy.containsKey(api) 
+    				? formInterfaceApiHierarchy.get(api).getSuperGroup()
+    				: null;
+    	}
+
+    	public String getParrentGroup(String api) {
+    		return formInterfaceApiHierarchy.containsKey(api) 
+    				? formInterfaceApiHierarchy.get(api).getParrentGroup()
+    				: null;
+    	}
+
+    	public Boolean isMultiGroup(String api) {
+    		return formInterfaceApiHierarchy.containsKey(api) 
+    				? formInterfaceApiHierarchy.get(api).getIsMultiGroup()
+    				: null;
+    	}
+
+    }
     
 	HashMap<String, TagGenerator> connectedElements = new HashMap<String, TagGenerator>();
 	List<TagGenerator> multiplieGroups = new LinkedList<TagGenerator>();
 	HashMap<String, List<TagGenerator>> joinedMultiplieGroups = new HashMap<String, List<TagGenerator>>();
 	HashMap<String, String> joinedMultiplieGroupsBy = new HashMap<String, String>();
-	HashMap<String, String> formInterfaceApiMap = new HashMap<String, String>();
+	FormInterfaceApiHierarchy formInterfaceApiHierarchy = new FormInterfaceApiHierarchy();
 	List<String> groups = new LinkedList<String>();
 
 
@@ -44,12 +135,12 @@ public class FormGenerator extends TagGenerator {
 			body.getChildren().get(0).unshift(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "message_overlay_wait_form");
 				 put(Tag.Property.NAME, "message_overlay_wait_form");
-				 put(Tag.Property.CLASS, "background_overlay_form_loading background_color");
+				 put(Tag.Property.CLASS, "message_overlay_form_loading background_color");
 				 put(Tag.Property.STYLE, "display: block;");
 			}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "message_box_overlay_wait_form");
 				 put(Tag.Property.CLASS, "message_overlay_form_loading");
-			}}).add(Tag.Type.DIV, CurrentLocale.getInstance().getTextSource().getString("loading"), new HashMap<Tag.Property, String>(){{
+			}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.NAME, "message_box_wait_form");
 				 put(Tag.Property.CLASS, "message_box_form_loading messages_border messages_color");
 			}});
@@ -59,7 +150,11 @@ public class FormGenerator extends TagGenerator {
 		Tag form = dom.add(Tag.Type.FORM, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, (String) getAttribute(TagGenerator.Attribute.ID));
 		     put(Tag.Property.NAME, (String) getAttribute(TagGenerator.Attribute.ID));
-			 put(Tag.Property.STYLE, "display: inline-block;");
+			 put(Tag.Property.STYLE, "display: inline-block; position: relative;");
+		}});
+		form.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
+			 put(Tag.Property.ID, "group_bar");
+			 put(Tag.Property.CLASS, "group_bar background_color");
 		}});
 
 
@@ -94,13 +189,15 @@ public class FormGenerator extends TagGenerator {
 		
 		//Добавляем флаг JS свидетельствующий о том, что происходит загрузка связных списков
 		form.add(Tag.Type.SCRIPT, 	"	var ajax_is_parrent_blocked = {}; \n" + 
-									"	var ajax_is_child_blocked = {}; \n"
+									"	var ajax_is_child_blocked = {}; \n" +
+									"	var count_multiplie_group = {};            \n" + 
+									"	var number_multiplie_group = {};            \n" 
 		);
 
 		addHandler(TagGenerator.Name.GROUP, new Handler() {
 			@Override
 			public void handle(TagGenerator currentGenerator)  throws SAXException {
-				if (!"".equals(currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX))) { // Если группа множественная
+				if ("true".equals(currentGenerator.getAttribute(TagGenerator.Attribute.IS_MULTIPLIE))) { // Если группа множественная
 					//Добавляем флаг JS свидетельствующий о том, что происходит загрузка связных списков для множественных групп, если таковые имеются
 					currentGenerator.getDom().add(Tag.Type.SCRIPT, 	"var ajax_is_parrent_blocked" + currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX) + " = {};\n"+
 																	"var ajax_is_child_blocked" + currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX) + " = {};\n"
@@ -108,6 +205,12 @@ public class FormGenerator extends TagGenerator {
 					
 					//Добавляем мультигруппу всписок для последующей обработки (генерации JS и HTML)
 					multiplieGroups.add(currentGenerator);
+				}
+				if (!"true".equals(currentGenerator.getAttribute(TagGenerator.Attribute.IS_MULTIPLIE)) && "true".equals(currentGenerator.getParrent().getAttribute(TagGenerator.Attribute.IS_MULTIPLIE))) { // Если супергруппа множественная а текущая нет
+					//Добавляем флаг JS свидетельствующий о том, что происходит загрузка связных списков для множественных групп, если таковые имеются
+					currentGenerator.getDom().add(Tag.Type.SCRIPT, 	"var ajax_is_parrent_blocked" + currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX) + " = {};\n"+
+																	"var ajax_is_child_blocked" + currentGenerator.getAttribute(TagGenerator.Attribute.PREFIX) + " = {};\n"
+					);
 				}
 			}
 		});
@@ -126,7 +229,7 @@ public class FormGenerator extends TagGenerator {
 				String formInterfaceApi = (String) currentGenerator.getAttribute(TagGenerator.Attribute.API);
 				if  (!"".equals(formInterfaceApi)) {
 					// Добавляем в карту API встретившийся у парамера API и записываем в текущую API родительские API (те что должны быть вызваны первыми)
-					formInterfaceApiMap.put(formInterfaceApi, (String) currentGenerator.getAttribute(TagGenerator.Attribute.PARRENT_API));
+					formInterfaceApiHierarchy.addParrentGroup(formInterfaceApi, (String) currentGenerator.getAttribute(TagGenerator.Attribute.PARRENT_API));
 				}
 			}
 		});
@@ -135,13 +238,18 @@ public class FormGenerator extends TagGenerator {
 		addHandler(TagGenerator.Name.GROUP, new Handler() {
 			@Override
 			public void handle(TagGenerator currentGenerator) throws SAXException {
+				//Мультигруппа вложена в другую мультигруппу
+				if (TagGenerator.Name.GROUP.equals(currentGenerator.parrent.getName())) {
+					formInterfaceApiHierarchy.addSuperGroup((String)currentGenerator.getAttribute(TagGenerator.Attribute.API), (String)currentGenerator.parrent.getAttribute(TagGenerator.Attribute.API));
+				}
+
 				if (groups.contains((String) currentGenerator.getAttribute(TagGenerator.Attribute.ID))) {
 					throw new SAXException("ERROR: Duplicate group '" + currentGenerator.getAttribute(TagGenerator.Attribute.ID) + "' for form '" + getAttribute(TagGenerator.Attribute.ID) +  "'");
 				}
 				String formInterfaceApi = (String) currentGenerator.getAttribute(TagGenerator.Attribute.API);
 				if  (!"".equals(formInterfaceApi)) {
 					// Добавляем в карту API встретившийся у парамера API и записываем в текущую API родительские API (те что должны быть вызваны первыми)
-					formInterfaceApiMap.put(formInterfaceApi, (String) currentGenerator.getAttribute(TagGenerator.Attribute.PARRENT_API));
+					formInterfaceApiHierarchy.addParrentGroup(formInterfaceApi, (String) currentGenerator.getAttribute(TagGenerator.Attribute.PARRENT_API));
 				}
 			}
 		});
@@ -274,8 +382,8 @@ public class FormGenerator extends TagGenerator {
 		//TODO предусматреть внедрение JS из XML при нажатии кнопки "Далее" 
 		String valueJS = new Text().getValueJS(null, "", null);
 		// При нажатии клавиши Enter вызываем нажатие кноеки "Далее"
-		buttonsRow.add(Tag.Type.SCRIPT, 
-																		("				$( document ).ready(function() {                       \n" + 
+		buttonsRow.add(Tag.Type.SCRIPT, (
+	"				$( document ).ready(function() {                       \n" + 
 	"					$( document ).on('beforeLoading', function(){$('#submit_button').attr('disabled', true);}); \n" + 
 	"					$( document ).on('afterLoading', function(){$('#submit_button').attr('disabled', false);}); \n" + 
 	"					$(\":input\").keypress(function (e) {                       \n" + 
@@ -339,7 +447,7 @@ public class FormGenerator extends TagGenerator {
 	"											if (error.block) { \n" + 
 	"												$(\"#visible_\" + name).parent().children('').addClass(\"error error_color\");   \n" + 
 	"												var groupHeader = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() ? group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim() : '';                    \n " +
-	"												if (!groupHeader || error.message.toUpperCase().indexOf(groupHeader.toUpperCase()) == -1) { \n" + 
+	"												if (!groupHeader || !error.message.toUpperCase().match('^\\s*' + groupHeader.toUpperCase())) { \n" + 
 	"													var parameterHeader = $.trim($(\"[for='visible_\" + name + \"']\").html()); \n " + 
 	"													$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: (groupHeader ? groupHeader.charAt(0).toUpperCase() + groupHeader.slice(1).toLowerCase() + ' - '  : '')+ parameterHeader + \" \" + error.message}).appendTo(\"#error_list\");                     \n" + 
 	"												} else { \n" + 
@@ -449,8 +557,6 @@ public class FormGenerator extends TagGenerator {
 			dom.add(Tag.Type.SCRIPT,
 	("					var tag_${multiplie_group_name} = '${encoded_tag}';            \n" + 
 	"					var script_${multiplie_group_name} = '${encoded_script}';            \n" + 
-	"					var count_${multiplie_group_name} = 0;            \n" + 
-	"					var number_${multiplie_group_name} = 0;            \n" + 
 	"					var DMap = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 12: 12, 13: 13, 14: 14, 15: 15, 16: 16, 17: 17, 18: 18, 19: 19, 20: 20, 21: 21, 22: 22, 23: 23, 24: 24, 25: 25, 26: 26, 27: 27, 28: 28, 29: 29, 30: 30, 31: 31, 32: 32, 33: 33, 34: 34, 35: 35, 36: 36, 37: 37, 38: 38, 39: 39, 40: 40, 41: 41, 42: 42, 43: 43, 44: 44, 45: 45, 46: 46, 47: 47, 48: 48, 49: 49, 50: 50, 51: 51, 52: 52, 53: 53, 54: 54, 55: 55, 56: 56, 57: 57, 58: 58, 59: 59, 60: 60, 61: 61, 62: 62, 63: 63, 64: 64, 65: 65, 66: 66, 67: 67, 68: 68, 69: 69, 70: 70, 71: 71, 72: 72, 73: 73, 74: 74, 75: 75, 76: 76, 77: 77, 78: 78, 79: 79, 80: 80, 81: 81, 82: 82, 83: 83, 84: 84, 85: 85, 86: 86, 87: 87, 88: 88, 89: 89, 90: 90, 91: 91, 92: 92, 93: 93, 94: 94, 95: 95, 96: 96, 97: 97, 98: 98, 99: 99, 100: 100, 101: 101, 102: 102, 103: 103, 104: 104, 105: 105, 106: 106, 107: 107, 108: 108, 109: 109, 110: 110, 111: 111, 112: 112, 113: 113, 114: 114, 115: 115, 116: 116, 117: 117, 118: 118, 119: 119, 120: 120, 121: 121, 122: 122, 123: 123, 124: 124, 125: 125, 126: 126, 127: 127, 1027: 129, 8225: 135, 1046: 198, 8222: 132, 1047: 199, 1168: 165, 1048: 200, 1113: 154, 1049: 201, 1045: 197, 1050: 202, 1028: 170, 160: 160, 1040: 192, 1051: 203, 164: 164, 166: 166, 167: 167, 169: 169, 171: 171, 172: 172, 173: 173, 174: 174, 1053: 205, 176: 176, 177: 177, 1114: 156, 181: 181, 182: 182, 183: 183, 8221: 148, 187: 187, 1029: 189, 1056: 208, 1057: 209, 1058: 210, 8364: 136, 1112: 188, 1115: 158, 1059: 211, 1060: 212, 1030: 178, 1061: 213, 1062: 214, 1063: 215, 1116: 157, 1064: 216, 1065: 217, 1031: 175, 1066: 218, 1067: 219, 1068: 220, 1069: 221, 1070: 222, 1032: 163, 8226: 149, 1071: 223, 1072: 224, 8482: 153, 1073: 225, 8240: 137, 1118: 162, 1074: 226, 1110: 179, 8230: 133, 1075: 227, 1033: 138, 1076: 228, 1077: 229, 8211: 150, 1078: 230, 1119: 159, 1079: 231, 1042: 194, 1080: 232, 1034: 140, 1025: 168, 1081: 233, 1082: 234, 8212: 151, 1083: 235, 1169: 180, 1084: 236, 1052: 204, 1085: 237, 1035: 142, 1086: 238, 1087: 239, 1088: 240, 1089: 241, 1090: 242, 1036: 141, 1041: 193, 1091: 243, 1092: 244, 8224: 134, 1093: 245, 8470: 185, 1094: 246, 1054: 206, 1095: 247, 1096: 248, 8249: 139, 1097: 249, 1098: 250, 1044: 196, 1099: 251, 1111: 191, 1055: 207, 1100: 252, 1038: 161, 8220: 147, 1101: 253, 8250: 155, 1102: 254, 8216: 145, 1103: 255, 1043: 195, 1105: 184, 1039: 143, 1026: 128, 1106: 144, 8218: 130, 1107: 131, 8217: 146, 1108: 186, 1109: 190}            \n" + 
 	"					var Base64={_keyStr:\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\",decode:function(e){            \n" + 
 	"						var t='';            \n" + 
@@ -492,20 +598,22 @@ public class FormGenerator extends TagGenerator {
 	"						}            \n" + 
 	"						return t            \n" + 
 	"					}}            \n" + 
-	"					function add_${multiplie_group_name}(group_plase) {          \n" + 
+	"					function add_${multiplie_group_name}(group_plase, parrentGroupPrefix) {          \n" + 
 	"						window.isFormLoading = true;    \n" + 
-	"						var groupPrefix = \"${multiplie_group_name}_\" + number_${multiplie_group_name};         \n" + 
+	"						parrentGroupPrefix = parrentGroupPrefix ? parrentGroupPrefix : '';    \n" + 	
+	"						var groupPrefix = parrentGroupPrefix + \"${multiplie_group_name}_\" + number_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'];         \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").show();            \n" + 
 	"						$(\"#message_box_wait_${multiplie_group_name}\").show();            \n" + 
-	"						var template_tag = Base64.decode(tag_${multiplie_group_name}).replace(/<NUMBER>/g, groupPrefix);            \n" + 
-	"						var template_script = Base64.decode(script_${multiplie_group_name}).replace(/<NUMBER>/g, groupPrefix);            \n" + 
-
+	
+	"						var template_tag = Base64.decode(tag_${multiplie_group_name}).replace(/<GROUP_NUMBER>/g, parrentGroupPrefix).replace(/<NUMBER>/g, groupPrefix);            \n" + 
+	"						var template_script = Base64.decode(script_${multiplie_group_name}).replace(/<GROUP_NUMBER>/g, parrentGroupPrefix).replace(/<NUMBER>/g, groupPrefix);            \n" + 
+	
 	"						var replace = \"getWindowParams\\\\s*(\\\\s*\\\\(\\\\))?([^\\\\(\\\\\\\\])\"; \n " +
 	"						var re = new RegExp(replace,\"g\");   \n " +
 	"						template_script = template_script.replace(re, \"getWindowParams()$2\"); \n " +    
 							
 	
-	"						$(group_plase ? group_plase : \"#place_${group_separator}${group_api}\").append(template_tag);            \n" + 
+	"						$(group_plase ? group_plase : \"#place_\"+parrentGroupPrefix+\"${group_separator}${group_api}\").append(template_tag);            \n" + 
 	"						if (jQuery.isFunction($(\"#fildset_\" + groupPrefix).find('input').styler)) {            \n" + 
 	"							$(\"#fildset_\" + groupPrefix).find('input').styler({});            \n" + 
 	"						}            \n" + 
@@ -514,38 +622,36 @@ public class FormGenerator extends TagGenerator {
 	"							'type': 'hidden',            \n" + 
 	"							'id': 'group_id' + groupPrefix,            \n" + 
 	"							'name': 'group_id' + groupPrefix,            \n" + 
-	"						}).appendTo( \"#place_${multiplie_group_name}\" );        \n" + 
+	"						}).appendTo( \"#place_\"+parrentGroupPrefix+\"${multiplie_group_name}\" );        \n" + 
 	"						$(\"<input/>\", {           \n" + 
 	"							'value': '${action}',            \n" + 
 	"							'type': 'hidden',            \n" + 
 	"							'id': 'action' + groupPrefix,            \n" + 
 	"							'name': 'action' + groupPrefix,            \n" + 
-	"						}).appendTo( \"#place_${multiplie_group_name}\" );      \n" + 
-	"						number_${multiplie_group_name}++;            \n" + 
-	"						count_${multiplie_group_name}++;     \n" + 
+	"						}).appendTo( \"#place_\"+parrentGroupPrefix+\"${multiplie_group_name}\" );      \n" + 
+	"						number_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}']++;            \n" + 
+	"						count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}']++;            \n" + 
 	"						var parameters = ${value_js};     \n" + 
-	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};     \n" + 
+	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'];     \n" + 
+	"						parameters += parrentGroupPrefix ? '${parameter_separator}super_group_id${value_separator}' + $('#group_id' + parrentGroupPrefix).val() : '';     \n" + 
 	"						$(\"#background_overlay_wait_${multiplie_group_name}\").hide();           \n" + 
 	"    	      					$(\"#message_box_wait_${multiplie_group_name}\").hide();           \n" + 
 	"						bindIsFormLoading();   \n" + 
 	"						var parameters = ${value_js};     \n" + 
-	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};     \n" + 
+	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'];     \n" + 
+	"						parameters += parrentGroupPrefix ? '${parameter_separator}super_group_id${value_separator}' + $('#group_id' + parrentGroupPrefix).val() : '';     \n" + 
 	"						if(!window.isFormLoading) {         \n" + 
-	"							setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);      \n" + 
-	"							$( window ).scrollTop($(document).height()); \n" + 
+	"							setButtonVisiblity${multiplie_group_name}('button_add', parrentGroupPrefix + '${multiplie_group_name}', parameters);      \n" + 
 	"						}\n" + 
-	"						$('#form_id').bind('setListOnLoad_${group_api}' + groupPrefix, function() {        \n" + 
+	"						$('#form_id').bind('setListOnLoad_${group_api}' + parrentGroupPrefix + groupPrefix, function() {        \n" + 
 	"							var parameters = ${value_js};    \n" + 
-	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};    \n" + 
+	"							if (!count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}']) {count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'] = 0;}    \n" + 
+	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'];    \n" + 
+	"							parameters += parrentGroupPrefix ? '${parameter_separator}super_group_id${value_separator}' + $('#group_id' + parrentGroupPrefix).val() : '';     \n" + 
 	"							setButtonVisiblity${multiplie_group_name}('button_del', groupPrefix, parameters);     \n" + 
 	"						});        \n" + 
 	"						return groupPrefix;         \n" + 
 	"					}   \n" + 
-	"					$( document ).ready(function(){   \n" + 
-	"						var parameters = ${value_js};     \n" + 
-	"						parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};     \n" + 
-	"						setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);      \n" + 
-	"					});   \n" + 
 	"					function setButtonVisiblity${multiplie_group_name}(buttonName, groupPrefix, parameters) {       \n" + 
 	"						var form_parameters ='';                      \n" + 
 	"						$('input[type=\"hidden\"]').not('[name^=\"${system_prefix}_required_\"], [name^=\"${system_prefix}_parrent_api_\"], [name^=\"${system_prefix}_api_\"], [name^=\"${system_prefix}_changed_\"]').each( function(index, element){                      \n" + 
@@ -561,7 +667,7 @@ public class FormGenerator extends TagGenerator {
 	"							var waitJoinedGroups = 0; \n" +
 	" 							var group_count = 0; \n"+
 	"							${joined_group_apis}.forEach(function(joinedGroupApi){ \n" + 
-	" 								group_count += eval('count_${group_separator}'+joinedGroupApi)\n"+
+	" 								group_count += count_multiplie_group['${group_separator}'+joinedGroupApi]\n"+
 	"							}); \n" +
 	"							${joined_group_apis}.forEach(function(joinedGroupApi){ \n" + 
 	"								waitJoinedGroups++; \n" +
@@ -689,6 +795,9 @@ public class FormGenerator extends TagGenerator {
 					.replace("${group_id}", (String) getAttribute(TagGenerator.Attribute.ID))
 					.replace("${joined_group_separator}", JOINED_GROUP_SEPARATOR)
 				);
+			if (formInterfaceApiHierarchy.getHierarchy().containsKey(multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API))) {
+				formInterfaceApiHierarchy.getHierarchy().get(multiplieGroupGenerator.getAttribute(TagGenerator.Attribute.API)).setIsMultiGroup(true);
+			}
 		}
 
 
@@ -699,43 +808,76 @@ public class FormGenerator extends TagGenerator {
 		// после, получаем данные и заполняем ими форму (страницу)
 
 		String serviceCallJS = "";
-		for (String formApi: formInterfaceApiMap.keySet()) {
-			
+		serviceCallJS += "var parrentGroupPrefix = ''; \n"
+		+ "var parrentGroupParameters; \n";
+		for (String formApi: formInterfaceApiHierarchy.getHierarchy().keySet()) {
+
+			String endJs = "";
 			// Если у группы есть родительские (которые должны загрузиться первыми) то вызываем их по событиям окончания загрузки родительских
-			if ( !"".equals(formInterfaceApiMap.get(formApi))) {
-				serviceCallJS += "	$('#form_id').bind('${parrent_api}_group_loaded', function(){ \n"
-						.replace("${parrent_api}", formInterfaceApiMap.get(formApi));
+			if ( formInterfaceApiHierarchy.getParrentGroup(formApi) != null && !"".equals(formInterfaceApiHierarchy.getParrentGroup(formApi))) {
+				serviceCallJS += "	$('#form_id').bind('load_child_${parrent_api}', function(){ \n"
+						.replace("${parrent_api}", formInterfaceApiHierarchy.getParrentGroup(formApi));
+
+				endJs = "	}); \n";
+				// Если мультигруппа вложена в другую мультигруппу 
+			} else if ( formInterfaceApiHierarchy.getSuperGroup(formApi) != null){
+				serviceCallJS += ("	\n" + 
+						"			$('#form_id').bind('setListOnLoad_${parrent_api}', function(e, parrentGroupPrefix) {        \n" + 
+						"				$('#form_id').trigger('setListOnLoad_${api}' + parrentGroupPrefix );        \n" + 
+						"			});\n" + 
+						"			$('#form_id').bind('load_sub_${parrent_api}', function(e, parrentGroupPrefix, parrentGroupParameters){ \n")
+						.replace("${api}",  formApi)
+						.replace("${multiplie_group_name}", GROUP_SEPARATOR + formApi)
+						.replace("${parrent_api}", formInterfaceApiHierarchy.getSuperGroup(formApi));
+				endJs = "	}); \n";
 			}
 
 
-			serviceCallJS += 
-																												("    \n" + 
+			serviceCallJS += (
+	"    \n" + 
 	"				ajax({            \n" + 
 	"			            	url: '${service}get',            \n" + 
 	"					data: {            \n" + 
 	"						form_api: \"${api}\", \n" + 
-	"						parameters: ${value_js}, \n" + 
+	"						parameters: ${value_js} + (parrentGroupParameters ? '${parameter_separator}super_group_id${value_separator}' + parrentGroupParameters.parameters.group_id.value : ''), \n" + 
 	"						no_cache: Math.floor(Math.random() * 10000)            \n" + 
 	"					},           \n" + 
 	"			           	type: 'post',            \n" + 
 	"			        	dataType: 'json',            \n" + 
 	"		           		contentType: 'application/x-www-form-urlencoded',            \n" + 
 	"				}, function (data) { \n" + 
-
-
-	"					load_form_data_${api}(data, '');     \n" + 
-	"					$('#form_id').trigger('setListOnLoad_${api}');                       \n" + 
-	"					$('#form_id').trigger('${api}_group_loaded');          \n" + 
+	"					load_form_data_${api}(data, '' + parrentGroupPrefix, parrentGroupPrefix);     \n" + 
+	"					$('#form_id').trigger('setListOnLoad_${api}' + parrentGroupPrefix );                       \n" + 
+	"					${buttonAddJs} \n" +
+	"					$('#form_id').trigger('load_child_${api}');          \n" + 
 	"				});                       \n")
-		.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+		.replace("${buttonAddJs}", multiplieGroups.stream().filter(item -> {
+										try {
+											return formApi.equals(item.getAttribute(TagGenerator.Attribute.API)) 
+													&& "true".equals(item.getAttribute(TagGenerator.Attribute.IS_MULTIPLIE));
+										} catch  (SAXException e){
+											throw new RuntimeException(e);
+										}
+										}).count() > 0
+				?"					var parameters = ${value_js};     \n" + 
+				"					if (!count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}']) {count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'] = 0;}    \n" + 
+				"					parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'];     \n" + 
+				"					parameters += parrentGroupPrefix ? '${parameter_separator}super_group_id${value_separator}' + $('#group_id' + parrentGroupPrefix).val() : '';     \n" + 
+				"					setButtonVisiblity${multiplie_group_name}('button_add', parrentGroupPrefix + '${multiplie_group_name}', parameters);      \n"
+				:""
+				).replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
+		.replace("${parameter_separator}", PARAMETER_SEPARATOR)
 		.replace("${service}", (String) getParrent().getAttribute(TagGenerator.Attribute.SERVICE))				
 		.replace("${api}",  formApi)
 		.replace("${multiplie_group_name}", GROUP_SEPARATOR + formApi)
-		.replace("${value_js}", valueJS);
-
+		.replace("${value_js}", valueJS)
+		;
+			
+		
 		dom.add(Tag.Type.SCRIPT,					("  \n" + 
-	"				var groupInitialParams${api};       \n" + 
-	"				function load_form_data_${api}(data, groupPrefix){       \n" + 
+	"				var groupInitialParams${api} = {groups:[]};       \n" + 
+	"				function load_form_data_${api}(data, groupPrefix, parrentGroupPrefix){       \n" + 
+	"					parrentGroupPrefix = parrentGroupPrefix ? parrentGroupPrefix : '';    \n" + 	
 	"					if (data.status_code === 1) {                           \n" + 
 	"						$.each(data.parameters, function(key, parameter) {                  \n" + 
 	"							if (parameter.attributes.READONLY) {                           \n" + 
@@ -768,7 +910,7 @@ public class FormGenerator extends TagGenerator {
 	"										$.each( errors, function(index, error) {                      \n" + 
 	"											$(\"#visible_\" + name + groupPrefix).parent().children('').addClass(\"error error_color\");                      \n" + 
 	"											var groupHeader = group.find(\"[id^='span']\").not(\"[id^='span_control']\").html() ? group.find(\"[id^='span']\").not(\"[id^='span_control']\").html().trim() : '';                    \n " +
-	"											if (!groupHeader || error.message.toUpperCase().indexOf(groupHeader.toUpperCase()) == -1) { \n" + 
+	"											if (!groupHeader || !error.message.toUpperCase().match('^\\s*' + groupHeader.toUpperCase())) { \n" + 
 	"												var parameterHeader = $.trim($(\"[for='visible_\" + name + \"']\").html()); \n " + 
 	"												$(\"<li/>\", {'data-error-field': error.field, 'data-error-code': error.code, html: (groupHeader ? groupHeader.charAt(0).toUpperCase() + groupHeader.slice(1).toLowerCase() + ' - ' : '') + parameterHeader + \" \" + error.message}).appendTo(\"#error_list\");                     \n" + 
 	"											} else { \n" + 
@@ -795,14 +937,17 @@ public class FormGenerator extends TagGenerator {
 	"					}                   \n" + 
 	"					var currentGroupPrefix = '';                           \n" + 
 	"					$.each(data.groups, function(key, parameters) {                           \n" + 
-	"							currentGroupPrefix = add_${multiplie_group_name}();                           \n" + 
-	"							load_form_data_${api}(parameters, currentGroupPrefix);    \n" +
-	"							$( '#form_id' ).trigger('setListOnLoad_${api}'+currentGroupPrefix); \n" + 
+	"							currentGroupPrefix = add_${multiplie_group_name}('',parrentGroupPrefix);                           \n" + 
+	"							load_form_data_${api}(parameters, currentGroupPrefix, parrentGroupPrefix);    \n" +
+	"							$( '#form_id' ).trigger('setListOnLoad_${api}'+parrentGroupPrefix+currentGroupPrefix); \n" + 
+	"							$( '#form_id' ).trigger('load_sub_${api}', [currentGroupPrefix, parameters]); \n" + 
 	"					});     \n" + 
 	"					if (currentGroupPrefix !== ''){ \n" + 
 	"							var parameters = ${value_js};    \n" + 
-	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_${multiplie_group_name};    \n" + 
-	"							setButtonVisiblity${multiplie_group_name}('button_add', '${multiplie_group_name}', parameters);     \n" + 
+	"							if (!count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}']) {count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'] = 0;}    \n" + 
+	"							parameters += (parameters ? '${parameter_separator}' : '') + 'group_count${value_separator}' + count_multiplie_group[parrentGroupPrefix + '${multiplie_group_name}'];    \n" + 
+	"							parameters += parrentGroupPrefix ? '${parameter_separator}super_group_id${value_separator}' + $('#group_id' + parrentGroupPrefix).val() : '';     \n" + 
+	"							setButtonVisiblity${multiplie_group_name}('button_add', parrentGroupPrefix + '${multiplie_group_name}', parameters);     \n" + 
 	"					}                      \n" + 
 	"					groupInitialParams${api} = data;       \n" + 
 	"					groupInitialParams${api}.groups = [];       \n" + 
@@ -813,14 +958,16 @@ public class FormGenerator extends TagGenerator {
 				.replace("${api}",  formApi)
 				.replace("${multiplie_group_name}", GROUP_SEPARATOR + formApi)
 				.replace("${value_js}", valueJS)
+
 		);
 
 			
 
-			if (!"".equals(formInterfaceApiMap.get(formApi))) {
-				serviceCallJS += "	}); \n";
-			}
+				serviceCallJS += endJs;
+
+
 		}
+
 		dom.add(Tag.Type.SCRIPT,					("  \n" + 
 	" 		window.isFormLoading = true;     \n" + 
 	"		$( document ).ready(function() {       \n" + 
@@ -856,4 +1003,10 @@ public class FormGenerator extends TagGenerator {
 			return super.getAttribute(attributeName);
 		}
 	}
+
+	@Override
+	public Name getName() {
+		return Name.FORM;
+	}
+
 }

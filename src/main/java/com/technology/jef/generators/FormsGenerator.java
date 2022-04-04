@@ -57,4 +57,9 @@ public class FormsGenerator extends TagGenerator {
 		
 	}
 
+	@Override
+	public Name getName() {
+		return Name.FORMS;
+	}
+
 }

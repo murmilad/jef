@@ -166,7 +166,6 @@ public class CheckBoxList extends RadioSwitch {
 				"           		$( element ).find(\"input\").trigger('refresh');" +
 				"				}); \n " +
 				"           	$(\"#visible_${child_name}\").find(\"input\").trigger('refresh');" +
-				"				$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
 				" 				$( '#tr_${child_name}' ).prop( 'disabled', false);  \n" + 
 				"           	$(\"#visible_${child_name}\").find(\"input\").trigger('refresh');" +
 				" 			}                                                 \n" +
@@ -175,7 +174,6 @@ public class CheckBoxList extends RadioSwitch {
 				"				$( \"[name='visible_${child_name}']\" ).each(function( index, element) { \n " + 
 				"					$( element ).prop( \"disabled\", true); \n	" +
 				"				}); \n " +
-				"				$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
 				" 				$( '#tr_${child_name}' ).prop( 'disabled', true);  \n" + 
 				" 			}                                                 \n" +
 				"		} \n ";

@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -133,10 +135,14 @@ public abstract class Widget {
 	"	});    \n" + 
 	"	$('input#${name}').on('setLocked', function () {    \n" + 
 	"			var data = {value: 0};     \n" + 
+	"           $(\"[for='visible_${name}']\").addClass('widgets_label_color_disabled');	\n" +
+	"           $(\"[for='visible_${name}']\").removeClass('widgets_label_color');	\n" +
 	"			${set_active_js}     \n" + 
 	"	});     \n" + 
 	"	$('input#${name}').on('setUnlocked', function () {     \n" + 
 	"			var data = {value: 1};     \n" + 
+	"           $(\"[for='visible_${name}']\").addClass('widgets_label_color');	\n" +
+	"           $(\"[for='visible_${name}']\").removeClass('widgets_label_color_disabled');	\n" +
 	"			${set_active_js}   \n" + 
 	"	});     \n")
 				.replace("${set_active_js}", getSetActiveJS().replace("${child_name}", name))
@@ -266,6 +272,10 @@ public abstract class Widget {
 					"		$(\"#visible_${child_name}\").bind('setValue', function(event, value){      \n" + 
 					"			$('#visible_${child_name}').val(value);  \n" + 
 					"			$('#visible_${child_name}').change(); \n" + 
+					
+					// XSS unescape for input fields
+					"			if (value) {$('#visible_${child_name}').val(value.replace(/&gt;/g, '>').replace(/&lt;/g, '<'));}  \n" + 
+
 					"			$('input#${child_name}').val(value); \n"+
 					"		});     \n")
 					.replace("${name_value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
@@ -324,6 +334,8 @@ public abstract class Widget {
 			
 			return 	(" \n" + 
 	"	$('#visible_${child_name}').val(data.value).change(); \n" + 
+	// XSS unescape for input fields
+	"	if (data.value) {$('#visible_${child_name}').val(data.value.replace(/&gt;/g, '>').replace(/&lt;/g, '<'));}  \n" + 
 	"	$('#visible_${child_name}').bind('change', function(){ \n" + 
 	"		$('#${system_prefix}_changed_${child_name}').val('1') \n" + 
 	"	}); \n" + 
@@ -361,11 +373,11 @@ public abstract class Widget {
 			return 
 			"		if (data.value) { \n " + 
 			"			$('#visible_${child_name}').prop( \"disabled\", false); \n " +
-			"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+			" 			$( '#tr_${child_name}' ).prop( 'disabled', false);  \n" + 
 			"           $(\"#visible_${child_name}\").trigger('refresh');" +
 			"		} else { \n " +
 			"			$('#visible_${child_name}').prop( \"disabled\", true); \n " +
-			"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
+			" 			$( '#tr_${child_name}' ).prop( 'disabled', true);  \n" + 
 			"		} \n ";
 		}
 
@@ -379,7 +391,7 @@ public abstract class Widget {
 		public String getSetInactiveJS() {
 			
 			return "$('#visible_${child_name}').prop( \"disabled\", false); \n " +
-					"$(\"#tr_${child_name}\" ).css('color', 'black'); \n ";
+					" $( '#tr_${child_name}' ).prop( 'disabled', false); \n ";
 		}
 
 		/**
@@ -530,8 +542,12 @@ public abstract class Widget {
 							"	if ($('input#${child_name}').attr('data-disabled') !== 'attribute') { \n" + 
 							"		${set_active_js} \n" + 
 							"		if (data.value) { \n" + 
+							"           $(\"[for='visible_${name}']\").addClass('widgets_label_color');	\n" +
+							"           $(\"[for='visible_${name}']\").removeClass('widgets_label_color_disabled');	\n" +
 							"			$('input#${child_name}').removeAttr('data-disabled');  \n" + 
 							"		} else { \n" + 
+							"           $(\"[for='visible_${name}']\").addClass('widgets_label_color_disabled');	\n" +
+							"           $(\"[for='visible_${name}']\").removeClass('widgets_label_color');	\n" +
 							"			$('input#${child_name}').attr('data-disabled', 'interactive'); \n" + 
 							"		} \n" + 
 							"	} \n").replace("${set_active_js}", getSetActiveJS())
@@ -700,7 +716,16 @@ public abstract class Widget {
 							.replace("${value_separator}", PARAMETER_NAME_VALUE_SEPARATOR)
 							.replace("${parrent_name_api_value_js}", elementName)
 							.replace("${parrent_name_value_js}", elementName + prefix)).collect(Collectors.toList()));
-					
+				
+				
+				//Получаем айди супергруппы если она есть
+				Pattern pathPattern = Pattern.compile("^((?:"+GROUP_SEPARATOR+"\\w+?)*)("+GROUP_SEPARATOR+"(\\w+))$");
+				Matcher pathMatcher = pathPattern.matcher(prefix);
+
+				if (pathMatcher.matches() && pathMatcher.group(1) != null) {
+					valueJS +=  PARAMETER_SEPARATOR + "super_group_id" + PARAMETER_NAME_VALUE_SEPARATOR + "$('#group_id" + pathMatcher.group(1) + "').val()";
+				}
+
 					
 			}
 

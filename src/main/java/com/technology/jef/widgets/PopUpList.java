@@ -61,8 +61,8 @@ public class PopUpList extends Widget {
 			generator.getDom().add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 				 put(Tag.Property.ID, "overlay_" + name);
 				 put(Tag.Property.NAME, "overlay_" + name);
-				 put(Tag.Property.CLASS, "background_overlay_form_loading background_color");
-				 put(Tag.Property.STYLE, "top: 0; left:0; display: none; background: rgba(255, 255, 255, 0.7)");
+				 put(Tag.Property.CLASS, "background_overlay_form_loading background_overlay_trans");
+				 put(Tag.Property.STYLE, "top: 0; left:0; display: none; ");
 			}});			
 			
 			Tag elementInput = parrent.add(Tag.Type.INPUT, new HashMap<Tag.Property, String>(){{
@@ -304,12 +304,12 @@ public class PopUpList extends Widget {
 			"		if (data.value) { \n " + 
 			"			$('#visible_${child_name}').prop( \"disabled\", false); \n " +
 			"			$('#fake_visible_${child_name}').prop( \"disabled\", false); \n " +
-			"			$(\"#tr_${child_name}\" ).css('color', 'black'); \n "+
+			" 			$( '#tr_${child_name}' ).prop( 'disabled', false);  \n" + 
 			"           $(\"#visible_${child_name}\").trigger('refresh');" +
 			"		} else { \n " +
 			"			$('#visible_${child_name}').prop( \"disabled\", true); \n " +
 			"			$('#fake_visible_${child_name}').prop( \"disabled\", true); \n " +
-			"			$(\"#tr_${child_name}\" ).css('color', 'lightgray'); \n " +
+			" 			$( '#tr_${child_name}' ).prop( 'disabled', true);  \n" + 
 			"		} \n ";
 		}
 		protected Tag postAssembleTag(String name, TagGenerator generator, Tag element) throws SAXException {

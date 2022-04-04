@@ -168,7 +168,6 @@ public class RadioSwitch extends List {
 	" 				$( \"[name='visible_${child_name}']\" ).each(function( index, element) {  \n" + 
 	" 					$( element ).prop( \"disabled\", false).trigger('refresh');  \n" + 
 	"				}); \n" + 
-	"				$(\"#tr_${child_name}\" ).css('color', 'black'); \n" + 
 	" 			}                                                 \n" +
 	"			if ($('input#${child_name}').val()) { //ie9 support                                           \n" + 
 	" 				$('#visible_${child_name}' + $('input#${child_name}').val()).prop('checked', true).trigger('refresh');   \n" + 
@@ -179,7 +178,6 @@ public class RadioSwitch extends List {
 	" 					$( element ).prop( \"disabled\", true).trigger('refresh');  \n" + 
 	"				});                                          \n" + 
 	" 				$( '#tr_${child_name}' ).prop( 'disabled', true);  \n" + 
-	" 				$(\"#tr_${child_name}\" ).css('color', 'lightgray');  \n" + 
 	" 			}                                                 \n" +
 	" 		}  ;                                               \n");
 	}
