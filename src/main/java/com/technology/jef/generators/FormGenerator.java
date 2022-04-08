@@ -650,6 +650,9 @@ public class FormGenerator extends TagGenerator {
 	"							parameters += parrentGroupPrefix ? '${parameter_separator}super_group_id${value_separator}' + $('#group_id' + parrentGroupPrefix).val() : '';     \n" + 
 	"							setButtonVisiblity${multiplie_group_name}('button_del', groupPrefix, parameters);     \n" + 
 	"						});        \n" + 
+	"						if (parrentGroupPrefix){        \n" + 
+	"							$( '#span_' + parrentGroupPrefix ).trigger('refreshGroupPreview');    \n" + 
+	"						}        \n" + 
 	"						return groupPrefix;         \n" + 
 	"					}   \n" + 
 	"					function setButtonVisiblity${multiplie_group_name}(buttonName, groupPrefix, parameters) {       \n" + 

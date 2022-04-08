@@ -35,13 +35,19 @@ public class GroupGenerator extends TagGenerator {
 	@Override
 	public Tag generate(String qName) throws SAXException {
 		Tag group = null;
+		String groupName = "true".equals(getAttribute(TagGenerator.Attribute.IS_MULTIPLIE))
+				? "<NUMBER>"
+				: (Name.GROUP.equals(getParrent().getName()) && "true".equals(getParrent().getAttribute(TagGenerator.Attribute.IS_MULTIPLIE)))
+					 ? "<NUMBER>" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.ID)
+					 : (String) getAttribute(TagGenerator.Attribute.ID);
+
 		isMultiplie = "true".equals(getAttribute(TagGenerator.Attribute.IS_MULTIPLIE));
 		if (isMultiplie) {
 			isMultiplie = true;
 
 			// То что не должно пойти в шаблон
 			multilineParrentDOM = dom.add(Tag.Type.DIV,new HashMap<Tag.Property, String>(){{
-			     put(Tag.Property.STYLE, "display: inline-block;");
+			     put(Tag.Property.STYLE, "display: block;");
 			}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			     put(Tag.Property.ID, "place_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "")+ GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.API));
 			     put(Tag.Property.NAME, "place_" + (Name.GROUP.equals(getParrent().getName()) ? "<NUMBER>" : "")+ GROUP_SEPARATOR +getAttribute(TagGenerator.Attribute.API));
@@ -50,7 +56,7 @@ public class GroupGenerator extends TagGenerator {
 			// Формируем шаблон для мультигрупп и возвращаем его для дочерних генераторов
 			// Что бы дочерние элементы группы добавлялись имменно в шаблон
 			templateParrentGroup = new Tag(Tag.Type.DIV);
-			group = addFormGroup(templateParrentGroup, "<NUMBER>", (String) getAttribute(TagGenerator.Attribute.NAME));
+			group = addFormGroup(templateParrentGroup, groupName, (String) getAttribute(TagGenerator.Attribute.NAME));
 
 			addHandler(TagGenerator.Name.FORM_ITEM, new Handler() {
 
@@ -84,16 +90,9 @@ public class GroupGenerator extends TagGenerator {
 				}
 				
 			});
-			
-			
-
 //TODO			load params with prefix
-		} else if (Name.GROUP.equals(getParrent().getName()) && "true".equals(getParrent().getAttribute(TagGenerator.Attribute.IS_MULTIPLIE))) {
-			group = addFormGroup(dom 
-					, "<NUMBER>" + GROUP_SEPARATOR + getAttribute(TagGenerator.Attribute.ID)
-					, (String) getAttribute(TagGenerator.Attribute.NAME));
 		} else {
-			group = addFormGroup(dom, (String) getAttribute(TagGenerator.Attribute.ID), (String) getAttribute(TagGenerator.Attribute.NAME));
+			group = addFormGroup(dom, groupName, (String) getAttribute(TagGenerator.Attribute.NAME));
 		}
 		
 		return group;
@@ -127,27 +126,40 @@ public class GroupGenerator extends TagGenerator {
 			 put(Tag.Property.CLASS, "interface_expand");
 		}});
 
-		tagCaption.add(Tag.Type.SCRIPT,(
-					"var control_${name}_visible = true;\n" + 
-					"$(\"#span_control_${name}\").click(function(){\n" +
-					"	if (control_${name}_visible) {\n" +
-					"		$(\"#span_control_${name}\").html(\"+\");\n" +
-					"		$(\"#div_${name}\").css('display', 'none');\n" +
-					"	} else {\n" +
-					"		$(\"#span_control_${name}\").html(\"-\");\n" +
-					"		$(\"#div_${name}\").css('display', 'block');\n" +
-					"	}\n" +
-					"	control_${name}_visible = !control_${name}_visible;\n" + 
-					"});\n"
-			).replace("${name}", name)
+		tagCaption.add(Tag.Type.SCRIPT,(" \n" + 
+		"	var control_${name}_visible = true; \n" +
+		"	$(\"#div_preview${name}, #span_${name}, #span_control_${name}\").click(function(){ \n" + 
+		"		if (control_${name}_visible) { \n" + 
+		"			$(\"#span_control_${name}\").html(\"+\"); \n" + 
+		"			$(\"#div_${name}\").hide();\n" +
+		"			$(\"#div_preview${name}\").show();\n" +
+		"		} else { \n" + 
+		"			$(\"#span_control_${name}\").html(\"-\"); \n" + 
+		"			$(\"#div_preview${name}\").hide();\n" +
+		"			$(\"#div_${name}\").show();\n" +
+		"		} \n" + 
+//		"		setTimeout(function( x ) {            \n" + 
+		"			$(document.body).animate({ \n" + 
+		"				'scrollTop':   ($('#span_${name}').offset().top - 100) \n" + 
+		"			}, 200); \n" + 
+//		"		}, 100); \n" + 
+		"		control_${name}_visible = !control_${name}_visible; \n" + 
+		"	}); \n"+
+//		"	if ($(\"#div_${name}\").find(\"[id^='div_preview_'][id$='${name}']\") ) {\n" +
+//		"		$('#span_${name}').click(); \n " +
+//		"	} \n" +
+		"").replace("${name}", name)
 		);
 		
+
 		tagCaption.add(Tag.Type.SPAN, caption, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.NAME, "span_" + name);
 			 put(Tag.Property.ID, "span_" + name);
-			 put(Tag.Property.CLASS, "third_text_color");
+			 put(Tag.Property.CLASS, "third_text_color interface_expand");
+			 
 		}});
-		
+
+
 		tagFieldset = tagFieldset.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.NAME, "div_" + name);
 			 put(Tag.Property.ID, "div_" + name);

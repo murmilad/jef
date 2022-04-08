@@ -25,7 +25,9 @@ import com.technology.jef.generators.FormGenerator;
 import com.technology.jef.generators.FormsGenerator;
 import com.technology.jef.generators.GroupGenerator;
 import com.technology.jef.generators.InterfaceGenerator;
-import com.technology.jef.generators.ItemGenerator;
+import com.technology.jef.generators.PreviewGenerator;
+import com.technology.jef.generators.PreviewItemGenerator;
+import com.technology.jef.generators.FormItemGenerator;
 import com.technology.jef.generators.ScriptGenerator;
 import com.technology.jef.generators.TabGenerator;
 import com.technology.jef.generators.TabsGenerator;
@@ -230,7 +232,7 @@ public class DOMGenerator {
     		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
 			break;
 		case FORM_ITEM:
-			generator = new ItemGenerator();
+			generator = new FormItemGenerator();
 			// Формируем DOM модель на уровне элемента
     		// Добавляем ссылку на текущую позицию в DOM в адресный стек
     		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
@@ -267,6 +269,18 @@ public class DOMGenerator {
 			break;
 		case CONTAINERS:
 			generator = new ContainersGenerator();
+			// Формируем DOM модель на уровне контейнера контейнеров
+    		// Добавляем ссылку на текущую позицию в DOM в адресный стек
+    		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
+			break;
+		case PREVIEW:
+			generator = new PreviewGenerator();
+			// Формируем DOM модель на уровне контейнера контейнеров
+    		// Добавляем ссылку на текущую позицию в DOM в адресный стек
+    		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));
+			break;
+		case PREVIEW_ITEM:
+			generator = new PreviewItemGenerator();
 			// Формируем DOM модель на уровне контейнера контейнеров
     		// Добавляем ссылку на текущую позицию в DOM в адресный стек
     		domPath.push(generator.generate(dom, qName, attributes, getCurrentGenerator()));

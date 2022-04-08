@@ -27,6 +27,8 @@ public abstract class TagGenerator {
 		TAB,
 		CONTAINERS,
 		CONTAINER,
+		PREVIEW,
+		PREVIEW_ITEM,
 	}
 
    /**

@@ -441,13 +441,14 @@
 			$("[id^='fildset_']").each(function(){
 				var fildsetId = $( this ).attr('name');
 				var spanId = fildsetId.replace('fildset_', 'span_');
-				var divId = $( this ).attr('name').replace('fildset_', 'div_');
+				var divId = fildsetId.replace('fildset_', 'div_');
+				var divPreviewId = fildsetId.replace('fildset_', 'div_preview');
 	
 				if (
 					$('#group_bar').position().top + $('#group_bar').height() >= $( this ).position().top  
 					&& $('#group_bar').find("[name^='"+fildsetId+"']").length == 0
 				){
-					var source = $('#' + fildsetId).clone(false).attr('id', '');
+					var source = $('#' + fildsetId).clone(true).attr('id', '');
 					source.css('border-bottom', 'none');
 					source.css('padding-bottom', '0px');
 					source.css('padding-top', '2px');
@@ -457,6 +458,8 @@
 					}
 					source.find("#" + divId).attr('id', '').empty();
 					source.find("#" + spanId).css('font-weight', '800').attr('id', '');
+					source.find("#" + divPreviewId).remove();
+
 					source.appendTo(downTree($('#group_bar')));
 					source.attr('data-current-height', source.height());
 				}

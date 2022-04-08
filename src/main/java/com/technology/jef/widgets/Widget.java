@@ -478,9 +478,11 @@ public abstract class Widget {
 	"						}, function (data) {   \n" + 
 	"								if (data.value) {         \n" + 
 	"									$('#tr_${child_name}').show();         \n" + 
+	"									$('#tr_preview_${child_name}').show();         \n" + 
 	"									$('input#${child_name}').attr('invisible', false);         \n" + 
 	"								} else {         \n" + 
 	"									$('#tr_${child_name}').hide();         \n" + 
+	"									$('#tr_preview_${child_name}').hide();         \n" + 
 	"									${clean_value_js}         \n" + 
 	"									$('input#${child_name}').attr('invisible', true);         \n" + 
 	"								}         \n" + 
