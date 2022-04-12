@@ -49,11 +49,14 @@ public class PreviewGenerator extends TagGenerator {
 
 		dom.add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "div_preview_groups" + groupName);
+		     put(Tag.Property.CLASS, "div_interface_element_horizontal interface_element_horizontal"); 
+		     put(Tag.Property.STYLE, "position:relative;width:100%");
+		     
 		}});
 
 		dom.add(Tag.Type.SCRIPT, 
 				("	$( document ).ready(function() {  \n" + 
-				"		$('#span_${name}').click()   \n" + 
+				"		if (window.isFormLoading) {$('#span_${name}').click();}   \n" + 
 				"		$('#span_${name}').on('refreshGroupPreview', function(){   \n" + 
 				"			$('#div_preview_groups${name}').empty();\n" + 
 				"			$( '[id^=\"button_add_${name}${group_separator}\"]').each(function(index) { \n" + 

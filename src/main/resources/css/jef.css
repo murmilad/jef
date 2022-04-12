@@ -117,7 +117,7 @@
 }
 
 .interface_expand {
-	
+	cursor: pointer;
 }
 
 /* Autocomplete/Combobox */

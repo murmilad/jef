@@ -128,7 +128,7 @@ public class InterfaceGenerator extends TagGenerator {
 		    put(Tag.Property.CLASS, "wrapper" + (!"".equals((String) getAttribute(TagGenerator.Attribute.NAME))? " work_area_width" : ""));
 		}}).add(Tag.Type.DIV, new HashMap<Tag.Property, String>(){{
 		     put(Tag.Property.ID, "main_content");
-			 put(Tag.Property.STYLE, "display: inline-block;");
+			 put(Tag.Property.STYLE, "display: inline-block;width: 100%;");
 		     put(Tag.Property.CLASS, "block");
 		}});
 		if (!"".equals(getAttribute(TagGenerator.Attribute.HEADER))) {

@@ -443,9 +443,10 @@
 				var spanId = fildsetId.replace('fildset_', 'span_');
 				var divId = fildsetId.replace('fildset_', 'div_');
 				var divPreviewId = fildsetId.replace('fildset_', 'div_preview');
+				var currentTop = $('#group_bar').offset().top + $('#group_bar').height();
 	
 				if (
-					$('#group_bar').position().top + $('#group_bar').height() >= $( this ).position().top  
+					currentTop  >= $( this ).offset().top  
 					&& $('#group_bar').find("[name^='"+fildsetId+"']").length == 0
 				){
 					var source = $('#' + fildsetId).clone(true).attr('id', '');
@@ -463,11 +464,14 @@
 					source.appendTo(downTree($('#group_bar')));
 					source.attr('data-current-height', source.height());
 				}
-				if ($('#group_bar').find("[name^='"+fildsetId+"']").length > 0 && $('#group_bar').position().top + $('#group_bar').height() > $('#' + fildsetId).height() + $( this ).position().top) {
+				
+				currentTop = $('#group_bar').offset().top + $('#group_bar').height();
+				
+				if ($('#group_bar').find("[name^='"+fildsetId+"']").length > 0 && currentTop > $('#' + fildsetId).height() + $( this ).offset().top) {
 					$('#group_bar').find("[name^='"+fildsetId+"']").remove();
 				}
 				
-				if ($('#group_bar').find("[name^='"+fildsetId+"']").length > 0 && $( this ).position().top > $('#group_bar').position().top + $('#group_bar').height() - $('#group_bar').find("[name^='"+fildsetId+"']").attr('data-current-height')){
+				if ($('#group_bar').find("[name^='"+fildsetId+"']").length > 0 && $( this ).offset().top > currentTop - $('#group_bar').find("[name^='"+fildsetId+"']").attr('data-current-height')){
 					$('#group_bar').find("[name^='"+fildsetId+"']").remove();
 					$('#group_bar').find("[name^='"+fildsetId+"']").attr('data-current-height');
 				}

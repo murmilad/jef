@@ -56,7 +56,7 @@ public class GroupGenerator extends TagGenerator {
 			// Формируем шаблон для мультигрупп и возвращаем его для дочерних генераторов
 			// Что бы дочерние элементы группы добавлялись имменно в шаблон
 			templateParrentGroup = new Tag(Tag.Type.DIV);
-			group = addFormGroup(templateParrentGroup, groupName, (String) getAttribute(TagGenerator.Attribute.NAME));
+			group = addFormGroup(templateParrentGroup, groupName, (String) getAttribute(TagGenerator.Attribute.NAME), true);
 
 			addHandler(TagGenerator.Name.FORM_ITEM, new Handler() {
 
@@ -92,7 +92,7 @@ public class GroupGenerator extends TagGenerator {
 			});
 //TODO			load params with prefix
 		} else {
-			group = addFormGroup(dom, groupName, (String) getAttribute(TagGenerator.Attribute.NAME));
+			group = addFormGroup(dom, groupName, (String) getAttribute(TagGenerator.Attribute.NAME), false);
 		}
 		
 		return group;
@@ -106,7 +106,7 @@ public class GroupGenerator extends TagGenerator {
 	   * @param caption заголовок группы
 	   * @return тег группы
 	   */
-	private Tag addFormGroup(Tag parrent, String name, String caption) {
+	private Tag addFormGroup(Tag parrent, String name, String caption, Boolean isMultiplie) {
 
 		Tag tagFieldset = parrent.add(Tag.Type.FIELDSET, new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.ID, "fildset_" + name);
@@ -139,7 +139,7 @@ public class GroupGenerator extends TagGenerator {
 		"			$(\"#div_${name}\").show();\n" +
 		"		} \n" + 
 //		"		setTimeout(function( x ) {            \n" + 
-		"			$(document.body).animate({ \n" + 
+		"			$('html, body').stop().animate({ \n" + 
 		"				'scrollTop':   ($('#span_${name}').offset().top - 100) \n" + 
 		"			}, 200); \n" + 
 //		"		}, 100); \n" + 
@@ -152,7 +152,7 @@ public class GroupGenerator extends TagGenerator {
 		);
 		
 
-		tagCaption.add(Tag.Type.SPAN, caption, new HashMap<Tag.Property, String>(){{
+		tagCaption.add(Tag.Type.SPAN, caption + (isMultiplie ? " <ORDER>" : ""), new HashMap<Tag.Property, String>(){{
 			 put(Tag.Property.NAME, "span_" + name);
 			 put(Tag.Property.ID, "span_" + name);
 			 put(Tag.Property.CLASS, "third_text_color interface_expand");
@@ -268,7 +268,7 @@ public class GroupGenerator extends TagGenerator {
 					"							$( '#div_' + prefix ).trigger( 'add' );           \n" + 
 					"							$( '#form_id' ).trigger('setListOnLoad_${group_api}'+prefix);                               \n" + 
 					"							$( '#form_id' ).trigger('setListOnLoad_${group_api}', [prefix]); \n " + 
-					"							$(document.body).animate({ \n" + 
+					"							$('html, body').stop().animate({ \n" + 
 					"						    	'scrollTop':   ($('#span_' + prefix).offset().top - 100) \n" + 
 					"							}, 200); \n" + 
 					"						}, 100);          \n" + 
