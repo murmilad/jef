@@ -287,7 +287,7 @@ public class GroupGenerator extends TagGenerator {
 			);
 			Tag buttonAdd = multilineParrentDOM.getParrent().add(Tag.Type.DIV,
 					new HashMap<Tag.Property, String>(){{
-						 put(Tag.Property.STYLE, "width: 100%;");
+						 put(Tag.Property.STYLE, "width: 100%;display: inline-block;");
 					}}).add(Tag.Type.DIV,
 							new HashMap<Tag.Property, String>(){{
 							put(Tag.Property.STYLE, "position:relative; width: 100%;text-align: left; display: block;");
